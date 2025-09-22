@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThirdwebProvider } from "thirdweb/react";
+import { ThirdwebProviderWrapper } from "../../app/ThirdwebProviderWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
-  description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+  title: "Gumbuo.io",
+  description: "Alien-powered token battles, staking, and modular NFT utilities.",
 };
 
 export default function RootLayout({
@@ -18,8 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ThirdwebProvider>{children}</ThirdwebProvider>
+      <body className={`${inter.className} antialiased`}>
+        <ThirdwebProviderWrapper>
+          {children}
+        </ThirdwebProviderWrapper>
       </body>
     </html>
   );
