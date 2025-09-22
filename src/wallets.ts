@@ -6,8 +6,8 @@ import {
 } from "@thirdweb-dev/wallets";
 
 export const wallets = [
-  new MetaMaskWallet(),
-  new CoinbaseWallet(),
-  new WalletConnect(),
-  new PhantomWallet(),
+  new MetaMaskWallet({}),
+  new CoinbaseWallet({}),
+  new WalletConnect({}),
+  new PhantomWallet({}),
 ];
