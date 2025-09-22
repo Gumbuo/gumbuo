@@ -1,15 +1,13 @@
-// ✅ Correct
 import {
-  CoinbaseWallet,
   MetaMaskWallet,
+  CoinbaseWallet,
   WalletConnect,
   PhantomWallet,
 } from "@thirdweb-dev/wallets";
 
-
 export const wallets = [
-  metamaskWallet(),
-  coinbaseWallet(),
-  walletConnect(),
-  phantomWallet(),
+  MetaMaskWallet(),
+  CoinbaseWallet(),
+  WalletConnect(),
+  PhantomWallet(),
 ];
