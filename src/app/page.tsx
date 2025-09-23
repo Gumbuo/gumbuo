@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { ConnectButton } from "thirdweb/react";
 import { client } from "./client";
 import { wallets } from "../wallets";
-import gumbuoIcon from "/public/gumbuo.svg";
 
 export default function Page() {
   return (
@@ -45,8 +43,8 @@ export default function Page() {
 function Header() {
   return (
     <header className="flex flex-col items-center mb-20">
-      <Image
-        src={gumbuoIcon}
+      <img
+        src="/gumbuo.svg"
         alt="Gumbuo Logo"
         className="size-[150px]"
         style={{
