@@ -1,7 +1,6 @@
 "use client";
 
-import { ConnectButton } from "@thirdweb-dev/react";
-import { client } from "./client";
+import { ConnectWallet } from "@thirdweb-dev/react";
 import Image from "next/image";
 
 export default function ClientPageWrapper() {
@@ -25,15 +24,7 @@ export default function ClientPageWrapper() {
 
         {/* 🔌 Wallet Connect */}
         <div className="flex justify-center mb-10">
-          <ConnectButton
-            client={client}
-            appMetadata={{
-              name: "Gumbuo",
-              url: "https://gumbuo.io",
-              description: "Alien-powered token battles and staking",
-              logoUrl: "/gumbuo.svg",
-            }}
-          />
+          <ConnectWallet />
         </div>
       </div>
     </main>
