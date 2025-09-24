@@ -11,7 +11,7 @@ const robotoMono = Roboto_Mono({
   subsets: ["latin"],
 });
 
-import "./globals.css";
+import "../globals.css";
 import Providers from "./providers"; // ✅ shared client wrapper
 
 export const metadata: Metadata = {
