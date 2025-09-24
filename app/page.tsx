@@ -2,9 +2,9 @@
 
 "use client";
 
-import { ConnectButton } from "thirdweb-dev/react";
-import { client } from "./client";
-import { wallets } from "../wallets";
+import { ConnectButton } from "@thirdweb-dev/react"; // ✅ fixed import path
+import { client } from "./client"; // ✅ assumes client.ts is in /app
+import { wallets } from "./wallets"; // ✅ updated to match file location
 
 export default function Page() {
   return (
@@ -64,4 +64,5 @@ function Header() {
     </header>
   );
 }
+
 // Trigger rebuild: homepage route test
