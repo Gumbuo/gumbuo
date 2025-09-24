@@ -2,7 +2,7 @@
 
 "use client";
 
-import { ConnectButton } from "thirdweb/react";
+import { ConnectButton } from "thirdweb-dev/react";
 import { client } from "./client";
 import { wallets } from "../wallets";
 
