@@ -9,46 +9,52 @@ import {
 import { wallets } from "../src/wallets";
 
 export default function Page() {
+  return (
+    <ThirdwebProvider clientId="gumbuo-dev" supportedWallets={wallets}>
+      <WalletGate />
+    </ThirdwebProvider>
+  );
+}
+
+function WalletGate() {
   const address = useAddress();
   const disconnect = useDisconnect();
 
   return (
-    <ThirdwebProvider clientId="gumbuo-dev" supportedWallets={wallets}>
-      <main className="p-4 pb-10 min-h-screen flex items-center justify-center container max-w-screen-lg mx-auto relative">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          id="gumbuo-bg"
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        >
-          <source src="/alien.mp4" type="video/mp4" />
-        </video>
+    <main className="p-4 pb-10 min-h-screen flex items-center justify-center container max-w-screen-lg mx-auto relative">
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        id="gumbuo-bg"
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      >
+        <source src="/alien.mp4" type="video/mp4" />
+      </video>
 
-        <div className="py-20 z-10 relative w-full">
-          <Header />
-          <div className="flex justify-center mb-10">
-            <ConnectWallet />
-          </div>
-          <div className="text-center text-zinc-300">
-            {address ? (
-              <>
-                <p>🛸 Connected as <span className="text-green-400 font-mono">{address}</span></p>
-                <button
-                  onClick={disconnect}
-                  className="mt-4 px-4 py-2 bg-zinc-800 text-white rounded hover:bg-zinc-700"
-                >
-                  Disconnect
-                </button>
-              </>
-            ) : (
-              "Connect your wallet to enter."
-            )}
-          </div>
+      <div className="py-20 z-10 relative w-full">
+        <Header />
+        <div className="flex justify-center mb-10">
+          <ConnectWallet />
         </div>
-      </main>
-    </ThirdwebProvider>
+        <div className="text-center text-zinc-300">
+          {address ? (
+            <>
+              <p>?? Connected as <span className="text-green-400 font-mono">{address}</span></p>
+              <button
+                onClick={disconnect}
+                className="mt-4 px-4 py-2 bg-zinc-800 text-white rounded hover:bg-zinc-700"
+              >
+                Disconnect
+              </button>
+            </>
+          ) : (
+            "Connect your wallet to enter."
+          )}
+        </div>
+      </div>
+    </main>
   );
 }
 
