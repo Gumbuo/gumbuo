@@ -2,9 +2,9 @@
 
 "use client";
 
-import { ConnectButton } from "@thirdweb-dev/react"; // ✅ fixed import path
-import { client } from "./client"; // ✅ assumes client.ts is in /app
-import { wallets } from "./wallets"; // ✅ updated to match file location
+import { ConnectButton } from "@thirdweb-dev/react"; // ✅ correct SDK import
+import { client } from "./client"; // ✅ client.ts is in /app
+import { wallets } from "../src/wallets"; // ✅ wallets.ts is in /src
 
 export default function Page() {
   return (
