@@ -11,20 +11,15 @@
     "@thirdweb-dev/react": "^3.16.5",
     "@thirdweb-dev/sdk": "^3.10.67",
     "ethers": "^5.8.0",
-    "next": "15.4.6",
+    "next": "13.5.11",
     "pino-pretty": "^13.1.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "thirdweb": "^5.108.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
-    "@tailwindcss/postcss": "^4.1.13",
-    "@types/react": "19.1.13",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.36.0",
-    "eslint-config-next": "^15.5.4",
-    "eslint-plugin-next": "^0.0.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.3"
+    "@tailwindcss/postcss": "^4.1.13"
   }
 }
+
