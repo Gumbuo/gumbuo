@@ -6,8 +6,8 @@ import {
 } from "@thirdweb-dev/react";
 
 export const wallets = [
-  metamaskWallet,
-  coinbaseWallet,
-  walletConnect,
-  phantomWallet,
+  metamaskWallet(),
+  coinbaseWallet(),
+  walletConnect(),
+  phantomWallet(),
 ];
