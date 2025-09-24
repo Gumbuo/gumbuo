@@ -1,5 +1,3 @@
-// Trigger rebuild: corrected import paths
-
 // Final trigger: flush Vercel cache and register homepage
 
 "use client";
