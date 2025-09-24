@@ -1,44 +1,35 @@
-// Final trigger: flush Vercel cache and register homepage
-
 "use client";
 
-import { ConnectButton } from "@thirdweb-dev/react"; // ✅ correct SDK import
-import { client } from "./client"; // ✅ client.ts is in /app
-import { wallets } from "../src/wallets"; // ✅ wallets.ts is in /src
+import { ThirdwebProvider, ConnectWallet } from "@thirdweb-dev/react";
+import { wallets } from "../src/wallets"; // ✅ wallets.ts in /src
+import { client } from "../client"; // ✅ client.ts in /gumbuo-site
 
 export default function Page() {
   return (
-    <main className="p-4 pb-10 min-h-screen flex items-center justify-center container max-w-screen-lg mx-auto relative">
-      {/* 👽 Alien video background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        id="gumbuo-bg"
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
-      >
-        <source src="/alien.mp4" type="video/mp4" />
-      </video>
+    <ThirdwebProvider clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID} supportedWallets={wallets}>
+      <main className="p-4 pb-10 min-h-screen flex items-center justify-center container max-w-screen-lg mx-auto relative">
+        {/* 👽 Alien video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          id="gumbuo-bg"
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        >
+          <source src="/alien.mp4" type="video/mp4" />
+        </video>
 
-      <div className="py-20 z-10 relative w-full">
-        <Header />
+        <div className="py-20 z-10 relative w-full">
+          <Header />
 
-        {/* 🔌 Wallet Connect */}
-        <div className="flex justify-center mb-10">
-          <ConnectButton
-            client={client}
-            wallets={wallets}
-            appMetadata={{
-              name: "Gumbuo",
-              url: "https://gumbuo.io",
-              description: "Alien-powered token battles and staking",
-              logoUrl: "/gumbuo.svg",
-            }}
-          />
+          {/* 🔌 Wallet Connect */}
+          <div className="flex justify-center mb-10">
+            <ConnectWallet />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </ThirdwebProvider>
   );
 }
 
@@ -64,5 +55,3 @@ function Header() {
     </header>
   );
 }
-
-// Trigger rebuild: homepage route test
