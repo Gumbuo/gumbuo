@@ -1,3 +1,5 @@
+// Final trigger: flush Vercel cache and register homepage
+
 "use client";
 
 import { ConnectButton } from "thirdweb/react";
