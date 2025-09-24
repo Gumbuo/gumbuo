@@ -2,11 +2,13 @@
 
 import { ThirdwebProvider, ConnectWallet } from "@thirdweb-dev/react";
 import { wallets } from "../src/wallets";
-import { client } from "../client";
 
 export default function Page() {
   return (
-    <ThirdwebProvider client={client} supportedWallets={wallets}>
+    <ThirdwebProvider
+      clientId="gumbuo-dev" // Replace with your actual Thirdweb client ID if needed
+      supportedWallets={wallets}
+    >
       <main className="p-4 pb-10 min-h-screen flex items-center justify-center container max-w-screen-lg mx-auto relative">
         <video
           autoPlay
@@ -48,3 +50,4 @@ function Header() {
     </header>
   );
 }
+
