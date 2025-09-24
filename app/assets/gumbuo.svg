@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-  <circle cx="100" cy="100" r="95" fill="white"/>
-  <ellipse cx="100" cy="100" rx="60" ry="80" fill="#3ddc84" stroke="#111" stroke-width="4"/>
-  <ellipse cx="75" cy="90" rx="15" ry="25" fill="#111"/>
-  <ellipse cx="125" cy="90" rx="15" ry="25" fill="#111"/>
-  <path d="M60 60 Q100 20 140 60" fill="#111"/>
-  <text x="100" y="55" text-anchor="middle" font-size="14" font-family="Arial" fill="white">GUMBUO.IO</text>
-  <ellipse cx="100" cy="100" rx="80" ry="10" fill="#111" opacity="0.5"/>
-</svg>
