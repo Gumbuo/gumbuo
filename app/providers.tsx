@@ -1,3 +1,7 @@
-export default function Providers({ children }) {
+"use client";
+
+import { ReactNode } from "react";
+
+export default function Providers({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
