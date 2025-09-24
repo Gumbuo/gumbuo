@@ -3,7 +3,7 @@ import {
   coinbaseWallet,
   walletConnect,
   phantomWallet,
-} from "@thirdweb-dev/wallets";
+} from "@thirdweb-dev/react";
 
 export const wallets = [
   metamaskWallet,
