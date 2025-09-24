@@ -6,7 +6,7 @@ import { client } from "../client"; // ✅ client.ts in /gumbuo-site
 
 export default function Page() {
   return (
-    <ThirdwebProvider clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID} supportedWallets={wallets}>
+    <ThirdwebProvider client={client} supportedWallets={wallets}>
       <main className="p-4 pb-10 min-h-screen flex items-center justify-center container max-w-screen-lg mx-auto relative">
         {/* 👽 Alien video background */}
         <video
