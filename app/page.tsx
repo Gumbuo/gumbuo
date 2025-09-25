@@ -1,7 +1,10 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { useAddress, useDisconnect, SwapWidget, createThirdwebClient } from "@thirdweb-dev/react";
+import { useAddress, useDisconnect } from "@thirdweb-dev/react";
+import { SwapWidget } from "thirdweb/react";
+import { createThirdwebClient } from "thirdweb";
+
 
 
 const client = createThirdwebClient({
