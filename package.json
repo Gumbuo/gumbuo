@@ -10,6 +10,7 @@
   "dependencies": {
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^3.10.67",
+    "@thirdweb-dev/wallets": "^2.5.39",
     "encoding": "^0.1.13",
     "ethers": "^5.8.0",
     "next": "13.5.11",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@tailwindcss/postcss": "^4.1.13",
+    "@types/react": "^18.3.24",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.36.0"
   }
