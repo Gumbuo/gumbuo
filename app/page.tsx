@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useAddress, useDisconnect } from "@thirdweb-dev/react";
-import { SwapWidget } from "thirdweb/react";
+import { SwapWidget } from "@thirdweb-dev/react/components/SwapWidget";
 import { createThirdwebClient } from "thirdweb";
 
 const client = createThirdwebClient({
@@ -62,3 +62,4 @@ export default function Page() {
     </div>
   );
 }
+
