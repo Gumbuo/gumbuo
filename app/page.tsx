@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useAddress, useDisconnect } from "@thirdweb-dev/react";
-import { SwapWidget } from "@thirdweb-dev/react";
+import { SwapWidget } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
 
 const client = createThirdwebClient({
@@ -96,3 +96,9 @@ export default function Page() {
     X (Twitter)
   </a>
 </div>
+
+import { createThirdwebClient } from "thirdweb";
+
+const client = createThirdwebClient({
+  clientId: "YOUR_CLIENT_ID", // Replace with your actual ID
+});
