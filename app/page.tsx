@@ -28,10 +28,37 @@ export default function Page() {
       <h2>👽 Gumbuo’s 1st Astral Visitors Airdrop List</h2>
       <SwapWidget
         client={client}
-        defaultBuyToken="0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
-        defaultBuyAmount="10000000"
+        theme="dark"
+        style={{
+          borderRadius: "12px",
+          backgroundColor: "#0f0f23",
+          color: "#00ffcc",
+          fontFamily: "Orbitron, sans-serif",
+          boxShadow: "0 0 20px #00ffcc",
+        }}
+        prefill={{
+          buyToken: {
+            chainId: 8453,
+            tokenAddress: "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0",
+            amount: "10000000",
+          },
+          sellToken: {
+            chainId: 8453,
+          },
+        }}
+        onSuccess={(quote) => {
+          fetch("/api/logPurchase", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              wallet: address,
+              amount: quote.buyAmount,
+              txHash: quote.transactionHash,
+            }),
+          });
+          alert("👽 You’re on the list!");
+        }}
       />
     </div>
   );
 }
-
