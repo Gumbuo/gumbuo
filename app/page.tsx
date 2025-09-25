@@ -1,7 +1,8 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { useAddress, useDisconnect, SwapWidget } from "thirdweb/react";
+import { useAddress, useDisconnect } from "@thirdweb-dev/react";
+import { SwapWidget } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
 
 const client = createThirdwebClient({
@@ -21,7 +22,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: "2rem", maxWidth: 600, margin: "0 auto" }}>
-      <h2>👽 Gumbuo’s 1st Astral Visitors Airdrop List</h2>
+      <h2>👽 Gumbuo’s 1st Astral Airdrop List</h2>
 
       <SwapWidget
         client={client}
@@ -91,5 +92,3 @@ export default function Page() {
     </div>
   );
 }
-
-
