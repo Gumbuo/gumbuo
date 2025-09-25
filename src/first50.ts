@@ -13,8 +13,8 @@ export async function addWallet(address: string) {
   if (first50.includes(address) || first50.length >= 50) return;
 
   if (config.tokenGatingEnabled) {
-    const sdk = new ThirdwebSDK("ethereum");
-    const contract = await sdk.getToken("0xYourGumbuoTokenAddress");
+    const sdk = new ThirdwebSDK("base");
+    const contract = await sdk.getToken("0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"); // Gumbuo token
     const balance = await contract.balanceOf(address);
     if (balance.value.eq(0)) return;
   }

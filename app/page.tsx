@@ -26,7 +26,7 @@ function WalletGate() {
   const address = useAddress();
   const disconnect = useDisconnect();
 
-  useEffect(() => {
+  const [_, forceUpdate] = useState(0); useEffect(() => {
     if (address) {
       addWallet(address);
     }
@@ -82,6 +82,7 @@ function Header() {
     </header>
   );
 }
+
 
 
 
