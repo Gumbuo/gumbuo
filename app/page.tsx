@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAddress, useDisconnect } from "@thirdweb-dev/react";
-import { SwapWidget } from "thirdweb/react";
-import { createThirdwebClient } from "thirdweb";
-
-
+import { createThirdwebClient } from "@thirdweb-dev/sdk";
 
 const client = createThirdwebClient({
   clientId: "f985d3ebee58e34a49d8a57f6410b2ec"
@@ -23,50 +20,40 @@ export default function Page() {
   }, [address]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: 600, margin: "0 auto" }}>
-      <h2>👽 Gumbuo’s 1st Astral Airdrop List</h2>
+    <div style={{
+      padding: "2rem",
+      maxWidth: "600px",
+      margin: "0 auto",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      fontFamily: "Orbitron, sans-serif",
+      color: "#00ffcc"
+    }}>
+      <h2>Gumbuo’s 1st Astral Airdrop List</h2>
 
-      <SwapWidget
-        client={client}
-        theme="dark"
-        style={{
-          borderRadius: "12px",
-          backgroundColor: "#0f0f23",
-          color: "#00ffcc",
-          fontFamily: "Orbitron, sans-serif",
-          boxShadow: "0 0 20px #00ffcc",
-        }}
-        prefill={{
-          buyToken: {
-            chainId: 8453,
-            tokenAddress: "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0",
-            amount: "10000000",
-          },
-          sellToken: {
-            chainId: 8453,
-          },
-        }}
-        onSuccess={(quote) => {
-          fetch("/api/logPurchase", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              wallet: address,
-              amount: quote.buyAmount,
-              txHash: quote.transactionHash,
-            }),
-          });
-          alert("👽 You’re on the list!");
-        }}
-      />
+      {address ? (
+        <p>Connected as {address}</p>
+      ) : (
+        <p>Connect your wallet to enter the mothership.</p>
+      )}
+
+      {/* Placeholder for future swap logic */}
+      <div style={{
+        marginTop: "2rem",
+        padding: "1rem",
+        border: "1px dashed #00ffcc",
+        borderRadius: "8px",
+        textAlign: "center"
+      }}>
+        <p>SwapWidget temporarily disabled while we stabilize the build.</p>
+      </div>
 
       <div style={{
         marginTop: "2rem",
-        textAlign: "center",
-        fontFamily: "Orbitron, sans-serif",
-        color: "#00ffcc"
+        textAlign: "center"
       }}>
-        <p>👽 Join the Gumbuo community:</p>
+        <p>Join the Gumbuo community:</p>
         <a
           href="https://discord.gg/kbWrjAdqhv"
           target="_blank"
@@ -94,4 +81,3 @@ export default function Page() {
     </div>
   );
 }
-
