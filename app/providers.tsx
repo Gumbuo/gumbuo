@@ -1,7 +1,15 @@
-"use client";
+﻿"use client";
 
+import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { ReactNode } from "react";
 
 export default function Providers({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <ThirdwebProvider
+      activeChain="base"
+      clientId="YOUR_CLIENT_ID"
+    >
+      {children}
+    </ThirdwebProvider>
+  );
 }
