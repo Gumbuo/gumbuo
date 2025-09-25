@@ -1,12 +1,11 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { useAddress, useDisconnect } from "@thirdweb-dev/react";
-import { SwapWidget } from "thirdweb/react";
+import { useAddress, useDisconnect, SwapWidget } from "@thirdweb-dev/react";
 import { createThirdwebClient } from "thirdweb";
 
 const client = createThirdwebClient({
-  clientId: "f985d3ebee58e34a49d8a57f6410b2ec" // Replace with your actual Thirdweb client ID
+  clientId: "f985d3ebee58e34a49d8a57f6410b2ec"
 });
 
 export default function Page() {
@@ -16,10 +15,7 @@ export default function Page() {
 
   useEffect(() => {
     if (address) {
-      (async () => {
-        await addWallet(address);
-        forceUpdate(n => n + 1);
-      })();
+      forceUpdate(n => n + 1);
     }
   }, [address]);
 
