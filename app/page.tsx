@@ -30,15 +30,32 @@ export default function Page() {
       fontFamily: "Orbitron, sans-serif",
       color: "#00ffcc"
     }}>
+      <img src="/logo.png" alt="Gumbuo Logo" style={{ width: "120px", marginBottom: "1rem" }} />
       <h2>Gumbuo’s 1st Astral Airdrop List</h2>
 
       {address ? (
-        <p>Connected as {address}</p>
+        <>
+          <p>Connected as {address}</p>
+          <button
+            onClick={disconnect}
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "#00ffcc",
+              color: "#0f0f23",
+              border: "none",
+              borderRadius: "6px",
+              fontFamily: "Orbitron, sans-serif",
+              cursor: "pointer"
+            }}
+          >
+            Disconnect Wallet
+          </button>
+        </>
       ) : (
         <p>Connect your wallet to enter the mothership.</p>
       )}
 
-      {/* Placeholder for future swap logic */}
       <div style={{
         marginTop: "2rem",
         padding: "1rem",
@@ -48,6 +65,17 @@ export default function Page() {
       }}>
         <p>SwapWidget temporarily disabled while we stabilize the build.</p>
       </div>
+
+      {process.env.NODE_ENV === "development" && (
+        <div style={{
+          marginTop: "2rem",
+          border: "1px solid #00ffcc",
+          padding: "1rem"
+        }}>
+          <p>🛠 Dev Controls Active</p>
+          {/* Add your toggles or debug buttons here */}
+        </div>
+      )}
 
       <div style={{
         marginTop: "2rem",
@@ -81,4 +109,3 @@ export default function Page() {
     </div>
   );
 }
-
