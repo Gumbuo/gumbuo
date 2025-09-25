@@ -55,7 +55,7 @@ function WalletGate() {
         </div>
 
         <div className="mt-10 text-left text-sm text-zinc-300">
-          <h2 className="text-green-400 font-bold mb-2">?? First 50 Visitors</h2>
+          <h2 className="text-green-400 font-bold mb-2">?? Gumbuo's 1st Astral Visitors Airdrop List</h2>
           <ul className="list-disc pl-5">
             {getWallets().map((addr, i) => (
               <li key={addr}>{i + 1}. {addr}</li>
@@ -82,3 +82,4 @@ function Header() {
     </header>
   );
 }
+
