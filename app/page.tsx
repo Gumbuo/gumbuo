@@ -65,3 +65,34 @@ export default function Page() {
 
 
 
+<div style={{
+  marginTop: "2rem",
+  textAlign: "center",
+  fontFamily: "Orbitron, sans-serif",
+  color: "#00ffcc",
+}}>
+  <p>👽 Join the Gumbuo community:</p>
+  <a
+    href="https://discord.gg/kbWrjAdqhv"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      marginRight: "1rem",
+      color: "#00ffcc",
+      textDecoration: "underline",
+    }}
+  >
+    Discord
+  </a>
+  <a
+    href="https://x.com/gumbuogw3"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      color: "#00ffcc",
+      textDecoration: "underline",
+    }}
+  >
+    X (Twitter)
+  </a>
+</div>
