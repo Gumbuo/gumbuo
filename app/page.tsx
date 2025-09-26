@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAddress, useDisconnect, ConnectWallet } from "@thirdweb-dev/react";
 import { createThirdwebClient } from "thirdweb";
-import { SwapWidget } from "thirdweb/react";
+import { SwapWidget } from "@thirdweb-dev/react";
 
 const client = createThirdwebClient({
   clientId: "f985d3ebee58e34a49d8a57f6410b2ec"
@@ -172,5 +172,7 @@ export default function Page() {
     </div>
   );
 }
+
+
 
 
