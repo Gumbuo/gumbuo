@@ -84,38 +84,7 @@ export default function Page() {
           backgroundColor: "#0f0f23",
           boxShadow: "0 0 20px #00ffcc"
         }}>
-          <SwapWidget
-            client={client}
-            theme="dark"
-            style={{
-              borderRadius: "12px",
-              backgroundColor: "#0f0f23",
-              color: "#00ffcc",
-              fontFamily: "Orbitron, sans-serif"
-            }}
-            prefill={{
-              buyToken: {
-                chainId: 8453,
-                tokenAddress: "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0",
-                amount: "10000000",
-              },
-              sellToken: {
-                chainId: 8453,
-              },
-            }}
-            onSuccess={(quote) => {
-              fetch("/api/logPurchase", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  wallet: address,
-                  amount: quote.buyAmount,
-                  txHash: quote.transactionHash,
-                }),
-              });
-              alert("👽 You’re on the list!");
-            }}
-          />
+          <iframe src="https://playground.thirdweb.com/bridge/swap-widget" style={{ width: \"100%\", height: \"600px\", border: \"none\" }} title=\"SwapWidget\" />
         </div>
       )}
 
@@ -172,6 +141,7 @@ export default function Page() {
     </div>
   );
 }
+
 
 
 
