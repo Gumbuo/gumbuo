@@ -12,7 +12,7 @@ const client = createThirdwebClient({
 export default function Page() {
   const address = useAddress();
   const disconnect = useDisconnect();
-  const [visitorList, setVisitorList] = useState([]);
+  const [visitorList, setVisitorList] = useState<string[]>([]);
   const [_, forceUpdate] = useState(0);
 
   const devWallets = [
@@ -141,6 +141,12 @@ export default function Page() {
     </div>
   );
 }
+
+
+
+
+
+
 
 
 
