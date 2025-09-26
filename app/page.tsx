@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { useAddress, useDisconnect } from "@thirdweb-dev/react";
+import { useAddress, useDisconnect, ConnectWallet } from "@thirdweb-dev/react";
 import { createThirdwebClient } from "thirdweb";
 
 const client = createThirdwebClient({
@@ -11,12 +11,28 @@ const client = createThirdwebClient({
 export default function Page() {
   const address = useAddress();
   const disconnect = useDisconnect();
+  const [visitorList, setVisitorList] = useState([]);
   const [_, forceUpdate] = useState(0);
+
+  const devWallets = [
+    "0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b", // yours
+    "alienog" // placeholder
+  ];
+  const showDevControls = devWallets.includes(address?.toLowerCase());
 
   useEffect(() => {
     if (address) {
+      fetch("/api/logConnect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: address }),
+      });
       forceUpdate(n => n + 1);
     }
+
+    fetch("/api/logConnect")
+      .then(res => res.json())
+      .then(data => setVisitorList(data.list || []));
   }, [address]);
 
   return (
@@ -31,7 +47,7 @@ export default function Page() {
       color: "#00ffcc"
     }}>
       <img src="/logo.png" alt="Gumbuo Logo" style={{ width: "120px", marginBottom: "1rem" }} />
-      <h2>Gumbuo’s 1st Astral Airdrop List</h2>
+      <h2>Gumbuo’s 1st Astral Visitors Airdrop List</h2>
 
       {address ? (
         <>
@@ -53,7 +69,10 @@ export default function Page() {
           </button>
         </>
       ) : (
-        <p>Connect your wallet to enter the mothership.</p>
+        <>
+          <p>Connect your wallet to enter the mothership.</p>
+          <ConnectWallet theme="dark" />
+        </>
       )}
 
       <div style={{
@@ -66,14 +85,25 @@ export default function Page() {
         <p>SwapWidget temporarily disabled while we stabilize the build.</p>
       </div>
 
-      {process.env.NODE_ENV === "development" && (
+      <div style={{ marginTop: "2rem", textAlign: "left", width: "100%" }}>
+        <h3>🚀 First 50 Astral Visitors</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {visitorList.map((wallet, i) => (
+            <li key={wallet}>
+              #{i + 1} — {wallet.slice(0, 6)}...{wallet.slice(-4)}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {showDevControls && (
         <div style={{
           marginTop: "2rem",
           border: "1px solid #00ffcc",
           padding: "1rem"
         }}>
           <p>🛠 Dev Controls Active</p>
-          {/* Add your toggles or debug buttons here */}
+          {/* Add toggles, debug buttons, or admin actions here */}
         </div>
       )}
 
