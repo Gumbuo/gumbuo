@@ -1,6 +1,6 @@
 ﻿let visitors: string[] = [];
 
-export default async function handler(req, res) {
+import type { NextApiRequest, NextApiResponse } from "next";`n`nexport default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { wallet } = req.body;
     if (wallet && !visitors.includes(wallet)) {
@@ -13,3 +13,4 @@ export default async function handler(req, res) {
     res.status(405).json({ error: "Method not allowed" });
   }
 }
+
