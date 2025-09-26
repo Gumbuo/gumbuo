@@ -36,7 +36,7 @@ export default function Page() {
       .then(data => setVisitorList(data.list || []));
   }, [address]);
 
-  return (<><>`n<>`n
+  return (<><>
 
 
     <div style={{
@@ -86,7 +86,7 @@ export default function Page() {
           backgroundColor: "#0f0f23",
           boxShadow: "0 0 20px #00ffcc"
         }}>
-          <>`n  <iframe src="https://playground.thirdweb.com/bridge/swap-widget" style={{ width: "100%", height: "600px", border: "none" }} title="SwapWidget" />`n</>
+          <>  <iframe src="https://playground.thirdweb.com/bridge/swap-widget" style={{ width: "100%", height: "600px", border: "none" }} title="SwapWidget" /></>
         </div>
       )}
 
@@ -143,6 +143,9 @@ export default function Page() {
     </div>
   );
 }
+
+
+
 
 
 
