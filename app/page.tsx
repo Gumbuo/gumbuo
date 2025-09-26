@@ -84,7 +84,7 @@ export default function Page() {
           backgroundColor: "#0f0f23",
           boxShadow: "0 0 20px #00ffcc"
         }}>
-          <iframe src="https://playground.thirdweb.com/bridge/swap-widget" style={{ width: \"100%\", height: \"600px\", border: \"none\" }} title=\"SwapWidget\" />
+          <>`n  <iframe src="https://playground.thirdweb.com/bridge/swap-widget" style={{ width: "100%", height: "600px", border: "none" }} title="SwapWidget" />`n</>
         </div>
       )}
 
@@ -141,6 +141,7 @@ export default function Page() {
     </div>
   );
 }
+
 
 
 
