@@ -1,6 +1,11 @@
-﻿let visitors: string[] = [];
+﻿import type { NextApiRequest, NextApiResponse } from "next";
 
-import type { NextApiRequest, NextApiResponse } from "next";`n`nexport default async function handler(req: NextApiRequest, res: NextApiResponse) {
+let visitors: string[] = [];
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     const { wallet } = req.body;
     if (wallet && !visitors.includes(wallet)) {
