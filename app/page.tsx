@@ -168,3 +168,15 @@ export default function Page() {
 
 
 
+
+<video autoPlay muted loop id="bg-video" style={{ position: "fixed", zIndex: -1, width: "100%", height: "100%", objectFit: "cover" }}>
+  <source src="/alien.mp4" type="video/mp4" />
+</video>
+
+<video autoPlay muted loop id="bg-video" style={{ position: "fixed", zIndex: -1, width: "100%", height: "100%", objectFit: "cover" }}>
+  <source src="/alien.mp4" type="video/mp4" />
+</video>
+
+<video autoPlay muted loop id="bg-video" style={{ position: "fixed", zIndex: -1, width: "100%", height: "100%", objectFit: "cover" }}>
+  <source src="/alien.mp4" type="video/mp4" />
+</video>
