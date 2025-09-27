@@ -4,7 +4,7 @@ import { ConnectWallet, useAddress, useDisconnect } from '@thirdweb-dev/react';
 
 export default function Page() {
   const address = useAddress();
-  const disconnect = useDisconnect();
+  const disconnect = useDisconnect();`n  const [visitorList, setVisitorList] = useState<string[]>([]);
   const [visitorList, setVisitorList] = useState([]);
   const [purchaseList, setPurchaseList] = useState([]);
   const devWallets = [ "0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b" ];
@@ -139,4 +139,6 @@ export default function Page() {
     </>
   );
 }
+
+
 
