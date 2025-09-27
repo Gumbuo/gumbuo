@@ -161,15 +161,36 @@ export default function Page() {
   display: "flex",
   justifyContent: "center"
 }}>
-  <SwapWidget
-    width={400}
-    theme="dark"
-    defaultInputTokenAddress="0xC02aaa39b223FE8D0A0e5C4F27eAD9083C756Cc2" // WETH
-    defaultOutputTokenAddress="0xYourGumbuoTokenAddressHere" // Replace with actual token
-  />
+  <div style={{
+  marginTop: "2rem",
+  display: "flex",
+  justifyContent: "flex-start"
+}}>
+  <a
+    href="https://www.dextools.io/app/en/ether/pair-explorer/0x0bda370a93bbab67cca68ccdee2a05c50734b722"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      padding: "0.75rem 1.5rem",
+      backgroundColor: "#00ffcc",
+      color: "#0f0f23",
+      border: "none",
+      borderRadius: "8px",
+      fontFamily: "Orbitron, sans-serif",
+      fontWeight: "bold",
+      fontSize: "1.2rem",
+      cursor: "pointer",
+      textDecoration: "none",
+      boxShadow: "0 0 12px #00ffcc"
+    }}
+  >
+    🚀 BUY GUMBUO
+  </a>
+</div>
 </div>
 </>
 );
 }
+
 
 
