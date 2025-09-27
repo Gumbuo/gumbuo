@@ -100,6 +100,32 @@ export default function Page() {
     🚀 BUY GUMBUO
   </a>
 </div>
+<div style={{
+  marginTop: "2rem",
+  display: "flex",
+  justifyContent: "center"
+}}>
+  <a
+    href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      padding: "0.75rem 1.5rem",
+      backgroundColor: "#00ffcc",
+      color: "#0f0f23",
+      border: "none",
+      borderRadius: "8px",
+      fontFamily: "Orbitron, sans-serif",
+      fontWeight: "bold",
+      fontSize: "1.2rem",
+      cursor: "pointer",
+      textDecoration: "none",
+      boxShadow: "0 0 12px #00ffcc"
+    }}
+  >
+    🚀 BUY GUMBUO
+  </a>
+</div>
         </>
       )}
 
@@ -217,6 +243,7 @@ export default function Page() {
 </>
 );
 }
+
 
 
 
