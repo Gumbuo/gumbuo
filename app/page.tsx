@@ -167,7 +167,7 @@ export default function Page() {
   justifyContent: "flex-start"
 }}>
   <a
-    href="https://www.dextools.io/app/en/ether/pair-explorer/0x0bda370a93bbab67cca68ccdee2a05c50734b722"
+    href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
     target="_blank"
     rel="noopener noreferrer"
     style={{
@@ -191,6 +191,7 @@ export default function Page() {
 </>
 );
 }
+
 
 
 
