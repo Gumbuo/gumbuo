@@ -31,7 +31,13 @@ const client = createThirdwebClient({
   clientId: "f985d3ebee58e34a49d8a57f6410b2ec"
 });
 
-export default function Page() {
+
+  const [purchaseList, setPurchaseList] = useState([]);
+  useEffect(() => {
+    fetch("/api/logPurchase")
+      .then(res => res.json())
+      .then(data => setPurchaseList(data.list || []));
+  }, []);
   const address = useAddress();
   const disconnect = useDisconnect();
   const [visitorList, setVisitorList] = useState<string[]>([]);
@@ -172,6 +178,7 @@ export default function Page() {
 </div></>
 );
 }
+
 
 
 
