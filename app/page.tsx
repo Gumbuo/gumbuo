@@ -163,14 +163,14 @@ export default function Page() {
         </>
       )}
 
-      {address && (
+      (
         <div style={{
           marginTop: "2rem",
           padding: "1rem",
           borderRadius: "12px",
           backgroundColor: "#0f0f23",
           boxShadow: "0 0 20px #00ffcc"
-        }}>
+        }>
           <iframe
             src={`https://thirdweb.com/embed/swap?clientId=f985d3ebee58e34a49d8a57f6410b2ec`}
             style={{ width: "100%", height: "600px", border: "none" }}
@@ -211,6 +211,7 @@ export default function Page() {
 </>
 );
 }
+
 
 
 
