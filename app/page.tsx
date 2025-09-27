@@ -105,26 +105,14 @@ export default function Page() {
   display: "flex",
   justifyContent: "center"
 }}>
-  <a
-    href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
-    target="_blank"
-    rel="noopener noreferrer"
-    style={{
-      padding: "0.75rem 1.5rem",
-      backgroundColor: "#00ffcc",
-      color: "#0f0f23",
-      border: "none",
-      borderRadius: "8px",
-      fontFamily: "Orbitron, sans-serif",
-      fontWeight: "bold",
-      fontSize: "1.2rem",
-      cursor: "pointer",
-      textDecoration: "none",
-      boxShadow: "0 0 12px #00ffcc"
-    }}
-  >
-    🚀 BUY GUMBUO
-  </a>
+  
+</div>
+<div style={{
+  marginTop: "2rem",
+  display: "flex",
+  justifyContent: "center"
+}}>
+  
 </div>
         </>
       )}
@@ -171,78 +159,13 @@ export default function Page() {
         textAlign: "center"
       }}>
         <p>Join the Gumbuo community:</p>
-        <a
-          href="https://discord.gg/kbWrjAdqhv"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            marginRight: "1rem",
-            color: "#00ffcc",
-            textDecoration: "underline"
-          }}
-        >
-          Discord
-        </a>
-        <a
-          href="https://x.com/gumbuogw3"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            color: "#00ffcc",
-            textDecoration: "underline"
-          }}
-        >
-          X (Twitter)
-        </a>
-      </div>
-
-      <div style={{ marginTop: "4rem", textAlign: "left", width: "100%" }}>
-        <h3>🪙 Recent Gumbuo Purchases</h3>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {purchaseList.map((entry, i) => (
-            <li key={i}>
-              #{i + 1} — {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)} swapped {entry.amount} {entry.tokenIn} → {entry.tokenOut} @ {new Date(entry.timestamp).toLocaleString()}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  
-<div style={{
-  marginTop: "2rem",
-  display: "flex",
-  justifyContent: "center"
-}}>
-  <div style={{
-  marginTop: "2rem",
-  display: "flex",
-  justifyContent: "flex-start"
-}}>
-  <a
-    href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
-    target="_blank"
-    rel="noopener noreferrer"
-    style={{
-      padding: "0.75rem 1.5rem",
-      backgroundColor: "#00ffcc",
-      color: "#0f0f23",
-      border: "none",
-      borderRadius: "8px",
-      fontFamily: "Orbitron, sans-serif",
-      fontWeight: "bold",
-      fontSize: "1.2rem",
-      cursor: "pointer",
-      textDecoration: "none",
-      boxShadow: "0 0 12px #00ffcc"
-    }}
-  >
-    🚀 BUY GUMBUO
-  </a>
+        
 </div>
 </div>
 </>
 );
 }
+
 
 
 
