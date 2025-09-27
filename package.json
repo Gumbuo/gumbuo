@@ -11,12 +11,14 @@
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^3.10.67",
     "@thirdweb-dev/wallets": "^2.5.39",
+    "@uniswap/widgets": "^2.59.0",
     "encoding": "^0.1.13",
     "ethers": "^5.8.0",
     "next": "13.5.11",
     "pino-pretty": "^13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-redux": "^9.2.0",
     "thirdweb": "^5.108.2"
   },
   "devDependencies": {
