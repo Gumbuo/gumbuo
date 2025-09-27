@@ -101,6 +101,14 @@ export default function Page() {
   >
     🚀 GUMBUO PRESALE
   </a>
+<div style={{
+  marginTop: "1rem",
+  textAlign: "center",
+  fontFamily: "Orbitron, sans-serif",
+  color: "#00ffcc"
+}}>
+  <p><strong>Token Contract:</strong> 0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0</p>
+</div>
 
   <div style={{ display: "flex", gap: "1rem" }}>
     <a
@@ -203,6 +211,8 @@ export default function Page() {
 </>
 );
 }
+
+
 
 
 
