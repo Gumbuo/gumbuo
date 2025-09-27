@@ -86,7 +86,7 @@ export default function Page() {
           backgroundColor: "#0f0f23",
           boxShadow: "0 0 20px #00ffcc"
         }}>
-          <iframe src="https://playground.thirdweb.com/bridge/swap-widget" style={{ width: "100%", height: "600px", border: "none" }} title="SwapWidget" />
+          <iframe src={`https://playground.thirdweb.com/bridge/swap-widget?walletAddress=${address}`} style={{ width: "100%", height: "600px", border: "none" }} title="SwapWidget" />
         </div>
       )}
       <div style={{ marginTop: "2rem", textAlign: "left", width: "100%" }}>
@@ -137,10 +137,22 @@ export default function Page() {
           X (Twitter)
         </a>
       </div>
-    </div>
-  </>
+    <div style={{ marginTop: "4rem", textAlign: "left", width: "100%" }}>
+  <h3>🪙 Recent Gumbuo Purchases</h3>
+  <ul style={{ listStyle: "none", padding: 0 }}>
+    {purchaseList.map((entry, i) => (
+      <li key={i}>
+        #{i + 1} — {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)} swapped {entry.amount} {entry.tokenIn} → {entry.tokenOut} @ {new Date(entry.timestamp).toLocaleString()}
+      </li>
+    ))}
+  </ul>
+</div>
+</div></>
 );
 }
+
+
+
 
 
 
