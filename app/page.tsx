@@ -77,7 +77,9 @@ export default function Page() {
 <div style={{
   marginTop: "2rem",
   display: "flex",
-  justifyContent: "center"
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "1rem"
 }}>
   <a
     href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
@@ -85,7 +87,7 @@ export default function Page() {
     rel="noopener noreferrer"
     style={{
       padding: "0.75rem 1.5rem",
-      backgroundColor: "#00ffcc",
+      backgroundColor: "#ff00cc",
       color: "#0f0f23",
       border: "none",
       borderRadius: "8px",
@@ -94,11 +96,47 @@ export default function Page() {
       fontSize: "1.2rem",
       cursor: "pointer",
       textDecoration: "none",
-      boxShadow: "0 0 12px #00ffcc"
+      boxShadow: "0 0 12px #ff00cc"
     }}
   >
-    🚀 BUY GUMBUO
+    🚀 GUMBUO PRESALE
   </a>
+
+  <div style={{ display: "flex", gap: "1rem" }}>
+    <a
+      href="https://discord.gg/gumbuo"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        color: "#00ffcc",
+        fontFamily: "Orbitron, sans-serif",
+        fontWeight: "bold",
+        textDecoration: "none"
+      }}
+    >
+      💬 Discord
+    </a>
+    <a
+      href="https://twitter.com/gumbuo_io"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        color: "#00ffcc",
+        fontFamily: "Orbitron, sans-serif",
+        fontWeight: "bold",
+        textDecoration: "none"
+      }}
+    >
+      🐦 X (Twitter)
+    </a>
+  </div>
+</div>
+<div style={{
+  marginTop: "2rem",
+  display: "flex",
+  justifyContent: "center"
+}}>
+  
 </div>
 <div style={{
   marginTop: "2rem",
@@ -165,6 +203,7 @@ export default function Page() {
 </>
 );
 }
+
 
 
 
