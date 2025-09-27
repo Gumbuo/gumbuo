@@ -155,7 +155,21 @@ export default function Page() {
         </ul>
       </div>
     </div>
-  </>
+  
+<div style={{
+  marginTop: "2rem",
+  display: "flex",
+  justifyContent: "center"
+}}>
+  <SwapWidget
+    width={400}
+    theme="dark"
+    defaultInputTokenAddress="0xC02aaa39b223FE8D0A0e5C4F27eAD9083C756Cc2" // WETH
+    defaultOutputTokenAddress="0xYourGumbuoTokenAddressHere" // Replace with actual token
+  />
+</div>
+</>
 );
 }
+
 
