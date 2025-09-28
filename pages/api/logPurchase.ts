@@ -1,49 +1,26 @@
-﻿import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
 
-const logPath = path.resolve(process.cwd(), "public", "purchase-log.json");
+const filePath = path.resolve(process.cwd(), "data", "purchases.json");
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "GET") {
-    try {
-      const log = JSON.parse(fs.readFileSync(logPath, "utf8"));
-      return res.status(200).json({ list: log });
-    } catch {
-      return res.status(200).json({ list: [] });
-    }
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log("Purchase log attempt:", req.body);
+
+  if (req.method !== "POST") return res.status(405).end();
+
+  const { walletAddress, amount, tokenIn, tokenOut, timestamp } = req.body;
+  if (!walletAddress || !amount || !tokenIn || !tokenOut || !timestamp) {
+    return res.status(400).json({ error: "Missing fields" });
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+  let purchases = [];
+  if (fs.existsSync(filePath)) {
+    purchases = JSON.parse(fs.readFileSync(filePath, "utf8"));
   }
 
-  const { walletAddress, amount, tokenIn, tokenOut, txHash } = req.body;
+  purchases.push({ walletAddress, amount, tokenIn, tokenOut, timestamp });
+  fs.writeFileSync(filePath, JSON.stringify(purchases, null, 2));
 
-  if (!walletAddress || !amount || !tokenIn || !tokenOut || !txHash) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  const entry = {
-    walletAddress,
-    amount,
-    tokenIn,
-    tokenOut,
-    txHash,
-    timestamp: new Date().toISOString(),
-  };
-
-  try {
-    let log = [];
-    if (fs.existsSync(logPath)) {
-      log = JSON.parse(fs.readFileSync(logPath, "utf8"));
-    }
-    log.unshift(entry);
-    fs.writeFileSync(logPath, JSON.stringify(log.slice(0, 50), null, 2));
-  } catch (e) {
-    console.error("Failed to write purchase log:", e);
-  }
-
-  console.log("Purchase logged:", entry);
-  return res.status(200).json({ success: true });
+  res.status(200).json({ success: true });
 }

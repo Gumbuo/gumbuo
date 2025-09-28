@@ -1,55 +1,140 @@
-﻿export default function Page() {
+﻿
 "use client";
 
 
 import { useState, useEffect } from "react";
 
-const [purchaseList, setPurchaseList] = useState([]);
-useEffect(() => {
-  fetch("/api/logPurchase")
-    .then(res => res.json())
-    .then(data => setPurchaseList(data.list || []));
-}, []);
+
+
+
 
 import { useState, useEffect } from "react";
 
-const [purchaseList, setPurchaseList] = useState([]);
-useEffect(() => {
-  fetch("/api/logPurchase")
-    .then(res => res.json())
-    .then(data => setPurchaseList(data.list || []));
-}, []);
 
 import { useState, useEffect } from "react";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export default function Page() {
 const [purchaseList, setPurchaseList] = useState([]);
 useEffect(() => {
   fetch("/api/logPurchase")
+fetch('/api/logConnect')
     .then(res => res.json())
+fetch('/api/logConnect')
+    .then(data => setPurchaseList(data.list || []));
+}, []);
+const [purchaseList, setPurchaseList] = useState([]);
+useEffect(() => {
+  fetch("/api/logPurchase")
+fetch('/api/logConnect')
+    .then(res => res.json())
+fetch('/api/logConnect')
+    .then(data => setPurchaseList(data.list || []));
+}, []);
+const [purchaseList, setPurchaseList] = useState([]);
+useEffect(() => {
+  fetch("/api/logPurchase")
+fetch('/api/logConnect')
+    .then(res => res.json())
+fetch('/api/logConnect')
     .then(data => setPurchaseList(data.list || []));
 }, []);
 const client = createThirdwebClient({
   clientId: "f985d3ebee58e34a49d8a57f6410b2ec"
 });
-
-
   const [purchaseList, setPurchaseList] = useState([]);
   useEffect(() => {
     fetch("/api/logPurchase")
+fetch('/api/logConnect')
       .then(res => res.json())
+fetch('/api/logConnect')
       .then(data => setPurchaseList(data.list || []));
   }, []);
   const address = useAddress();
   const disconnect = useDisconnect();
   const [visitorList, setVisitorList] = useState<string[]>([]);
   const [_, forceUpdate] = useState(0);
-
   const devWallets = [
     "0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b",
     "alienog"
   ];
   const showDevControls = address ? devWallets.includes(address.toLowerCase()) : false;
-
   useEffect(() => {
     if (address) {
       fetch("/api/logConnect", {
@@ -59,12 +144,12 @@ const client = createThirdwebClient({
       });
       forceUpdate(n => n + 1);
     }
-
     fetch("/api/logConnect")
+fetch('/api/logConnect')
       .then(res => res.json())
+fetch('/api/logConnect')
       .then(data => setVisitorList(data.list || []));
   }, [address]);
-
   return (
   <>
     <video autoPlay muted loop id="bg-video">
@@ -190,71 +275,12 @@ const client = createThirdwebClient({
 </></>
 );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
+}
+}
+}
+}
+}
+}
+}
 }
