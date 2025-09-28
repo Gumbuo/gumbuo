@@ -1,4 +1,6 @@
-﻿export default function Page() {
+﻿
+export default function Page() {
+export default function Page() {
 "use client";
 
 
@@ -257,4 +259,5 @@ const client = createThirdwebClient({
 
 
 
+}
 }
