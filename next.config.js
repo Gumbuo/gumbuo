@@ -1,9 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  experimental: {
-    serverActions: true
+module.exports = {
+  webpack: (config) => {
+    config.resolve.alias['@react-native-async-storage/async-storage'] = false;
+    return config;
   }
 };
-
-module.exports = nextConfig;
