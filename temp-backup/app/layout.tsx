@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
-          {typeof children === "bigint" ? String(children) : children}
+          {children as unknown as React.ReactNode}
         </Providers>
       </body>
     </html>
