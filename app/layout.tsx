@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "../globals.css";
-import Providers from "./providers"; // ✅ shared client wrapper
+import { Providers } from "./providers"; // ✅ named import
 
 const inter = Inter({
   variable: "--font-sans",
@@ -34,3 +34,4 @@ export default function RootLayout({
     </html>
   );
 }
+
