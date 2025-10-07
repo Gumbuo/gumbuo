@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased`} style={{ fontFamily: "monospace" }}>
         <Providers>
           {children}
         </Providers>
