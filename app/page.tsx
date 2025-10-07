@@ -173,3 +173,7 @@ export default function Page() {
 
 
 export const dynamic = "force-dynamic";
+
+export const runtime = "nodejs";
+
+export const preferredRegion = "iad1";
