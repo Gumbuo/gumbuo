@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
+import "../globals.css";
+import Providers from "./providers"; // ✅ shared client wrapper
 
 const inter = Inter({
   variable: "--font-sans",
@@ -11,9 +13,6 @@ const robotoMono = Roboto_Mono({
   subsets: ["latin"],
 });
 
-import "../globals.css";
-import Providers from "./providers"; // ✅ shared client wrapper
-
 export const metadata: Metadata = {
   title: "Gumbuo.io",
   description: "Alien-powered token battles, staking, and modular NFT utilities.",
@@ -21,11 +20,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
+      <head />
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
           {children}
@@ -34,4 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-
