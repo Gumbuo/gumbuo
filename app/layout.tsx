@@ -28,7 +28,7 @@ export default function RootLayout({
       <head />
       <body className={`${inter.variable} antialiased`} style={{ fontFamily: "monospace" }}>
         <Providers>
-          {children}
+          {children as React.ReactNode}
         </Providers>
       </body>
     </html>

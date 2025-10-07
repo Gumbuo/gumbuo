@@ -1,15 +1,10 @@
-﻿"use client";
+﻿import { WagmiProvider } from "wagmi";
+import { config } from "../wagmiConfig"; // or wherever your config lives
 
-import { ThirdwebProvider } from "@thirdweb-dev/react";
-import { ReactNode } from "react";
-
-export default function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThirdwebProvider
-      activeChain="base"
-      clientId="YOUR_CLIENT_ID"
-    >
+    <WagmiProvider config={config}>
       {children}
-    </ThirdwebProvider>
+    </WagmiProvider>
   );
 }
