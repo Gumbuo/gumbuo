@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+  const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
 
   const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
 import type { Metadata } from "next";
