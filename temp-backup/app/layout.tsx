@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
   const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
 import type { Metadata } from "next";
+
+  const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
+import type { Metadata } from "next";
   const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
 import { Inter, Roboto_Mono } from "next/font/google";
 
@@ -30,7 +33,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
           {safeChildren}
