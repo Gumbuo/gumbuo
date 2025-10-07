@@ -26,9 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
-          {React.isValidElement(children) ? children : null}
+          {safeChildren}
         </Providers>
       </body>
     </html>
