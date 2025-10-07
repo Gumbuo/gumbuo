@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
-          {children}
+          {typeof children === "bigint" ? String(children) : children}
         </Providers>
       </body>
     </html>
