@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gumbuo Presale</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Gumbuo Presale</h1>
+  <div id="progressBar">Loading presale progress...</div>
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <input id="ethAmount" type="text" placeholder="Amount in ETH" />
+  <button onclick="buyGMB()">Buy GMB</button>
+
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  <script src="presale.js"></script>
+</body>
+</html>
+<div id="leaderboard">
+  <h2>Top Buyers</h2>
+  <ul id="topBuyers"></ul>
+</div>

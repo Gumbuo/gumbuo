@@ -1,0 +1,21 @@
+  return (
+    <>
+      <video autoPlay muted loop id="bg-video">
+        <source src="/alien.mp4" type="video/mp4" />
+      </video>
+
+      <div style={{
+        padding: "2rem",
+        maxWidth: "600px",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        fontFamily: "Orbitron, sans-serif",
+        color: "#00ffcc"
+      }}>
+        <img src="/logo.png" alt="Gumbuo Logo" style={{ width: "120px", marginBottom: "1rem" }} />
+        <h2>Gumbuo’s 1st Astral Visitors Airdrop List</h2>
+      </div>
+    </>
+  )
