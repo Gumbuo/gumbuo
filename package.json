@@ -10,6 +10,9 @@
   "resolutions": {
     "@metamask/sdk": ">=1.0.0"
   },
+  "browser": {
+    "@react-native-async-storage/async-storage": false
+  },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@thirdweb-dev/react": "^4.9.4",
