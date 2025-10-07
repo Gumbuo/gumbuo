@@ -1,0 +1,11 @@
+  <h3>?? Gumbuo Presale Progress</h3>
+  <p><strong>Price:</strong> 0.00042 ETH per GMB</p>
+  <p><strong>Sold:</strong> 12,400,000 GMB</p>
+  <p><strong>Remaining:</strong> 37,600,000 GMB</p>
+  <ul style={{ listStyle: "none", padding: 0 }}>
+    <li><strong>Total Supply:</strong> 50,000,000 GMB</li>
+    <li><strong>Presale Allocation:</strong> 80%</li>
+    <li><strong>Liquidity Pool:</strong> 15%</li>
+    <li><strong>Team Reserve:</strong> 5%</li>
+    <li><strong>Launch Valuation:</strong> ~21 ETH</li>
+  </ul>

@@ -1,0 +1,4 @@
+﻿[
+  { "wallet": "0xABC123", "amount": 100 },
+  { "wallet": "0xDEF456", "amount": 250 }
+]
