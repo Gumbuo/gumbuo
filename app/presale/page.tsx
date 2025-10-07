@@ -87,3 +87,9 @@ export default function PresalePage() {
     </main>
   );
 }
+
+export const dynamic = "force-dynamic";
+
+export const dynamic = "force-dynamic";
+
+export const dynamic = "force-dynamic";
