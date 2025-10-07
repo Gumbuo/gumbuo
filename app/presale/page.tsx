@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import SwapInput from "../components/SwapInput";
 
 export default function PresalePage() {
@@ -70,26 +70,24 @@ export default function PresalePage() {
           </tr>
         </thead>
         <tbody>
-          <tr><td style={{ padding: "0.5rem" }}>100M</td><td>$0.0001323</td><td>×3</td></tr>
-          <tr><td style={{ padding: "0.5rem" }}>200M</td><td>$0.0002646</td><td>×6</td></tr>
-          <tr><td style={{ padding: "0.5rem" }}>300M</td><td>$0.0003969</td><td>×9</td></tr>
-          <tr><td style={{ padding: "0.5rem" }}>350M</td><td>$0.0004410</td><td>×10</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>100M</td><td>$0.0001323</td><td>�3</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>200M</td><td>$0.0002646</td><td>�6</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>300M</td><td>$0.0003969</td><td>�9</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>350M</td><td>$0.0004410</td><td>�10</td></tr>
         </tbody>
       </table>
 
       <h2 style={{ marginTop: "2rem" }}>Presale ETH Allocation</h2>
       <ul>
-        <li>Liquidity Pool: 60% → 0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b</li>
-        <li>Marketing & Community: 25% → 0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b</li>
-        <li>Treasury Reserve: 15% → 0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b</li>
+        <li>Liquidity Pool: 60% ? 0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b</li>
+        <li>Marketing & Community: 25% ? 0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b</li>
+        <li>Treasury Reserve: 15% ? 0x7FC5205E6DE02e524Bf154Cc9406613262fc7c5b</li>
       </ul>
       <p style={{ marginTop: "1rem" }}>Funds are transparently allocated. Liquidity will be locked at launch.</p>
     </main>
   );
 }
 
-export const dynamic = "force-dynamic";
 
-export const dynamic = "force-dynamic";
 
 export const dynamic = "force-dynamic";
