@@ -1,4 +1,4 @@
-﻿import { createConfig } from "wagmi";
+import { createConfig } from "wagmi";
 import { injected } from "@wagmi/connectors";
 import { http } from "viem";
 import { mainnet } from "wagmi/chains";

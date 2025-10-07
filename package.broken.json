@@ -7,10 +7,7 @@
     "build": "next build",
     "start": "next start"
   },
-  "resolutions": {
-    "@metamask/sdk": ">=1.0.0"
-  },
-  "dependencies": {
+  "resolutions": { "@metamask/sdk": ">=1.0.0" },`n  "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^3.10.67",
