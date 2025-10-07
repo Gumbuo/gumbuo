@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
-          {children as unknown as React.ReactNode}
+          {React.isValidElement(children) ? children : null}
         </Providers>
       </body>
     </html>
