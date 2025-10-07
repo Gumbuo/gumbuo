@@ -8,3 +8,5 @@ export default function NotFoundPage() {
     </main>
   );
 }
+
+export const runtime = "nodejs";

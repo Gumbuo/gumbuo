@@ -177,3 +177,5 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export const preferredRegion = "iad1";
+
+export const runtime = "nodejs";
