@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import SwapInput from "../components/SwapInput";
 
 export default function PresalePage() {
@@ -70,10 +70,10 @@ export default function PresalePage() {
           </tr>
         </thead>
         <tbody>
-          <tr><td style={{ padding: "0.5rem" }}>100M</td><td>$0.0001323</td><td>ï¿½3</td></tr>
-          <tr><td style={{ padding: "0.5rem" }}>200M</td><td>$0.0002646</td><td>ï¿½6</td></tr>
-          <tr><td style={{ padding: "0.5rem" }}>300M</td><td>$0.0003969</td><td>ï¿½9</td></tr>
-          <tr><td style={{ padding: "0.5rem" }}>350M</td><td>$0.0004410</td><td>ï¿½10</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>100M</td><td>$0.0001323</td><td>�3</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>200M</td><td>$0.0002646</td><td>�6</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>300M</td><td>$0.0003969</td><td>�9</td></tr>
+          <tr><td style={{ padding: "0.5rem" }}>350M</td><td>$0.0004410</td><td>�10</td></tr>
         </tbody>
       </table>
 

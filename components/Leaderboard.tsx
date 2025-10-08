@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Leaderboard() {
   const [entries, setEntries] = useState<{ wallet: string; amount: number }[]>([]);
@@ -15,7 +15,7 @@ export default function Leaderboard() {
       <ol>
         {entries.map(({ wallet, amount }, i) => (
           <li key={i}>
-            <strong>{wallet.slice(0, 6)}...</strong> — {amount} GMB
+            <strong>{wallet.slice(0, 6)}...</strong> � {amount} GMB
           </li>
         ))}
       </ol>
