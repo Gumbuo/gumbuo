@@ -36,12 +36,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
-          {safeChildren}
+          {children}
         </Providers>
       </body>
     </html>
   );
 export default function Layout({ children }: { children: unknown }): JSX.Element
 export default function Layout({ children }: { children: React.ReactNode | bigint }): JSX.Element
-  const safeChildren: React.ReactNode = typeof children === "bigint" ? String(children) : children;
 export default function Layout({ children }: { children: React.ReactNode | bigint }): JSX.Element
