@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export default function NotFoundPage() {
   return (
@@ -10,3 +10,4 @@ export default function NotFoundPage() {
 }
 
 export const runtime = "nodejs";
+

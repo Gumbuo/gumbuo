@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 const { address } = useAccount();
@@ -12,3 +12,4 @@ useEffect(() => {
       });
   }
 }, [address]);
+

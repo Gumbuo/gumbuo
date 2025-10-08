@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useAccount, useWriteContract } from "wagmi";
@@ -42,7 +42,7 @@ export default function SwapInput() {
             style={{ padding: "0.5rem", fontSize: "1.5rem", width: "300px" }}
             placeholder="ETH amount"
           />
-          <p>You�ll receive: <strong>{gmbAmount} GMB</strong></p>
+          <p>You’ll receive: <strong>{gmbAmount} GMB</strong></p>
           <button onClick={handleBuy}>Buy GMB</button>
         </>
       )}
@@ -50,3 +50,4 @@ export default function SwapInput() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useAccount } from "wagmi";
 
@@ -11,3 +11,4 @@ export default function WalletHeader() {
     </header>
   );
 }
+

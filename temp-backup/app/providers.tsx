@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { ReactNode } from "react";
@@ -13,3 +13,4 @@ export default function Providers({ children }: { children: ReactNode }) {
     </ThirdwebProvider>
   );
 }
+
