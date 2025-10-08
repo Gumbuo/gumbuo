@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { createThirdwebClient } from "thirdweb";
@@ -57,8 +57,8 @@ export default function Page() {
         color: "#00ffcc"
       }}>
         <img src="/logo.png" alt="Gumbuo Logo" style={{ width: "120px", marginBottom: "1rem" }} />
-        <h2>Gumbuo’s 1st Astral Visitors Airdrop List</h2>
-        <h3>🚀 Gumbuo Presale Progress</h3>
+        <h2>Gumbuo�s 1st Astral Visitors Airdrop List</h2>
+        <h3>?? Gumbuo Presale Progress</h3>
         <p><strong>Price:</strong> $0.000004 per GMB</p>
         <p><strong>Presale Allocation:</strong> 350,000,000 GMB</p>
         <p><strong>Total Supply:</strong> 1,000,000,000 GMB</p>
@@ -86,7 +86,7 @@ export default function Page() {
         </div>
 
         <div style={{ marginTop: "2rem", width: "100%" }}>
-          <h3>📊 Presale Progress</h3>
+          <h3>?? Presale Progress</h3>
           <div style={{
             width: "100%",
             background: "#222",
@@ -126,7 +126,7 @@ export default function Page() {
             boxShadow: "0 0 10px #00ffcc"
           }}
         >
-          🚀 Buy Gumbuo
+          ?? Buy Gumbuo
         </button>
 
         {address ? (
@@ -156,11 +156,11 @@ export default function Page() {
         )}
 
         <div style={{ marginTop: "4rem", textAlign: "left", width: "100%" }}>
-          <h3>🪙 Recent Gumbuo Purchases</h3>
+          <h3>?? Recent Gumbuo Purchases</h3>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {(purchaseList as PurchaseEntry[]).map((entry, i) => (
               <li key={i}>
-                #{i + 1} — {entry.walletAddress?.slice(0, 6)}...{entry.walletAddress?.slice(-4)} swapped {entry.amount} {entry.tokenIn} → {entry.tokenOut} @ {new Date(entry.timestamp).toLocaleString()}
+                #{i + 1} � {entry.walletAddress?.slice(0, 6)}...{entry.walletAddress?.slice(-4)} swapped {entry.amount} {entry.tokenIn} ? {entry.tokenOut} @ {new Date(entry.timestamp).toLocaleString()}
               </li>
             ))}
           </ul>

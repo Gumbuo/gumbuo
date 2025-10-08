@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 type WalletEntry = {
   wallet: string
@@ -34,23 +34,23 @@ export default function Leaderboard() {
   }, [])
 
   const getTier = (points: number) => {
-    if (points >= 800) return "🥇 Gold"
-    if (points >= 500) return "🥈 Silver"
-    return "🥉 Bronze"
+    if (points >= 800) return "?? Gold"
+    if (points >= 500) return "?? Silver"
+    return "?? Bronze"
   }
 
   if (error) {
-    return <p>❌ Failed to load leaderboard</p>
+    return <p>? Failed to load leaderboard</p>
   }
 
   return (
     <main>
-      <h1>🏆 Leaderboard</h1>
+      <h1>?? Leaderboard</h1>
       <ol>
         {data.map((entry, index) => (
           <li key={index}>
-            {entry.wallet} — {entry.points} points — {getTier(entry.points)}<br />
-            {claims[entry.wallet] ? `🕒 Last claimed: ${claims[entry.wallet]}` : "⏳ Not claimed yet"}
+            {entry.wallet} � {entry.points} points � {getTier(entry.points)}<br />
+            {claims[entry.wallet] ? `?? Last claimed: ${claims[entry.wallet]}` : "? Not claimed yet"}
           </li>
         ))}
       </ol>

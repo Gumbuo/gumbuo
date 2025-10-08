@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useAccount, useConnect, useDisconnect, useWriteContract } from "wagmi";
 import { parseEther } from "viem";
