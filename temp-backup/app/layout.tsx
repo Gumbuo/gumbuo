@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <Providers>
-          {safeChildren}
+          {typeof safeChildren === "string" || typeof safeChildren === "number" || typeof safeChildren === "boolean" || typeof safeChildren === "object" ? safeChildren : null}
         </Providers>
       </body>
     </html>
