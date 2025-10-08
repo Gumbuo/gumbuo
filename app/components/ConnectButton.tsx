@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useConnect } from "wagmi";
 import { injected, metaMask, coinbaseWallet } from "@wagmi/connectors";
