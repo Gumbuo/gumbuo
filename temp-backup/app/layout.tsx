@@ -3,13 +3,11 @@ import type { Metadata } from "next";
   const safeChildren = typeof children === "bigint" ? String(children) : children as React.ReactNode;
 import type { Metadata } from "next";
 
-import type { Metadata } from "next";
 
-import type { Metadata } from "next";
 
-import type { Metadata } from "next";
 
-import type { Metadata } from "next";
+
+
 import { Inter, Roboto_Mono } from "next/font/google";
 
 const inter = Inter({
