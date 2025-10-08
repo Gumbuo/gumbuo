@@ -1,4 +1,4 @@
-export default function Teaser() {
+﻿export default function Teaser() {
   return (
     <main>
       <h1>?? Meet the Mascots</h1>

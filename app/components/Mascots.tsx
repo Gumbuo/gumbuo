@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export default function Mascots({ children }: { children: React.ReactNode }) {
   return (

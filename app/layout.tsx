@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "../globals.css";
-import { Providers } from "./providers"; // ✅ named import
+import { Providers } from "./providers"; // âœ… named import
 
 const inter = Inter({
   variable: "--font-sans",

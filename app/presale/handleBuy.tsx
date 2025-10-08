@@ -1,4 +1,4 @@
-import { writeContract } from "wagmi/actions";
+﻿import { writeContract } from "wagmi/actions";
 import { ethers } from "ethers";
 import { config } from "../../wagmiConfig"; // adjust path if needed
 
