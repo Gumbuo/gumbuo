@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+ï»¿import { useEffect, useState } from "react"
 
 type WalletEntry = {
   wallet: string
@@ -49,7 +49,7 @@ export default function Leaderboard() {
       <ol>
         {data.map((entry, index) => (
           <li key={index}>
-            {entry.wallet} — {entry.points} points — {getTier(entry.points)}<br />
+            {entry.wallet} â€” {entry.points} points â€” {getTier(entry.points)}<br />
             {claims[entry.wallet] ? `?? Last claimed: ${claims[entry.wallet]}` : "? Not claimed yet"}
           </li>
         ))}
@@ -57,3 +57,5 @@ export default function Leaderboard() {
     </main>
   )
 }
+
+

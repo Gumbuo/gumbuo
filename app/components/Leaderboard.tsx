@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export default function Leaderboard() {
   return (
@@ -8,3 +8,4 @@ export default function Leaderboard() {
     </section>
   );
 }
+

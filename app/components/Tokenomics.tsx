@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export default function Tokenomics() {
   return (
@@ -14,3 +14,4 @@ export default function Tokenomics() {
     </div>
   );
 }
+

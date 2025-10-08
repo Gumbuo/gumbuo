@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 
 
@@ -20,7 +20,7 @@ const robotoMono = Roboto_Mono({
 });
 
 import "../globals.css";
-import Providers from "./providers"; // ✅ shared client wrapper
+import Providers from "./providers"; // âœ… shared client wrapper
 
 export const metadata: Metadata = {
   title: "Gumbuo.io",
@@ -44,3 +44,4 @@ export default function RootLayout({
 export default function Layout({ children }: { children: unknown }): JSX.Element
 export default function Layout({ children }: { children: React.ReactNode | bigint }): JSX.Element
 export default function Layout({ children }: { children: React.ReactNode | bigint }): JSX.Element
+

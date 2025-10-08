@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useDisconnect } from "wagmi";
 
@@ -23,3 +23,4 @@ export default function DisconnectButton() {
     </button>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,4 +15,5 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 }
+
 

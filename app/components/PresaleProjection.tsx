@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export default function PresaleProjection() {
   const data = [
@@ -33,3 +33,4 @@ export default function PresaleProjection() {
     </div>
   );
 }
+

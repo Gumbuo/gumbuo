@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export default function PresaleEthAllocation() {
   return (
@@ -36,3 +36,4 @@ export default function PresaleEthAllocation() {
     </div>
   );
 }
+

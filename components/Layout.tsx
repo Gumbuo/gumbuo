@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 import React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -14,10 +14,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </header>
         {children}
         <footer style={{ marginTop: "2rem", fontSize: "0.9rem", color: "#ccc" }}>
-          © 2025 Gumbuo.io — Foxhole productions{" "}
+          Â© 2025 Gumbuo.io â€” Foxhole productions{" "}
           <img src="/foxhole-logo.png" alt="Foxhole logo" height="20" />
         </footer>
       </div>
     </>
   );
 }
+
