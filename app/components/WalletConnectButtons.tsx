@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";

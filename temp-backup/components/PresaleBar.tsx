@@ -1,4 +1,4 @@
-﻿export default function PresaleBar() {
+export default function PresaleBar() {
   return (
     <div style={{
       marginTop: "2rem",

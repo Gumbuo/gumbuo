@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ConnectWallet } from "@thirdweb-dev/react";
 import Image from "next/image";
@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function ClientPageWrapper() {
   return (
     <main className="relative min-h-screen flex items-center justify-center p-4 pb-10 container max-w-screen-lg mx-auto">
-      {/* ðŸ‘½ Alien video background */}
+      {/* 👽 Alien video background */}
       <video
         autoPlay
         muted
@@ -18,11 +18,11 @@ export default function ClientPageWrapper() {
         <source src="/alien.mp4" type="video/mp4" />
       </video>
 
-      {/* ðŸ”® Overlay content */}
+      {/* 🔮 Overlay content */}
       <div className="relative z-10 py-20 w-full text-green-400">
         <Header />
 
-        {/* ðŸ”Œ Wallet Connect */}
+        {/* 🔌 Wallet Connect */}
         <div className="flex justify-center mb-10">
           <ConnectWallet />
         </div>
