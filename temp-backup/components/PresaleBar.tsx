@@ -1,4 +1,4 @@
-﻿export default function PresaleBar() {
+export default function PresaleBar() {
   return (
     <div style={{
       marginTop: "2rem",
@@ -9,7 +9,7 @@
       fontFamily: "Orbitron, sans-serif",
       boxShadow: "0 0 12px #00ffcc"
     }}>
-      <h2 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>📊 Gumbuo Presale Status</h2>
+      <h2 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>?? Gumbuo Presale Status</h2>
       <p><strong>Price:</strong> 0.00042 ETH per GMB</p>
       <p><strong>Sold:</strong> 12,400,000 GMB</p>
       <p><strong>Remaining:</strong> 37,600,000 GMB</p>
@@ -28,7 +28,7 @@
       </div>
       <p style={{ marginTop: "0.5rem", fontSize: "0.9rem" }}>24.8% sold</p>
 
-      <h3 style={{ marginTop: "1.5rem", fontSize: "1.2rem" }}>🚀 Launch Tokenomics</h3>
+      <h3 style={{ marginTop: "1.5rem", fontSize: "1.2rem" }}>?? Launch Tokenomics</h3>
       <ul>
         <li><strong>Total Supply:</strong> 50,000,000 GMB</li>
         <li><strong>Presale Allocation:</strong> 80%</li>

@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 
 export default function Staking() {
   const [wallet, setWallet] = useState("")
@@ -16,7 +16,7 @@ export default function Staking() {
 
   return (
     <main>
-      <h1>🪙 Staking Dashboard</h1>
+      <h1>?? Staking Dashboard</h1>
       <input value={wallet} onChange={e => setWallet(e.target.value)} placeholder="Enter wallet" />
       <button onClick={handleClaim}>Claim Reward</button>
       <p>{status}</p>
