@@ -43,4 +43,6 @@ export default function RootLayout({
     </html>
   );
 }
-
+export default function Layout({ children }: { children: React.ReactNode | bigint })
+  const safeChildren = typeof children === "bigint" ? String(children) : children;
+export default function Layout({ children }: { children: React.ReactNode | bigint })
