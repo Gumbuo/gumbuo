@@ -1,38 +1,25 @@
-﻿import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
-import "../globals.css";
-import { Providers } from "./providers"; // âœ… named import
 
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
+import "./globals.css";
+import dynamic from "next/dynamic";
+import { AlienPointProvider } from "@/context/AlienPointContext";
+import HUD from "@/components/HUD";
 
-const robotoMono = Roboto_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-});
+const WagmiClientProvider = dynamic(() => import("@/components/WagmiClientProvider"), { ssr: false });
 
-export const metadata: Metadata = {
-  title: "Gumbuo.io",
-  description: "Alien-powered token battles, staking, and modular NFT utilities.",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head />
-      <body className={`${inter.variable} antialiased`} style={{ fontFamily: "monospace" }}>
-        <Providers>
-          {children as React.ReactNode}
-        </Providers>
+      <body className="relative overflow-hidden">
+        <video autoPlay muted loop playsInline className="fixed top-0 left-0 w-full h-full object-cover z-0">
+          <source src="/alien.mp4" type="video/mp4" />
+        </video>
+        <WagmiClientProvider>
+          <AlienPointProvider>
+            <HUD />
+            <main className="relative z-10">{children}</main>
+          </AlienPointProvider>
+        </WagmiClientProvider>
       </body>
     </html>
   );
 }
-
-

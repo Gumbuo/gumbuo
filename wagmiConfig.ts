@@ -1,12 +1,12 @@
-import { createConfig } from "wagmi";
+﻿import { createConfig, http } from "wagmi";
 import { injected } from "@wagmi/connectors";
-import { http } from "viem";
-import { mainnet } from "wagmi/chains";
+import { base } from "wagmi/chains";
 
 export const config = createConfig({
-  chains: [mainnet],
-  connectors: [injected({ shimDisconnect: true })],
+  connectors: [injected()],
+  chains: [base],
   transports: {
-    [mainnet.id]: http("https://mainnet.infura.io/v3/YOUR_INFURA_KEY")
-  }
+    [base.id]: http("https://mainnet.infura.io/v3/5bb5eb93701b41c198a129689a145cde")
+  },
+  ssr: true,
 });

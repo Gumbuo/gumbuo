@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+﻿/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
@@ -7,17 +7,23 @@ module.exports = {
   ],
   theme: {
     extend: {
+      zIndex: {
+        "-1": "-1"
+      },
       backgroundImage: {
-        alien: "url('/alien.jpg')", // Make sure alien.jpg is in /public
+        alien: "url('/alien.jpg')"
       },
       colors: {
         alienGreen: "#00ff99",
-        alienPurple: "#8e44ad",
+        alienPurple: "#8e44ad"
       },
       fontFamily: {
-        techno: ["Orbitron", "sans-serif"],
-      },
-    },
+        techno: ["Orbitron", "sans-serif"]
+      }
+    }
   },
-  plugins: [],
+  experimental: {
+    appDir: true
+  },
+  plugins: []
 };
