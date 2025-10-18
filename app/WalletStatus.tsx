@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useAddress } from "@thirdweb-dev/react";
 
 export default function WalletStatus() {

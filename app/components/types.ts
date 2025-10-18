@@ -1,3 +1,3 @@
-﻿export type HUDHandle = {
+export type HUDHandle = {
   refresh: () => void;
 };

@@ -1,12 +1,11 @@
-
 "use client";
-import HUD from "@/components/HUD";
+import AlienBalance from "@/components/AlienBalance";
 
-export default function Home() {
+export default function Page() {
+  const wallet = "0x000000000000000000000000000000000000dead";
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-black text-white">
-      <HUD />
-      <h1 className="text-4xl font-bold">Welcome to Gumbuo</h1>
+    <div className="flex items-center justify-center min-h-screen text-white text-4xl">
+      <AlienBalance wallet={wallet} />
     </div>
   );
 }

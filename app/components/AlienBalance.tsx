@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useEffect, useState } from "react";
 
 export default function AlienBalance({ wallet }: { wallet: string }) {
@@ -11,7 +11,7 @@ export default function AlienBalance({ wallet }: { wallet: string }) {
 
   return (
     <div className="text-green-400 text-sm border border-green-600 p-2 rounded">
-      🛸 Alien Points: {balance} for {wallet}
+      ?? Alien Points: {balance} for {wallet}
     </div>
   );
 }

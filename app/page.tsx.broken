@@ -1,4 +1,4 @@
-﻿export default function Page() {
+export default function Page() {
 "use client";
 
 
@@ -81,8 +81,8 @@ const client = createThirdwebClient({
       color: "#00ffcc"
     }}>
       <img src="/logo.png" alt="Gumbuo Logo" style={{ width: "120px", marginBottom: "1rem" }} />
-      <h2>Gumbuo’s 1st Astral Visitors Airdrop List</h2>
-<h3>🚀 Gumbuo Presale Progress</h3>
+      <h2>Gumbuo�s 1st Astral Visitors Airdrop List</h2>
+<h3>?? Gumbuo Presale Progress</h3>
 <p><strong>Price:</strong> 0.00042 ETH per GMB</p>
 <p><strong>Sold:</strong> 12,400,000 GMB</p>
 <p><strong>Remaining:</strong> 37,600,000 GMB</p>
@@ -130,11 +130,11 @@ const client = createThirdwebClient({
         </div>
       )}
       <div style={{ marginTop: "2rem", textAlign: "left", width: "100%" }}>
-        <h3>🚀 First 50 Astral Visitors</h3>
+        <h3>?? First 50 Astral Visitors</h3>
         <ul style={{ listStyle: "none", padding: 0 }}>
           {visitorList.map((wallet, i) => (
             <li key={wallet}>
-              #{i + 1} — {wallet.slice(0, 6)}...{wallet.slice(-4)}
+              #{i + 1} � {wallet.slice(0, 6)}...{wallet.slice(-4)}
             </li>
           ))}
         </ul>
@@ -145,7 +145,7 @@ const client = createThirdwebClient({
           border: "1px solid #00ffcc",
           padding: "1rem"
         }}>
-          <p>🛠 Dev Controls Active</p>
+          <p>?? Dev Controls Active</p>
         </div>
       )}
       <div style={{
@@ -178,11 +178,11 @@ const client = createThirdwebClient({
         </a>
       </div>
     <div style={{ marginTop: "4rem", textAlign: "left", width: "100%" }}>
-  <h3>🪙 Recent Gumbuo Purchases</h3>
+  <h3>?? Recent Gumbuo Purchases</h3>
   <ul style={{ listStyle: "none", padding: 0 }}>
     {purchaseList.map((entry, i) => (
       <li key={i}>
-        #{i + 1} — {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)} swapped {entry.amount} {entry.tokenIn} → {entry.tokenOut} @ {new Date(entry.timestamp).toLocaleString()}
+        #{i + 1} � {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)} swapped {entry.amount} {entry.tokenIn} ? {entry.tokenOut} @ {new Date(entry.timestamp).toLocaleString()}
       </li>
     ))}
   </ul>

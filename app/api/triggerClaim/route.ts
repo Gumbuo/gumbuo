@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 let wheelPoolRemaining = 100_000_000;
 const walletClaims: Record<string, { balance: number; gmb: number; lastSpin?: number }> = {};

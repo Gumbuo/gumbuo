@@ -1,4 +1,4 @@
-
+"use client";
 export default function PresalePage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen text-white">

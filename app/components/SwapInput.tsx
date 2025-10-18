@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { parseEther } from "viem";
@@ -117,7 +117,7 @@ export default function SwapInput() {
         Presale Rate: 1 ETH = {GMB_PER_ETH.toLocaleString()} GMB
       </div>
       <div style={{ marginBottom: "1rem", fontSize: "1.2rem", fontWeight: "bold" }}>
-        You’ll receive: {gmbEstimate.toLocaleString()} GMB
+        You�ll receive: {gmbEstimate.toLocaleString()} GMB
       </div>
       {errorMsg && (
         <div style={{ color: "#f00", marginBottom: "1rem" }}>{errorMsg}</div>

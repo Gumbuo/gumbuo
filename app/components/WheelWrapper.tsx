@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import WheelClient from "@/components/WheelClient";
 
