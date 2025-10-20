@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -6,9 +6,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background: transparent !important;
-  background-color: transparent !important;
-  visibility: visible !important;
 }
 
 html, body, #__next {
@@ -16,4 +13,5 @@ html, body, #__next {
   width: 100%;
   overflow: hidden;
   position: relative;
+  background-color: black;
 }

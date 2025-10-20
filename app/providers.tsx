@@ -1,30 +1,33 @@
-
 "use client";
-import { WagmiConfig, http } from "wagmi";
-import { base } from "viem/chains";
-import { RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { AlienPointProvider } from "@/context/AlienPointContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const config = getDefaultConfig({
-  appName: "Gumbuo",
-  projectId: "your-valid-project-id",
-  chains: [base],
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { mainnet } from "wagmi/chains";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+const config = createConfig({
+  chains: [mainnet],
   transports: {
-    [base.id]: http(),
+    [mainnet.id]: http("https://rpc.ankr.com/eth"),
   },
+  ssr: false,
 });
 
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    console.log("WagmiProvider mounted");
+  }, []);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig config={config}>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <AlienPointProvider>{children}</AlienPointProvider>
+          {children}
         </RainbowKitProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }

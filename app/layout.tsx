@@ -1,27 +1,17 @@
-import "./globals.css";
-import dynamic from "next/dynamic";
-import { AlienPointProvider } from "@/context/AlienPointContext";
-import HUD from "@/components/HUD";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+﻿import dynamic from "next/dynamic";
+import { Providers } from "./providers";
+import type { ReactNode } from "react";
 
-const WagmiClientProvider = dynamic(() => import("@/components/WagmiClientProvider"), { ssr: false });
-const queryClient = new QueryClient();
+const HUDBar = dynamic(() => import("./client/HUDBar"), { ssr: false });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body className="relative overflow-hidden">
-        <video autoPlay muted loop playsInline className="fixed top-0 left-0 w-full h-full object-cover z-0">
-          <source src="/alien.mp4" type="video/mp4" />
-        </video>
-        <QueryClientProvider client={queryClient}>
-          <WagmiClientProvider>
-            <AlienPointProvider>
-              <HUD />
-              <main className="relative z-10">{children}</main>
-            </AlienPointProvider>
-          </WagmiClientProvider>
-        </QueryClientProvider>
+    <html lang="en" className="min-h-screen">
+      <body className="min-h-screen overflow-hidden bg-black">
+        <Providers>
+          <HUDBar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
