@@ -1,9 +1,5 @@
-﻿"use client";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return (
-    <main>
-      {/* Page content only — no wallet logic */}
-    </main>
-  );
+export default function Home() {
+  redirect("/hud");
 }
