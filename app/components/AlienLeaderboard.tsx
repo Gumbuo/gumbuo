@@ -177,7 +177,7 @@ export default function AlienLeaderboard() {
       {/* Scan line effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-400/5 to-transparent animate-scan pointer-events-none"></div>
 
-      <h2 className="text-4xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
+      <h2 className="text-5xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
         <span className="animate-glow">👽 First Timer Leaderboard 🛸</span>
       </h2>
 
