@@ -4,8 +4,11 @@ import { Redis } from "@upstash/redis";
 const LEADERBOARD_KEY = "gumbuo:leaderboard";
 const MAX_FIRST_TIMERS = 50;
 
-// Initialize Redis client
-const redis = Redis.fromEnv();
+// Initialize Redis client with Vercel KV environment variables
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
 
 export interface LeaderboardEntry {
   wallet: string;
