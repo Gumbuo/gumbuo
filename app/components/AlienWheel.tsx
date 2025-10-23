@@ -108,7 +108,7 @@ export default function AlienWheel() {
     <div className="flex flex-col items-center space-y-6 p-6 bg-black bg-opacity-80 border-2 border-green-400 rounded-xl w-80">
       <h2 className="text-4xl font-bold text-green-400 tracking-wider flex items-center space-x-3">
         <img src="/nyx.png" alt="Nyx" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
-        <span>Daily Alien Wheel</span>
+        <span className="animate-glow">Daily Alien Wheel</span>
         <img src="/zorb.png" alt="Zorb" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
       </h2>
 
