@@ -1,18 +1,23 @@
 "use client";
 import "@rainbow-me/rainbowkit/styles.css";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import type { ReactNode } from "react";
+import { useState } from "react";
 import { WagmiProvider } from "wagmi";
-import { config } from "../lib/wagmi";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AlienPointsProvider } from "./context/AlienPointsEconomy";
+import { config } from "../lib/wagmi";
 
-const queryClient = new QueryClient();
+export function Providers({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient());
 
-export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={config}>
         <RainbowKitProvider>
-          {children}
+          <AlienPointsProvider>
+            {children}
+          </AlienPointsProvider>
         </RainbowKitProvider>
       </WagmiProvider>
     </QueryClientProvider>
