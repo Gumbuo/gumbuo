@@ -58,14 +58,18 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Side by Side */}
-        <div className="flex justify-center items-start gap-8 mt-12 mb-12 flex-wrap">
-          <AlienWheel />
+        <div className="flex justify-center items-start gap-16 mt-12 mb-12 flex-wrap">
+          <div className="mr-auto">
+            <AlienWheel />
+          </div>
           <AlienDripStation />
         </div>
 
-        {/* Alien Leaderboard - Centered below drip station */}
+        {/* Alien Leaderboard - 75% width, centered */}
         <div className="flex justify-center mt-12 mb-12">
-          <AlienLeaderboard />
+          <div className="w-full max-w-[75%]">
+            <AlienLeaderboard />
+          </div>
         </div>
       </div>
     </main>
