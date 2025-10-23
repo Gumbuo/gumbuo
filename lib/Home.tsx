@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { WagmiProvider } from "wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
@@ -6,8 +7,6 @@ import { config } from "../lib/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AlienPointsProvider } from "../app/context/AlienPointsEconomy";
 import "@rainbow-me/rainbowkit/styles.css";
-
-const queryClient = new QueryClient();
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const ConnectButton = dynamic(() => import("@rainbow-me/rainbowkit").then(mod => mod.ConnectButton), { ssr: false });
 const AlienWheel = dynamic(() => import("../app/components/AlienWheel"), { ssr: false });
@@ -15,6 +14,8 @@ const AlienDripStation = dynamic(() => import("../app/components/AlienDripStatio
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
 
 export default function Home() {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={config}>
