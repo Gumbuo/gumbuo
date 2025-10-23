@@ -1,4 +1,5 @@
 import "../globals.css";
+import "./alien-animations.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Providers } from "./providers";

@@ -122,11 +122,22 @@ export default function AlienDripStation() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-black bg-opacity-80 border-2 border-green-400 rounded-xl max-w-2xl">
-      <h2 className="text-4xl font-bold text-green-400 tracking-wider flex items-center space-x-3">
-        <img src="/nyx.png" alt="Nyx" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
-        <span>Alien Drip Station</span>
-        <img src="/zorb.png" alt="Zorb" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-black via-purple-900/30 to-black bg-opacity-95 border-2 border-purple-500 rounded-xl max-w-2xl relative overflow-hidden shadow-2xl shadow-purple-500/50">
+      {/* Animated corner accents */}
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-purple-500 animate-pulse"></div>
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-purple-500 animate-pulse"></div>
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-purple-500 animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-purple-500 animate-pulse"></div>
+
+      {/* Dripping particles effect */}
+      <div className="absolute top-0 left-1/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0s'}}></div>
+      <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0.5s'}}></div>
+      <div className="absolute top-0 left-3/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '1s'}}></div>
+
+      <h2 className="text-4xl font-bold holographic-text tracking-wider flex items-center space-x-3 drop-shadow-lg relative z-10">
+        <img src="/nyx.png" alt="Nyx" className="w-12 h-12 rounded-full border-2 border-purple-500 shadow-lg shadow-purple-500/50 animate-float" />
+        <span className="animate-glow">Alien Drip Station</span>
+        <img src="/zorb.png" alt="Zorb" className="w-12 h-12 rounded-full border-2 border-purple-500 shadow-lg shadow-purple-500/50 animate-float-delayed" />
       </h2>
 
       <div className="text-center text-green-400">
@@ -135,15 +146,18 @@ export default function AlienDripStation() {
       </div>
 
       {/* Pool Status */}
-      <div className="w-full bg-green-400 bg-opacity-10 border border-green-400 rounded-lg p-4">
-        <p className="text-green-400 text-center text-lg">
-          🌊 Faucet Pool: <span className="font-bold">{getPoolRemaining('faucet').toLocaleString()}</span> / 100,000,000 AP
+      <div className="w-full bg-gradient-to-r from-cyan-400/10 via-cyan-400/20 to-cyan-400/10 border-2 border-cyan-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-cyan-400/30 z-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent animate-shimmer pointer-events-none"></div>
+        <p className="text-cyan-400 text-center text-lg drop-shadow-glow relative z-10">
+          🌊 Faucet Pool: <span className="font-bold text-xl">{getPoolRemaining('faucet').toLocaleString()}</span> / 100,000,000 AP
         </p>
-        <div className="w-full bg-gray-800 rounded-full h-3 mt-2">
+        <div className="w-full bg-gray-900 rounded-full h-5 border-2 border-gray-700 shadow-inner mt-2 relative overflow-hidden">
           <div
-            className="bg-green-400 h-3 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-cyan-500 via-cyan-400 to-cyan-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-cyan-400/50 relative overflow-hidden"
             style={{width: `${(getPoolRemaining('faucet') / 100_000_000) * 100}%`}}
-          />
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+          </div>
         </div>
       </div>
 
@@ -192,13 +206,18 @@ export default function AlienDripStation() {
           <button
             onClick={handleClaim}
             disabled={hasClaimedToday || claiming || !currentTier}
-            className={`w-full px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 ${
+            className={`w-full px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
               hasClaimedToday || claiming || !currentTier
                 ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                : "bg-green-400 text-black hover:bg-green-500 hover:scale-105"
+                : "bg-gradient-to-r from-purple-500 via-purple-400 to-purple-500 text-white hover:scale-110 hover:shadow-2xl hover:shadow-purple-400/80 animate-pulse-glow"
             }`}
           >
-            {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Need 100+ GMB"}
+            {!hasClaimedToday && !claiming && currentTier && (
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+            )}
+            <span className="relative z-10">
+              {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Need 100+ GMB"}
+            </span>
           </button>
         </div>
       ) : (

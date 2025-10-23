@@ -167,11 +167,20 @@ export default function AlienLeaderboard() {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-black bg-opacity-80 border-2 border-green-400 rounded-xl max-w-4xl w-full">
-      <h2 className="text-4xl font-bold text-green-400 tracking-wider flex items-center space-x-3">
-        <img src="/nyx.png" alt="Nyx" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
-        <span>First Timer Leaderboard</span>
-        <img src="/zorb.png" alt="Zorb" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-black via-gray-900 to-black bg-opacity-95 border-2 border-green-400 rounded-xl max-w-4xl w-full relative overflow-hidden shadow-2xl shadow-green-400/50">
+      {/* Animated corner accents */}
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-400 animate-pulse"></div>
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-400 animate-pulse"></div>
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-400 animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-400 animate-pulse"></div>
+
+      {/* Scan line effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-400/5 to-transparent animate-scan pointer-events-none"></div>
+
+      <h2 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-green-300 to-green-400 bg-clip-text text-transparent tracking-wider flex items-center space-x-3 drop-shadow-lg relative z-10">
+        <img src="/nyx.png" alt="Nyx" className="w-12 h-12 rounded-full border-2 border-green-400 shadow-lg shadow-green-400/50 animate-float" />
+        <span className="animate-glow">First Timer Leaderboard</span>
+        <img src="/zorb.png" alt="Zorb" className="w-12 h-12 rounded-full border-2 border-green-400 shadow-lg shadow-green-400/50 animate-float-delayed" />
       </h2>
 
       <div className="text-center text-green-400">
@@ -180,20 +189,23 @@ export default function AlienLeaderboard() {
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-green-400 bg-opacity-10 border border-green-400 rounded-lg p-4">
-        <div className="flex justify-between items-center mb-2">
-          <p className="text-green-400 text-lg">
-            📊 Progress: <span className="font-bold">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
+      <div className="w-full bg-gradient-to-r from-green-400/10 via-green-400/20 to-green-400/10 border-2 border-green-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-green-400/30 z-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/10 to-transparent animate-shimmer pointer-events-none"></div>
+        <div className="flex justify-between items-center mb-2 relative z-10">
+          <p className="text-green-400 text-lg drop-shadow-glow">
+            📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
           </p>
-          <p className={`text-lg font-bold ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse' : 'text-yellow-400'}`}>
+          <p className={`text-lg font-bold ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse drop-shadow-lg' : 'text-yellow-400 drop-shadow-glow'}`}>
             {spotsRemaining} spots left!
           </p>
         </div>
-        <div className="w-full bg-gray-800 rounded-full h-4">
+        <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-gray-700 shadow-inner relative overflow-hidden">
           <div
-            className="bg-green-400 h-4 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-green-500 via-green-400 to-green-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-green-400/50 relative overflow-hidden"
             style={{width: `${getProgressPercentage()}%`}}
-          />
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+          </div>
         </div>
       </div>
 
@@ -224,17 +236,22 @@ export default function AlienLeaderboard() {
         <button
           onClick={handleRegister}
           disabled={!isConnected || leaderboard.length >= MAX_FIRST_TIMERS}
-          className={`px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 ${
+          className={`px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
             !isConnected || leaderboard.length >= MAX_FIRST_TIMERS
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-green-400 text-black hover:bg-green-500 hover:scale-105"
+              : "bg-gradient-to-r from-green-400 via-green-500 to-green-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow"
           }`}
         >
-          {!isConnected
-            ? "Connect Wallet to Register"
-            : leaderboard.length >= MAX_FIRST_TIMERS
-            ? "All Spots Claimed! 😢"
-            : "REGISTER NOW! 🚀"}
+          {!isConnected || leaderboard.length >= MAX_FIRST_TIMERS ? null : (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+          )}
+          <span className="relative z-10">
+            {!isConnected
+              ? "Connect Wallet to Register"
+              : leaderboard.length >= MAX_FIRST_TIMERS
+              ? "All Spots Claimed! 😢"
+              : "REGISTER NOW! 🚀"}
+          </span>
         </button>
       )}
 
