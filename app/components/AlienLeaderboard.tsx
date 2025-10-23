@@ -30,16 +30,30 @@ export default function AlienLeaderboard() {
       if (data.success) {
         setLeaderboard(data.leaderboard);
         setSpotsRemaining(data.spotsRemaining);
+      } else {
+        console.error("API returned error:", data.error);
+        // Start with empty leaderboard if API fails
+        setLeaderboard([]);
+        setSpotsRemaining(MAX_FIRST_TIMERS);
       }
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
+      // Start with empty leaderboard if fetch fails
+      setLeaderboard([]);
+      setSpotsRemaining(MAX_FIRST_TIMERS);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Load leaderboard on mount
+  // Load leaderboard on mount and clear old localStorage
   useEffect(() => {
+    // Clear old localStorage data (migration)
+    if (localStorage.getItem('alienLeaderboard')) {
+      console.log('Clearing old localStorage leaderboard data...');
+      localStorage.removeItem('alienLeaderboard');
+    }
+
     fetchLeaderboard();
   }, []);
 
