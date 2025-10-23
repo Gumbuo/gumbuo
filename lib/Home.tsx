@@ -57,17 +57,15 @@ export default function Home() {
           <AlienHUD />
         </div>
 
-        {/* All 3 Components Side by Side */}
-        <div className="flex justify-center items-start gap-4 mt-12 mb-12 px-4 overflow-x-auto">
-          <div className="flex-shrink-0">
-            <AlienWheel />
-          </div>
-          <div className="flex-shrink-0">
-            <AlienDripStation />
-          </div>
-          <div className="flex-shrink-0">
-            <AlienLeaderboard />
-          </div>
+        {/* Wheel and Drip Station - Side by Side, Aligned */}
+        <div className="flex justify-center items-stretch gap-6 mt-12 mb-12 px-4">
+          <AlienWheel />
+          <AlienDripStation />
+        </div>
+
+        {/* Alien Leaderboard - Full width below */}
+        <div className="flex justify-center mt-12 mb-12">
+          <AlienLeaderboard />
         </div>
       </div>
     </main>
