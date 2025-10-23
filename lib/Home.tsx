@@ -1,8 +1,8 @@
 "use client";
 import dynamic from "next/dynamic";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
-const ConnectButton = dynamic(() => import("@rainbow-me/rainbowkit").then(mod => mod.ConnectButton), { ssr: false });
 const AlienWheel = dynamic(() => import("../app/components/AlienWheel"), { ssr: false });
 const AlienDripStation = dynamic(() => import("../app/components/AlienDripStation"), { ssr: false });
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
