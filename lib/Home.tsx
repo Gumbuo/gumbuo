@@ -57,13 +57,9 @@ export default function Home() {
           <AlienHUD />
         </div>
 
-        {/* Daily Spin Wheel - Centered below header */}
-        <div className="flex justify-center mt-12 mb-12">
+        {/* Wheel and Drip Station - Side by Side */}
+        <div className="flex justify-center items-start gap-8 mt-12 mb-12 flex-wrap">
           <AlienWheel />
-        </div>
-
-        {/* Alien Drip Station - Centered below wheel */}
-        <div className="flex justify-center mt-12 mb-12">
           <AlienDripStation />
         </div>
 
