@@ -35,7 +35,7 @@
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/postcss": "^4.1.15",
     "@types/node": "^24.8.1",
     "@types/react": "^18.3.26",
     "autoprefixer": "^10.4.21",

@@ -1,5 +1,7 @@
-import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
 
-export default function Home() {
-  redirect("/hud");
+const Home = dynamic(() => import("../lib/Home"), { ssr: false });
+
+export default function Page() {
+  return <Home />;
 }

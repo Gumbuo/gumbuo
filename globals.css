@@ -2,29 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 🌌 Custom Theme Variables */
+/* Custom Theme Variables */
 :root {
-  --background: #000000; /* dark base for alien vibe */
-  --foreground: #00ff99; /* alien green */
+  --background: #000000;
+  --foreground: #00ff99;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-/* 🧼 Optional: Apply background and text color globally */
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans);
 }
 
-#bg-video { position: fixed; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
-
-#bg-video { position: fixed; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
-
-#bg-video { position: fixed; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
-
-#bg-video { position: fixed; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
-
-#bg-video { position: fixed; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
+#bg-video {
+  position: fixed;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

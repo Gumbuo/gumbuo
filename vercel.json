@@ -1,5 +1,11 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+    {
+      "source": "/((?!api|_next|hud|favicon.ico|robots.txt|sitemap.xml).*)",
+      "destination": "/"
+    }
+  ],
+  "build": {
+    "skipBuildTrace": true
+  }
 }
