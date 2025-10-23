@@ -2,8 +2,8 @@ import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 import { abi } from "./abi"; // Make sure this exists and exports your GMB ABI
 
-const RPC_URL = process.env.RPC_URL!;
-const GMB_CONTRACT = process.env.NEXT_PUBLIC_GMB_CONTRACT!;
+const RPC_URL = process.env.RPC_URL || process.env.NEXT_PUBLIC_RPC_URL || "https://rpc.ankr.com/eth";
+const GMB_CONTRACT = process.env.NEXT_PUBLIC_GMB_CONTRACT || "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
 
 const client = createPublicClient({
   chain: mainnet,
