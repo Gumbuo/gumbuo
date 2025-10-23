@@ -58,10 +58,16 @@ export default function Home() {
         </div>
 
         {/* All 3 Components Side by Side */}
-        <div className="flex justify-center items-start gap-6 mt-12 mb-12 flex-wrap px-4">
-          <AlienWheel />
-          <AlienDripStation />
-          <AlienLeaderboard />
+        <div className="flex justify-center items-start gap-4 mt-12 mb-12 px-4 overflow-x-auto">
+          <div className="flex-shrink-0">
+            <AlienWheel />
+          </div>
+          <div className="flex-shrink-0">
+            <AlienDripStation />
+          </div>
+          <div className="flex-shrink-0">
+            <AlienLeaderboard />
+          </div>
         </div>
       </div>
     </main>
