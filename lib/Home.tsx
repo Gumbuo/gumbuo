@@ -58,13 +58,9 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Side by Side, Aligned */}
-        <div className="flex justify-center items-stretch mt-12 mb-12 px-4">
-          <div className="mr-8">
-            <AlienWheel />
-          </div>
-          <div className="ml-8">
-            <AlienDripStation />
-          </div>
+        <div className="flex justify-center items-stretch space-x-16 mt-12 mb-12 px-4">
+          <AlienWheel />
+          <AlienDripStation />
         </div>
 
         {/* Alien Leaderboard - Full width below */}
