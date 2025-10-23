@@ -177,10 +177,8 @@ export default function AlienLeaderboard() {
       {/* Scan line effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-400/5 to-transparent animate-scan pointer-events-none"></div>
 
-      <h2 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-green-300 to-green-400 bg-clip-text text-transparent tracking-wider flex items-center space-x-2 drop-shadow-lg relative z-10">
-        <img src="/nyx.png" alt="Nyx" className="w-6 h-6 rounded-full border border-green-400 shadow-lg shadow-green-400/50 animate-float" />
-        <span className="animate-glow">First Timer Leaderboard</span>
-        <img src="/zorb.png" alt="Zorb" className="w-6 h-6 rounded-full border border-green-400 shadow-lg shadow-green-400/50 animate-float-delayed" />
+      <h2 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-green-300 to-green-400 bg-clip-text text-transparent tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
+        <span className="animate-glow">👽 First Timer Leaderboard 🛸</span>
       </h2>
 
       <div className="text-center text-green-400">

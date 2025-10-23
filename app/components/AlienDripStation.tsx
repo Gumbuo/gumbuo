@@ -134,10 +134,8 @@ export default function AlienDripStation() {
       <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0.5s'}}></div>
       <div className="absolute top-0 left-3/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '1s'}}></div>
 
-      <h2 className="text-4xl font-bold holographic-text tracking-wider flex items-center space-x-2 drop-shadow-lg relative z-10">
-        <img src="/nyx.png" alt="Nyx" className="w-6 h-6 rounded-full border border-purple-500 shadow-lg shadow-purple-500/50 animate-float" />
-        <span className="animate-glow">Alien Drip Station</span>
-        <img src="/zorb.png" alt="Zorb" className="w-6 h-6 rounded-full border border-purple-500 shadow-lg shadow-purple-500/50 animate-float-delayed" />
+      <h2 className="text-4xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
+        <span className="animate-glow">💧 Alien Drip Station 💧</span>
       </h2>
 
       <div className="text-center text-green-400">
