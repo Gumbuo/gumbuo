@@ -20,6 +20,8 @@
     "@thirdweb-dev/sdk": "^3.10.67",
     "@thirdweb-dev/wallets": "^2.5.39",
     "@uniswap/widgets": "^2.59.0",
+    "@vercel/kv": "^1.0.1",
+    "@vercel/postgres": "^0.10.0",
     "encoding": "^0.1.13",
     "next": "13.5.11",
     "pino-pretty": "^13.1.1",

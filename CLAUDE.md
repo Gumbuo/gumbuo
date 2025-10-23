@@ -30,7 +30,15 @@ Required environment variables (create a `.env.local` file):
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=<your-walletconnect-project-id>
 NEXT_PUBLIC_GMB_CONTRACT=<gumbuo-token-contract-address>
 RPC_URL=<mainnet-rpc-url>
+
+# Vercel KV (for production deployment)
+KV_URL=<vercel-kv-rest-url>
+KV_REST_API_URL=<vercel-kv-rest-api-url>
+KV_REST_API_TOKEN=<vercel-kv-rest-api-token>
+KV_REST_API_READ_ONLY_TOKEN=<vercel-kv-rest-api-read-only-token>
 ```
+
+**Note**: Vercel KV environment variables are automatically configured when you create a KV database in your Vercel project dashboard.
 
 ## Architecture
 
@@ -132,6 +140,85 @@ Endpoint: `/api/balance?wallet=0x...`
 - Uses Viem client with mainnet RPC
 - Reads from `NEXT_PUBLIC_GMB_CONTRACT` address
 
+### Leaderboard API
+
+#### GET /api/leaderboard
+
+**Purpose**: Fetch the entire leaderboard with all registered wallets
+
+**Response**:
+```json
+{
+  "success": true,
+  "leaderboard": [
+    {
+      "wallet": "0x...",
+      "joinedAt": 1234567890,
+      "alienPoints": 1000,
+      "rank": 1
+    }
+  ],
+  "spotsRemaining": 48
+}
+```
+
+#### POST /api/leaderboard
+
+**Purpose**: Register a new wallet on the leaderboard
+
+**Request Body**:
+```json
+{
+  "wallet": "0x...",
+  "alienPoints": 1000
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "entry": {
+    "wallet": "0x...",
+    "joinedAt": 1234567890,
+    "alienPoints": 1000,
+    "rank": 1
+  },
+  "spotsRemaining": 49
+}
+```
+
+#### PATCH /api/leaderboard
+
+**Purpose**: Update a wallet's alien points
+
+**Request Body**:
+```json
+{
+  "wallet": "0x...",
+  "alienPoints": 1500
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "entry": {
+    "wallet": "0x...",
+    "joinedAt": 1234567890,
+    "alienPoints": 1500,
+    "rank": 1
+  }
+}
+```
+
+**Implementation Notes**:
+- All leaderboard data is stored in Vercel KV (Redis)
+- Supports up to 50 wallets (MAX_FIRST_TIMERS constant)
+- Wallet addresses are normalized to lowercase for consistency
+- Data is shared globally across all users and devices
+
 ## Component Patterns
 
 ### Client Components
@@ -142,6 +229,7 @@ All components in `app/client/` and `app/components/` are client components (use
 - `HUDBar.tsx` - Video background (`/alien.mp4`) with overlay
 - `StatsHUD.tsx` - Displays Alien Points, GMB balance, and pool statistics
 - `BuyGumbuo.tsx` - Links to Uniswap/ThirdWeb for purchasing GMB
+- `AlienLeaderboard.tsx` - Displays and manages the First Timer Leaderboard with persistent global state
 
 ### Dynamic Imports
 

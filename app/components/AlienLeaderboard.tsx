@@ -19,15 +19,28 @@ export default function AlienLeaderboard() {
   const [userRank, setUserRank] = useState<number | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
   const [spotsRemaining, setSpotsRemaining] = useState(MAX_FIRST_TIMERS);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load leaderboard from localStorage
-  useEffect(() => {
-    const savedLeaderboard = localStorage.getItem('alienLeaderboard');
-    if (savedLeaderboard) {
-      const parsed = JSON.parse(savedLeaderboard);
-      setLeaderboard(parsed);
-      setSpotsRemaining(MAX_FIRST_TIMERS - parsed.length);
+  // Fetch leaderboard from API
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await fetch('/api/leaderboard');
+      const data = await response.json();
+
+      if (data.success) {
+        setLeaderboard(data.leaderboard);
+        setSpotsRemaining(data.spotsRemaining);
+      }
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Load leaderboard on mount
+  useEffect(() => {
+    fetchLeaderboard();
   }, []);
 
   // Check if user is registered and update their points
@@ -40,23 +53,32 @@ export default function AlienLeaderboard() {
       setIsRegistered(true);
       setUserRank(userEntry.rank);
 
-      // Update user's alien points in leaderboard
-      const updatedLeaderboard = leaderboard.map(entry => {
-        if (entry.wallet.toLowerCase() === address.toLowerCase()) {
-          return { ...entry, alienPoints: getUserBalance(address) };
-        }
-        return entry;
-      });
-
-      setLeaderboard(updatedLeaderboard);
-      localStorage.setItem('alienLeaderboard', JSON.stringify(updatedLeaderboard));
+      // Update user's alien points in the backend
+      const currentPoints = getUserBalance(address);
+      if (currentPoints !== userEntry.alienPoints) {
+        updateUserPoints(address, currentPoints);
+      }
     } else {
       setIsRegistered(false);
       setUserRank(null);
     }
   }, [address, leaderboard.length, getUserBalance]);
 
-  const handleRegister = () => {
+  const updateUserPoints = async (wallet: string, points: number) => {
+    try {
+      await fetch('/api/leaderboard', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet, alienPoints: points }),
+      });
+      // Refresh leaderboard after update
+      fetchLeaderboard();
+    } catch (error) {
+      console.error("Error updating points:", error);
+    }
+  };
+
+  const handleRegister = async () => {
     if (!isConnected || !address) {
       alert("Please connect your wallet first!");
       return;
@@ -78,23 +100,35 @@ export default function AlienLeaderboard() {
       return;
     }
 
-    // Add user to leaderboard
-    const newEntry: LeaderboardEntry = {
-      wallet: address,
-      joinedAt: Date.now(),
-      alienPoints: getUserBalance(address),
-      rank: leaderboard.length + 1,
-    };
+    try {
+      // Register via API
+      const response = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wallet: address,
+          alienPoints: getUserBalance(address),
+        }),
+      });
 
-    const updatedLeaderboard = [...leaderboard, newEntry];
-    setLeaderboard(updatedLeaderboard);
-    localStorage.setItem('alienLeaderboard', JSON.stringify(updatedLeaderboard));
+      const data = await response.json();
 
-    setIsRegistered(true);
-    setUserRank(newEntry.rank);
-    setSpotsRemaining(MAX_FIRST_TIMERS - updatedLeaderboard.length);
+      if (data.success) {
+        setIsRegistered(true);
+        setUserRank(data.entry.rank);
+        setSpotsRemaining(data.spotsRemaining);
 
-    alert(`🎉 Congratulations! You're #${newEntry.rank} on the First Timer Leaderboard! You'll receive a GMB airdrop when we hit 50 members! 👽`);
+        alert(`🎉 Congratulations! You're #${data.entry.rank} on the First Timer Leaderboard! You'll receive a GMB airdrop when we hit 50 members! 👽`);
+
+        // Refresh leaderboard
+        fetchLeaderboard();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error registering:", error);
+      alert("Failed to register. Please try again.");
+    }
   };
 
   const formatWallet = (wallet: string) => {
@@ -108,6 +142,15 @@ export default function AlienLeaderboard() {
   const getProgressPercentage = () => {
     return (leaderboard.length / MAX_FIRST_TIMERS) * 100;
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black bg-opacity-80 border-2 border-green-400 rounded-xl max-w-4xl w-full min-h-96">
+        <div className="text-green-400 text-2xl animate-pulse">Loading Leaderboard...</div>
+        <div className="text-green-400 text-lg">Fetching galactic data 🛸</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center space-y-6 p-8 bg-black bg-opacity-80 border-2 border-green-400 rounded-xl max-w-4xl w-full">
