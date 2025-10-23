@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
 const LEADERBOARD_KEY = "gumbuo:leaderboard";
 const MAX_FIRST_TIMERS = 50;
+
+// Initialize Redis client
+const redis = Redis.fromEnv();
 
 export interface LeaderboardEntry {
   wallet: string;
@@ -14,7 +17,7 @@ export interface LeaderboardEntry {
 // GET /api/leaderboard - Fetch the full leaderboard
 export async function GET() {
   try {
-    const leaderboard = await kv.get<LeaderboardEntry[]>(LEADERBOARD_KEY) || [];
+    const leaderboard = await redis.get<LeaderboardEntry[]>(LEADERBOARD_KEY) || [];
 
     return NextResponse.json({
       success: true,
@@ -46,7 +49,7 @@ export async function POST(request: NextRequest) {
     const normalizedWallet = wallet.toLowerCase();
 
     // Fetch current leaderboard
-    const leaderboard = await kv.get<LeaderboardEntry[]>(LEADERBOARD_KEY) || [];
+    const leaderboard = await redis.get<LeaderboardEntry[]>(LEADERBOARD_KEY) || [];
 
     // Check if wallet is already registered
     const existingEntry = leaderboard.find(
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     // Add to leaderboard
     const updatedLeaderboard = [...leaderboard, newEntry];
-    await kv.set(LEADERBOARD_KEY, updatedLeaderboard);
+    await redis.set(LEADERBOARD_KEY, updatedLeaderboard);
 
     return NextResponse.json({
       success: true,
@@ -111,7 +114,7 @@ export async function PATCH(request: NextRequest) {
     const normalizedWallet = wallet.toLowerCase();
 
     // Fetch current leaderboard
-    const leaderboard = await kv.get<LeaderboardEntry[]>(LEADERBOARD_KEY) || [];
+    const leaderboard = await redis.get<LeaderboardEntry[]>(LEADERBOARD_KEY) || [];
 
     // Find and update the entry
     const entryIndex = leaderboard.findIndex(
@@ -127,7 +130,7 @@ export async function PATCH(request: NextRequest) {
 
     // Update the entry
     leaderboard[entryIndex].alienPoints = alienPoints;
-    await kv.set(LEADERBOARD_KEY, leaderboard);
+    await redis.set(LEADERBOARD_KEY, leaderboard);
 
     return NextResponse.json({
       success: true,

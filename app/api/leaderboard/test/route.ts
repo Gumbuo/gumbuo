@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 
-// Simple test endpoint to check if Vercel KV environment variables are set
+// Simple test endpoint to check if Upstash Redis environment variables are set
 export async function GET() {
-  const kvUrl = process.env.KV_REST_API_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN;
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
   return NextResponse.json({
-    kvConfigured: !!(kvUrl && kvToken),
-    hasUrl: !!kvUrl,
-    hasToken: !!kvToken,
-    message: kvUrl && kvToken
-      ? "Vercel KV is configured"
-      : "Vercel KV is NOT configured - please set up KV database in Vercel dashboard",
+    kvConfigured: !!(upstashUrl && upstashToken),
+    hasUrl: !!upstashUrl,
+    hasToken: !!upstashToken,
+    upstashUrl: upstashUrl ? upstashUrl.substring(0, 30) + '...' : 'NOT SET',
+    message: upstashUrl && upstashToken
+      ? "Upstash Redis is configured correctly!"
+      : "Upstash Redis is NOT configured - check environment variables",
   });
 }
