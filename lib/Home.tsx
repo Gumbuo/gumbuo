@@ -58,7 +58,7 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Side by Side, Aligned */}
-        <div className="flex justify-center items-stretch gap-6 mt-12 mb-12 px-4">
+        <div className="flex justify-center items-stretch gap-12 mt-12 mb-12 px-4">
           <AlienWheel />
           <AlienDripStation />
         </div>
