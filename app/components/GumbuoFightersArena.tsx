@@ -210,11 +210,6 @@ export default function GumbuoFightersArena() {
         <span className="animate-glow">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
       </h2>
 
-      <div className="text-center text-red-400">
-        <p className="text-xl mb-2">🎮 Alien Points Arena - LIVE NOW! 🎮</p>
-        <p className="text-sm opacity-75">⚠️ Both aliens BURN after fighting! Winner takes 800 AP! ⚠️</p>
-      </div>
-
       {/* Betting Info Section */}
       <div className="w-full text-green-400 text-xs text-center max-w-2xl bg-green-400 bg-opacity-10 p-4 rounded-lg">
         <p className="font-bold mb-2" style={{fontSize: '2rem'}}>
