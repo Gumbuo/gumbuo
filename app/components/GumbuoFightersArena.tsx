@@ -246,7 +246,7 @@ export default function GumbuoFightersArena() {
       </h2>
 
       {/* Betting Info Section */}
-      <div className="w-full text-green-400 text-xs text-center max-w-2xl bg-green-400 bg-opacity-10 p-4 rounded-lg">
+      <div className="w-full text-red-400 text-xs text-center max-w-2xl bg-red-400 bg-opacity-10 p-4 rounded-lg">
         <p className="font-bold mb-2" style={{fontSize: '2rem'}}>
           <span className="animate-glow">💰 ALIEN POINTS BETTING 💰</span>
         </p>
@@ -387,12 +387,12 @@ export default function GumbuoFightersArena() {
                 <img
                   src={fightResult.winner.image}
                   alt="Winner"
-                  className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-green-400"
+                  className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-red-400"
                   style={{ width: '64px', height: '64px', objectFit: 'contain' }}
                 />
               </div>
-              <p className="text-green-400 font-bold text-xl">WINNER!</p>
-              <p className="text-green-400">{fightResult.winner.name}</p>
+              <p className="text-red-400 font-bold text-xl">WINNER!</p>
+              <p className="text-red-400">{fightResult.winner.name}</p>
             </div>
             <p className="text-4xl">VS</p>
             <div className="opacity-50">
@@ -410,7 +410,7 @@ export default function GumbuoFightersArena() {
           </div>
           <button
             onClick={resetArena}
-            className="mt-6 px-8 py-3 bg-green-500 text-black font-bold rounded-lg hover:bg-green-600 transition-all"
+            className="mt-6 px-8 py-3 bg-red-500 text-black font-bold rounded-lg hover:bg-green-600 transition-all"
           >
             FIGHT AGAIN! ⚔️
           </button>
@@ -422,7 +422,7 @@ export default function GumbuoFightersArena() {
         <h3 className="font-bold holographic-text tracking-wider text-center mb-2" style={{fontSize: '4rem'}}>
           <span className="animate-glow">👽 Your Alien Collection 👽</span>
         </h3>
-        <p className="text-green-400 text-sm text-center mb-4 opacity-75">
+        <p className="text-red-400 text-sm text-center mb-4 opacity-75">
           Drag and drop your aliens into the arena
         </p>
         <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4">
@@ -449,7 +449,7 @@ export default function GumbuoFightersArena() {
                     style={{ width: '64px', height: '64px', objectFit: 'contain' }}
                   />
                 </div>
-                <p className="text-green-400 text-xs font-bold">{alien.name}</p>
+                <p className="text-red-400 text-xs font-bold">{alien.name}</p>
               </div>
             ))
           )}
