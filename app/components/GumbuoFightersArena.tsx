@@ -215,30 +215,21 @@ export default function GumbuoFightersArena() {
         <p className="text-sm opacity-75">⚠️ Both aliens BURN after fighting! Winner takes 800 AP! ⚠️</p>
       </div>
 
-      {/* Betting Info Banner */}
-      <div className="w-full bg-gradient-to-r from-green-400/20 via-green-400/30 to-green-400/20 border-2 border-green-400 rounded-lg p-6 relative overflow-hidden shadow-lg shadow-green-400/50">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent animate-shimmer pointer-events-none"></div>
-        <div className="text-center relative z-10">
-          <p className="text-green-400 text-4xl font-bold mb-3">💰 ALIEN POINTS BETTING 💰</p>
-          <div className="grid grid-cols-3 gap-4 text-green-300">
-            <div className="bg-black/50 p-3 rounded-lg">
-              <p className="text-sm opacity-75">Entry Fee</p>
-              <p className="text-2xl font-bold">500 AP</p>
-            </div>
-            <div className="bg-black/50 p-3 rounded-lg">
-              <p className="text-sm opacity-75">Winner Gets</p>
-              <p className="text-2xl font-bold text-yellow-400">800 AP</p>
-            </div>
-            <div className="bg-black/50 p-3 rounded-lg">
-              <p className="text-sm opacity-75">Burn Pool</p>
-              <p className="text-2xl font-bold text-purple-400">200 AP</p>
-              <p className="text-xs opacity-75 mt-1">→ Future Airdrops</p>
-            </div>
-          </div>
-          <p className="text-green-400 text-sm mt-3 opacity-75">
-            🔥 WARNING: Both aliens are permanently burned after the fight! 🔥
-          </p>
+      {/* Betting Info Section */}
+      <div className="w-full text-green-400 text-xs text-center max-w-2xl bg-green-400 bg-opacity-10 p-4 rounded-lg">
+        <p className="font-bold mb-2" style={{fontSize: '2rem'}}>
+          <span className="animate-glow">💰 ALIEN POINTS BETTING 💰</span>
+        </p>
+        <div className="opacity-75 space-y-1">
+          <p>💵 <strong>Entry Fee:</strong> 500 AP per player</p>
+          <p>🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
+          <p>🏠 <strong>Burn Pool:</strong> 200 AP goes to burn pool for future airdrops/rewards</p>
         </div>
+      </div>
+
+      {/* Burn Warning */}
+      <div className="w-full text-red-400 text-sm text-center bg-red-400 bg-opacity-10 p-3 rounded-lg border border-red-400/50">
+        <p className="font-bold">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
       </div>
 
       {/* Burn Pool Display */}
