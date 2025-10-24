@@ -257,40 +257,62 @@ export default function AlienWheel() {
         </div>
       )}
 
-      <div className="relative">
-        {/* Rotating border effect */}
-        {!hasSpunToday && !mustSpin && (
-          <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 rounded-xl opacity-75 blur-sm animate-spin-border-rotate pointer-events-none z-0"></div>
-        )}
-
-        <button
-          onClick={handleSpinClick}
-          disabled={hasSpunToday || mustSpin}
-          className={`px-16 py-6 text-3xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
-            hasSpunToday || mustSpin
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-spin-pulse animate-spin-wiggle"
-          }`}
-        >
-          {/* Shimmer effect */}
+      <div className="relative flex flex-col items-center">
+        {/* UFO Button Container */}
+        <div className="relative">
+          {/* Rotating glow ring */}
           {!hasSpunToday && !mustSpin && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+            <div className="absolute -inset-4 bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 rounded-full opacity-50 blur-md animate-spin-border-rotate pointer-events-none"></div>
           )}
 
-          {/* Particle effects */}
-          {!hasSpunToday && !mustSpin && (
-            <>
-              <div className="absolute top-0 left-1/4 w-2 h-2 bg-green-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0s', animationDuration: '1s'}}></div>
-              <div className="absolute top-0 right-1/4 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.2s', animationDuration: '1s'}}></div>
-              <div className="absolute bottom-0 left-1/3 w-2 h-2 bg-green-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.4s', animationDuration: '1s'}}></div>
-              <div className="absolute bottom-0 right-1/3 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.6s', animationDuration: '1s'}}></div>
-            </>
-          )}
+          {/* UFO Button */}
+          <button
+            onClick={handleSpinClick}
+            disabled={hasSpunToday || mustSpin}
+            className={`relative w-64 h-64 rounded-full transition-all duration-200 overflow-hidden ${
+              hasSpunToday || mustSpin
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-110 animate-spin-pulse animate-spin-wiggle"
+            }`}
+            style={{
+              boxShadow: hasSpunToday || mustSpin
+                ? 'none'
+                : '0 0 40px rgba(74, 222, 128, 0.6), 0 0 80px rgba(74, 222, 128, 0.4), inset 0 -20px 40px rgba(0, 255, 153, 0.3)'
+            }}
+          >
+            {/* UFO Top Dome */}
+            <div className={`absolute top-8 left-1/2 -translate-x-1/2 w-32 h-20 rounded-t-full ${
+              hasSpunToday || mustSpin ? "bg-gray-500" : "bg-gradient-to-b from-cyan-300 to-cyan-500"
+            } opacity-60`}></div>
 
-          <span className="relative z-10">
-            {hasSpunToday ? "Already Spun Today! 👽" : mustSpin ? "Spinning... 🎰" : "SPIN THE WHEEL! 🎰"}
-          </span>
-        </button>
+            {/* UFO Windows */}
+            <div className="absolute top-16 left-1/2 -translate-x-1/2 flex space-x-4">
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`}></div>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.2s'}}></div>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.4s'}}></div>
+            </div>
+
+            {/* Center Text */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center px-6">
+                <div className="text-4xl mb-2">🛸</div>
+                <div className={`text-xl font-bold ${hasSpunToday || mustSpin ? "text-gray-400" : "text-black"}`}>
+                  {hasSpunToday ? "Come Back\nTomorrow!" : mustSpin ? "Spinning..." : "SPIN!"}
+                </div>
+              </div>
+            </div>
+
+            {/* Shimmer effect */}
+            {!hasSpunToday && !mustSpin && (
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+            )}
+
+            {/* Light beam effect */}
+            {!hasSpunToday && !mustSpin && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-8 bg-gradient-to-b from-cyan-400/60 to-transparent blur-sm"></div>
+            )}
+          </button>
+        </div>
       </div>
 
       {!isConnected && (
