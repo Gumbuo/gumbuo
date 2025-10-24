@@ -165,12 +165,12 @@ export default function AlienMarketplace() {
               }`}
             >
               {/* Image */}
-              <div className="relative mb-3 flex justify-center items-center h-20">
+              <div className="relative mb-2 flex justify-center items-center h-16">
                 <img
                   src={pic.image}
                   alt={pic.name}
-                  className="max-w-[80px] max-h-[80px] w-auto h-auto object-contain rounded-lg border-2 border-green-400/30"
-                  style={{ width: '80px', height: '80px', objectFit: 'contain' }}
+                  className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-green-400/30"
+                  style={{ width: '64px', height: '64px', objectFit: 'contain' }}
                 />
                 {ownedCount > 0 && (
                   <div className="absolute top-2 right-2 bg-green-400 text-black font-bold px-3 py-1 rounded-lg text-sm">
