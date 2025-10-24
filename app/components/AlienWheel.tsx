@@ -27,6 +27,7 @@ export default function AlienWheel() {
   const [wonPoints, setWonPoints] = useState<number | null>(null);
   const [userPoints, setUserPoints] = useState(0);
   const [timeUntilReset, setTimeUntilReset] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Calculate time until 8pm EST (daily reset)
   const calculateTimeUntilReset = () => {
@@ -146,6 +147,10 @@ export default function AlienWheel() {
     const points = parseInt(wheelData[prizeNumber].option);
     setWonPoints(points);
 
+    // Trigger confetti animation
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 1000);
+
     if (address) {
       // Add points to user balance from wheel pool
       const success = await addPoints(address, points, 'wheel');
@@ -199,23 +204,46 @@ export default function AlienWheel() {
       )}
 
       <div className="relative">
-        <Wheel
-          mustStartSpinning={mustSpin}
-          prizeNumber={prizeNumber}
-          data={wheelData}
-          onStopSpinning={handleStopSpinning}
-          backgroundColors={["#3b82f6", "#1e3a8a"]}
-          textColors={["#ffffff", "#ffffff"]}
-          outerBorderColor="#60a5fa"
-          outerBorderWidth={5}
-          innerBorderColor="#1e40af"
-          innerBorderWidth={3}
-          radiusLineColor="#1e293b"
-          radiusLineWidth={2}
-          fontSize={20}
-          perpendicularText={false}
-          textDistance={60}
-        />
+        {/* Confetti particles */}
+        {showConfetti && (
+          <div className="absolute inset-0 pointer-events-none z-50">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute animate-confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  width: '10px',
+                  height: '10px',
+                  backgroundColor: ['#FFD700', '#00ff99', '#3b82f6', '#ff00ff', '#ff6b6b'][Math.floor(Math.random() * 5)],
+                  borderRadius: '50%',
+                  animationDelay: `${Math.random() * 0.3}s`
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className={mustSpin ? "animate-wheel-glow" : ""}>
+          <Wheel
+            mustStartSpinning={mustSpin}
+            prizeNumber={prizeNumber}
+            data={wheelData}
+            onStopSpinning={handleStopSpinning}
+            backgroundColors={["#3b82f6", "#1e3a8a"]}
+            textColors={["#ffffff", "#ffffff"]}
+            outerBorderColor="#60a5fa"
+            outerBorderWidth={5}
+            innerBorderColor="#1e40af"
+            innerBorderWidth={3}
+            radiusLineColor="#1e293b"
+            radiusLineWidth={2}
+            fontSize={20}
+            perpendicularText={false}
+            textDistance={60}
+          />
+        </div>
       </div>
 
       {wonPoints !== null && hasSpunToday && (
@@ -229,22 +257,41 @@ export default function AlienWheel() {
         </div>
       )}
 
-      <button
-        onClick={handleSpinClick}
-        disabled={hasSpunToday || mustSpin}
-        className={`px-16 py-6 text-3xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
-          hasSpunToday || mustSpin
-            ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-            : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 text-white hover:scale-110 hover:shadow-2xl hover:shadow-blue-400/80 animate-pulse-glow"
-        }`}
-      >
-        {!hasSpunToday && !mustSpin && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-        )}
-        <span className="relative z-10">
-          {hasSpunToday ? "Already Spun Today! 👽" : mustSpin ? "Spinning... 🎰" : "SPIN THE WHEEL! 🎰"}
-        </span>
-      </button>
+      <div className="relative">
+        <button
+          onClick={handleSpinClick}
+          disabled={hasSpunToday || mustSpin}
+          className={`px-16 py-6 text-3xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
+            hasSpunToday || mustSpin
+              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 text-white hover:scale-110 hover:shadow-2xl hover:shadow-blue-400/80 animate-spin-pulse animate-spin-wiggle"
+          }`}
+        >
+          {/* Rotating border effect */}
+          {!hasSpunToday && !mustSpin && (
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 rounded-xl opacity-75 blur-sm animate-spin-border-rotate"></div>
+          )}
+
+          {/* Shimmer effect */}
+          {!hasSpunToday && !mustSpin && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+          )}
+
+          {/* Particle effects on hover */}
+          {!hasSpunToday && !mustSpin && (
+            <>
+              <div className="absolute top-0 left-1/4 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0s', animationDuration: '1s'}}></div>
+              <div className="absolute top-0 right-1/4 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.2s', animationDuration: '1s'}}></div>
+              <div className="absolute bottom-0 left-1/3 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.4s', animationDuration: '1s'}}></div>
+              <div className="absolute bottom-0 right-1/3 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.6s', animationDuration: '1s'}}></div>
+            </>
+          )}
+
+          <span className="relative z-10">
+            {hasSpunToday ? "Already Spun Today! 👽" : mustSpin ? "Spinning... 🎰" : "SPIN THE WHEEL! 🎰"}
+          </span>
+        </button>
+      </div>
 
       {!isConnected && (
         <p className="text-yellow-400 text-lg font-bold animate-pulse">⚠️ Connect your wallet to spin!</p>
