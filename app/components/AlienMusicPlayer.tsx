@@ -30,10 +30,10 @@ export default function AlienMusicPlayer() {
   }, []);
 
   return (
-    <div className="fixed bottom-6 left-6 z-[9999]">
+    <div className="fixed top-6 left-6 z-[9999]">
       <audio ref={audioRef} src="/home.mp3" loop />
 
-      <div className="flex items-center space-x-3 bg-purple-600 rounded-xl p-4 border-4 border-yellow-400 shadow-2xl shadow-yellow-500 relative overflow-hidden">
+      <div className="flex items-center space-x-3 bg-gradient-to-r from-yellow-400 via-purple-600 to-yellow-400 rounded-xl p-6 border-8 border-green-400 shadow-2xl shadow-green-500 relative overflow-hidden">
         {/* Animated corner accents */}
         <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-purple-400 animate-pulse"></div>
         <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-400 animate-pulse"></div>
@@ -44,7 +44,7 @@ export default function AlienMusicPlayer() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-400/5 to-transparent animate-scan pointer-events-none"></div>
 
         {/* Music Icon */}
-        <div className="text-3xl relative z-10">
+        <div className="text-5xl relative z-10">
           {isPlaying ? "🎵" : "🎧"}
         </div>
 
@@ -52,24 +52,24 @@ export default function AlienMusicPlayer() {
         <div className="flex space-x-2 relative z-10">
           <button
             onClick={togglePlay}
-            className={`px-6 py-2 font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
+            className={`px-8 py-4 text-xl font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
               isPlaying
                 ? "bg-gradient-to-r from-red-400 via-red-500 to-red-400 text-black hover:scale-110 hover:shadow-xl hover:shadow-red-400/80 animate-pulse-glow"
-                : "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-400 text-black hover:scale-110 hover:shadow-xl hover:shadow-purple-400/80 animate-pulse-glow"
+                : "bg-gradient-to-r from-green-400 via-green-500 to-green-400 text-black hover:scale-110 hover:shadow-xl hover:shadow-green-400/80 animate-pulse-glow"
             }`}
           >
             {isPlaying ? null : (
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
             )}
             <span className="relative z-10 flex items-center space-x-2">
-              <span>{isPlaying ? "⏸" : "▶"}</span>
-              <span className="text-sm">{isPlaying ? "STOP" : "PLAY"}</span>
+              <span className="text-2xl">{isPlaying ? "⏸" : "▶"}</span>
+              <span className="text-lg font-black">{isPlaying ? "STOP" : "PLAY"}</span>
             </span>
           </button>
         </div>
 
         {/* Music label */}
-        <div className="text-purple-400 text-xs font-bold relative z-10">
+        <div className="text-green-400 text-lg font-bold relative z-10">
           <p className="animate-glow">👽 ALIEN VIBES 🛸</p>
         </div>
       </div>
