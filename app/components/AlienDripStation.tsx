@@ -68,7 +68,7 @@ export default function AlienDripStation() {
     setUserPoints(getUserBalance(address));
   }, [address, getUserBalance]);
 
-  const handleClaim = () => {
+  const handleClaim = async () => {
     if (!isConnected || !address) {
       alert("Please connect your wallet first!");
       return;
@@ -98,8 +98,8 @@ export default function AlienDripStation() {
     setClaiming(true);
 
     // Simulate claim animation
-    setTimeout(() => {
-      const success = addPoints(address, currentTier.points, 'faucet');
+    setTimeout(async () => {
+      const success = await addPoints(address, currentTier.points, 'faucet');
 
       if (success) {
         // Update localStorage
@@ -114,7 +114,7 @@ export default function AlienDripStation() {
 
         alert(`💧 Drip Successful! You claimed ${currentTier.points} Alien Points! 👽`);
       } else {
-        alert("Claim failed! Please try again.");
+        alert("Faucet pool is depleted! Please try the drip station!");
       }
 
       setClaiming(false);

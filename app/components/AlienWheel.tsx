@@ -79,14 +79,14 @@ export default function AlienWheel() {
     setMustSpin(true);
   };
 
-  const handleStopSpinning = () => {
+  const handleStopSpinning = async () => {
     setMustSpin(false);
     const points = parseInt(wheelData[prizeNumber].option);
     setWonPoints(points);
 
     if (address) {
       // Add points to user balance from wheel pool
-      const success = addPoints(address, points, 'wheel');
+      const success = await addPoints(address, points, 'wheel');
 
       if (success) {
         // Save to localStorage

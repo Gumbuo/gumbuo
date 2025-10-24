@@ -6,17 +6,17 @@ interface AlienPointsPool {
   wheelPool: number;
   faucetPool: number;
   reservePool: number;
-}
-
-interface UserBalance {
-  [address: string]: number;
+  marketplacePool: number;
+  totalDistributed: number;
 }
 
 interface AlienPointsContextType {
   pool: AlienPointsPool;
   getUserBalance: (address: string) => number;
-  addPoints: (address: string, points: number, source: 'wheel' | 'faucet') => boolean;
+  addPoints: (address: string, points: number, source: 'wheel' | 'faucet') => Promise<boolean>;
+  spendPoints: (address: string, points: number, itemName: string) => Promise<boolean>;
   getPoolRemaining: (source: 'wheel' | 'faucet') => number;
+  refreshPool: () => Promise<void>;
 }
 
 const AlienPointsContext = createContext<AlienPointsContextType | undefined>(undefined);
@@ -26,60 +26,92 @@ const INITIAL_POOL: AlienPointsPool = {
   wheelPool: 100_000_000,
   faucetPool: 100_000_000,
   reservePool: 150_000_000,
+  marketplacePool: 0,
+  totalDistributed: 0,
 };
 
 export function AlienPointsProvider({ children }: { children: ReactNode }) {
   const [pool, setPool] = useState<AlienPointsPool>(INITIAL_POOL);
-  const [userBalances, setUserBalances] = useState<UserBalance>({});
+  const [userBalances, setUserBalances] = useState<Record<string, number>>({});
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const savedPool = localStorage.getItem('alienPointsPool');
-    const savedBalances = localStorage.getItem('alienPointsBalances');
-
-    if (savedPool) {
-      setPool(JSON.parse(savedPool));
+  // Fetch pool from API on mount
+  const refreshPool = async () => {
+    try {
+      const response = await fetch('/api/points');
+      const data = await response.json();
+      if (data.success) {
+        setPool(data.pool);
+      }
+    } catch (error) {
+      console.error("Error fetching pool:", error);
     }
-    if (savedBalances) {
-      setUserBalances(JSON.parse(savedBalances));
-    }
-  }, []);
-
-  // Save to localStorage when state changes
-  useEffect(() => {
-    localStorage.setItem('alienPointsPool', JSON.stringify(pool));
-  }, [pool]);
-
-  useEffect(() => {
-    localStorage.setItem('alienPointsBalances', JSON.stringify(userBalances));
-  }, [userBalances]);
-
-  const getUserBalance = (address: string): number => {
-    return userBalances[address] || 0;
   };
 
-  const addPoints = (address: string, points: number, source: 'wheel' | 'faucet'): boolean => {
-    const poolKey = source === 'wheel' ? 'wheelPool' : 'faucetPool';
+  useEffect(() => {
+    refreshPool();
+    // Refresh pool every 30 seconds to stay in sync
+    const interval = setInterval(refreshPool, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-    // Check if pool has enough points
-    if (pool[poolKey] < points) {
-      console.error(`Insufficient ${source} pool balance`);
+  const getUserBalance = (address: string): number => {
+    return userBalances[address.toLowerCase()] || 0;
+  };
+
+  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet'): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/points', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: address, points, source }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update local state
+        setPool(data.pool);
+        setUserBalances(prev => ({
+          ...prev,
+          [address.toLowerCase()]: data.userBalance,
+        }));
+        return true;
+      } else {
+        console.error("Failed to add points:", data.error);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error adding points:", error);
       return false;
     }
+  };
 
-    // Deduct from pool
-    setPool(prev => ({
-      ...prev,
-      [poolKey]: prev[poolKey] - points,
-    }));
+  const spendPoints = async (address: string, points: number, itemName: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/points', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: address, points, itemName }),
+      });
 
-    // Add to user balance
-    setUserBalances(prev => ({
-      ...prev,
-      [address]: (prev[address] || 0) + points,
-    }));
+      const data = await response.json();
 
-    return true;
+      if (data.success) {
+        // Update local state
+        setPool(data.pool);
+        setUserBalances(prev => ({
+          ...prev,
+          [address.toLowerCase()]: data.userBalance,
+        }));
+        return true;
+      } else {
+        console.error("Failed to spend points:", data.error);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error spending points:", error);
+      return false;
+    }
   };
 
   const getPoolRemaining = (source: 'wheel' | 'faucet'): number => {
@@ -87,7 +119,7 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AlienPointsContext.Provider value={{ pool, getUserBalance, addPoints, getPoolRemaining }}>
+    <AlienPointsContext.Provider value={{ pool, getUserBalance, addPoints, spendPoints, getPoolRemaining, refreshPool }}>
       {children}
     </AlienPointsContext.Provider>
   );

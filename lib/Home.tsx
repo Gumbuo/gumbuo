@@ -6,6 +6,9 @@ const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { s
 const AlienWheel = dynamic(() => import("../app/components/AlienWheel"), { ssr: false });
 const AlienDripStation = dynamic(() => import("../app/components/AlienDripStation"), { ssr: false });
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
+const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
+const GumbuoMarketplace = dynamic(() => import("../app/components/GumbuoMarketplace"), { ssr: false });
+const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
 
 export default function Home() {
   return (
@@ -58,7 +61,7 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Side by Side, Aligned */}
-        <div className="flex justify-center items-stretch space-x-16 mt-12 mb-12 px-4">
+        <div className="grid grid-cols-2 gap-16 justify-items-center mt-12 mb-12 px-4 max-w-6xl mx-auto">
           <AlienWheel />
           <AlienDripStation />
         </div>
@@ -66,6 +69,21 @@ export default function Home() {
         {/* Alien Leaderboard - Full width below */}
         <div className="flex justify-center mt-12 mb-12">
           <AlienLeaderboard />
+        </div>
+
+        {/* Alien Marketplace - Full width below */}
+        <div className="flex justify-center mt-12 mb-12">
+          <AlienMarketplace />
+        </div>
+
+        {/* GMB Token Marketplace - Coming Soon */}
+        <div className="flex justify-center mt-12 mb-12">
+          <GumbuoMarketplace />
+        </div>
+
+        {/* Gumbuo Fighters Arena */}
+        <div className="flex justify-center mt-12 mb-12">
+          <GumbuoFightersArena />
         </div>
       </div>
     </main>
