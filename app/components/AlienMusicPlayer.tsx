@@ -30,7 +30,7 @@ export default function AlienMusicPlayer() {
   }, []);
 
   return (
-    <div className="fixed top-6 left-6 z-[9999]">
+    <div className="relative">
       <audio ref={audioRef} src="/home.mp3" loop />
 
       <div className="flex items-center space-x-3 bg-gradient-to-r from-yellow-400 via-purple-600 to-yellow-400 rounded-xl p-6 border-8 border-green-400 shadow-2xl shadow-green-500 relative overflow-hidden">

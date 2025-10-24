@@ -61,6 +61,9 @@ export default function Home() {
 
           {/* AlienHUD below it */}
           <AlienHUD />
+
+          {/* Music Player on right side */}
+          <AlienMusicPlayer />
         </div>
 
         {/* Wheel and Drip Station - Stacked */}
@@ -84,9 +87,6 @@ export default function Home() {
           <GumbuoFightersArena />
         </div>
       </div>
-
-      {/* Music Player - Fixed Bottom Left */}
-      <AlienMusicPlayer />
     </main>
   );
 }
