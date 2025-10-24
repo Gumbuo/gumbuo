@@ -27,6 +27,8 @@ export default function GumbuoFightersArena() {
   const [ownedAliens, setOwnedAliens] = useState<OwnedAlien[]>([]);
   const [fighter1, setFighter1] = useState<OwnedAlien | null>(null);
   const [fighter2, setFighter2] = useState<OwnedAlien | null>(null);
+  const [fighter1Owner, setFighter1Owner] = useState<string | null>(null);
+  const [fighter2Owner, setFighter2Owner] = useState<string | null>(null);
   const [fighter1Paid, setFighter1Paid] = useState(false);
   const [fighter2Paid, setFighter2Paid] = useState(false);
   const [fighting, setFighting] = useState(false);
@@ -66,6 +68,13 @@ export default function GumbuoFightersArena() {
     e.preventDefault();
     if (!draggedAlien || !address || draggedAlien.id === fighter2?.id) return;
 
+    // Prevent same wallet from filling both slots
+    if (fighter2Owner && fighter2Owner.toLowerCase() === address.toLowerCase()) {
+      alert("⚠️ You cannot fight yourself! Wait for another player to join.");
+      setDraggedAlien(null);
+      return;
+    }
+
     // Check balance
     const balance = getUserBalance(address);
     if (balance < ENTRY_FEE) {
@@ -96,6 +105,7 @@ export default function GumbuoFightersArena() {
     const success = await spendPoints(address, ENTRY_FEE, "Arena Entry Fee - Fighter 1");
     if (success) {
       setFighter1(draggedAlien);
+      setFighter1Owner(address);
       setFighter1Paid(true);
       setUserBalance(getUserBalance(address));
       setDraggedAlien(null);
@@ -107,6 +117,13 @@ export default function GumbuoFightersArena() {
   const handleDropFighter2 = async (e: React.DragEvent) => {
     e.preventDefault();
     if (!draggedAlien || !address || draggedAlien.id === fighter1?.id) return;
+
+    // Prevent same wallet from filling both slots
+    if (fighter1Owner && fighter1Owner.toLowerCase() === address.toLowerCase()) {
+      alert("⚠️ You cannot fight yourself! Wait for another player to join.");
+      setDraggedAlien(null);
+      return;
+    }
 
     // Check balance
     const balance = getUserBalance(address);
@@ -138,6 +155,7 @@ export default function GumbuoFightersArena() {
     const success = await spendPoints(address, ENTRY_FEE, "Arena Entry Fee - Fighter 2");
     if (success) {
       setFighter2(draggedAlien);
+      setFighter2Owner(address);
       setFighter2Paid(true);
       setUserBalance(getUserBalance(address));
       setDraggedAlien(null);
@@ -184,8 +202,10 @@ export default function GumbuoFightersArena() {
       }
 
       // Burn both aliens
-      burnAlien(fighter1);
-      burnAlien(fighter2);
+      if (!address) return;
+      const updated = ownedAliens.filter(a => a.id !== fighter1.id && a.id !== fighter2.id);
+      setOwnedAliens(updated);
+      localStorage.setItem(`ownedAliens_${address}`, JSON.stringify(updated));
 
       // Update balance
       setUserBalance(getUserBalance(address));
@@ -203,6 +223,8 @@ export default function GumbuoFightersArena() {
   const resetArena = () => {
     setFighter1(null);
     setFighter2(null);
+    setFighter1Owner(null);
+    setFighter2Owner(null);
     setFighter1Paid(false);
     setFighter2Paid(false);
     setFightResult(null);
@@ -279,6 +301,7 @@ export default function GumbuoFightersArena() {
                     setUserBalance(getUserBalance(address));
                   }
                   setFighter1(null);
+                  setFighter1Owner(null);
                   setFighter1Paid(false);
                 }}
                 disabled={fighting}
@@ -336,6 +359,7 @@ export default function GumbuoFightersArena() {
                     setUserBalance(getUserBalance(address));
                   }
                   setFighter2(null);
+                  setFighter2Owner(null);
                   setFighter2Paid(false);
                 }}
                 disabled={fighting}

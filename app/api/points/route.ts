@@ -16,6 +16,7 @@ interface AlienPointsPool {
   reservePool: number;
   marketplacePool: number; // Points collected from alien pic purchases
   totalDistributed: number;
+  totalAliensBurned: number; // Total aliens burned in arena
 }
 
 interface UserBalances {
@@ -29,6 +30,7 @@ const INITIAL_POOL: AlienPointsPool = {
   reservePool: 150_000_000,
   marketplacePool: 0, // Grows as users spend points on alien pics
   totalDistributed: 0,
+  totalAliensBurned: 0, // Total aliens burned in arena
 };
 
 // GET /api/points - Get pool status and user balance
