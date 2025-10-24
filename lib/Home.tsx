@@ -36,18 +36,21 @@ export default function Home() {
             <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '120px', height: '120px', maxWidth: '120px', maxHeight: '120px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
           </div>
 
-          <div className="flex items-center justify-center space-x-6">
-            <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
-            <a
-              href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-24 py-8 bg-green-400 text-black font-bold rounded-2xl hover:bg-green-500 transition-colors duration-200 tracking-wider"
-              style={{fontSize: '4rem'}}
-            >
-              Buy Gumbuo
-            </a>
-            <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+          <div className="flex flex-col items-center space-y-4">
+            <div className="flex items-center justify-center space-x-6">
+              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+              <a
+                href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-24 py-8 bg-green-400 text-black font-bold rounded-2xl hover:bg-green-500 transition-colors duration-200 tracking-wider"
+                style={{fontSize: '4rem'}}
+              >
+                Buy Gumbuo
+              </a>
+              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+            </div>
+            <p className="text-green-400 font-bold text-3xl animate-pulse tracking-wider">👆 CLICK HERE 👆</p>
           </div>
         </div>
 
