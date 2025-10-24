@@ -7,7 +7,6 @@ const AlienWheel = dynamic(() => import("../app/components/AlienWheel"), { ssr: 
 const AlienDripStation = dynamic(() => import("../app/components/AlienDripStation"), { ssr: false });
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
 const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
-const GumbuoMarketplace = dynamic(() => import("../app/components/GumbuoMarketplace"), { ssr: false });
 const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
 
 export default function Home() {
@@ -74,11 +73,6 @@ export default function Home() {
         {/* Alien Marketplace - Full width below */}
         <div className="flex justify-center mt-12 mb-12">
           <AlienMarketplace />
-        </div>
-
-        {/* GMB Token Marketplace - Coming Soon */}
-        <div className="flex justify-center mt-12 mb-12">
-          <GumbuoMarketplace />
         </div>
 
         {/* Gumbuo Fighters Arena */}

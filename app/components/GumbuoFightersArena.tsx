@@ -220,15 +220,6 @@ export default function GumbuoFightersArena() {
         </p>
       </div>
 
-      {/* GMB Arena Coming Soon */}
-      <div className="w-full bg-yellow-900/30 border-2 border-yellow-500 rounded-lg p-4 text-center">
-        <p className="text-yellow-400 text-xl font-bold mb-2">🚧 GMB ARENA COMING SOON! 🚧</p>
-        <p className="text-yellow-300 text-sm">
-          Same mechanics with GMB tokens (500 GMB entry, 800 GMB prize).
-          Requires smart contract - in development!
-        </p>
-      </div>
-
       {/* Arena - Two Fighter Slots */}
       <div className="w-full grid grid-cols-2 gap-8 mb-6">
         {/* Fighter 1 Slot */}
@@ -253,11 +244,19 @@ export default function GumbuoFightersArena() {
               </div>
               <p className="text-blue-400 font-bold text-xl">{fighter1.name}</p>
               <button
-                onClick={() => setFighter1(null)}
+                onClick={async () => {
+                  if (fighter1Paid && address) {
+                    // Refund entry fee
+                    await addPoints(address, ENTRY_FEE, 'arena');
+                    setUserBalance(getUserBalance(address));
+                  }
+                  setFighter1(null);
+                  setFighter1Paid(false);
+                }}
                 disabled={fighting}
                 className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
               >
-                Remove
+                Remove {fighter1Paid ? '(Refund 500 AP)' : ''}
               </button>
             </div>
           ) : (
@@ -302,11 +301,19 @@ export default function GumbuoFightersArena() {
               </div>
               <p className="text-red-400 font-bold text-xl">{fighter2.name}</p>
               <button
-                onClick={() => setFighter2(null)}
+                onClick={async () => {
+                  if (fighter2Paid && address) {
+                    // Refund entry fee
+                    await addPoints(address, ENTRY_FEE, 'arena');
+                    setUserBalance(getUserBalance(address));
+                  }
+                  setFighter2(null);
+                  setFighter2Paid(false);
+                }}
                 disabled={fighting}
                 className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
               >
-                Remove
+                Remove {fighter2Paid ? '(Refund 500 AP)' : ''}
               </button>
             </div>
           ) : (
@@ -392,17 +399,26 @@ export default function GumbuoFightersArena() {
         </div>
       </div>
 
+      {/* GMB Arena Coming Soon */}
+      <div className="w-full bg-yellow-900/30 border-2 border-yellow-500 rounded-lg p-4 text-center">
+        <p className="text-yellow-400 text-xl font-bold mb-2">🚧 GMB ARENA COMING SOON! 🚧</p>
+        <p className="text-yellow-300 text-sm">
+          Same mechanics with GMB tokens (500 GMB entry, 800 GMB prize).
+          Requires smart contract - in development!
+        </p>
+      </div>
+
       {/* Info */}
       <div className="w-full text-red-400 text-xs text-center max-w-2xl bg-red-400 bg-opacity-10 p-4 rounded-lg">
         <p className="font-bold mb-2">ℹ️ Arena Rules</p>
         <div className="opacity-75 space-y-2 text-left">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
-          <p>💰 <strong>Entry Fee:</strong> Each player pays 500 GMB to enter the arena</p>
-          <p>⚔️ <strong>Fight:</strong> When both slots filled, fight starts automatically (random winner)</p>
-          <p>🏆 <strong>Winner Gets:</strong> 800 GMB (400 GMB profit after entry fee)</p>
-          <p>🏠 <strong>House Fee:</strong> 200 GMB goes to prize pool/house wallet</p>
+          <p>💰 <strong>Entry Fee:</strong> Each player pays 500 AP to enter the arena</p>
+          <p>⚔️ <strong>Fight:</strong> When both slots filled and paid, fight starts automatically (random winner)</p>
+          <p>🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
+          <p>🏠 <strong>Burn Pool:</strong> 200 AP goes to burn pool for future airdrops/rewards</p>
           <p>🔥 <strong>BURN MECHANIC:</strong> Both aliens are permanently destroyed after the fight!</p>
-          <p>⚠️ <strong>Risk vs Reward:</strong> Lose 500 GMB + alien, or win 800 GMB (net +400 GMB after fees)</p>
+          <p>⚠️ <strong>Risk vs Reward:</strong> Lose 500 AP + alien, or win 800 AP (net +300 AP after fees)</p>
         </div>
       </div>
     </div>
