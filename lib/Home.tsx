@@ -9,7 +9,6 @@ const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboar
 const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
 const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
 const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
-const AlienDivider = dynamic(() => import("../app/components/AlienDivider"), { ssr: false });
 
 export default function Home() {
   return (
@@ -68,29 +67,23 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Stacked */}
-        <div className="flex flex-col items-center space-y-12 mt-12 max-w-5xl mx-auto">
+        <div className="flex flex-col items-center space-y-12 mt-12">
           <AlienWheel />
           <AlienDripStation />
         </div>
 
-        <AlienDivider />
-
         {/* Alien Leaderboard */}
-        <div className="flex justify-center max-w-6xl mx-auto">
+        <div className="flex justify-center mt-12">
           <AlienLeaderboard />
         </div>
 
-        <AlienDivider />
-
         {/* Alien Marketplace */}
-        <div className="flex justify-center max-w-7xl mx-auto">
+        <div className="flex justify-center mt-12">
           <AlienMarketplace />
         </div>
 
-        <AlienDivider />
-
         {/* Gumbuo Fighters Arena */}
-        <div className="flex justify-center max-w-7xl mx-auto mb-12">
+        <div className="flex justify-center mt-12 mb-12">
           <GumbuoFightersArena />
         </div>
       </div>
