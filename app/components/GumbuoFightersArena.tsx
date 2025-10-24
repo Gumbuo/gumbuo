@@ -206,7 +206,7 @@ export default function GumbuoFightersArena() {
       {/* Lightning effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-400/5 to-transparent animate-scan pointer-events-none"></div>
 
-      <h2 className="text-5xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
+      <h2 className="font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
         <span className="animate-glow">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
       </h2>
 
@@ -405,7 +405,9 @@ export default function GumbuoFightersArena() {
 
       {/* User's Alien Collection - Draggable */}
       <div className="w-full">
-        <h3 className="text-3xl font-bold text-center text-red-400 mb-4">👽 Your Alien Collection 👽</h3>
+        <h3 className="font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '4rem'}}>
+          <span className="animate-glow">👽 Your Alien Collection 👽</span>
+        </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto p-4 bg-black/50 rounded-lg">
           {ownedAliens.length === 0 ? (
             <div className="col-span-full text-center text-gray-500 py-8">
