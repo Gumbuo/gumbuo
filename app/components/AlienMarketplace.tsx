@@ -118,36 +118,9 @@ export default function AlienMarketplace() {
       {/* Scan line effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-400/5 to-transparent animate-scan pointer-events-none"></div>
 
-      <h2 className="text-5xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
+      <h2 className="text-4xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
         <span className="animate-glow">👽 Alien Marketplace 🛸</span>
       </h2>
-
-      <div className="text-center text-green-400">
-        <p className="text-xl mb-2">🎨 Gumbuo Fighters - Alien Pics NFTs 🎨</p>
-        <p className="text-sm opacity-75">Spend your Alien Points to unlock exclusive fighter pics!</p>
-      </div>
-
-      {/* User Balance */}
-      {isConnected && address ? (
-        <div className="w-full bg-green-400 bg-opacity-20 border border-green-400 rounded-lg p-4 text-center">
-          <p className="text-green-400 text-lg">
-            👽 Your Alien Points: <span className="font-bold text-3xl">{userPoints.toLocaleString()}</span>
-          </p>
-        </div>
-      ) : (
-        <p className="text-yellow-400 text-center">⚠️ Connect your wallet to shop!</p>
-      )}
-
-      {/* Marketplace Pool Stats */}
-      <div className="w-full bg-gradient-to-r from-purple-400/10 via-purple-400/20 to-purple-400/10 border-2 border-purple-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-purple-400/30 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400/10 to-transparent animate-shimmer pointer-events-none"></div>
-        <p className="text-purple-400 text-center text-lg drop-shadow-glow relative z-10">
-          💰 Marketplace Pool: <span className="font-bold text-xl">{pool.marketplacePool.toLocaleString()}</span> AP Collected
-        </p>
-        <p className="text-purple-400 text-center text-sm opacity-75 mt-1">
-          Points spent by users are collected in the marketplace pool
-        </p>
-      </div>
 
       {/* Alien Pics Grid */}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
