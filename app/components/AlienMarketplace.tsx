@@ -57,6 +57,20 @@ export default function AlienMarketplace() {
       return;
     }
 
+    // Confirmation dialog
+    const confirmed = confirm(
+      `🛒 CONFIRM PURCHASE\n\n` +
+      `Alien: ${pic.name}\n` +
+      `Price: ${pic.price.toLocaleString()} AP\n\n` +
+      `Your balance: ${currentBalance.toLocaleString()} AP\n` +
+      `After purchase: ${(currentBalance - pic.price).toLocaleString()} AP\n\n` +
+      `Do you want to proceed with this purchase?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     setPurchasing(pic.id);
 
     try {

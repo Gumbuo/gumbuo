@@ -73,6 +73,25 @@ export default function GumbuoFightersArena() {
       return;
     }
 
+    // Confirmation dialog
+    const confirmed = confirm(
+      `⚔️ CONFIRM ARENA ENTRY - FIGHTER 1\n\n` +
+      `Alien: ${draggedAlien.name}\n` +
+      `Entry Fee: ${ENTRY_FEE.toLocaleString()} AP\n\n` +
+      `⚠️ WARNING:\n` +
+      `• This alien will be PERMANENTLY BURNED after the fight!\n` +
+      `• Winner gets 800 AP (net +300 AP profit)\n` +
+      `• Loser loses alien + 500 AP entry fee\n\n` +
+      `Your balance: ${balance.toLocaleString()} AP\n` +
+      `After entry: ${(balance - ENTRY_FEE).toLocaleString()} AP\n\n` +
+      `Do you want to enter ${draggedAlien.name} into the arena?`
+    );
+
+    if (!confirmed) {
+      setDraggedAlien(null);
+      return;
+    }
+
     // Pay entry fee
     const success = await spendPoints(address, ENTRY_FEE, "Arena Entry Fee - Fighter 1");
     if (success) {
@@ -93,6 +112,25 @@ export default function GumbuoFightersArena() {
     const balance = getUserBalance(address);
     if (balance < ENTRY_FEE) {
       alert(`Not enough Alien Points! You need ${ENTRY_FEE} AP to enter.`);
+      return;
+    }
+
+    // Confirmation dialog
+    const confirmed = confirm(
+      `⚔️ CONFIRM ARENA ENTRY - FIGHTER 2\n\n` +
+      `Alien: ${draggedAlien.name}\n` +
+      `Entry Fee: ${ENTRY_FEE.toLocaleString()} AP\n\n` +
+      `⚠️ WARNING:\n` +
+      `• This alien will be PERMANENTLY BURNED after the fight!\n` +
+      `• Winner gets 800 AP (net +300 AP profit)\n` +
+      `• Loser loses alien + 500 AP entry fee\n\n` +
+      `Your balance: ${balance.toLocaleString()} AP\n` +
+      `After entry: ${(balance - ENTRY_FEE).toLocaleString()} AP\n\n` +
+      `Do you want to enter ${draggedAlien.name} into the arena?`
+    );
+
+    if (!confirmed) {
+      setDraggedAlien(null);
       return;
     }
 
