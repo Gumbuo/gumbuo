@@ -8,6 +8,7 @@ const AlienDripStation = dynamic(() => import("../app/components/AlienDripStatio
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
 const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
 const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
+const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
 
 export default function Home() {
   return (
@@ -60,7 +61,7 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Side by Side, Aligned */}
-        <div className="grid grid-cols-2 gap-16 justify-items-center mt-12 mb-12 px-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 gap-6 justify-items-center mt-12 mb-12 px-4 max-w-6xl mx-auto">
           <AlienWheel />
           <AlienDripStation />
         </div>
@@ -80,6 +81,9 @@ export default function Home() {
           <GumbuoFightersArena />
         </div>
       </div>
+
+      {/* Music Player - Fixed Bottom Left */}
+      <AlienMusicPlayer />
     </main>
   );
 }
