@@ -55,7 +55,30 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const getUserBalance = (address: string): number => {
-    return userBalances[address.toLowerCase()] || 0;
+    const balance = userBalances[address.toLowerCase()];
+
+    // If balance not loaded yet, fetch it from API
+    if (balance === undefined && address) {
+      fetchUserBalance(address);
+      return 0; // Return 0 temporarily while fetching
+    }
+
+    return balance || 0;
+  };
+
+  const fetchUserBalance = async (address: string) => {
+    try {
+      const response = await fetch(`/api/points?wallet=${address}`);
+      const data = await response.json();
+      if (data.success) {
+        setUserBalances(prev => ({
+          ...prev,
+          [address.toLowerCase()]: data.userBalance,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching user balance:", error);
+    }
   };
 
   const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena'): Promise<boolean> => {
