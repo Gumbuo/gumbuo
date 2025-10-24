@@ -275,7 +275,7 @@ export default function AlienWheel() {
 
         {/* Rotating border effect */}
         {(!hasSpunToday || testMode) && !mustSpin && (
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 rounded-xl opacity-75 blur-sm animate-spin-border-rotate pointer-events-none z-0"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 rounded-xl opacity-75 blur-sm animate-spin-border-rotate pointer-events-none z-0"></div>
         )}
 
         <button
@@ -284,7 +284,7 @@ export default function AlienWheel() {
           className={`px-16 py-6 text-3xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
             hasSpunToday && !testMode || mustSpin
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 text-white hover:scale-110 hover:shadow-2xl hover:shadow-blue-400/80 animate-spin-pulse animate-spin-wiggle"
+              : "bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-spin-pulse animate-spin-wiggle"
           }`}
         >
           {/* Shimmer effect */}
@@ -295,10 +295,10 @@ export default function AlienWheel() {
           {/* Particle effects */}
           {(!hasSpunToday || testMode) && !mustSpin && (
             <>
-              <div className="absolute top-0 left-1/4 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0s', animationDuration: '1s'}}></div>
-              <div className="absolute top-0 right-1/4 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.2s', animationDuration: '1s'}}></div>
-              <div className="absolute bottom-0 left-1/3 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.4s', animationDuration: '1s'}}></div>
-              <div className="absolute bottom-0 right-1/3 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.6s', animationDuration: '1s'}}></div>
+              <div className="absolute top-0 left-1/4 w-2 h-2 bg-green-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0s', animationDuration: '1s'}}></div>
+              <div className="absolute top-0 right-1/4 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.2s', animationDuration: '1s'}}></div>
+              <div className="absolute bottom-0 left-1/3 w-2 h-2 bg-green-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.4s', animationDuration: '1s'}}></div>
+              <div className="absolute bottom-0 right-1/3 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.6s', animationDuration: '1s'}}></div>
             </>
           )}
 
