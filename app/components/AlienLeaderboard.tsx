@@ -167,7 +167,7 @@ export default function AlienLeaderboard() {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-purple-900/40 via-black/90 to-pink-900/40 rounded-2xl border-4 border-purple-400 shadow-2xl shadow-purple-500/50 max-w-4xl w-full relative overflow-hidden">
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-purple-900/40 via-black/90 to-pink-900/40 rounded-2xl border-4 border-purple-400 shadow-2xl shadow-purple-500/50 w-full max-w-3xl relative overflow-hidden">
       {/* Animated corner accents */}
       <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-purple-400 animate-pulse"></div>
       <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-pink-400 animate-pulse"></div>

@@ -189,7 +189,7 @@ export default function AlienDripStation() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6 bg-gradient-to-br from-black via-purple-900/30 to-black bg-opacity-95 rounded-xl w-48 relative overflow-hidden shadow-2xl shadow-purple-500/50">
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-green-900/40 via-black/90 to-cyan-900/40 rounded-2xl border-4 border-cyan-400 shadow-2xl shadow-cyan-500/50 w-full max-w-3xl relative overflow-hidden">
       {/* Animated corner accents */}
       <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-purple-500 animate-pulse"></div>
       <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-purple-500 animate-pulse"></div>
