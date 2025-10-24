@@ -60,8 +60,8 @@ export default function Home() {
           <AlienHUD />
         </div>
 
-        {/* Wheel and Drip Station - Side by Side, Aligned */}
-        <div className="grid grid-cols-2 gap-6 justify-items-center mt-12 mb-12 px-4 max-w-6xl mx-auto">
+        {/* Wheel and Drip Station - Stacked */}
+        <div className="flex flex-col items-center space-y-12 mt-12 mb-12">
           <AlienWheel />
           <AlienDripStation />
         </div>

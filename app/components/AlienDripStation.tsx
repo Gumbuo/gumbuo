@@ -28,8 +28,24 @@ export default function AlienDripStation() {
   const [nextClaimTime, setNextClaimTime] = useState<string | null>(null);
   const [userPoints, setUserPoints] = useState(0);
   const [claiming, setClaiming] = useState(false);
+  const [timeUntilReset, setTimeUntilReset] = useState("");
 
   const gmbAmount = parseFloat(gmbBalance?.formatted || "0");
+
+  // Calculate time until midnight (daily reset)
+  const calculateTimeUntilReset = () => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const diff = tomorrow.getTime() - now.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
   // Get user's drip tier
   const getDripTier = () => {
@@ -67,6 +83,20 @@ export default function AlienDripStation() {
     // Update user balance
     setUserPoints(getUserBalance(address));
   }, [address, getUserBalance]);
+
+  // Update countdown every second
+  useEffect(() => {
+    if (!hasClaimedToday) return;
+
+    const updateTimer = () => {
+      setTimeUntilReset(calculateTimeUntilReset());
+    };
+
+    updateTimer(); // Initial update
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [hasClaimedToday]);
 
   const handleClaim = async () => {
     if (!isConnected || !address) {
@@ -134,7 +164,7 @@ export default function AlienDripStation() {
       <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0.5s'}}></div>
       <div className="absolute top-0 left-3/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '1s'}}></div>
 
-      <h2 className="text-5xl font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10">
+      <h2 className="font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
         <span className="animate-glow">💧 Alien Drip Station 💧</span>
       </h2>
 
@@ -195,8 +225,9 @@ export default function AlienDripStation() {
           {/* Claim Status */}
           {hasClaimedToday && nextClaimTime && (
             <div className="bg-yellow-500 bg-opacity-20 border border-yellow-500 rounded-lg p-4 text-center">
-              <p className="text-yellow-400">✅ Already claimed today!</p>
-              <p className="text-yellow-400 text-sm mt-1">Next claim: {nextClaimTime}</p>
+              <p className="text-yellow-400 font-bold">✅ Already claimed today!</p>
+              <p className="text-yellow-400 text-sm mt-1">Next claim available in:</p>
+              <p className="text-xl text-yellow-300 font-bold mt-1">⏰ {timeUntilReset}</p>
             </div>
           )}
 

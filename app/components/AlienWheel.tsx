@@ -26,6 +26,22 @@ export default function AlienWheel() {
   const [hasSpunToday, setHasSpunToday] = useState(false);
   const [wonPoints, setWonPoints] = useState<number | null>(null);
   const [userPoints, setUserPoints] = useState(0);
+  const [timeUntilReset, setTimeUntilReset] = useState("");
+
+  // Calculate time until midnight (daily reset)
+  const calculateTimeUntilReset = () => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const diff = tomorrow.getTime() - now.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
   // Check if user has spun today
   useEffect(() => {
@@ -48,6 +64,20 @@ export default function AlienWheel() {
     // Update user balance
     setUserPoints(getUserBalance(address));
   }, [address, getUserBalance]);
+
+  // Update countdown every second
+  useEffect(() => {
+    if (!hasSpunToday) return;
+
+    const updateTimer = () => {
+      setTimeUntilReset(calculateTimeUntilReset());
+    };
+
+    updateTimer(); // Initial update
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [hasSpunToday]);
 
   // Weighted random selection
   const getWeightedRandomIndex = () => {
@@ -106,7 +136,7 @@ export default function AlienWheel() {
 
   return (
     <div className="flex flex-col items-center space-y-6 p-6 bg-black bg-opacity-80 rounded-xl w-48">
-      <h2 className="text-5xl font-bold holographic-text tracking-wider flex items-center space-x-3">
+      <h2 className="font-bold holographic-text tracking-wider flex items-center space-x-3" style={{fontSize: '4rem'}}>
         <img src="/nyx.png" alt="Nyx" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
         <span className="animate-glow">Daily Alien Wheel</span>
         <img src="/zorb.png" alt="Zorb" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
@@ -159,7 +189,8 @@ export default function AlienWheel() {
           <p className="text-2xl text-green-400 font-bold">
             Today's Win: {wonPoints} Alien Points! 🎉
           </p>
-          <p className="text-sm text-green-400 mt-1">Come back tomorrow for another spin!</p>
+          <p className="text-sm text-green-400 mt-1">Next spin available in:</p>
+          <p className="text-xl text-yellow-400 font-bold mt-1">⏰ {timeUntilReset}</p>
         </div>
       )}
 
