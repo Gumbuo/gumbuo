@@ -215,15 +215,6 @@ export default function GumbuoFightersArena() {
         <p className="text-sm opacity-75">⚠️ Both aliens BURN after fighting! Winner takes 800 AP! ⚠️</p>
       </div>
 
-      {/* User Balance */}
-      {address && (
-        <div className="w-full bg-green-400/20 border-2 border-green-400 rounded-lg p-4 text-center">
-          <p className="text-green-400 text-lg">
-            👽 Your Alien Points: <span className="font-bold text-3xl">{userBalance.toLocaleString()}</span> AP
-          </p>
-        </div>
-      )}
-
       {/* Betting Info Banner */}
       <div className="w-full bg-gradient-to-r from-green-400/20 via-green-400/30 to-green-400/20 border-2 border-green-400 rounded-lg p-6 relative overflow-hidden shadow-lg shadow-green-400/50">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent animate-shimmer pointer-events-none"></div>
