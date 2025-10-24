@@ -165,8 +165,22 @@ export default function GumbuoFightersArena() {
       const winner = Math.random() > 0.5 ? fighter1 : fighter2;
       const loser = winner === fighter1 ? fighter2 : fighter1;
 
-      // Award winner 800 AP
+      // Award winner 800 AP from reserve pool
       await addPoints(address, WINNER_PRIZE, 'arena');
+
+      // Add house fee (200 AP) to burn pool
+      // Entry fees collected: 1000 AP (500 + 500)
+      // Winner prize: 800 AP
+      // Burn pool: 200 AP
+      try {
+        await fetch('/api/points', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: HOUSE_FEE }),
+        });
+      } catch (error) {
+        console.error("Error adding to burn pool:", error);
+      }
 
       // Burn both aliens
       burnAlien(fighter1);
@@ -182,8 +196,6 @@ export default function GumbuoFightersArena() {
       });
 
       setFighting(false);
-
-      // Note: House fee (200 AP) goes to burn pool automatically via spendPoints
     }, 3000); // 3 second fight animation
   };
 

@@ -174,9 +174,19 @@ export async function PATCH(request: NextRequest) {
       });
     }
 
-    // Deduct points from user and add to marketplace pool
+    // Deduct points from user
     balances[normalizedWallet] = userBalance - points;
-    pool.marketplacePool += points;
+
+    // Add to appropriate pool based on item type
+    if (itemName.includes("Arena Entry Fee")) {
+      // Arena entry fees: 500 AP per player, but only 200 AP house fee goes to burn pool
+      // The rest is paid out to winner (800 AP), so we only add the house fee (200 AP) to marketplace pool
+      // We need to track this per fight, not per entry
+      // For now, don't add anything to marketplace pool on entry - it will be added when fight completes
+    } else {
+      // Marketplace purchases go fully to marketplace pool
+      pool.marketplacePool += points;
+    }
 
     // Save to database
     await redis.set(POOL_KEY, pool);
@@ -193,6 +203,41 @@ export async function PATCH(request: NextRequest) {
     console.error("Error spending points:", error);
     return NextResponse.json(
       { success: false, error: "Failed to spend points" },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT /api/points - Add to burn pool (arena house fee)
+export async function PUT(request: NextRequest) {
+  try {
+    const { amount } = await request.json();
+
+    if (typeof amount !== 'number' || amount <= 0) {
+      return NextResponse.json(
+        { success: false, error: "Invalid amount" },
+        { status: 400 }
+      );
+    }
+
+    // Get current pool
+    let pool = await redis.get<AlienPointsPool>(POOL_KEY) || INITIAL_POOL;
+
+    // Add to marketplace/burn pool
+    pool.marketplacePool += amount;
+
+    // Save to database
+    await redis.set(POOL_KEY, pool);
+
+    return NextResponse.json({
+      success: true,
+      pool,
+      added: amount,
+    });
+  } catch (error) {
+    console.error("Error adding to burn pool:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to add to burn pool" },
       { status: 500 }
     );
   }
