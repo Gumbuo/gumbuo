@@ -219,7 +219,7 @@ export default function GumbuoFightersArena() {
       <div className="w-full bg-gradient-to-r from-green-400/20 via-green-400/30 to-green-400/20 border-2 border-green-400 rounded-lg p-6 relative overflow-hidden shadow-lg shadow-green-400/50">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent animate-shimmer pointer-events-none"></div>
         <div className="text-center relative z-10">
-          <p className="text-green-400 text-2xl font-bold mb-3">💰 ALIEN POINTS BETTING 💰</p>
+          <p className="text-green-400 text-4xl font-bold mb-3">💰 ALIEN POINTS BETTING 💰</p>
           <div className="grid grid-cols-3 gap-4 text-green-300">
             <div className="bg-black/50 p-3 rounded-lg">
               <p className="text-sm opacity-75">Entry Fee</p>
@@ -442,7 +442,7 @@ export default function GumbuoFightersArena() {
       {/* Info */}
       <div className="w-full text-red-400 text-xs text-center max-w-2xl bg-red-400 bg-opacity-10 p-4 rounded-lg">
         <p className="font-bold mb-2">ℹ️ Arena Rules</p>
-        <div className="opacity-75 space-y-2 text-left">
+        <div className="opacity-75 space-y-2 text-center">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
           <p>💰 <strong>Entry Fee:</strong> Each player pays 500 AP to enter the arena</p>
           <p>⚔️ <strong>Fight:</strong> When both slots filled and paid, fight starts automatically (random winner)</p>
