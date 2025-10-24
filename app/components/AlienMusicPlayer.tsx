@@ -33,7 +33,7 @@ export default function AlienMusicPlayer() {
     <div className="fixed bottom-6 left-6 z-50">
       <audio ref={audioRef} src="/home.mp3" loop />
 
-      <div className="flex items-center space-x-3 bg-gradient-to-br from-black via-purple-900/50 to-black bg-opacity-95 rounded-xl p-4 border-2 border-purple-500 shadow-2xl shadow-purple-500/50 relative overflow-hidden">
+      <div className="flex items-center space-x-3 bg-gradient-to-br from-purple-900 via-purple-700 to-purple-900 rounded-xl p-4 border-2 border-purple-400 shadow-2xl shadow-purple-500/80 relative overflow-hidden">
         {/* Animated corner accents */}
         <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-purple-400 animate-pulse"></div>
         <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-400 animate-pulse"></div>
