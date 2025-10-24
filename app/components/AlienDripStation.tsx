@@ -32,14 +32,26 @@ export default function AlienDripStation() {
 
   const gmbAmount = parseFloat(gmbBalance?.formatted || "0");
 
-  // Calculate time until midnight (daily reset)
+  // Calculate time until 8pm EST (daily reset)
   const calculateTimeUntilReset = () => {
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
 
-    const diff = tomorrow.getTime() - now.getTime();
+    // Convert current time to EST
+    const estTime = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+    // Set next reset to 8pm EST today
+    const nextReset = new Date(estTime);
+    nextReset.setHours(20, 0, 0, 0); // 8pm = 20:00
+
+    // If we're past 8pm EST today, set to 8pm EST tomorrow
+    if (estTime >= nextReset) {
+      nextReset.setDate(nextReset.getDate() + 1);
+    }
+
+    // Convert back to local time for comparison
+    const nextResetLocal = new Date(nextReset.toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+
+    const diff = nextResetLocal.getTime() - now.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -59,25 +71,45 @@ export default function AlienDripStation() {
 
   const currentTier = getDripTier();
 
-  // Check if user has claimed today
+  // Check if user has claimed in current 24hr cycle (8pm EST to 8pm EST)
   useEffect(() => {
     if (!address) return;
 
     const lastClaimTime = localStorage.getItem(`lastDrip_${address}`);
+
     if (lastClaimTime) {
       const lastClaim = new Date(parseInt(lastClaimTime));
       const now = new Date();
-      const tomorrow = new Date(lastClaim);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
 
-      if (now < tomorrow) {
+      // Convert to EST
+      const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+      const estLastClaim = new Date(lastClaim.toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+      // Find the last 8pm EST reset
+      const lastReset = new Date(estNow);
+      lastReset.setHours(20, 0, 0, 0);
+      if (estNow < lastReset) {
+        // If before 8pm today, last reset was yesterday at 8pm
+        lastReset.setDate(lastReset.getDate() - 1);
+      }
+
+      // Check if last claim was after the most recent 8pm EST reset
+      if (estLastClaim >= lastReset) {
         setHasClaimedToday(true);
-        setNextClaimTime(tomorrow.toLocaleString());
+        // Calculate next reset time (8pm EST today or tomorrow)
+        const nextReset = new Date(estNow);
+        nextReset.setHours(20, 0, 0, 0);
+        if (estNow >= nextReset) {
+          nextReset.setDate(nextReset.getDate() + 1);
+        }
+        setNextClaimTime(nextReset.toLocaleString());
       } else {
         setHasClaimedToday(false);
         setNextClaimTime(null);
       }
+    } else {
+      setHasClaimedToday(false);
+      setNextClaimTime(null);
     }
 
     // Update user balance
@@ -137,10 +169,15 @@ export default function AlienDripStation() {
         setHasClaimedToday(true);
         setUserPoints(getUserBalance(address));
 
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(0, 0, 0, 0);
-        setNextClaimTime(tomorrow.toLocaleString());
+        // Calculate next reset time (8pm EST today or tomorrow)
+        const now = new Date();
+        const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+        const nextReset = new Date(estNow);
+        nextReset.setHours(20, 0, 0, 0);
+        if (estNow >= nextReset) {
+          nextReset.setDate(nextReset.getDate() + 1);
+        }
+        setNextClaimTime(nextReset.toLocaleString());
 
         alert(`💧 Drip Successful! You claimed ${currentTier.points} Alien Points! 👽`);
       } else {

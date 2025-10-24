@@ -28,14 +28,26 @@ export default function AlienWheel() {
   const [userPoints, setUserPoints] = useState(0);
   const [timeUntilReset, setTimeUntilReset] = useState("");
 
-  // Calculate time until midnight (daily reset)
+  // Calculate time until 8pm EST (daily reset)
   const calculateTimeUntilReset = () => {
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
 
-    const diff = tomorrow.getTime() - now.getTime();
+    // Convert current time to EST
+    const estTime = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+    // Set next reset to 8pm EST today
+    const nextReset = new Date(estTime);
+    nextReset.setHours(20, 0, 0, 0); // 8pm = 20:00
+
+    // If we're past 8pm EST today, set to 8pm EST tomorrow
+    if (estTime >= nextReset) {
+      nextReset.setDate(nextReset.getDate() + 1);
+    }
+
+    // Convert back to local time for comparison
+    const nextResetLocal = new Date(nextReset.toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+
+    const diff = nextResetLocal.getTime() - now.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -43,18 +55,38 @@ export default function AlienWheel() {
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
-  // Check if user has spun today
+  // Check if user has spun in current 24hr cycle (8pm EST to 8pm EST)
   useEffect(() => {
     if (!address) return;
 
-    const lastSpinDate = localStorage.getItem(`lastSpin_${address}`);
-    const today = new Date().toDateString();
+    const lastSpinTime = localStorage.getItem(`lastSpin_${address}`);
 
-    if (lastSpinDate === today) {
-      setHasSpunToday(true);
-      const savedPoints = localStorage.getItem(`lastWin_${address}`);
-      if (savedPoints) {
-        setWonPoints(parseInt(savedPoints));
+    if (lastSpinTime) {
+      const lastSpin = new Date(parseInt(lastSpinTime));
+      const now = new Date();
+
+      // Convert to EST
+      const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+      const estLastSpin = new Date(lastSpin.toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+      // Find the last 8pm EST reset
+      const lastReset = new Date(estNow);
+      lastReset.setHours(20, 0, 0, 0);
+      if (estNow < lastReset) {
+        // If before 8pm today, last reset was yesterday at 8pm
+        lastReset.setDate(lastReset.getDate() - 1);
+      }
+
+      // Check if last spin was after the most recent 8pm EST reset
+      if (estLastSpin >= lastReset) {
+        setHasSpunToday(true);
+        const savedPoints = localStorage.getItem(`lastWin_${address}`);
+        if (savedPoints) {
+          setWonPoints(parseInt(savedPoints));
+        }
+      } else {
+        setHasSpunToday(false);
+        setWonPoints(null);
       }
     } else {
       setHasSpunToday(false);
@@ -119,9 +151,8 @@ export default function AlienWheel() {
       const success = await addPoints(address, points, 'wheel');
 
       if (success) {
-        // Save to localStorage
-        const today = new Date().toDateString();
-        localStorage.setItem(`lastSpin_${address}`, today);
+        // Save to localStorage with timestamp
+        localStorage.setItem(`lastSpin_${address}`, Date.now().toString());
         localStorage.setItem(`lastWin_${address}`, points.toString());
         setHasSpunToday(true);
         setUserPoints(getUserBalance(address));
