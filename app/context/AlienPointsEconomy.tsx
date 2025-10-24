@@ -58,7 +58,7 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
     return userBalances[address.toLowerCase()] || 0;
   };
 
-  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet'): Promise<boolean> => {
+  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena'): Promise<boolean> => {
     try {
       const response = await fetch('/api/points', {
         method: 'POST',
