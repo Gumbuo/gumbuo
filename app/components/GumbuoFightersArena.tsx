@@ -382,12 +382,15 @@ export default function GumbuoFightersArena() {
 
       {/* User's Alien Collection - Draggable */}
       <div className="w-full">
-        <h3 className="font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '4rem'}}>
+        <h3 className="font-bold holographic-text tracking-wider text-center mb-2" style={{fontSize: '4rem'}}>
           <span className="animate-glow">👽 Your Alien Collection 👽</span>
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto p-4 bg-black/50 rounded-lg">
+        <p className="text-green-400 text-sm text-center mb-4 opacity-75">
+          Drag and drop your aliens into the arena
+        </p>
+        <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4">
           {ownedAliens.length === 0 ? (
-            <div className="col-span-full text-center text-gray-500 py-8">
+            <div className="w-full text-center text-gray-500 py-8">
               <p className="text-xl">No aliens yet!</p>
               <p className="text-sm">Purchase aliens from the marketplace to start fighting!</p>
             </div>
@@ -397,19 +400,19 @@ export default function GumbuoFightersArena() {
                 key={alien.id}
                 draggable={!fighting}
                 onDragStart={() => handleDragStart(alien)}
-                className={`bg-gray-900 border-2 border-gray-700 rounded-lg p-2 text-center cursor-move hover:border-green-400 transition-all ${
-                  fighting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                className={`text-center cursor-move transition-all ${
+                  fighting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
                 }`}
               >
-                <div className="flex justify-center items-center h-16 mb-2">
+                <div className="flex justify-center items-center mb-1">
                   <img
                     src={alien.image}
                     alt={alien.name}
-                    className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border border-green-400/30"
+                    className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg"
                     style={{ width: '64px', height: '64px', objectFit: 'contain' }}
                   />
                 </div>
-                <p className="text-green-400 text-sm font-bold truncate">{alien.name}</p>
+                <p className="text-green-400 text-xs font-bold">{alien.name}</p>
               </div>
             ))
           )}
