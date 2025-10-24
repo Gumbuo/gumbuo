@@ -151,12 +151,12 @@ export default function AlienMarketplace() {
               }`}
             >
               {/* Image */}
-              <div className="relative mb-4 flex justify-center items-center h-32">
+              <div className="relative mb-3 flex justify-center items-center h-20">
                 <img
                   src={pic.image}
                   alt={pic.name}
-                  className="max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-2 border-green-400/30"
-                  style={{ width: '128px', height: '128px', objectFit: 'contain' }}
+                  className="max-w-[80px] max-h-[80px] w-auto h-auto object-contain rounded-lg border-2 border-green-400/30"
+                  style={{ width: '80px', height: '80px', objectFit: 'contain' }}
                 />
                 {ownedCount > 0 && (
                   <div className="absolute top-2 right-2 bg-green-400 text-black font-bold px-3 py-1 rounded-lg text-sm">
@@ -166,12 +166,12 @@ export default function AlienMarketplace() {
               </div>
 
               {/* Details */}
-              <h3 className="text-2xl font-bold text-green-400 mb-2">{pic.name}</h3>
-              <p className="text-gray-400 text-sm mb-4">{pic.description}</p>
+              <h3 className="text-lg font-bold text-green-400 mb-1">{pic.name}</h3>
+              <p className="text-gray-400 text-xs mb-2">{pic.description}</p>
 
               {/* Price */}
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-yellow-400 font-bold text-xl">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-yellow-400 font-bold text-lg">
                   {pic.price.toLocaleString()} AP
                 </span>
               </div>
@@ -180,7 +180,7 @@ export default function AlienMarketplace() {
               <button
                 onClick={() => handlePurchase(pic)}
                 disabled={!isConnected || isPurchasing}
-                className={`w-full px-6 py-3 text-lg font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
+                className={`w-full px-4 py-2 text-sm font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
                   !isConnected || isPurchasing
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                     : "bg-gradient-to-r from-green-400 via-green-500 to-green-400 text-black hover:scale-105 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow"
