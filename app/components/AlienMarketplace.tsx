@@ -122,8 +122,17 @@ export default function AlienMarketplace() {
         <span className="animate-glow">👽 Alien Marketplace 🛸</span>
       </h2>
 
-      {/* Alien Pics Grid */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Info Section */}
+      <div className="w-full text-green-400 text-xs text-center max-w-2xl bg-green-400 bg-opacity-10 p-3 rounded-lg">
+        <p className="font-bold mb-1">ℹ️ Marketplace Info</p>
+        <p className="opacity-75">
+          Use your Alien Points to purchase exclusive Gumbuo Fighters alien pics!
+          Each purchase is permanent and unique to your wallet. More pics coming soon! 🚀
+        </p>
+      </div>
+
+      {/* Alien Pics - Side by Side */}
+      <div className="w-full flex justify-center gap-8">
         {ALIEN_PICS.map((pic) => {
           const ownedCount = ownedAliens.filter(a => a.picId === pic.id).length;
           const isPurchasing = purchasing === pic.id;
@@ -131,14 +140,13 @@ export default function AlienMarketplace() {
           return (
             <div
               key={pic.id}
-              className={`bg-black bg-opacity-50 border rounded-lg p-4 transition-all duration-300 ${
-                ownedCount > 0
-                  ? 'border-green-400 shadow-lg shadow-green-400/50'
-                  : 'border-gray-600 hover:border-green-400 hover:shadow-lg hover:shadow-green-400/30'
-              }`}
+              className="flex flex-col items-center"
             >
+              {/* Name above */}
+              <h3 className="text-xl font-bold text-green-400 mb-2">{pic.name}</h3>
+
               {/* Image */}
-              <div className="relative mb-2 flex justify-center items-center h-16">
+              <div className="relative mb-2 flex justify-center items-center">
                 <img
                   src={pic.image}
                   alt={pic.name}
@@ -146,31 +154,20 @@ export default function AlienMarketplace() {
                   style={{ width: '64px', height: '64px', objectFit: 'contain' }}
                 />
                 {ownedCount > 0 && (
-                  <div className="absolute top-2 right-2 bg-green-400 text-black font-bold px-3 py-1 rounded-lg text-sm">
-                    OWNED x{ownedCount}
+                  <div className="absolute -top-2 -right-2 bg-green-400 text-black font-bold px-2 py-1 rounded-full text-xs">
+                    x{ownedCount}
                   </div>
                 )}
               </div>
 
-              {/* Details */}
-              <h3 className="text-lg font-bold text-green-400 mb-1">{pic.name}</h3>
-              <p className="text-gray-400 text-xs mb-2">{pic.description}</p>
-
-              {/* Price */}
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-yellow-400 font-bold text-lg">
-                  {pic.price.toLocaleString()} AP
-                </span>
-              </div>
-
-              {/* Purchase Button */}
+              {/* Small animated buy button below */}
               <button
                 onClick={() => handlePurchase(pic)}
                 disabled={!isConnected || isPurchasing}
-                className={`w-full px-4 py-2 text-sm font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
+                className={`px-4 py-1 text-xs font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
                   !isConnected || isPurchasing
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-green-400 via-green-500 to-green-400 text-black hover:scale-105 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow"
+                    : "bg-gradient-to-r from-green-400 via-green-500 to-green-400 text-black hover:scale-110 hover:shadow-xl hover:shadow-green-400/80 animate-pulse-glow"
                 }`}
               >
                 {!isConnected || isPurchasing ? null : (
@@ -178,25 +175,15 @@ export default function AlienMarketplace() {
                 )}
                 <span className="relative z-10">
                   {!isConnected
-                    ? "Connect Wallet"
+                    ? "Connect"
                     : isPurchasing
-                    ? "Purchasing..."
-                    : `BUY ${ownedCount > 0 ? 'ANOTHER' : 'NOW'} - ${pic.price.toLocaleString()} AP`}
+                    ? "Buying..."
+                    : `BUY ${pic.price.toLocaleString()} AP`}
                 </span>
               </button>
             </div>
           );
         })}
-      </div>
-
-      {/* Info Section */}
-      <div className="w-full text-green-400 text-xs text-center max-w-2xl bg-green-400 bg-opacity-10 p-4 rounded-lg">
-        <p className="font-bold mb-2">ℹ️ Marketplace Info</p>
-        <p className="opacity-75">
-          Use your Alien Points to purchase exclusive Gumbuo Fighters alien pics!
-          Each purchase is permanent and unique to your wallet.
-          Points spent go into the marketplace pool. More pics coming soon! 🚀
-        </p>
       </div>
     </div>
   );
