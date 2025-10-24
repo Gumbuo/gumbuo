@@ -166,30 +166,33 @@ export default function AlienWheel() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6 bg-black bg-opacity-80 rounded-xl w-48">
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-blue-900/40 via-black/90 to-blue-900/40 rounded-2xl border-4 border-blue-400 shadow-2xl shadow-blue-500/50 max-w-4xl w-full">
       <h2 className="font-bold holographic-text tracking-wider flex items-center space-x-3" style={{fontSize: '4rem'}}>
-        <img src="/nyx.png" alt="Nyx" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
-        <span className="animate-glow">Daily Alien Wheel</span>
-        <img src="/zorb.png" alt="Zorb" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
+        <img src="/nyx.png" alt="Nyx" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
+        <span className="animate-glow text-blue-400">🎰 Daily Alien Wheel 🎰</span>
+        <img src="/zorb.png" alt="Zorb" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
       </h2>
 
       {/* Pool Status */}
-      <div className="w-full bg-green-400 bg-opacity-10 border border-green-400 rounded-lg p-4">
-        <p className="text-green-400 text-center text-lg">
-          🎰 Wheel Pool: <span className="font-bold">{getPoolRemaining('wheel').toLocaleString()}</span> / 100,000,000 AP
+      <div className="w-full bg-gradient-to-r from-blue-400/10 via-blue-400/20 to-blue-400/10 border-2 border-blue-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-blue-400/30">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-shimmer pointer-events-none"></div>
+        <p className="text-blue-400 text-center text-xl drop-shadow-glow relative z-10">
+          🎰 Wheel Pool: <span className="font-bold text-2xl">{getPoolRemaining('wheel').toLocaleString()}</span> / 100,000,000 AP
         </p>
-        <div className="w-full bg-gray-800 rounded-full h-3 mt-2">
+        <div className="w-full bg-gray-900 rounded-full h-5 border-2 border-gray-700 shadow-inner mt-2 relative overflow-hidden">
           <div
-            className="bg-green-400 h-3 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-blue-400/50 relative overflow-hidden"
             style={{width: `${(getPoolRemaining('wheel') / 100_000_000) * 100}%`}}
-          />
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+          </div>
         </div>
       </div>
 
       {/* User Balance */}
       {isConnected && address && (
-        <div className="w-full bg-green-400 bg-opacity-20 border border-green-400 rounded-lg p-4 text-center">
-          <p className="text-green-400 text-lg">
+        <div className="w-full bg-blue-400 bg-opacity-20 border-2 border-blue-400 rounded-lg p-4 text-center shadow-lg shadow-blue-400/30">
+          <p className="text-blue-400 text-xl">
             👽 Your Alien Points: <span className="font-bold text-3xl">{userPoints.toLocaleString()}</span>
           </p>
         </div>
@@ -216,43 +219,49 @@ export default function AlienWheel() {
       </div>
 
       {wonPoints !== null && hasSpunToday && (
-        <div className="text-center p-4 bg-green-400 bg-opacity-20 border border-green-400 rounded-lg">
-          <p className="text-2xl text-green-400 font-bold">
+        <div className="text-center p-6 bg-gradient-to-r from-blue-400/20 via-blue-400/30 to-blue-400/20 border-2 border-blue-400 rounded-lg shadow-lg shadow-blue-400/30 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-shimmer pointer-events-none"></div>
+          <p className="text-3xl text-blue-400 font-bold relative z-10">
             Today's Win: {wonPoints} Alien Points! 🎉
           </p>
-          <p className="text-sm text-green-400 mt-1">Next spin available in:</p>
-          <p className="text-xl text-yellow-400 font-bold mt-1">⏰ {timeUntilReset}</p>
+          <p className="text-lg text-blue-300 mt-2 relative z-10">Next spin available in:</p>
+          <p className="text-2xl text-yellow-400 font-bold mt-1 animate-pulse relative z-10">⏰ {timeUntilReset}</p>
         </div>
       )}
 
       <button
         onClick={handleSpinClick}
         disabled={hasSpunToday || mustSpin}
-        className={`px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 ${
+        className={`px-16 py-6 text-3xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
           hasSpunToday || mustSpin
             ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-            : "bg-green-400 text-black hover:bg-green-500 hover:scale-105"
+            : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 text-white hover:scale-110 hover:shadow-2xl hover:shadow-blue-400/80 animate-pulse-glow"
         }`}
       >
-        {hasSpunToday ? "Already Spun Today! 👽" : mustSpin ? "Spinning..." : "SPIN THE WHEEL! 🎰"}
+        {!hasSpunToday && !mustSpin && (
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+        )}
+        <span className="relative z-10">
+          {hasSpunToday ? "Already Spun Today! 👽" : mustSpin ? "Spinning... 🎰" : "SPIN THE WHEEL! 🎰"}
+        </span>
       </button>
 
       {!isConnected && (
-        <p className="text-yellow-400 text-sm">⚠️ Connect your wallet to spin!</p>
+        <p className="text-yellow-400 text-lg font-bold animate-pulse">⚠️ Connect your wallet to spin!</p>
       )}
 
-      <div className="text-green-400 text-xs text-center max-w-md">
-        <p className="font-bold mb-2">Prize Probabilities:</p>
-        <div className="grid grid-cols-2 gap-2">
-          <span>50 pts: Common</span>
-          <span>75 pts: Common</span>
-          <span>100 pts: Common</span>
-          <span>150 pts: Uncommon</span>
-          <span>200 pts: Uncommon</span>
-          <span>250 pts: Rare</span>
-          <span>300 pts: Very Rare</span>
-          <span>400 pts: Epic</span>
-          <span className="col-span-2 text-yellow-400">500 pts: LEGENDARY! 🌟</span>
+      <div className="w-full bg-gradient-to-r from-blue-900/30 via-blue-800/40 to-blue-900/30 border-2 border-blue-400/50 rounded-lg p-6 shadow-lg shadow-blue-400/20">
+        <p className="font-bold text-xl mb-4 text-blue-400 text-center">🎰 Prize Probabilities 🎰</p>
+        <div className="grid grid-cols-2 gap-3 text-base">
+          <span className="text-blue-300">50 pts: Common</span>
+          <span className="text-blue-300">75 pts: Common</span>
+          <span className="text-blue-300">100 pts: Common</span>
+          <span className="text-purple-300">150 pts: Uncommon</span>
+          <span className="text-purple-300">200 pts: Uncommon</span>
+          <span className="text-pink-300">250 pts: Rare</span>
+          <span className="text-pink-400">300 pts: Very Rare</span>
+          <span className="text-orange-400">400 pts: Epic</span>
+          <span className="col-span-2 text-yellow-400 font-bold text-lg text-center animate-pulse">500 pts: LEGENDARY! 🌟</span>
         </div>
       </div>
     </div>
