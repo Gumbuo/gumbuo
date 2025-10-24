@@ -28,6 +28,7 @@ export default function AlienWheel() {
   const [userPoints, setUserPoints] = useState(0);
   const [timeUntilReset, setTimeUntilReset] = useState("");
   const [showConfetti, setShowConfetti] = useState(false);
+  const [testMode, setTestMode] = useState(false);
 
   // Calculate time until 8pm EST (daily reset)
   const calculateTimeUntilReset = () => {
@@ -258,27 +259,41 @@ export default function AlienWheel() {
       )}
 
       <div className="relative">
+        {/* Test Mode Toggle */}
+        <button
+          onClick={() => {
+            setTestMode(!testMode);
+            if (!testMode) {
+              setShowConfetti(true);
+              setTimeout(() => setShowConfetti(false), 1000);
+            }
+          }}
+          className="absolute -top-12 right-0 px-4 py-2 text-sm bg-purple-500 text-white rounded-lg hover:bg-purple-600 z-50"
+        >
+          {testMode ? "Disable Test Mode" : "Enable Test Mode (See Animations)"}
+        </button>
+
+        {/* Rotating border effect */}
+        {(!hasSpunToday || testMode) && !mustSpin && (
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 rounded-xl opacity-75 blur-sm animate-spin-border-rotate pointer-events-none z-0"></div>
+        )}
+
         <button
           onClick={handleSpinClick}
-          disabled={hasSpunToday || mustSpin}
+          disabled={(hasSpunToday && !testMode) || mustSpin}
           className={`px-16 py-6 text-3xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
-            hasSpunToday || mustSpin
+            hasSpunToday && !testMode || mustSpin
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
               : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 text-white hover:scale-110 hover:shadow-2xl hover:shadow-blue-400/80 animate-spin-pulse animate-spin-wiggle"
           }`}
         >
-          {/* Rotating border effect */}
-          {!hasSpunToday && !mustSpin && (
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 rounded-xl opacity-75 blur-sm animate-spin-border-rotate"></div>
-          )}
-
           {/* Shimmer effect */}
-          {!hasSpunToday && !mustSpin && (
+          {(!hasSpunToday || testMode) && !mustSpin && (
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
           )}
 
-          {/* Particle effects on hover */}
-          {!hasSpunToday && !mustSpin && (
+          {/* Particle effects */}
+          {(!hasSpunToday || testMode) && !mustSpin && (
             <>
               <div className="absolute top-0 left-1/4 w-2 h-2 bg-cyan-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0s', animationDuration: '1s'}}></div>
               <div className="absolute top-0 right-1/4 w-2 h-2 bg-blue-400 rounded-full blur-sm animate-bounce" style={{animationDelay: '0.2s', animationDuration: '1s'}}></div>
@@ -288,7 +303,7 @@ export default function AlienWheel() {
           )}
 
           <span className="relative z-10">
-            {hasSpunToday ? "Already Spun Today! 👽" : mustSpin ? "Spinning... 🎰" : "SPIN THE WHEEL! 🎰"}
+            {hasSpunToday && !testMode ? "Already Spun Today! 👽" : mustSpin ? "Spinning... 🎰" : "SPIN THE WHEEL! 🎰"}
           </span>
         </button>
       </div>
