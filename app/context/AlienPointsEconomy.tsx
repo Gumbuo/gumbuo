@@ -13,7 +13,7 @@ interface AlienPointsPool {
 interface AlienPointsContextType {
   pool: AlienPointsPool;
   getUserBalance: (address: string) => number;
-  addPoints: (address: string, points: number, source: 'wheel' | 'faucet') => Promise<boolean>;
+  addPoints: (address: string, points: number, source: 'wheel' | 'faucet' | 'arena') => Promise<boolean>;
   spendPoints: (address: string, points: number, itemName: string) => Promise<boolean>;
   getPoolRemaining: (source: 'wheel' | 'faucet') => number;
   refreshPool: () => Promise<void>;
