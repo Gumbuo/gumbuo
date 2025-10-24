@@ -171,7 +171,7 @@ export default function AlienWheel() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-blue-900/40 via-black/90 to-blue-900/40 rounded-2xl border-4 border-blue-400 shadow-2xl shadow-blue-500/50 w-full max-w-3xl">
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-blue-900/40 via-black/90 to-blue-900/40 rounded-2xl border-4 border-blue-400 shadow-2xl shadow-blue-500/50 max-w-3xl">
       <h2 className="font-bold holographic-text tracking-wider flex items-center space-x-3" style={{fontSize: '4rem'}}>
         <img src="/nyx.png" alt="Nyx" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
         <span className="animate-glow text-blue-400">🎰 Daily Alien Wheel 🎰</span>
