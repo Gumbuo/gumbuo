@@ -19,7 +19,7 @@ interface FightResult {
 
 const ENTRY_FEE = 500; // AP or GMB
 const WINNER_PRIZE = 800; // AP or GMB
-const HOUSE_FEE = 200; // AP or GMB (goes to burn pool)
+const HOUSE_FEE = 200; // Total collected (1000 AP) - Winner prize (800 AP) = 200 AP to burn pool
 
 export default function GumbuoFightersArena() {
   const { address } = useAccount();
@@ -168,10 +168,11 @@ export default function GumbuoFightersArena() {
       // Award winner 800 AP from reserve pool
       await addPoints(address, WINNER_PRIZE, 'arena');
 
-      // Add house fee (200 AP) to burn pool
-      // Entry fees collected: 1000 AP (500 + 500)
+      // Add house fee to burn pool
+      // Entry fees collected: 500 + 500 = 1000 AP
       // Winner prize: 800 AP
-      // Burn pool: 200 AP
+      // Burn pool gets: 1000 - 800 = 200 AP
+      // Note: Alien purchase prices (500 AP each) already went to burn pool when bought from marketplace
       try {
         await fetch('/api/points', {
           method: 'PUT',
@@ -228,9 +229,9 @@ export default function GumbuoFightersArena() {
           <span className="animate-glow">💰 ALIEN POINTS BETTING 💰</span>
         </p>
         <div className="opacity-75 space-y-1">
-          <p>💵 <strong>Entry Fee:</strong> 500 AP per player</p>
+          <p>💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
           <p>🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
-          <p>🏠 <strong>Burn Pool:</strong> 200 AP goes to burn pool for future airdrops/rewards</p>
+          <p>🔥 <strong>Burn Pool:</strong> 200 AP per fight (1000 AP collected - 800 AP winner prize)</p>
         </div>
       </div>
 
