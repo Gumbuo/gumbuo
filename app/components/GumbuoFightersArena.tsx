@@ -243,11 +243,14 @@ export default function GumbuoFightersArena() {
         >
           {fighter1 ? (
             <div className="text-center">
-              <img
-                src={fighter1.image}
-                alt={fighter1.name}
-                className={`w-24 h-24 object-contain rounded-lg mb-2 mx-auto border-2 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
-              />
+              <div className="flex justify-center items-center h-24 mb-2">
+                <img
+                  src={fighter1.image}
+                  alt={fighter1.name}
+                  className={`max-w-[96px] max-h-[96px] w-auto h-auto object-contain rounded-lg border-2 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
+                  style={{ width: '96px', height: '96px', objectFit: 'contain' }}
+                />
+              </div>
               <p className="text-blue-400 font-bold text-xl">{fighter1.name}</p>
               <button
                 onClick={() => setFighter1(null)}
@@ -289,11 +292,14 @@ export default function GumbuoFightersArena() {
         >
           {fighter2 ? (
             <div className="text-center">
-              <img
-                src={fighter2.image}
-                alt={fighter2.name}
-                className={`w-24 h-24 object-contain rounded-lg mb-2 mx-auto border-2 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
-              />
+              <div className="flex justify-center items-center h-24 mb-2">
+                <img
+                  src={fighter2.image}
+                  alt={fighter2.name}
+                  className={`max-w-[96px] max-h-[96px] w-auto h-auto object-contain rounded-lg border-2 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
+                  style={{ width: '96px', height: '96px', objectFit: 'contain' }}
+                />
+              </div>
               <p className="text-red-400 font-bold text-xl">{fighter2.name}</p>
               <button
                 onClick={() => setFighter2(null)}
@@ -318,13 +324,27 @@ export default function GumbuoFightersArena() {
           <p className="text-yellow-400 text-3xl font-bold mb-4">🏆 FIGHT RESULT! 🏆</p>
           <div className="flex justify-center items-center space-x-8">
             <div>
-              <img src={fightResult.winner.image} alt="Winner" className="w-24 h-24 object-contain rounded-lg mb-2 mx-auto border-2 border-green-400" />
+              <div className="flex justify-center items-center h-24 mb-2">
+                <img
+                  src={fightResult.winner.image}
+                  alt="Winner"
+                  className="max-w-[96px] max-h-[96px] w-auto h-auto object-contain rounded-lg border-2 border-green-400"
+                  style={{ width: '96px', height: '96px', objectFit: 'contain' }}
+                />
+              </div>
               <p className="text-green-400 font-bold text-xl">WINNER!</p>
               <p className="text-green-400">{fightResult.winner.name}</p>
             </div>
             <p className="text-4xl">VS</p>
             <div className="opacity-50">
-              <img src={fightResult.loser.image} alt="Loser" className="w-24 h-24 object-contain rounded-lg mb-2 mx-auto grayscale border-2 border-red-400" />
+              <div className="flex justify-center items-center h-24 mb-2">
+                <img
+                  src={fightResult.loser.image}
+                  alt="Loser"
+                  className="max-w-[96px] max-h-[96px] w-auto h-auto object-contain rounded-lg grayscale border-2 border-red-400"
+                  style={{ width: '96px', height: '96px', objectFit: 'contain' }}
+                />
+              </div>
               <p className="text-red-400 font-bold text-xl">DEFEATED</p>
               <p className="text-red-400">{fightResult.loser.name}</p>
             </div>
@@ -357,11 +377,14 @@ export default function GumbuoFightersArena() {
                   fighting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
                 }`}
               >
-                <img
-                  src={alien.image}
-                  alt={alien.name}
-                  className="w-20 h-20 object-contain rounded-lg mb-2 mx-auto border border-green-400/30"
-                />
+                <div className="flex justify-center items-center h-20 mb-2">
+                  <img
+                    src={alien.image}
+                    alt={alien.name}
+                    className="max-w-[80px] max-h-[80px] w-auto h-auto object-contain rounded-lg border border-green-400/30"
+                    style={{ width: '80px', height: '80px', objectFit: 'contain' }}
+                  />
+                </div>
                 <p className="text-green-400 text-sm font-bold truncate">{alien.name}</p>
               </div>
             ))
