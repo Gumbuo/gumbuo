@@ -7,13 +7,13 @@ import { useAlienPoints } from "../context/AlienPointsEconomy";
 // Wheel segments with weighted probability (lower value = more common)
 const wheelData = [
   { option: "50", style: { backgroundColor: "#00ff99", textColor: "#000" }, probability: 30 },
-  { option: "75", style: { backgroundColor: "#8e44ad", textColor: "#fff" }, probability: 25 },
+  { option: "75", style: { backgroundColor: "#3b82f6", textColor: "#fff" }, probability: 25 },
   { option: "100", style: { backgroundColor: "#00ff99", textColor: "#000" }, probability: 20 },
-  { option: "150", style: { backgroundColor: "#8e44ad", textColor: "#fff" }, probability: 12 },
+  { option: "150", style: { backgroundColor: "#3b82f6", textColor: "#fff" }, probability: 12 },
   { option: "200", style: { backgroundColor: "#00ff99", textColor: "#000" }, probability: 8 },
-  { option: "250", style: { backgroundColor: "#8e44ad", textColor: "#fff" }, probability: 3 },
+  { option: "250", style: { backgroundColor: "#3b82f6", textColor: "#fff" }, probability: 3 },
   { option: "300", style: { backgroundColor: "#00ff99", textColor: "#000" }, probability: 1.5 },
-  { option: "400", style: { backgroundColor: "#8e44ad", textColor: "#fff" }, probability: 0.4 },
+  { option: "400", style: { backgroundColor: "#3b82f6", textColor: "#fff" }, probability: 0.4 },
   { option: "500", style: { backgroundColor: "#FFD700", textColor: "#000" }, probability: 0.1 }, // Rare gold!
   { option: "100", style: { backgroundColor: "#00ff99", textColor: "#000" }, probability: 20 }, // Duplicate for balance
 ];
