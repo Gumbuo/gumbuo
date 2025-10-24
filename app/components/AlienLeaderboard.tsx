@@ -159,42 +159,42 @@ export default function AlienLeaderboard() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black bg-opacity-80 border-2 border-green-400 rounded-xl max-w-4xl w-full min-h-96">
-        <div className="text-green-400 text-2xl animate-pulse">Loading Leaderboard...</div>
-        <div className="text-green-400 text-lg">Fetching galactic data 🛸</div>
+      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black bg-opacity-80 border-2 border-purple-400 rounded-xl max-w-4xl w-full min-h-96">
+        <div className="text-purple-400 text-2xl animate-pulse">Loading Leaderboard...</div>
+        <div className="text-purple-400 text-lg">Fetching galactic data 🛸</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6 bg-gradient-to-br from-black via-gray-900 to-black bg-opacity-95 rounded-xl w-96 relative overflow-hidden shadow-2xl shadow-green-400/50">
+    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-purple-900/40 via-black/90 to-pink-900/40 rounded-2xl border-4 border-purple-400 shadow-2xl shadow-purple-500/50 max-w-4xl w-full relative overflow-hidden">
       {/* Animated corner accents */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-green-400 animate-pulse"></div>
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-green-400 animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-green-400 animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-green-400 animate-pulse"></div>
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-purple-400 animate-pulse"></div>
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-pink-400 animate-pulse"></div>
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-pink-400 animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-purple-400 animate-pulse"></div>
 
       {/* Scan line effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-400/5 to-transparent animate-scan pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-400/5 to-transparent animate-scan pointer-events-none"></div>
 
       <h2 className="font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
-        <span className="animate-glow">👽 First Timer Leaderboard 🛸</span>
+        <span className="animate-glow text-purple-400">👽 First Timer Leaderboard 🛸</span>
       </h2>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gradient-to-r from-green-400/10 via-green-400/20 to-green-400/10 border-2 border-green-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-green-400/30 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/10 to-transparent animate-shimmer pointer-events-none"></div>
+      <div className="w-full bg-gradient-to-r from-purple-400/10 via-purple-400/20 to-purple-400/10 border-2 border-purple-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-purple-400/30 z-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400/10 to-transparent animate-shimmer pointer-events-none"></div>
         <div className="flex justify-between items-center mb-2 relative z-10">
-          <p className="text-green-400 text-lg drop-shadow-glow">
-            📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
+          <p className="text-purple-400 text-xl drop-shadow-glow">
+            📊 Progress: <span className="font-bold text-2xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
           </p>
-          <p className={`text-lg font-bold ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse drop-shadow-lg' : 'text-yellow-400 drop-shadow-glow'}`}>
+          <p className={`text-xl font-bold ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse drop-shadow-lg' : 'text-pink-400 drop-shadow-glow'}`}>
             {spotsRemaining} spots left!
           </p>
         </div>
         <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-gray-700 shadow-inner relative overflow-hidden">
           <div
-            className="bg-gradient-to-r from-green-500 via-green-400 to-green-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-green-400/50 relative overflow-hidden"
+            className="bg-gradient-to-r from-purple-500 via-pink-400 to-purple-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-purple-400/50 relative overflow-hidden"
             style={{width: `${getProgressPercentage()}%`}}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
@@ -206,14 +206,14 @@ export default function AlienLeaderboard() {
       {isConnected && address && (
         <div className={`w-full border rounded-lg p-4 ${
           isRegistered
-            ? 'bg-green-400 bg-opacity-20 border-green-400'
+            ? 'bg-purple-400 bg-opacity-20 border-purple-400'
             : 'bg-yellow-500 bg-opacity-20 border-yellow-500'
         }`}>
           {isRegistered ? (
             <div className="text-center">
-              <p className="text-green-400 text-xl font-bold">✅ You're Registered!</p>
-              <p className="text-green-400 text-lg mt-1">Your Rank: <span className="text-3xl font-bold">#{userRank}</span></p>
-              <p className="text-green-400 text-sm mt-2">You'll receive a GMB airdrop when we reach 50 members! 🎉</p>
+              <p className="text-purple-400 text-xl font-bold">✅ You're Registered!</p>
+              <p className="text-purple-400 text-lg mt-1">Your Rank: <span className="text-3xl font-bold">#{userRank}</span></p>
+              <p className="text-purple-400 text-sm mt-2">You'll receive a GMB airdrop when we reach 50 members! 🎉</p>
             </div>
           ) : (
             <div className="text-center">
@@ -232,7 +232,7 @@ export default function AlienLeaderboard() {
           className={`px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
             !isConnected || leaderboard.length >= MAX_FIRST_TIMERS
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-green-400 via-green-500 to-green-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow"
+              : "bg-gradient-to-r from-purple-400 via-green-500 to-purple-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow"
           }`}
         >
           {!isConnected || leaderboard.length >= MAX_FIRST_TIMERS ? null : (
@@ -249,8 +249,8 @@ export default function AlienLeaderboard() {
       )}
 
       {/* Leaderboard Table */}
-      <div className="w-full bg-black bg-opacity-50 border border-green-400 rounded-lg overflow-hidden">
-        <div className="bg-green-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-green-400 border-b border-green-400">
+      <div className="w-full bg-black bg-opacity-50 border border-purple-400 rounded-lg overflow-hidden">
+        <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-purple-400 border-b border-purple-400">
           <div className="text-center">Rank</div>
           <div className="text-center">Wallet</div>
           <div className="text-center">Alien Points</div>
@@ -259,19 +259,19 @@ export default function AlienLeaderboard() {
 
         <div className="max-h-96 overflow-y-auto">
           {leaderboard.length === 0 ? (
-            <div className="p-8 text-center text-green-400 opacity-50">
+            <div className="p-8 text-center text-purple-400 opacity-50">
               <p className="text-xl">👽 No one registered yet! Be the first! 👽</p>
             </div>
           ) : (
             leaderboard.map((entry, index) => (
               <div
                 key={entry.wallet}
-                className={`grid grid-cols-4 gap-4 p-3 border-b border-green-400 border-opacity-30 transition-colors ${
+                className={`grid grid-cols-4 gap-4 p-3 border-b border-purple-400 border-opacity-30 transition-colors ${
                   address && entry.wallet.toLowerCase() === address.toLowerCase()
-                    ? 'bg-green-400 bg-opacity-30'
-                    : 'hover:bg-green-400 hover:bg-opacity-10'
+                    ? 'bg-purple-400 bg-opacity-30'
+                    : 'hover:bg-purple-400 hover:bg-opacity-10'
                 } ${
-                  index < 3 ? 'text-yellow-400 font-bold' : 'text-green-400'
+                  index < 3 ? 'text-yellow-400 font-bold' : 'text-purple-400'
                 }`}
               >
                 <div className="text-center flex items-center justify-center">
@@ -304,7 +304,7 @@ export default function AlienLeaderboard() {
       )}
 
       {/* Info Section */}
-      <div className="w-full text-green-400 text-xs text-center max-w-2xl bg-green-400 bg-opacity-10 p-4 rounded-lg">
+      <div className="w-full text-purple-400 text-xs text-center max-w-2xl bg-purple-400 bg-opacity-10 p-4 rounded-lg">
         <p className="font-bold mb-2">ℹ️ Leaderboard Info</p>
         <p className="opacity-75">
           The first 50 wallets to register will receive an exclusive GMB token airdrop!
