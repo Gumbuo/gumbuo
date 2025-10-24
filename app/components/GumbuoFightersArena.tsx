@@ -246,7 +246,7 @@ export default function GumbuoFightersArena() {
               <img
                 src={fighter1.image}
                 alt={fighter1.name}
-                className={`w-32 h-32 object-cover rounded-lg mb-2 mx-auto ${fighting ? 'animate-bounce' : ''}`}
+                className={`w-24 h-24 object-contain rounded-lg mb-2 mx-auto border-2 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
               />
               <p className="text-blue-400 font-bold text-xl">{fighter1.name}</p>
               <button
@@ -292,7 +292,7 @@ export default function GumbuoFightersArena() {
               <img
                 src={fighter2.image}
                 alt={fighter2.name}
-                className={`w-32 h-32 object-cover rounded-lg mb-2 mx-auto ${fighting ? 'animate-bounce' : ''}`}
+                className={`w-24 h-24 object-contain rounded-lg mb-2 mx-auto border-2 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
               />
               <p className="text-red-400 font-bold text-xl">{fighter2.name}</p>
               <button
@@ -318,13 +318,13 @@ export default function GumbuoFightersArena() {
           <p className="text-yellow-400 text-3xl font-bold mb-4">🏆 FIGHT RESULT! 🏆</p>
           <div className="flex justify-center items-center space-x-8">
             <div>
-              <img src={fightResult.winner.image} alt="Winner" className="w-24 h-24 object-cover rounded-lg mb-2" />
+              <img src={fightResult.winner.image} alt="Winner" className="w-24 h-24 object-contain rounded-lg mb-2 mx-auto border-2 border-green-400" />
               <p className="text-green-400 font-bold text-xl">WINNER!</p>
               <p className="text-green-400">{fightResult.winner.name}</p>
             </div>
             <p className="text-4xl">VS</p>
             <div className="opacity-50">
-              <img src={fightResult.loser.image} alt="Loser" className="w-24 h-24 object-cover rounded-lg mb-2 grayscale" />
+              <img src={fightResult.loser.image} alt="Loser" className="w-24 h-24 object-contain rounded-lg mb-2 mx-auto grayscale border-2 border-red-400" />
               <p className="text-red-400 font-bold text-xl">DEFEATED</p>
               <p className="text-red-400">{fightResult.loser.name}</p>
             </div>
@@ -360,7 +360,7 @@ export default function GumbuoFightersArena() {
                 <img
                   src={alien.image}
                   alt={alien.name}
-                  className="w-full h-24 object-cover rounded-lg mb-2"
+                  className="w-20 h-20 object-contain rounded-lg mb-2 mx-auto border border-green-400/30"
                 />
                 <p className="text-green-400 text-sm font-bold truncate">{alien.name}</p>
               </div>

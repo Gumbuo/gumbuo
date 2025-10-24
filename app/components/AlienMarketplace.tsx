@@ -151,11 +151,11 @@ export default function AlienMarketplace() {
               }`}
             >
               {/* Image */}
-              <div className="relative mb-4">
+              <div className="relative mb-4 flex justify-center">
                 <img
                   src={pic.image}
                   alt={pic.name}
-                  className="w-full h-48 object-cover rounded-lg"
+                  className="w-32 h-32 object-contain rounded-lg border-2 border-green-400/30"
                 />
                 {ownedCount > 0 && (
                   <div className="absolute top-2 right-2 bg-green-400 text-black font-bold px-3 py-1 rounded-lg text-sm">
