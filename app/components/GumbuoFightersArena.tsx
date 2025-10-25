@@ -117,7 +117,7 @@ export default function GumbuoFightersArena() {
 
     // Confirmation dialog
     const confirmed = confirm(
-      `⚔️ CONFIRM ARENA ENTRY - FIGHTER 1\n\n` +
+      `⚔️ CONFIRM ARENA ENTRY - PLAYER 1\n\n` +
       `Alien: ${draggedAlien.name}\n` +
       `Entry Fee: ${ENTRY_FEE.toLocaleString()} AP\n\n` +
       `⚠️ WARNING:\n` +
@@ -167,7 +167,7 @@ export default function GumbuoFightersArena() {
 
     // Confirmation dialog
     const confirmed = confirm(
-      `⚔️ CONFIRM ARENA ENTRY - FIGHTER 2\n\n` +
+      `⚔️ CONFIRM ARENA ENTRY - PLAYER 2\n\n` +
       `Alien: ${draggedAlien.name}\n` +
       `Entry Fee: ${ENTRY_FEE.toLocaleString()} AP\n\n` +
       `⚠️ WARNING:\n` +
@@ -197,14 +197,6 @@ export default function GumbuoFightersArena() {
     }
   };
 
-  const burnAlien = (alien: OwnedAlien) => {
-    if (!address) return;
-
-    const updated = ownedAliens.filter(a => a.id !== alien.id);
-    setOwnedAliens(updated);
-    localStorage.setItem(`ownedAliens_${address}`, JSON.stringify(updated));
-  };
-
   const startFight = async () => {
     if (!fighter1 || !fighter2 || !address) return;
 
@@ -215,15 +207,14 @@ export default function GumbuoFightersArena() {
     setTimeout(async () => {
       const winner = Math.random() > 0.5 ? fighter1 : fighter2;
       const loser = winner === fighter1 ? fighter2 : fighter1;
+      const winnerOwner = winner === fighter1 ? fighter1Owner : fighter2Owner;
 
       // Award winner 800 AP from reserve pool
-      await addPoints(address, WINNER_PRIZE, 'arena');
+      if (winnerOwner) {
+        await addPoints(winnerOwner, WINNER_PRIZE, 'arena');
+      }
 
       // Add house fee to burn pool
-      // Entry fees collected: 500 + 500 = 1000 AP
-      // Winner prize: 800 AP
-      // Burn pool gets: 1000 - 800 = 200 AP
-      // Note: Alien purchase prices (500 AP each) already went to burn pool when bought from marketplace
       try {
         await fetch('/api/points', {
           method: 'PUT',
@@ -234,11 +225,30 @@ export default function GumbuoFightersArena() {
         console.error("Error adding to burn pool:", error);
       }
 
-      // Burn both aliens
-      if (!address) return;
-      const updated = ownedAliens.filter(a => a.id !== fighter1.id && a.id !== fighter2.id);
-      setOwnedAliens(updated);
-      localStorage.setItem(`ownedAliens_${address}`, JSON.stringify(updated));
+      // Burn both aliens from their respective owners
+      if (fighter1Owner) {
+        const owned1 = localStorage.getItem(`ownedAliens_${fighter1Owner}`);
+        if (owned1) {
+          const aliens1 = JSON.parse(owned1);
+          const updated1 = aliens1.filter((a: OwnedAlien) => a.id !== fighter1.id);
+          localStorage.setItem(`ownedAliens_${fighter1Owner}`, JSON.stringify(updated1));
+          if (fighter1Owner.toLowerCase() === address.toLowerCase()) {
+            setOwnedAliens(updated1);
+          }
+        }
+      }
+
+      if (fighter2Owner) {
+        const owned2 = localStorage.getItem(`ownedAliens_${fighter2Owner}`);
+        if (owned2) {
+          const aliens2 = JSON.parse(owned2);
+          const updated2 = aliens2.filter((a: OwnedAlien) => a.id !== fighter2.id);
+          localStorage.setItem(`ownedAliens_${fighter2Owner}`, JSON.stringify(updated2));
+          if (fighter2Owner.toLowerCase() === address.toLowerCase()) {
+            setOwnedAliens(updated2);
+          }
+        }
+      }
 
       // Update balance
       setUserBalance(getUserBalance(address));
@@ -300,197 +310,127 @@ export default function GumbuoFightersArena() {
         </p>
       </div>
 
-      {/* UFO Battle Dome Arena */}
-      <div className="w-full relative mb-6" style={{ minHeight: '600px' }}>
-        {/* Circular Arena Platform */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-[800px] h-[500px]">
-            {/* Energy Dome Shield */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 30 }}>
-              <defs>
-                <linearGradient id="domeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: '#00ffff', stopOpacity: 0.3 }} />
-                  <stop offset="100%" style={{ stopColor: '#ff00ff', stopOpacity: 0.1 }} />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              {/* Dome arc */}
-              <ellipse cx="400" cy="450" rx="350" ry="80" fill="none" stroke="url(#domeGradient)" strokeWidth="3" opacity="0.6" className="animate-pulse"/>
-              <path d="M 50 450 Q 400 50, 750 450" fill="none" stroke="url(#domeGradient)" strokeWidth="2" opacity="0.4" filter="url(#glow)" className="animate-pulse"/>
-              {/* Energy grid lines */}
-              <line x1="400" y1="450" x2="400" y2="150" stroke="#00ffff" strokeWidth="1" opacity="0.2" strokeDasharray="5,5"/>
-              <line x1="200" y1="450" x2="200" y2="300" stroke="#00ffff" strokeWidth="1" opacity="0.2" strokeDasharray="5,5"/>
-              <line x1="600" y1="450" x2="600" y2="300" stroke="#00ffff" strokeWidth="1" opacity="0.2" strokeDasharray="5,5"/>
-            </svg>
-
-            {/* Rotating Alien Glyphs Platform */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[600px]" style={{ zIndex: 1 }}>
-              <div className="absolute inset-0 rounded-full border-4 border-purple-500/30 bg-gradient-to-br from-purple-900/20 to-blue-900/20 animate-spin-slow" style={{ animationDuration: '20s' }}>
-                {/* Alien glyphs */}
-                <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-green-400/40 text-4xl">◬</div>
-                <div className="absolute top-1/2 right-[10%] transform -translate-y-1/2 text-cyan-400/40 text-4xl">◭</div>
-                <div className="absolute bottom-[10%] left-1/2 transform -translate-x-1/2 text-purple-400/40 text-4xl">◮</div>
-                <div className="absolute top-1/2 left-[10%] transform -translate-y-1/2 text-pink-400/40 text-4xl">◯</div>
+      {/* Arena - Two Fighter Slots - SIMPLE GRID */}
+      <div className="w-full grid grid-cols-2 gap-8 mb-6 relative">
+        {/* Fighter 1 Slot */}
+        <div className="relative flex flex-col">
+          <h3 className="text-blue-400 font-bold text-3xl mb-4 text-center font-alien holographic-text">
+            🛡️ PLAYER 1 🛡️
+          </h3>
+          <div
+            onDragOver={handleDragOver}
+            onDrop={handleDropFighter1}
+            className={`relative h-96 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+              fighter1
+                ? 'glass-panel border-4 border-blue-500/70 shadow-2xl shadow-blue-500/70 hover:shadow-blue-500/90'
+                : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
+            } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
+          >
+            {fighter1 ? (
+              <div className="text-center">
+                <div className="flex justify-center items-center h-32 mb-4">
+                  <img
+                    src={fighter1.image}
+                    alt={fighter1.name}
+                    className={`max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
+                  />
+                </div>
+                <p className="text-blue-400 font-bold text-2xl mb-2">{fighter1.name}</p>
+                {address && fighter1Owner?.toLowerCase() === address.toLowerCase() ? (
+                  <button
+                    onClick={async () => {
+                      if (fighter1Paid && address) {
+                        await addPoints(address, ENTRY_FEE, 'arena');
+                        setUserBalance(getUserBalance(address));
+                      }
+                      setFighter1(null);
+                      setFighter1Owner(null);
+                      setFighter1Paid(false);
+                    }}
+                    disabled={fighting}
+                    className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Remove {fighter1Paid ? '(Refund 500 AP)' : ''}
+                  </button>
+                ) : (
+                  <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
+                    Owner: {fighter1Owner ? `${fighter1Owner.slice(0, 6)}...${fighter1Owner.slice(-4)}` : 'Unknown'}
+                  </div>
+                )}
               </div>
-              {/* Inner energy ring */}
-              <div className="absolute inset-[20%] rounded-full border-2 border-cyan-400/40 animate-pulse"></div>
-              <div className="absolute inset-[40%] rounded-full border border-green-400/30"></div>
-            </div>
-
-            {/* Energy Vortex Center (during fight) */}
-            {fighting && (
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ zIndex: 15 }}>
-                <div className="w-32 h-32 rounded-full bg-gradient-to-r from-purple-500/50 to-cyan-500/50 animate-spin blur-xl"></div>
-                <div className="absolute inset-0 w-32 h-32 rounded-full border-4 border-yellow-400/60 animate-ping"></div>
+            ) : (
+              <div className="text-center text-gray-500">
+                <p className="text-6xl mb-4">👽</p>
+                <p className="text-xl">Drop Player 1 Here</p>
               </div>
             )}
-
-            {/* Lightning Bolts (during fight) */}
-            {fighting && fighter1 && fighter2 && (
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 25 }}>
-                <defs>
-                  <filter id="lightning-glow">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                    <feMerge>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="coloredBlur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-                {/* Animated lightning between fighters */}
-                <path d="M 150 250 L 400 240 L 650 250" fill="none" stroke="#ffff00" strokeWidth="3" opacity="0.8" filter="url(#lightning-glow)" className="animate-pulse" strokeDasharray="10,5"/>
-                <path d="M 150 260 L 380 270 L 650 260" fill="none" stroke="#00ffff" strokeWidth="2" opacity="0.6" filter="url(#lightning-glow)" className="animate-pulse" strokeDasharray="8,4"/>
-              </svg>
+            {fighter1 && !fighter2 && !fighting && (
+              <div className="absolute -bottom-4 bg-yellow-400 text-black px-4 py-2 rounded-full text-base font-bold animate-pulse">
+                Waiting for Player 2...
+              </div>
             )}
-
-            {/* Fighter 1 Slot - Left Side */}
-            <div
-              onDragOver={handleDragOver}
-              onDrop={handleDropFighter1}
-              className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-72 h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                fighter1
-                  ? 'glass-panel border-4 border-blue-500/70 shadow-2xl shadow-blue-500/70 hover:shadow-blue-500/90'
-                  : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
-              } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
-              style={{ zIndex: 20 }}
-            >
-          {fighter1 ? (
-            <div className="text-center">
-              <div className="flex justify-center items-center h-16 mb-2">
-                <img
-                  src={fighter1.image}
-                  alt={fighter1.name}
-                  className={`max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
-                  style={{ width: '64px', height: '64px', objectFit: 'contain' }}
-                />
-              </div>
-              <p className="text-blue-400 font-bold text-xl">{fighter1.name}</p>
-              {address && fighter1Owner?.toLowerCase() === address.toLowerCase() ? (
-                <button
-                  onClick={async () => {
-                    if (fighter1Paid && address) {
-                      // Refund entry fee
-                      await addPoints(address, ENTRY_FEE, 'arena');
-                      setUserBalance(getUserBalance(address));
-                    }
-                    setFighter1(null);
-                    setFighter1Owner(null);
-                    setFighter1Paid(false);
-                  }}
-                  disabled={fighting}
-                  className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                >
-                  Remove {fighter1Paid ? '(Refund 500 AP)' : ''}
-                </button>
-              ) : (
-                <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
-                  Owner: {fighter1Owner ? `${fighter1Owner.slice(0, 6)}...${fighter1Owner.slice(-4)}` : 'Unknown'}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center text-gray-500">
-              <p className="text-4xl mb-2">👽</p>
-              <p>Drop Fighter 1 Here</p>
-            </div>
-          )}
-          {fighter1 && !fighter2 && !fighting && (
-            <div className="absolute -bottom-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-bold animate-pulse">
-              Waiting for opponent...
-            </div>
-          )}
+          </div>
         </div>
 
-            {/* Holographic VS Display - Center */}
-            <div className="absolute top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ zIndex: 25 }}>
-              <div className={`text-7xl font-bold font-alien holographic-text ${fighting ? 'text-yellow-400 animate-ping' : 'text-cyan-400/60'}`}>
-                {fighting ? '⚡ VS ⚡' : 'VS'}
-              </div>
-              {fighting && (
-                <div className="absolute inset-0 blur-xl bg-yellow-400/50 animate-pulse"></div>
-              )}
-            </div>
-
-            {/* Fighter 2 Slot - Right Side */}
-            <div
-              onDragOver={handleDragOver}
-              onDrop={handleDropFighter2}
-              className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-72 h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                fighter2
-                  ? 'glass-panel border-4 border-red-500/70 shadow-2xl shadow-red-500/70 hover:shadow-red-500/90'
-                  : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
-              } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
-              style={{ zIndex: 20 }}
-            >
-          {fighter2 ? (
-            <div className="text-center">
-              <div className="flex justify-center items-center h-16 mb-2">
-                <img
-                  src={fighter2.image}
-                  alt={fighter2.name}
-                  className={`max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
-                  style={{ width: '64px', height: '64px', objectFit: 'contain' }}
-                />
-              </div>
-              <p className="text-red-400 font-bold text-xl">{fighter2.name}</p>
-              {address && fighter2Owner?.toLowerCase() === address.toLowerCase() ? (
-                <button
-                  onClick={async () => {
-                    if (fighter2Paid && address) {
-                      // Refund entry fee
-                      await addPoints(address, ENTRY_FEE, 'arena');
-                      setUserBalance(getUserBalance(address));
-                    }
-                    setFighter2(null);
-                    setFighter2Owner(null);
-                    setFighter2Paid(false);
-                  }}
-                  disabled={fighting}
-                  className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                >
-                  Remove {fighter2Paid ? '(Refund 500 AP)' : ''}
-                </button>
-              ) : (
-                <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
-                  Owner: {fighter2Owner ? `${fighter2Owner.slice(0, 6)}...${fighter2Owner.slice(-4)}` : 'Unknown'}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center text-gray-500">
-              <p className="text-4xl mb-2">👽</p>
-              <p>Drop Fighter 2 Here</p>
-            </div>
-          )}
+        {/* VS in center */}
+        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
+          <div className={`text-8xl font-bold font-alien ${fighting ? 'text-yellow-400 animate-ping holographic-text' : 'text-gray-600'}`}>
+            {fighting ? '⚡ VS ⚡' : 'VS'}
+          </div>
         </div>
 
+        {/* Fighter 2 Slot */}
+        <div className="relative flex flex-col">
+          <h3 className="text-red-400 font-bold text-3xl mb-4 text-center font-alien holographic-text">
+            ⚔️ PLAYER 2 ⚔️
+          </h3>
+          <div
+            onDragOver={handleDragOver}
+            onDrop={handleDropFighter2}
+            className={`relative h-96 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+              fighter2
+                ? 'glass-panel border-4 border-red-500/70 shadow-2xl shadow-red-500/70 hover:shadow-red-500/90'
+                : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
+            } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
+          >
+            {fighter2 ? (
+              <div className="text-center">
+                <div className="flex justify-center items-center h-32 mb-4">
+                  <img
+                    src={fighter2.image}
+                    alt={fighter2.name}
+                    className={`max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
+                  />
+                </div>
+                <p className="text-red-400 font-bold text-2xl mb-2">{fighter2.name}</p>
+                {address && fighter2Owner?.toLowerCase() === address.toLowerCase() ? (
+                  <button
+                    onClick={async () => {
+                      if (fighter2Paid && address) {
+                        await addPoints(address, ENTRY_FEE, 'arena');
+                        setUserBalance(getUserBalance(address));
+                      }
+                      setFighter2(null);
+                      setFighter2Owner(null);
+                      setFighter2Paid(false);
+                    }}
+                    disabled={fighting}
+                    className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
+                    Remove {fighter2Paid ? '(Refund 500 AP)' : ''}
+                  </button>
+                ) : (
+                  <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
+                    Owner: {fighter2Owner ? `${fighter2Owner.slice(0, 6)}...${fighter2Owner.slice(-4)}` : 'Unknown'}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">
+                <p className="text-6xl mb-4">👽</p>
+                <p className="text-xl">Drop Player 2 Here</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -498,37 +438,35 @@ export default function GumbuoFightersArena() {
       {/* Fight Result */}
       {fightResult && (
         <div className="w-full glass-panel border-4 border-yellow-400/70 rounded-2xl p-8 text-center animate-pulse shadow-2xl shadow-yellow-400/70 z-10">
-          <p className="text-yellow-400 text-3xl font-bold mb-4">🏆 FIGHT RESULT! 🏆</p>
-          <div className="flex justify-center items-center space-x-8">
+          <p className="text-yellow-400 text-4xl font-bold mb-6 font-alien">🏆 FIGHT RESULT! 🏆</p>
+          <div className="flex justify-center items-center space-x-12">
             <div>
-              <div className="flex justify-center items-center h-16 mb-2">
+              <div className="flex justify-center items-center h-32 mb-4">
                 <img
                   src={fightResult.winner.image}
                   alt="Winner"
-                  className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-red-400"
-                  style={{ width: '64px', height: '64px', objectFit: 'contain' }}
+                  className="max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-yellow-400"
                 />
               </div>
-              <p className="text-red-400 font-bold text-xl">WINNER!</p>
-              <p className="text-red-400">{fightResult.winner.name}</p>
+              <p className="text-yellow-400 font-bold text-2xl">WINNER!</p>
+              <p className="text-yellow-400 text-xl">{fightResult.winner.name}</p>
             </div>
-            <p className="text-4xl">VS</p>
+            <p className="text-6xl font-bold">VS</p>
             <div className="opacity-50">
-              <div className="flex justify-center items-center h-16 mb-2">
+              <div className="flex justify-center items-center h-32 mb-4">
                 <img
                   src={fightResult.loser.image}
                   alt="Loser"
-                  className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg grayscale border-2 border-red-400"
-                  style={{ width: '64px', height: '64px', objectFit: 'contain' }}
+                  className="max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg grayscale border-4 border-gray-600"
                 />
               </div>
-              <p className="text-red-400 font-bold text-xl">DEFEATED</p>
-              <p className="text-red-400">{fightResult.loser.name}</p>
+              <p className="text-gray-400 font-bold text-2xl">DEFEATED</p>
+              <p className="text-gray-400 text-xl">{fightResult.loser.name}</p>
             </div>
           </div>
           <button
             onClick={resetArena}
-            className="mt-6 px-8 py-3 bg-red-500 text-black font-bold rounded-lg hover:bg-green-600 transition-all"
+            className="mt-8 px-12 py-4 bg-green-500 text-black font-bold text-xl rounded-xl hover:bg-green-600 transition-all"
           >
             FIGHT AGAIN! ⚔️
           </button>
@@ -538,9 +476,9 @@ export default function GumbuoFightersArena() {
       {/* User's Alien Collection - Draggable */}
       <div className="w-full z-10">
         <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '3.5rem'}}>
-          <span className="text-red-400">👽 Your Alien Collection 👽</span>
+          <span className="text-orange-400">👽 Your Alien Collection 👽</span>
         </h3>
-        <p className="text-red-400 text-sm text-center mb-4 opacity-75">
+        <p className="text-orange-400 text-sm text-center mb-4 opacity-75">
           Drag and drop your aliens into the arena
         </p>
         <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4">
@@ -564,10 +502,9 @@ export default function GumbuoFightersArena() {
                     src={alien.image}
                     alt={alien.name}
                     className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg"
-                    style={{ width: '64px', height: '64px', objectFit: 'contain' }}
                   />
                 </div>
-                <p className="text-red-400 text-xs font-bold">{alien.name}</p>
+                <p className="text-orange-400 text-xs font-bold">{alien.name}</p>
               </div>
             ))
           )}
