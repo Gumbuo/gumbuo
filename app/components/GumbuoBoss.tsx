@@ -302,7 +302,7 @@ export default function GumbuoBoss() {
     }
 
     // Deduct entry fee
-    await addPoints(address, -entryFee, 'boss_attack');
+    await addPoints(address, -entryFee, 'boss');
 
     playSound('click');
     setIsAttacking(true);
@@ -439,7 +439,7 @@ export default function GumbuoBoss() {
     }
 
     // Deduct upgrade cost
-    const success = await addPoints(address, -upgradeCost, 'attack_upgrade');
+    const success = await addPoints(address, -upgradeCost, 'boss');
 
     if (success) {
       const newLevels = { ...attackLevels, [attackType]: currentLevel + 1 };
