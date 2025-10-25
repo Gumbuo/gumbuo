@@ -37,6 +37,7 @@ export default function GumbuoFightersArena() {
   const [fightResult, setFightResult] = useState<FightResult | null>(null);
   const [draggedAlien, setDraggedAlien] = useState<OwnedAlien | null>(null);
   const [userBalance, setUserBalance] = useState(0);
+  const [fightLog, setFightLog] = useState<FightResult[]>([]);
 
   useEffect(() => {
     if (!address) {
@@ -71,6 +72,16 @@ export default function GumbuoFightersArena() {
         if (arenaState.fighter2Paid) setFighter2Paid(arenaState.fighter2Paid);
       } catch (e) {
         console.error('Failed to load arena state:', e);
+      }
+    }
+
+    // Load fight log from localStorage
+    const savedLog = localStorage.getItem('fightLog');
+    if (savedLog) {
+      try {
+        setFightLog(JSON.parse(savedLog));
+      } catch (e) {
+        console.error('Failed to load fight log:', e);
       }
     }
   }, []);
@@ -259,11 +270,18 @@ export default function GumbuoFightersArena() {
       // Update balance
       setUserBalance(getUserBalance(address));
 
-      setFightResult({
+      const result: FightResult = {
         winner,
         loser,
         timestamp: Date.now(),
-      });
+      };
+
+      setFightResult(result);
+
+      // Add to fight log
+      const updatedLog = [result, ...fightLog].slice(0, 50); // Keep last 50 fights
+      setFightLog(updatedLog);
+      localStorage.setItem('fightLog', JSON.stringify(updatedLog));
 
       setFighting(false);
     }, 3000); // 3 second fight animation
@@ -554,6 +572,60 @@ export default function GumbuoFightersArena() {
           >
             FIGHT AGAIN! ⚔️
           </button>
+        </div>
+      )}
+
+      {/* Fight Log */}
+      {fightLog.length > 0 && (
+        <div className="w-full glass-panel border-2 border-cyan-400/50 rounded-xl p-6 z-10 shadow-xl shadow-cyan-400/30">
+          <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '3rem'}}>
+            <span className="text-cyan-400">📜 Fight History 📜</span>
+          </h3>
+          <div className="max-h-96 overflow-y-auto space-y-3">
+            {fightLog.map((fight, index) => (
+              <div
+                key={`${fight.timestamp}-${index}`}
+                className="bg-black/40 rounded-lg p-4 flex items-center justify-between space-x-4 hover:bg-black/60 transition-all"
+              >
+                {/* Winner */}
+                <div className="flex items-center space-x-3 flex-1">
+                  <img
+                    src={fight.winner.image}
+                    alt={fight.winner.name}
+                    className="w-12 h-12 object-contain rounded border-2 border-green-400"
+                  />
+                  <div className="text-left">
+                    <p className="text-green-400 font-bold text-sm">👑 {fight.winner.name}</p>
+                    <p className="text-green-300 text-xs">WINNER</p>
+                  </div>
+                </div>
+
+                {/* VS */}
+                <p className="text-purple-400 font-bold text-lg">VS</p>
+
+                {/* Loser */}
+                <div className="flex items-center space-x-3 flex-1 justify-end">
+                  <div className="text-right">
+                    <p className="text-red-400 font-bold text-sm">{fight.loser.name}</p>
+                    <p className="text-red-300 text-xs">DEFEATED</p>
+                  </div>
+                  <img
+                    src={fight.loser.image}
+                    alt={fight.loser.name}
+                    className="w-12 h-12 object-contain rounded border-2 border-red-400 grayscale opacity-60"
+                  />
+                </div>
+
+                {/* Timestamp */}
+                <p className="text-cyan-400 text-xs opacity-75 min-w-[80px] text-right">
+                  {new Date(fight.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="text-cyan-400 text-xs text-center mt-4 opacity-75">
+            {fightLog.length} {fightLog.length === 1 ? 'fight' : 'fights'} recorded
+          </p>
         </div>
       )}
 
