@@ -795,35 +795,6 @@ export default function GumbuoBoss() {
         </div>
       )}
 
-      {/* Reward Pool Info */}
-      <div className="w-full bg-black/60 border-2 border-yellow-400/50 rounded-xl p-6 max-w-3xl mx-auto">
-        <h3 className="text-3xl font-alien text-yellow-400 text-center mb-6 holographic-text">💰 REWARD POOL ANNOUNCEMENT 💰</h3>
-
-        <div className="space-y-3 text-center">
-          <p className="text-yellow-400 text-lg font-bold">
-            💰 <strong>Total Pool:</strong> <span className="text-yellow-300">Requires smart contract coming soon</span>
-          </p>
-          <p className="text-yellow-400 text-lg font-bold">
-            📊 <strong>Distribution:</strong> <span className="text-yellow-300">By Damage %</span>
-          </p>
-          <p className="text-yellow-400 text-lg font-bold">
-            ⚔️ <strong>Base Damage Range:</strong> <span className="text-yellow-300">{MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP</span>
-          </p>
-          <p className="text-yellow-400 text-base">
-            • <strong>Normal Attack:</strong> <span className="text-yellow-300">1.0x - 1.4x (Level 1-5)</span>
-          </p>
-          <p className="text-yellow-400 text-base">
-            • <strong>Power Attack:</strong> <span className="text-yellow-300">1.5x - 2.1x (Level 1-5)</span>
-          </p>
-          <p className="text-yellow-400 text-base">
-            • <strong>Ultimate Attack:</strong> <span className="text-yellow-300">3.0x - 3.8x (Level 1-5)</span>
-          </p>
-          <p className="text-yellow-400 text-lg font-bold">
-            💥 <strong>Critical Hit:</strong> <span className="text-yellow-300">10% chance for 2x final damage</span>
-          </p>
-        </div>
-      </div>
-
       {/* Battle Info */}
       <div className="w-full text-red-400 text-sm text-center max-w-3xl bg-black/60 p-6 rounded-xl">
         <p className="font-bold mb-3 text-lg">ℹ️ Battle Info ℹ️</p>
