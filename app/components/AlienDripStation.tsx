@@ -139,12 +139,6 @@ export default function AlienDripStation() {
       return;
     }
 
-    if (gmbAmount < 100) {
-      playSound('error');
-      alert("You need at least 100 GMB tokens to use the drip station! 🚰");
-      return;
-    }
-
     if (hasClaimedToday) {
       playSound('error');
       alert(`You've already claimed today! Come back at ${nextClaimTime} 👽`);
@@ -259,7 +253,7 @@ export default function AlienDripStation() {
                 </p>
               </div>
             ) : (
-              <p className="text-red-400 text-center">⚠️ Need at least 100 GMB to qualify</p>
+              <p className="text-red-400 text-center">⚠️ Unable to determine tier</p>
             )}
           </div>
 
@@ -294,7 +288,7 @@ export default function AlienDripStation() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
             )}
             <span className="relative z-10">
-              {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Need 100+ GMB"}
+              {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
             </span>
           </button>
         </div>

@@ -289,21 +289,23 @@ export default function AlienWheel() {
                 : "hover:scale-105 hover-float"
             }`}
             style={{
-              width: '320px',
-              height: '200px',
+              width: '500px',
+              height: '320px',
             }}
           >
             {/* UFO Main Saucer Body */}
             <div
-              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-24 rounded-full ${
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ${
                 hasSpunToday || mustSpin
                   ? "bg-gray-600"
                   : "bg-gradient-to-b from-cyan-400 via-green-400 to-cyan-500"
               } shadow-2xl`}
               style={{
+                width: '500px',
+                height: '150px',
                 boxShadow: hasSpunToday || mustSpin
                   ? 'none'
-                  : '0 0 40px rgba(74, 222, 128, 0.8), 0 0 80px rgba(74, 222, 128, 0.6), inset 0 -20px 40px rgba(0, 255, 153, 0.4)'
+                  : '0 0 60px rgba(74, 222, 128, 0.8), 0 0 120px rgba(74, 222, 128, 0.6), inset 0 -30px 60px rgba(0, 255, 153, 0.4)'
               }}
             >
               {/* Shimmer effect on saucer */}
@@ -314,26 +316,28 @@ export default function AlienWheel() {
 
             {/* UFO Top Dome */}
             <div
-              className={`absolute top-8 left-1/2 -translate-x-1/2 w-32 h-20 rounded-t-full ${
+              className={`absolute left-1/2 -translate-x-1/2 rounded-t-full ${
                 hasSpunToday || mustSpin ? "bg-gray-500" : "bg-gradient-to-b from-cyan-300 via-cyan-400 to-transparent"
               } opacity-80`}
               style={{
-                borderTopLeftRadius: '100px',
-                borderTopRightRadius: '100px',
+                top: '20px',
+                width: '200px',
+                height: '120px',
+                borderTopLeftRadius: '200px',
+                borderTopRightRadius: '200px',
               }}
             ></div>
 
             {/* UFO Windows around the dome */}
-            <div className="absolute top-14 left-1/2 -translate-x-1/2 flex space-x-3">
-              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`}></div>
-              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.2s'}}></div>
-              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.4s'}}></div>
+            <div className="absolute left-1/2 -translate-x-1/2 flex space-x-6" style={{ top: '80px' }}>
+              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`}></div>
+              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.2s'}}></div>
+              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.4s'}}></div>
             </div>
 
-            {/* Center Text */}
+            {/* Center Text - No UFO Emoji */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
-              <div className="text-5xl mb-1">🛸</div>
-              <div className={`text-xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-white drop-shadow-lg"}`}>
+              <div className={`text-3xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-white drop-shadow-lg"}`}>
                 {hasSpunToday ? "Tomorrow!" : mustSpin ? "Spinning..." : "SPIN WHEEL"}
               </div>
             </div>
@@ -341,10 +345,11 @@ export default function AlienWheel() {
             {/* Light beam effect below UFO */}
             {!hasSpunToday && !mustSpin && (
               <div
-                className="absolute top-28 left-1/2 -translate-x-1/2 bg-gradient-to-b from-cyan-400/60 via-green-400/40 to-transparent blur-md animate-pulse"
+                className="absolute left-1/2 -translate-x-1/2 bg-gradient-to-b from-cyan-400/60 via-green-400/40 to-transparent blur-md animate-pulse"
                 style={{
-                  width: '120px',
-                  height: '100px',
+                  top: '170px',
+                  width: '200px',
+                  height: '150px',
                   clipPath: 'polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)',
                 }}
               ></div>
@@ -353,8 +358,8 @@ export default function AlienWheel() {
             {/* Side lights on the saucer */}
             {!hasSpunToday && !mustSpin && (
               <>
-                <div className="absolute top-1/2 left-4 w-3 h-3 rounded-full bg-red-400 animate-pulse"></div>
-                <div className="absolute top-1/2 right-4 w-3 h-3 rounded-full bg-red-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                <div className="absolute top-1/2 left-8 w-5 h-5 rounded-full bg-red-400 animate-pulse shadow-lg shadow-red-400/50"></div>
+                <div className="absolute top-1/2 right-8 w-5 h-5 rounded-full bg-red-400 animate-pulse shadow-lg shadow-red-400/50" style={{animationDelay: '0.3s'}}></div>
               </>
             )}
           </button>

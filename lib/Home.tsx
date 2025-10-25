@@ -57,23 +57,23 @@ export default function Home() {
             <p className="text-green-400 font-bold text-3xl animate-pulse tracking-wider">👆 CLICK HERE 👆</p>
 
             {/* Social Links */}
-            <div className="flex gap-4 mt-4">
+            <div className="flex gap-6 mt-4">
               <a
                 href="https://x.com/gumbuogw3"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-blue-500/80 hover:bg-blue-600 px-6 py-3 rounded-xl text-white font-bold text-lg transition-all hover:scale-110 shadow-lg hover:shadow-blue-400/50 flex items-center gap-2"
+                className="bg-blue-500/80 hover:bg-blue-600 px-12 py-6 rounded-xl text-white font-bold text-3xl transition-all hover:scale-110 shadow-lg hover:shadow-blue-400/50 flex items-center gap-3"
               >
-                <span>𝕏</span>
+                <span className="text-4xl">𝕏</span>
                 <span>Twitter</span>
               </a>
               <a
                 href="https://discord.gg/NptkDYn8fm"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-purple-500/80 hover:bg-purple-600 px-6 py-3 rounded-xl text-white font-bold text-lg transition-all hover:scale-110 shadow-lg hover:shadow-purple-400/50 flex items-center gap-2"
+                className="bg-purple-500/80 hover:bg-purple-600 px-12 py-6 rounded-xl text-white font-bold text-3xl transition-all hover:scale-110 shadow-lg hover:shadow-purple-400/50 flex items-center gap-3"
               >
-                <span>💬</span>
+                <span className="text-4xl">💬</span>
                 <span>Discord</span>
               </a>
             </div>
@@ -122,7 +122,6 @@ export default function Home() {
               className="w-16 h-16 object-contain rounded-lg"
             />
             <div className="text-center">
-              <p className="text-green-400 text-sm opacity-75">Made with 💚 by</p>
               <p className="text-green-400 font-bold text-2xl font-alien holographic-text">FoxHole Productions</p>
             </div>
           </div>
