@@ -15,9 +15,9 @@ const BOSS_RESPAWN_TIME = 3600000; // 1 hour in milliseconds
 // Attack Level System
 const MAX_ATTACK_LEVEL = 5;
 const UPGRADE_COSTS = {
-  normal: [5_000, 10_000, 20_000, 40_000], // Costs to upgrade from level 1->2, 2->3, 3->4, 4->5
-  power: [10_000, 20_000, 40_000, 80_000],
-  ultimate: [20_000, 40_000, 80_000, 160_000],
+  normal: [1_000, 2_000, 3_000, 4_000], // Costs to upgrade from level 1->2, 2->3, 3->4, 4->5
+  power: [1_000, 2_000, 3_000, 4_000],
+  ultimate: [1_000, 2_000, 3_000, 4_000],
 };
 const ATTACK_ENTRY_FEES = {
   normal: [100, 200, 300, 400, 500], // Entry fee per level (1-5)
