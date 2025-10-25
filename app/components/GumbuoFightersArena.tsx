@@ -551,13 +551,13 @@ export default function GumbuoFightersArena() {
         </div>
       )}
 
-      {/* User's Alien Collection - Draggable */}
+      {/* Drag Aliens to Fight */}
       <div className="w-full z-10">
         <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '3.5rem'}}>
-          <span className="text-orange-400">👽 Your Alien Collection 👽</span>
+          <span className="text-red-400">⚔️ Drag Your Aliens to Fight ⚔️</span>
         </h3>
-        <p className="text-orange-400 text-sm text-center mb-4 opacity-75">
-          Drag and drop your aliens into the arena
+        <p className="text-red-400 text-sm text-center mb-4 opacity-75">
+          Drag and drop your aliens from below into the arena above
         </p>
         <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4">
           {ownedAliens.length === 0 ? (

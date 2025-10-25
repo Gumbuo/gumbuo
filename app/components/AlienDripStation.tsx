@@ -14,7 +14,7 @@ const DRIP_TIERS = [
   { minGMB: 50000, maxGMB: 99999, points: 500, name: "Uncommon Stacker", color: "#3498DB" },
   { minGMB: 10000, maxGMB: 49999, points: 250, name: "Common Holder", color: "#00ff99" },
   { minGMB: 1000, maxGMB: 9999, points: 100, name: "Starter", color: "#95A5A6" },
-  { minGMB: 100, maxGMB: 999, points: 50, name: "Beginner", color: "#7F8C8D" },
+  { minGMB: 0, maxGMB: 999, points: 50, name: "Beginner", color: "#7F8C8D" },
 ];
 
 export default function AlienDripStation() {

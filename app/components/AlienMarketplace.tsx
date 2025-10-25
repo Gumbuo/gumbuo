@@ -183,6 +183,40 @@ export default function AlienMarketplace() {
           );
         })}
       </div>
+
+      {/* Your Alien Collection */}
+      <div className="w-full mt-8">
+        <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-6" style={{fontSize: '3.5rem'}}>
+          <span className="text-orange-400">👽 Your Alien Collection 👽</span>
+        </h3>
+        <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4 bg-black/40 rounded-xl border border-orange-400/30">
+          {ownedAliens.length === 0 ? (
+            <div className="w-full text-center text-gray-500 py-8">
+              <p className="text-xl">No aliens yet!</p>
+              <p className="text-sm">Purchase aliens above to start your collection!</p>
+            </div>
+          ) : (
+            ownedAliens.map((alien) => (
+              <div
+                key={alien.id}
+                className="text-center transition-all hover:scale-110"
+              >
+                <div className="flex justify-center items-center mb-1 bg-black/60 p-4 rounded-xl border border-orange-400/30">
+                  <img
+                    src={alien.image}
+                    alt={alien.name}
+                    className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg"
+                  />
+                </div>
+                <p className="text-orange-400 text-xs font-bold">{alien.name}</p>
+                <p className="text-orange-400/60 text-xs">
+                  {new Date(alien.purchasedAt).toLocaleDateString()}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }
