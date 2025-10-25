@@ -496,7 +496,7 @@ export default function GumbuoBoss() {
       </h2>
 
       {/* Boss Status */}
-      <div className="w-full bg-black/60 border-2 border-blue-500/50 rounded-3xl p-8">
+      <div className="w-full bg-black/60 rounded-3xl p-8">
         <div className="space-y-6">
           {/* Boss Image */}
           <div className="flex justify-center">
@@ -564,7 +564,7 @@ export default function GumbuoBoss() {
 
       {/* User Stats */}
       {isConnected && address && (
-        <div className="w-full bg-black/60 border-2 border-purple-500/50 rounded-2xl p-6">
+        <div className="w-full bg-black/60 rounded-2xl p-6">
           <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
           <div className="grid grid-cols-2 gap-4">
@@ -597,7 +597,7 @@ export default function GumbuoBoss() {
 
       {/* Attack Type Selector */}
       {bossState.isAlive && isConnected && (
-        <div className="w-full bg-black/60 border-2 border-orange-500/50 rounded-2xl p-6">
+        <div className="w-full bg-black/60 rounded-2xl p-6">
           <h3 className="text-2xl font-alien text-orange-400 text-center mb-6 holographic-text">⚔️ SELECT ATTACK TYPE ⚔️</h3>
 
           {/* Attack Button - Centered */}
