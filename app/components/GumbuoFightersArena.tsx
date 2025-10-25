@@ -299,6 +299,44 @@ export default function GumbuoFightersArena() {
 
   return (
     <div className="flex flex-col items-center space-y-6 w-full relative overflow-visible">
+      {/* Drag Aliens to Fight */}
+      <div className="w-full z-10">
+        <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '3.5rem'}}>
+          <span className="text-red-400">⚔️ Your Alien Collection ⚔️</span>
+        </h3>
+        <p className="text-red-400 text-sm text-center mb-4 opacity-75">
+          Drag and drop your aliens into the arena below to fight
+        </p>
+        <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4 bg-black/40 rounded-xl border border-red-400/30">
+          {ownedAliens.length === 0 ? (
+            <div className="w-full text-center text-gray-500 py-8">
+              <p className="text-xl">No aliens yet!</p>
+              <p className="text-sm">Purchase aliens from the marketplace above to start fighting!</p>
+            </div>
+          ) : (
+            ownedAliens.map((alien) => (
+              <div
+                key={alien.id}
+                draggable={!fighting}
+                onDragStart={() => handleDragStart(alien)}
+                className={`text-center cursor-move transition-all ${
+                  fighting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+                }`}
+              >
+                <div className="flex justify-center items-center mb-1 bg-black/60 p-4 rounded-xl border border-orange-400/30">
+                  <img
+                    src={alien.image}
+                    alt={alien.name}
+                    className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg"
+                  />
+                </div>
+                <p className="text-orange-400 text-xs font-bold">{alien.name}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
       {/* Betting Info Section */}
       <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
         <p className="font-bold mb-3 font-alien" style={{fontSize: '2.5rem'}}>
@@ -618,44 +656,6 @@ export default function GumbuoFightersArena() {
           </p>
         </div>
       )}
-
-      {/* Drag Aliens to Fight */}
-      <div className="w-full z-10">
-        <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '3.5rem'}}>
-          <span className="text-red-400">⚔️ Drag Your Aliens to Fight ⚔️</span>
-        </h3>
-        <p className="text-red-400 text-sm text-center mb-4 opacity-75">
-          Drag and drop your aliens from below into the arena above
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4">
-          {ownedAliens.length === 0 ? (
-            <div className="w-full text-center text-gray-500 py-8">
-              <p className="text-xl">No aliens yet!</p>
-              <p className="text-sm">Purchase aliens from the marketplace to start fighting!</p>
-            </div>
-          ) : (
-            ownedAliens.map((alien) => (
-              <div
-                key={alien.id}
-                draggable={!fighting}
-                onDragStart={() => handleDragStart(alien)}
-                className={`text-center cursor-move transition-all ${
-                  fighting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
-                }`}
-              >
-                <div className="flex justify-center items-center mb-1">
-                  <img
-                    src={alien.image}
-                    alt={alien.name}
-                    className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg"
-                  />
-                </div>
-                <p className="text-orange-400 text-xs font-bold">{alien.name}</p>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
 
       {/* GMB Arena Coming Soon */}
       <div className="w-full glass-panel border-2 border-yellow-500/50 rounded-xl p-6 text-center shadow-lg shadow-yellow-500/50 z-10">
