@@ -96,6 +96,21 @@ export default function Home() {
         <div className="flex justify-center mt-12 mb-12">
           <GumbuoBoss />
         </div>
+
+        {/* FoxHole Productions Credit */}
+        <div className="flex justify-center mt-12 mb-8">
+          <div className="flex items-center space-x-4 bg-black/60 backdrop-blur-sm px-8 py-4 rounded-2xl border border-green-400/30 shadow-lg shadow-green-400/20">
+            <img
+              src="/foxholeproductions.jpg"
+              alt="FoxHole Productions"
+              className="w-16 h-16 object-contain rounded-lg"
+            />
+            <div className="text-center">
+              <p className="text-green-400 text-sm opacity-75">Made with 💚 by</p>
+              <p className="text-green-400 font-bold text-2xl font-alien holographic-text">FoxHole Productions</p>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
