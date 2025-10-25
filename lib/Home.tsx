@@ -9,6 +9,7 @@ const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboar
 const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
 const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
 const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
+const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
 
 export default function Home() {
   return (
@@ -22,6 +23,9 @@ export default function Home() {
         className="fixed top-0 left-0 w-full h-full object-cover z-0"
         src="/alien.mp4"
       />
+
+      {/* Starfield Parallax Background */}
+      <StarfieldBackground />
 
       {/* Content with proper spacing */}
       <div className="relative z-10 p-6">
@@ -43,7 +47,7 @@ export default function Home() {
                 href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block px-24 py-8 bg-green-400 text-black font-bold rounded-2xl hover:bg-green-500 transition-colors duration-200 tracking-wider"
+                className="inline-block px-24 py-8 bg-green-400 text-black font-bold rounded-2xl hover:bg-green-500 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse"
                 style={{fontSize: '4rem'}}
               >
                 Buy Gumbuo

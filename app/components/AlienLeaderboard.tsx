@@ -232,7 +232,7 @@ export default function AlienLeaderboard() {
           className={`px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
             !isConnected || leaderboard.length >= MAX_FIRST_TIMERS
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-purple-400 via-green-500 to-purple-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow"
+              : "bg-gradient-to-r from-purple-400 via-green-500 to-purple-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow hover-ripple hover-color-shift"
           }`}
         >
           {!isConnected || leaderboard.length >= MAX_FIRST_TIMERS ? null : (

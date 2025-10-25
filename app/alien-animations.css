@@ -258,3 +258,98 @@
 .animate-wheel-glow {
   animation: wheel-glow 2s ease-in-out infinite;
 }
+
+/* Advanced Hover Effects */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes morph {
+  0%, 100% {
+    border-radius: 0.75rem;
+  }
+  50% {
+    border-radius: 2rem;
+  }
+}
+
+@keyframes color-shift {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(15deg) brightness(1.2);
+  }
+}
+
+@keyframes button-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes cosmic-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.5),
+                0 0 40px rgba(74, 222, 128, 0.3),
+                0 0 60px rgba(74, 222, 128, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(74, 222, 128, 0.8),
+                0 0 80px rgba(74, 222, 128, 0.6),
+                0 0 120px rgba(74, 222, 128, 0.4);
+  }
+}
+
+/* Ripple effect for buttons */
+.hover-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.6s ease-out;
+  pointer-events: none;
+}
+
+.hover-ripple:hover::before {
+  animation: ripple 0.6s ease-out;
+}
+
+.hover-morph {
+  transition: border-radius 0.4s ease-in-out;
+}
+
+.hover-morph:hover {
+  animation: morph 2s ease-in-out infinite;
+}
+
+.hover-color-shift:hover {
+  animation: color-shift 3s ease-in-out infinite;
+}
+
+.hover-float:hover {
+  animation: button-float 1s ease-in-out infinite;
+}
+
+.hover-cosmic-pulse:hover {
+  animation: cosmic-pulse 2s ease-in-out infinite;
+}

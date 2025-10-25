@@ -275,7 +275,7 @@ export default function AlienDripStation() {
             className={`w-full px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden ${
               hasClaimedToday || claiming || !currentTier
                 ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 via-purple-400 to-purple-500 text-white hover:scale-110 hover:shadow-2xl hover:shadow-purple-400/80 animate-pulse-glow"
+                : "bg-gradient-to-r from-purple-500 via-purple-400 to-purple-500 text-white hover:scale-110 hover:shadow-2xl hover:shadow-purple-400/80 animate-pulse-glow hover-ripple hover-morph"
             }`}
           >
             {!hasClaimedToday && !claiming && currentTier && (
