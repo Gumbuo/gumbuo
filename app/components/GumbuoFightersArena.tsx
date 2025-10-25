@@ -38,6 +38,8 @@ export default function GumbuoFightersArena() {
   const [draggedAlien, setDraggedAlien] = useState<OwnedAlien | null>(null);
   const [userBalance, setUserBalance] = useState(0);
   const [fightLog, setFightLog] = useState<FightResult[]>([]);
+  const [isDraggingOverSlot1, setIsDraggingOverSlot1] = useState(false);
+  const [isDraggingOverSlot2, setIsDraggingOverSlot2] = useState(false);
 
   useEffect(() => {
     if (!address) {
@@ -114,8 +116,33 @@ export default function GumbuoFightersArena() {
     e.preventDefault();
   };
 
+  const handleDragEnterSlot1 = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (draggedAlien && !fighter1) {
+      setIsDraggingOverSlot1(true);
+    }
+  };
+
+  const handleDragLeaveSlot1 = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingOverSlot1(false);
+  };
+
+  const handleDragEnterSlot2 = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (draggedAlien && !fighter2) {
+      setIsDraggingOverSlot2(true);
+    }
+  };
+
+  const handleDragLeaveSlot2 = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingOverSlot2(false);
+  };
+
   const handleDropFighter1 = async (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDraggingOverSlot1(false);
     if (!draggedAlien || !address || draggedAlien.id === fighter2?.id) return;
 
     // Prevent same wallet from filling both slots
@@ -166,6 +193,7 @@ export default function GumbuoFightersArena() {
 
   const handleDropFighter2 = async (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDraggingOverSlot2(false);
     if (!draggedAlien || !address || draggedAlien.id === fighter1?.id) return;
 
     // Prevent same wallet from filling both slots
@@ -337,54 +365,120 @@ export default function GumbuoFightersArena() {
         </div>
       </div>
 
-      {/* Organic Alien Hive Arena */}
-      <div className="w-full relative mb-6">
-        {/* Floating Spore Particles */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 5 }}>
-          <div className="absolute top-[10%] left-[20%] w-2 h-2 bg-green-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-          <div className="absolute top-[30%] left-[40%] w-3 h-3 bg-purple-400/50 rounded-full blur-sm animate-pulse" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
-          <div className="absolute top-[50%] left-[60%] w-2 h-2 bg-cyan-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '2s', animationDuration: '3.5s' }}></div>
-          <div className="absolute top-[70%] left-[80%] w-3 h-3 bg-green-400/50 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0.5s', animationDuration: '4.5s' }}></div>
-          <div className="absolute top-[15%] right-[20%] w-2 h-2 bg-purple-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '1.5s', animationDuration: '3s' }}></div>
-          <div className="absolute top-[35%] right-[40%] w-3 h-3 bg-cyan-400/50 rounded-full blur-sm animate-pulse" style={{ animationDelay: '2.5s', animationDuration: '4s' }}></div>
-          <div className="absolute top-[55%] right-[60%] w-2 h-2 bg-green-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0.8s', animationDuration: '3.5s' }}></div>
+      {/* UFO Interior Arena */}
+      <div className="w-full relative mb-6 rounded-2xl overflow-hidden" style={{
+        background: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)',
+        boxShadow: 'inset 0 0 50px rgba(0,255,200,0.1), 0 0 30px rgba(0,0,0,0.5)'
+      }}>
+        {/* Metal Panel Texture with Rivets */}
+        <div className="absolute inset-0 opacity-30 pointer-events-none" style={{
+          backgroundImage: `
+            repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(255,255,255,0.03) 50px, rgba(255,255,255,0.03) 51px),
+            repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(255,255,255,0.03) 50px, rgba(255,255,255,0.03) 51px)
+          `,
+          zIndex: 1
+        }}></div>
+
+        {/* Rivets */}
+        {[...Array(20)].map((_, i) => {
+          const isTop = i < 10;
+          const position = (i % 10) * 10 + 5;
+          return (
+            <div
+              key={`rivet-${i}`}
+              className="absolute w-3 h-3 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 shadow-inner"
+              style={{
+                [isTop ? 'top' : 'bottom']: '10px',
+                left: `${position}%`,
+                zIndex: 2,
+                boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(255,255,255,0.2)'
+              }}
+            />
+          );
+        })}
+
+        {/* Horizontal Pipes */}
+        <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 shadow-lg" style={{ zIndex: 3 }}>
+          <div className="h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 shadow-lg" style={{ zIndex: 3 }}>
+          <div className="h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
         </div>
 
-        {/* Bio-organic Background Membrane */}
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-green-900/10 to-blue-900/10 rounded-3xl blur-3xl" style={{ zIndex: 1 }}></div>
+        {/* Vertical Pipes on sides */}
+        <div className="absolute top-0 bottom-0 left-0 w-6 bg-gradient-to-b from-gray-700 via-gray-600 to-gray-700 shadow-lg" style={{ zIndex: 3 }}>
+          <div className="w-1 h-full bg-gradient-to-b from-transparent via-green-400/50 to-transparent ml-2"></div>
+        </div>
+        <div className="absolute top-0 bottom-0 right-0 w-6 bg-gradient-to-b from-gray-700 via-gray-600 to-gray-700 shadow-lg" style={{ zIndex: 3 }}>
+          <div className="w-1 h-full bg-gradient-to-b from-transparent via-purple-400/50 to-transparent mr-2"></div>
+        </div>
+
+        {/* Control Panels with Dials and Buttons */}
+        <div className="absolute top-4 right-12 bg-gray-800 p-3 rounded-lg border-2 border-gray-600 shadow-xl" style={{ zIndex: 4 }}>
+          <div className="flex gap-2">
+            {/* Dials */}
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 relative">
+              <div className="absolute top-1/2 left-1/2 w-1 h-3 bg-cyan-400 rounded-full" style={{ transform: 'translate(-50%, -50%) rotate(45deg)', transformOrigin: 'center bottom' }}></div>
+              <div className="absolute inset-1 rounded-full border border-cyan-400/30"></div>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 relative">
+              <div className="absolute top-1/2 left-1/2 w-1 h-3 bg-green-400 rounded-full" style={{ transform: 'translate(-50%, -50%) rotate(-30deg)', transformOrigin: 'center bottom' }}></div>
+              <div className="absolute inset-1 rounded-full border border-green-400/30"></div>
+            </div>
+          </div>
+          <div className="flex gap-1 mt-2">
+            {/* Buttons */}
+            <div className="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50 animate-pulse"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50"></div>
+          </div>
+        </div>
+
+        {/* Left Control Panel */}
+        <div className="absolute top-4 left-12 bg-gray-800 p-3 rounded-lg border-2 border-gray-600 shadow-xl" style={{ zIndex: 4 }}>
+          <div className="flex flex-col gap-1">
+            {/* LED Indicators */}
+            <div className="flex gap-1">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50 animate-pulse" style={{ animationDuration: '2s' }}></div>
+              <div className="w-2 h-2 rounded-full bg-purple-400 shadow-lg shadow-purple-400/50 animate-pulse" style={{ animationDuration: '1.5s' }}></div>
+              <div className="w-2 h-2 rounded-full bg-green-400 shadow-lg shadow-green-400/50 animate-pulse" style={{ animationDuration: '1.8s' }}></div>
+            </div>
+            {/* Mini Screens */}
+            <div className="w-full h-6 bg-black/80 border border-cyan-400/50 rounded flex items-center justify-center text-[8px] text-cyan-400 font-mono">
+              ACTIVE
+            </div>
+          </div>
+        </div>
+
+        {/* Flickering Light Effects */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 5 }}>
+          <div className="absolute top-[20%] left-[15%] w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '3s' }}></div>
+          <div className="absolute top-[60%] right-[15%] w-32 h-32 bg-green-400/10 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }}></div>
+        </div>
 
         {/* Arena Grid */}
         <div className="w-full grid grid-cols-2 gap-8 relative" style={{ zIndex: 10 }}>
           {/* Fighter 1 Slot */}
-          <div className="relative flex flex-col">
-            <h3 className="text-green-400 font-bold text-3xl mb-4 text-center font-alien holographic-text drop-shadow-glow">
-              🧬 PLAYER 1 🧬
+          <div className="relative flex flex-col p-6">
+            <h3 className="text-cyan-400 font-bold text-3xl mb-4 text-center font-alien holographic-text drop-shadow-glow">
+              🛸 CHAMBER 1 🛸
             </h3>
-
-            {/* Living Tendrils/Vines for Player 1 */}
-            {fighter1 && (
-              <>
-                <svg className="absolute -left-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
-                  <path d="M 4 0 Q 8 30, 4 60 Q 0 90, 4 120 Q 8 150, 4 180 Q 0 210, 4 240"
-                    stroke="#00ff99" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
-                </svg>
-                <svg className="absolute -right-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
-                  <path d="M 4 0 Q 0 30, 4 60 Q 8 90, 4 120 Q 0 150, 4 180 Q 8 210, 4 240"
-                    stroke="#00ff99" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
-                </svg>
-              </>
-            )}
 
             <div
               onDragOver={handleDragOver}
+              onDragEnter={handleDragEnterSlot1}
+              onDragLeave={handleDragLeaveSlot1}
               onDrop={handleDropFighter1}
-              className={`relative h-96 rounded-3xl flex items-center justify-center transition-all duration-500 overflow-hidden ${
+              className={`relative h-96 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden border-4 ${
                 fighter1
-                  ? 'bg-gradient-to-br from-green-900/40 via-cyan-900/30 to-green-900/40 border-4 border-green-500/50 shadow-2xl shadow-green-500/50'
-                  : 'border-4 border-dashed border-green-600/30 bg-gradient-to-br from-gray-900/40 to-green-900/20'
+                  ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border-cyan-500 shadow-2xl shadow-cyan-500/50'
+                  : 'border-gray-600 bg-gradient-to-br from-gray-900 to-gray-800'
               } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
               style={{
-                backgroundImage: fighter1 ? 'radial-gradient(circle at 50% 50%, rgba(0, 255, 153, 0.1) 0%, transparent 70%)' : 'none'
+                backgroundImage: `
+                  repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 11px),
+                  repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 11px)
+                `
               }}
             >
             {fighter1 ? (
@@ -420,20 +514,92 @@ export default function GumbuoFightersArena() {
                 )}
               </div>
             ) : (
-              <div className="text-center relative">
-                {/* Alien Egg/Cocoon Style */}
-                <div className="relative w-40 h-56 mx-auto mb-4">
-                  <div className="absolute inset-0 bg-gradient-to-b from-green-800/30 to-green-900/50 rounded-full blur-sm animate-pulse"></div>
-                  <div className="absolute inset-2 bg-gradient-to-b from-green-700/20 to-green-900/40 rounded-full border-2 border-green-600/30 flex items-center justify-center">
-                    <p className="text-7xl opacity-50">🥚</p>
+              <div className="text-center relative w-full h-full">
+                {/* Metal Doors */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Left Door */}
+                  <div
+                    className="absolute left-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    style={{
+                      width: '50%',
+                      transform: isDraggingOverSlot1 ? 'translateX(-100%)' : 'translateX(0)',
+                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
+                      boxShadow: 'inset -5px 0 10px rgba(0,0,0,0.5), 5px 0 15px rgba(0,0,0,0.3)',
+                      zIndex: 20
+                    }}
+                  >
+                    {/* Door Panel Details */}
+                    <div className="absolute inset-0 opacity-40" style={{
+                      backgroundImage: `
+                        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px),
+                        repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px)
+                      `
+                    }}></div>
+                    {/* Rivets on door */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={`left-rivet-${i}`}
+                        className="absolute w-2 h-2 rounded-full bg-gray-700"
+                        style={{
+                          top: `${15 + i * 15}%`,
+                          right: '10px',
+                          boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.8)'
+                        }}
+                      />
+                    ))}
+                    {/* Door Handle */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-16 bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg shadow-lg"></div>
                   </div>
-                  {/* Organic membrane texture */}
-                  <div className="absolute inset-0 rounded-full" style={{
-                    background: 'radial-gradient(circle at 30% 30%, rgba(0, 255, 153, 0.1) 0%, transparent 50%)',
-                  }}></div>
+
+                  {/* Right Door */}
+                  <div
+                    className="absolute right-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    style={{
+                      width: '50%',
+                      transform: isDraggingOverSlot1 ? 'translateX(100%)' : 'translateX(0)',
+                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
+                      boxShadow: 'inset 5px 0 10px rgba(0,0,0,0.5), -5px 0 15px rgba(0,0,0,0.3)',
+                      zIndex: 20
+                    }}
+                  >
+                    {/* Door Panel Details */}
+                    <div className="absolute inset-0 opacity-40" style={{
+                      backgroundImage: `
+                        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px),
+                        repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px)
+                      `
+                    }}></div>
+                    {/* Rivets on door */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={`right-rivet-${i}`}
+                        className="absolute w-2 h-2 rounded-full bg-gray-700"
+                        style={{
+                          top: `${15 + i * 15}%`,
+                          left: '10px',
+                          boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.8)'
+                        }}
+                      />
+                    ))}
+                    {/* Door Handle */}
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-16 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg shadow-lg"></div>
+                  </div>
+
+                  {/* Warning Stripes on Door Frame */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-full bg-gradient-to-b from-yellow-500/0 via-yellow-500/30 to-yellow-500/0" style={{ zIndex: 19 }}></div>
                 </div>
-                <p className="text-xl text-green-400/60 font-alien">Drop Player 1 Here</p>
-                <p className="text-sm text-green-400/40 mt-2">Awaiting Life Form...</p>
+
+                {/* Inside Chamber (visible when doors open) */}
+                <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                  <div className="text-cyan-400 text-6xl mb-4 opacity-70">⚡</div>
+                  <p className="text-xl text-cyan-400/80 font-alien">Chamber 1</p>
+                  <p className="text-sm text-cyan-400/50 mt-2 font-mono">READY FOR DEPLOYMENT</p>
+                  {isDraggingOverSlot1 && (
+                    <div className="mt-4 px-4 py-2 bg-cyan-500/20 border border-cyan-400/50 rounded text-cyan-400 text-sm animate-pulse">
+                      DOORS OPENING...
+                    </div>
+                  )}
+                </div>
               </div>
             )}
             {fighter1 && !fighter2 && !fighting && (
@@ -444,46 +610,55 @@ export default function GumbuoFightersArena() {
           </div>
         </div>
 
-        {/* VS in center - Bio-organic Style */}
+        {/* VS in center - UFO Control Panel Style */}
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
-          {fighting && (
-            <div className="absolute inset-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl animate-pulse"></div>
+          {fighting ? (
+            <div className="flex flex-col items-center gap-2">
+              <div className="relative">
+                <div className="absolute inset-0 w-32 h-32 bg-red-500/20 rounded-full blur-2xl animate-pulse"></div>
+                <div className="text-8xl font-bold font-alien text-red-500 animate-ping holographic-text">
+                  💥 VS 💥
+                </div>
+              </div>
+              <div className="bg-gray-800 px-6 py-2 rounded-lg border-2 border-red-500 shadow-lg shadow-red-500/50 animate-pulse">
+                <p className="text-red-500 font-mono text-sm font-bold">BATTLE IN PROGRESS</p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gray-800 p-6 rounded-lg border-2 border-gray-600 shadow-2xl" style={{
+              background: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)'
+            }}>
+              <div className="text-6xl font-bold font-alien text-orange-400 holographic-text mb-2">VS</div>
+              <div className="flex gap-2 justify-center mt-3">
+                <div className="w-3 h-3 rounded-full bg-gray-600"></div>
+                <div className="w-3 h-3 rounded-full bg-gray-600"></div>
+                <div className="w-3 h-3 rounded-full bg-gray-600"></div>
+              </div>
+            </div>
           )}
-          <div className={`text-8xl font-bold font-alien ${fighting ? 'text-purple-400 animate-ping holographic-text' : 'text-green-600/40'}`}>
-            {fighting ? '💥 VS 💥' : 'VS'}
-          </div>
         </div>
 
         {/* Fighter 2 Slot */}
-        <div className="relative flex flex-col">
+        <div className="relative flex flex-col p-6">
           <h3 className="text-purple-400 font-bold text-3xl mb-4 text-center font-alien holographic-text drop-shadow-glow">
-            🦠 PLAYER 2 🦠
+            🛸 CHAMBER 2 🛸
           </h3>
-
-          {/* Living Tendrils/Vines for Player 2 */}
-          {fighter2 && (
-            <>
-              <svg className="absolute -left-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
-                <path d="M 4 0 Q 8 30, 4 60 Q 0 90, 4 120 Q 8 150, 4 180 Q 0 210, 4 240"
-                  stroke="#a855f7" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
-              </svg>
-              <svg className="absolute -right-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
-                <path d="M 4 0 Q 0 30, 4 60 Q 8 90, 4 120 Q 0 150, 4 180 Q 8 210, 4 240"
-                  stroke="#a855f7" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
-              </svg>
-            </>
-          )}
 
           <div
             onDragOver={handleDragOver}
+            onDragEnter={handleDragEnterSlot2}
+            onDragLeave={handleDragLeaveSlot2}
             onDrop={handleDropFighter2}
-            className={`relative h-96 rounded-3xl flex items-center justify-center transition-all duration-500 overflow-hidden ${
+            className={`relative h-96 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden border-4 ${
               fighter2
-                ? 'bg-gradient-to-br from-purple-900/40 via-blue-900/30 to-purple-900/40 border-4 border-purple-500/50 shadow-2xl shadow-purple-500/50'
-                : 'border-4 border-dashed border-purple-600/30 bg-gradient-to-br from-gray-900/40 to-purple-900/20'
+                ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border-purple-500 shadow-2xl shadow-purple-500/50'
+                : 'border-gray-600 bg-gradient-to-br from-gray-900 to-gray-800'
             } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
             style={{
-              backgroundImage: fighter2 ? 'radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 70%)' : 'none'
+              backgroundImage: `
+                repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 11px),
+                repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 11px)
+              `
             }}
           >
             {fighter2 ? (
@@ -519,20 +694,92 @@ export default function GumbuoFightersArena() {
                 )}
               </div>
             ) : (
-              <div className="text-center relative">
-                {/* Alien Egg/Cocoon Style - Purple Theme */}
-                <div className="relative w-40 h-56 mx-auto mb-4">
-                  <div className="absolute inset-0 bg-gradient-to-b from-purple-800/30 to-purple-900/50 rounded-full blur-sm animate-pulse"></div>
-                  <div className="absolute inset-2 bg-gradient-to-b from-purple-700/20 to-purple-900/40 rounded-full border-2 border-purple-600/30 flex items-center justify-center">
-                    <p className="text-7xl opacity-50">🥚</p>
+              <div className="text-center relative w-full h-full">
+                {/* Metal Doors */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Left Door */}
+                  <div
+                    className="absolute left-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    style={{
+                      width: '50%',
+                      transform: isDraggingOverSlot2 ? 'translateX(-100%)' : 'translateX(0)',
+                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
+                      boxShadow: 'inset -5px 0 10px rgba(0,0,0,0.5), 5px 0 15px rgba(0,0,0,0.3)',
+                      zIndex: 20
+                    }}
+                  >
+                    {/* Door Panel Details */}
+                    <div className="absolute inset-0 opacity-40" style={{
+                      backgroundImage: `
+                        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px),
+                        repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px)
+                      `
+                    }}></div>
+                    {/* Rivets on door */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={`left-rivet2-${i}`}
+                        className="absolute w-2 h-2 rounded-full bg-gray-700"
+                        style={{
+                          top: `${15 + i * 15}%`,
+                          right: '10px',
+                          boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.8)'
+                        }}
+                      />
+                    ))}
+                    {/* Door Handle */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-16 bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg shadow-lg"></div>
                   </div>
-                  {/* Organic membrane texture */}
-                  <div className="absolute inset-0 rounded-full" style={{
-                    background: 'radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 50%)',
-                  }}></div>
+
+                  {/* Right Door */}
+                  <div
+                    className="absolute right-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    style={{
+                      width: '50%',
+                      transform: isDraggingOverSlot2 ? 'translateX(100%)' : 'translateX(0)',
+                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
+                      boxShadow: 'inset 5px 0 10px rgba(0,0,0,0.5), -5px 0 15px rgba(0,0,0,0.3)',
+                      zIndex: 20
+                    }}
+                  >
+                    {/* Door Panel Details */}
+                    <div className="absolute inset-0 opacity-40" style={{
+                      backgroundImage: `
+                        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px),
+                        repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 21px)
+                      `
+                    }}></div>
+                    {/* Rivets on door */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={`right-rivet2-${i}`}
+                        className="absolute w-2 h-2 rounded-full bg-gray-700"
+                        style={{
+                          top: `${15 + i * 15}%`,
+                          left: '10px',
+                          boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.8)'
+                        }}
+                      />
+                    ))}
+                    {/* Door Handle */}
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-16 bg-gradient-to-r from-gray-700 to-gray-600 rounded-lg shadow-lg"></div>
+                  </div>
+
+                  {/* Warning Stripes on Door Frame */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-full bg-gradient-to-b from-purple-500/0 via-purple-500/30 to-purple-500/0" style={{ zIndex: 19 }}></div>
                 </div>
-                <p className="text-xl text-purple-400/60 font-alien">Drop Player 2 Here</p>
-                <p className="text-sm text-purple-400/40 mt-2">Awaiting Life Form...</p>
+
+                {/* Inside Chamber (visible when doors open) */}
+                <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                  <div className="text-purple-400 text-6xl mb-4 opacity-70">⚡</div>
+                  <p className="text-xl text-purple-400/80 font-alien">Chamber 2</p>
+                  <p className="text-sm text-purple-400/50 mt-2 font-mono">READY FOR DEPLOYMENT</p>
+                  {isDraggingOverSlot2 && (
+                    <div className="mt-4 px-4 py-2 bg-purple-500/20 border border-purple-400/50 rounded text-purple-400 text-sm animate-pulse">
+                      DOORS OPENING...
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
