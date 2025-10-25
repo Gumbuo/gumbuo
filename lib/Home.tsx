@@ -95,28 +95,28 @@ export default function Home() {
         </div>
 
         {/* Wheel and Drip Station - Stacked */}
-        <div className="flex flex-col items-center space-y-12 mt-12">
+        <div className="flex flex-col items-center space-y-24 mt-24">
           <AlienWheel />
           <AlienDripStation />
         </div>
 
         {/* Alien Leaderboard */}
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-32">
           <AlienLeaderboard />
         </div>
 
         {/* Alien Market & Arena (Combined) */}
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-32">
           <AlienMarketAndArena />
         </div>
 
         {/* Gumbuo Boss Battle */}
-        <div className="flex justify-center mt-12 mb-12">
+        <div className="flex justify-center mt-32 mb-24">
           <GumbuoBoss />
         </div>
 
         {/* FoxHole Productions Credit */}
-        <div className="flex justify-center mt-12 mb-8">
+        <div className="flex justify-center mt-32 mb-12">
           <div className="flex items-center space-x-4 bg-black/60 backdrop-blur-sm px-8 py-4 rounded-2xl border border-green-400/30 shadow-lg shadow-green-400/20">
             <img
               src="/foxholeproductions.jpg"
