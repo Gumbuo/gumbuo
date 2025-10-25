@@ -10,6 +10,25 @@ export const metadata: Metadata = {
   icons: {
     icon: "/gumbuo.svg",
   },
+  openGraph: {
+    title: "Gumbuo - Alien Points Economy",
+    description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Gumbuo Logo",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gumbuo - Alien Points Economy",
+    description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
