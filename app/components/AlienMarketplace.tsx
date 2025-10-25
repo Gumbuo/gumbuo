@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
+import { useCosmicSound } from "../hooks/useCosmicSound";
 
 interface AlienPic {
   id: string;
@@ -28,6 +29,7 @@ const ALIEN_PICS: AlienPic[] = [
 export default function AlienMarketplace() {
   const { address, isConnected } = useAccount();
   const { getUserBalance, spendPoints, pool } = useAlienPoints();
+  const { playSound } = useCosmicSound();
   const [userPoints, setUserPoints] = useState(0);
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [ownedAliens, setOwnedAliens] = useState<OwnedAlien[]>([]);
@@ -47,12 +49,14 @@ export default function AlienMarketplace() {
 
   const handlePurchase = async (pic: AlienPic) => {
     if (!isConnected || !address) {
+      playSound('error');
       alert("Please connect your wallet first!");
       return;
     }
 
     const currentBalance = getUserBalance(address);
     if (currentBalance < pic.price) {
+      playSound('error');
       alert(`Not enough Alien Points! You need ${pic.price.toLocaleString()} AP but only have ${currentBalance.toLocaleString()} AP.`);
       return;
     }
@@ -71,12 +75,14 @@ export default function AlienMarketplace() {
       return;
     }
 
+    playSound('click');
     setPurchasing(pic.id);
 
     try {
       const success = await spendPoints(address, pic.price, pic.name);
 
       if (success) {
+        playSound('success');
         // Create new alien instance with unique ID
         const newAlien: OwnedAlien = {
           id: `${pic.id}_${Date.now()}_${Math.random()}`, // Unique instance ID
@@ -97,9 +103,11 @@ export default function AlienMarketplace() {
         const alienCount = updatedAliens.filter(a => a.picId === pic.id).length;
         alert(`🎉 Successfully purchased ${pic.name}! 👽\n\nYou now own ${alienCount} ${pic.name}${alienCount > 1 ? 's' : ''}!\nYour new balance: ${getUserBalance(address).toLocaleString()} AP`);
       } else {
+        playSound('error');
         alert("Purchase failed! Please try again.");
       }
     } catch (error) {
+      playSound('error');
       console.error("Error purchasing:", error);
       alert("Purchase failed! Please try again.");
     } finally {
@@ -108,24 +116,21 @@ export default function AlienMarketplace() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6 bg-gradient-to-br from-black via-gray-900 to-black bg-opacity-95 rounded-xl max-w-6xl w-full relative overflow-hidden shadow-2xl shadow-orange-400/50">
-      {/* Animated corner accents */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-orange-400 animate-pulse"></div>
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-orange-400 animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-orange-400 animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-orange-400 animate-pulse"></div>
+    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl w-full relative overflow-visible rounded-3xl">
+      {/* Corner glow accents */}
+      <div className="corner-glow corner-glow-tl"></div>
+      <div className="corner-glow corner-glow-tr"></div>
+      <div className="corner-glow corner-glow-bl"></div>
+      <div className="corner-glow corner-glow-br"></div>
 
-      {/* Scan line effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-400/5 to-transparent animate-scan pointer-events-none"></div>
-
-      <h2 className="font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text hex-pattern" style={{fontSize: '4rem'}}>
         <span className="animate-glow">👽 Alien Marketplace 🛸</span>
       </h2>
 
       {/* Info Section */}
-      <div className="w-full text-orange-400 text-xs text-center max-w-2xl bg-orange-400 bg-opacity-10 p-3 rounded-lg">
-        <p className="font-bold mb-1">ℹ️ Marketplace Info</p>
-        <p className="opacity-75">
+      <div className="w-full text-orange-400 text-sm text-center max-w-2xl glass-panel p-4 rounded-xl border-2 border-orange-400/50 z-10">
+        <p className="font-bold mb-2 text-xl font-iceland circuit-text">ℹ️ Marketplace Info</p>
+        <p className="opacity-75 font-electro">
           Use your Alien Points to purchase exclusive Gumbuo Fighters alien pics!
           Each purchase is permanent and unique to your wallet. More pics coming soon! 🚀
         </p>
@@ -143,31 +148,32 @@ export default function AlienMarketplace() {
               className="flex flex-col items-center"
             >
               {/* Name above */}
-              <h3 className="text-xl font-bold text-orange-400 mb-2">{pic.name}</h3>
+              <h3 className="text-2xl font-bold text-orange-400 mb-3 font-alien holographic-text">{pic.name}</h3>
 
               {/* Image */}
-              <div className="relative mb-2 flex justify-center items-center">
+              <div className="relative mb-4 flex justify-center items-center glass-panel p-6 rounded-xl border-2 border-orange-400/50 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-400/50">
                 <img
                   src={pic.image}
                   alt={pic.name}
-                  className="max-w-[64px] max-h-[64px] w-auto h-auto object-contain rounded-lg border-2 border-orange-400/30"
-                  style={{ width: '64px', height: '64px', objectFit: 'contain' }}
+                  className="max-w-[128px] max-h-[128px] w-auto h-auto object-contain"
+                  style={{ width: '128px', height: '128px', objectFit: 'contain' }}
                 />
                 {ownedCount > 0 && (
-                  <div className="absolute -top-2 -right-2 bg-orange-400 text-black font-bold px-2 py-1 rounded-full text-xs">
+                  <div className="absolute -top-3 -right-3 bg-orange-400 text-black font-bold px-3 py-2 rounded-full text-sm animate-pulse shadow-lg shadow-orange-400/50 font-alien">
                     x{ownedCount}
                   </div>
                 )}
               </div>
 
-              {/* Small animated buy button below */}
+              {/* Animated buy button below */}
               <button
                 onClick={() => handlePurchase(pic)}
+                onMouseEnter={() => !isPurchasing && isConnected && playSound('hover')}
                 disabled={!isConnected || isPurchasing}
-                className={`px-4 py-1 text-xs font-bold rounded-lg tracking-wider transition-all duration-200 relative overflow-hidden ${
+                className={`px-8 py-3 text-lg font-bold tracking-wider transition-all duration-200 relative overflow-hidden ${
                   !isConnected || isPurchasing
-                    ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 text-black hover:scale-110 hover:shadow-xl hover:shadow-orange-400/80 animate-pulse-glow"
+                    ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
+                    : "holographic-button organic-button text-white hover:scale-110 hover:shadow-2xl hover:shadow-orange-400/80 animate-pulse-glow hover-ripple hover-float"
                 }`}
               >
                 {!isConnected || isPurchasing ? null : (

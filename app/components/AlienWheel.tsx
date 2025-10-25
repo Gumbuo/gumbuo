@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import { useAccount } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
+import { useCosmicSound } from "../hooks/useCosmicSound";
 
 // Wheel segments with weighted probability (lower value = more common)
 const wheelData = [
@@ -21,6 +22,7 @@ const wheelData = [
 export default function AlienWheel() {
   const { address, isConnected } = useAccount();
   const { getUserBalance, addPoints, getPoolRemaining } = useAlienPoints();
+  const { playSound } = useCosmicSound();
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [hasSpunToday, setHasSpunToday] = useState(false);
@@ -128,15 +130,18 @@ export default function AlienWheel() {
 
   const handleSpinClick = () => {
     if (!isConnected) {
+      playSound('error');
       alert("Please connect your wallet first!");
       return;
     }
 
     if (hasSpunToday) {
+      playSound('error');
       alert("You've already spun today! Come back tomorrow! 👽");
       return;
     }
 
+    playSound('click');
     const newPrizeNumber = getWeightedRandomIndex();
     setPrizeNumber(newPrizeNumber);
     setMustSpin(true);
@@ -156,6 +161,7 @@ export default function AlienWheel() {
       const success = await addPoints(address, points, 'wheel');
 
       if (success) {
+        playSound('success');
         // Save to localStorage with timestamp
         localStorage.setItem(`lastSpin_${address}`, Date.now().toString());
         localStorage.setItem(`lastWin_${address}`, points.toString());
@@ -165,21 +171,28 @@ export default function AlienWheel() {
         // Show celebration
         alert(`🎉 Congratulations! You won ${points} Alien Points! 👽`);
       } else {
+        playSound('error');
         alert("Wheel pool depleted! Please try the drip station!");
       }
     }
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-blue-900/40 via-black/90 to-blue-900/40 rounded-2xl border-4 border-blue-400 shadow-2xl shadow-blue-500/50 max-w-3xl">
-      <h2 className="font-bold holographic-text tracking-wider flex items-center space-x-3" style={{fontSize: '4rem'}}>
+    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-3xl relative overflow-visible rounded-3xl">
+      {/* Corner glow accents */}
+      <div className="corner-glow corner-glow-tl"></div>
+      <div className="corner-glow corner-glow-tr"></div>
+      <div className="corner-glow corner-glow-bl"></div>
+      <div className="corner-glow corner-glow-br"></div>
+
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center space-x-3 alien-glyph-text relative z-10" style={{fontSize: '4rem'}}>
         <img src="/nyx.png" alt="Nyx" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
         <span className="animate-glow text-blue-400">🎰 Daily Alien Wheel 🎰</span>
         <img src="/zorb.png" alt="Zorb" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
       </h2>
 
       {/* Pool Status */}
-      <div className="w-full bg-gradient-to-r from-blue-400/10 via-blue-400/20 to-blue-400/10 border-2 border-blue-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-blue-400/30">
+      <div className="w-full glass-panel rounded-xl p-4 relative overflow-hidden shadow-lg shadow-blue-400/30 z-10">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-shimmer pointer-events-none"></div>
         <p className="text-blue-400 text-center text-xl drop-shadow-glow relative z-10">
           🎰 Wheel Pool: <span className="font-bold text-2xl">{getPoolRemaining('wheel').toLocaleString()}</span> / 100,000,000 AP
@@ -196,9 +209,9 @@ export default function AlienWheel() {
 
       {/* User Balance */}
       {isConnected && address && (
-        <div className="w-full bg-blue-400 bg-opacity-20 border-2 border-blue-400 rounded-lg p-4 text-center shadow-lg shadow-blue-400/30">
-          <p className="text-blue-400 text-xl">
-            👽 Your Alien Points: <span className="font-bold text-3xl">{userPoints.toLocaleString()}</span>
+        <div className="w-full glass-panel border-2 border-blue-400/50 rounded-xl p-4 text-center shadow-lg shadow-blue-400/30 z-10">
+          <p className="text-blue-400 text-xl font-electro">
+            👽 Your Alien Points: <span className="font-bold text-3xl font-alien holographic-text">{userPoints.toLocaleString()}</span>
           </p>
         </div>
       )}
@@ -247,13 +260,13 @@ export default function AlienWheel() {
       </div>
 
       {wonPoints !== null && hasSpunToday && (
-        <div className="text-center p-6 bg-gradient-to-r from-blue-400/20 via-blue-400/30 to-blue-400/20 border-2 border-blue-400 rounded-lg shadow-lg shadow-blue-400/30 relative overflow-hidden">
+        <div className="text-center p-6 glass-panel border-2 border-blue-400/50 rounded-xl shadow-lg shadow-blue-400/30 relative overflow-hidden z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-shimmer pointer-events-none"></div>
-          <p className="text-3xl text-blue-400 font-bold relative z-10">
+          <p className="text-3xl text-blue-400 font-bold relative z-10 font-alien holographic-text">
             Today's Win: {wonPoints} Alien Points! 🎉
           </p>
-          <p className="text-lg text-blue-300 mt-2 relative z-10">Next spin available in:</p>
-          <p className="text-2xl text-yellow-400 font-bold mt-1 animate-pulse relative z-10">⏰ {timeUntilReset}</p>
+          <p className="text-lg text-blue-300 mt-2 relative z-10 font-electro">Next spin available in:</p>
+          <p className="text-2xl text-yellow-400 font-bold mt-1 animate-pulse relative z-10 font-mono alien-code">⏰ {timeUntilReset}</p>
         </div>
       )}
 
@@ -268,11 +281,12 @@ export default function AlienWheel() {
           {/* UFO Button */}
           <button
             onClick={handleSpinClick}
+            onMouseEnter={() => !hasSpunToday && !mustSpin && playSound('hover')}
             disabled={hasSpunToday || mustSpin}
-            className={`relative w-96 h-96 rounded-full transition-all duration-200 overflow-visible ${
+            className={`relative w-96 h-96 rounded-full transition-all duration-200 overflow-visible hover-ripple ${
               hasSpunToday || mustSpin
                 ? "bg-gray-600 cursor-not-allowed"
-                : "bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-105 animate-spin-pulse animate-spin-wiggle"
+                : "holographic-button bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-110 animate-spin-pulse animate-spin-wiggle hover-float hover-cosmic-pulse"
             }`}
             style={{
               boxShadow: hasSpunToday || mustSpin
@@ -319,8 +333,8 @@ export default function AlienWheel() {
         <p className="text-yellow-400 text-lg font-bold animate-pulse">⚠️ Connect your wallet to spin!</p>
       )}
 
-      <div className="w-full bg-gradient-to-r from-blue-900/30 via-blue-800/40 to-blue-900/30 border-2 border-blue-400/50 rounded-lg p-6 shadow-lg shadow-blue-400/20">
-        <p className="font-bold text-xl mb-4 text-blue-400 text-center">🎰 Prize Probabilities 🎰</p>
+      <div className="w-full glass-panel border-2 border-blue-400/50 rounded-xl p-6 shadow-lg shadow-blue-400/20 z-10">
+        <p className="font-bold text-xl mb-4 text-blue-400 text-center font-iceland circuit-text">🎰 Prize Probabilities 🎰</p>
         <div className="grid grid-cols-2 gap-3 text-base">
           <span className="text-blue-300">50 pts: Common</span>
           <span className="text-blue-300">75 pts: Common</span>
