@@ -524,15 +524,15 @@ export default function GumbuoBoss() {
           {/* HP Bar */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <p className="text-blue-400 text-xl font-bold">
+              <p className="text-xl font-bold holographic-text">
                 HP: {bossState.currentHP.toLocaleString()} / {bossState.maxHP.toLocaleString()}
               </p>
-              <p className="text-blue-400 text-xl font-bold">
+              <p className="text-xl font-bold holographic-text">
                 {getHPPercentage().toFixed(1)}%
               </p>
             </div>
 
-            <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-blue-900">
+            <div className="w-full bg-gray-900 rounded-full h-6">
               <div
                 className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-500`}
                 style={{width: `${getHPPercentage()}%`}}
