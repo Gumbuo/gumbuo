@@ -28,8 +28,8 @@ export default function StarfieldBackground() {
 
     function generateStars(count: number, minSize: number, maxSize: number) {
       return Array.from({ length: count }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * canvas!.width,
+        y: Math.random() * canvas!.height,
         size: Math.random() * (maxSize - minSize) + minSize,
         opacity: Math.random() * 0.5 + 0.5,
       }));
@@ -37,8 +37,8 @@ export default function StarfieldBackground() {
 
     // Nebula particles
     const nebulae = Array.from({ length: 20 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
+      x: Math.random() * canvas!.width,
+      y: Math.random() * canvas!.height,
       radius: Math.random() * 100 + 50,
       color: Math.random() > 0.5 ? "rgba(138, 43, 226, 0.1)" : "rgba(0, 255, 153, 0.1)",
       speedX: (Math.random() - 0.5) * 0.1,
@@ -48,11 +48,11 @@ export default function StarfieldBackground() {
     let animationFrameId: number;
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
 
       // Draw nebulae
       nebulae.forEach((nebula) => {
-        const gradient = ctx.createRadialGradient(
+        const gradient = ctx!.createRadialGradient(
           nebula.x,
           nebula.y,
           0,
@@ -63,8 +63,8 @@ export default function StarfieldBackground() {
         gradient.addColorStop(0, nebula.color);
         gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
 
-        ctx.fillStyle = gradient;
-        ctx.fillRect(
+        ctx!.fillStyle = gradient;
+        ctx!.fillRect(
           nebula.x - nebula.radius,
           nebula.y - nebula.radius,
           nebula.radius * 2,
@@ -76,10 +76,10 @@ export default function StarfieldBackground() {
         nebula.y += nebula.speedY;
 
         // Wrap around
-        if (nebula.x < -nebula.radius) nebula.x = canvas.width + nebula.radius;
-        if (nebula.x > canvas.width + nebula.radius) nebula.x = -nebula.radius;
-        if (nebula.y < -nebula.radius) nebula.y = canvas.height + nebula.radius;
-        if (nebula.y > canvas.height + nebula.radius) nebula.y = -nebula.radius;
+        if (nebula.x < -nebula.radius) nebula.x = canvas!.width + nebula.radius;
+        if (nebula.x > canvas!.width + nebula.radius) nebula.x = -nebula.radius;
+        if (nebula.y < -nebula.radius) nebula.y = canvas!.height + nebula.radius;
+        if (nebula.y > canvas!.height + nebula.radius) nebula.y = -nebula.radius;
       });
 
       // Draw star layers (parallax)
@@ -88,20 +88,20 @@ export default function StarfieldBackground() {
           // Twinkle effect
           const twinkle = Math.sin(Date.now() * 0.002 + star.x) * 0.3 + 0.7;
 
-          ctx.beginPath();
-          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-          ctx.fillStyle = layer.color;
-          ctx.globalAlpha = star.opacity * twinkle;
-          ctx.fill();
-          ctx.globalAlpha = 1;
+          ctx!.beginPath();
+          ctx!.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx!.fillStyle = layer.color;
+          ctx!.globalAlpha = star.opacity * twinkle;
+          ctx!.fill();
+          ctx!.globalAlpha = 1;
 
           // Move star
           star.y += layer.speed;
 
           // Wrap around
-          if (star.y > canvas.height) {
+          if (star.y > canvas!.height) {
             star.y = 0;
-            star.x = Math.random() * canvas.width;
+            star.x = Math.random() * canvas!.width;
           }
         });
       });
