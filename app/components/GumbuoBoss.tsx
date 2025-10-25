@@ -496,16 +496,16 @@ export default function GumbuoBoss() {
       </h2>
 
       {/* Boss Status */}
-      <div className="w-full bg-black/60 border-2 border-red-500/50 rounded-3xl p-8">
+      <div className="w-full bg-black/60 border-2 border-blue-500/50 rounded-3xl p-8">
         <div className="space-y-6">
           {/* Boss Image */}
           <div className="flex justify-center">
             <img
               src="/gumbuo.svg"
-              alt="Mega Gumbuo Boss"
+              alt="Gumbuo"
               className={`w-64 h-64 ${bossShaking ? 'animate-bounce' : ''} ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
-                filter: bossState.isAlive ? 'drop-shadow(0 0 30px rgba(239, 68, 68, 0.8))' : 'none',
+                filter: bossState.isAlive ? 'drop-shadow(0 0 30px rgba(59, 130, 246, 0.8))' : 'none',
                 animation: bossShaking ? 'shake 0.5s' : 'none'
               }}
             />
@@ -513,10 +513,10 @@ export default function GumbuoBoss() {
 
           {/* Boss Name & Status */}
           <div className="text-center">
-            <h3 className="text-5xl font-alien mb-2">
+            <h3 className="text-5xl font-alien mb-2 holographic-text">
               {bossState.isAlive ? "👹 MEGA GUMBUO 👹" : "💀 DEFEATED 💀"}
             </h3>
-            <p className="text-2xl text-red-400">
+            <p className="text-2xl text-blue-400 holographic-text">
               {bossState.isAlive ? "DESTROYER OF WORLDS" : "AWAITING RESPAWN"}
             </p>
           </div>
@@ -524,15 +524,15 @@ export default function GumbuoBoss() {
           {/* HP Bar */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <p className="text-red-400 text-xl font-bold">
+              <p className="text-blue-400 text-xl font-bold">
                 HP: {bossState.currentHP.toLocaleString()} / {bossState.maxHP.toLocaleString()}
               </p>
-              <p className="text-red-400 text-xl font-bold">
+              <p className="text-blue-400 text-xl font-bold">
                 {getHPPercentage().toFixed(1)}%
               </p>
             </div>
 
-            <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-red-900">
+            <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-blue-900">
               <div
                 className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-500`}
                 style={{width: `${getHPPercentage()}%`}}
