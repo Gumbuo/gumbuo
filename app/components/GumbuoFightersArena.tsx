@@ -284,6 +284,9 @@ export default function GumbuoFightersArena() {
     setFighter2Health(100);
     setBattleMessage("FIGHT!");
 
+    // Battle start sound
+    playSound('hover');
+
     // Battle messages
     const messages = ["HIT!", "COMBO!", "CRITICAL!", "SMASH!", "POW!", "BOOM!", "ULTRA!"];
 
@@ -307,6 +310,13 @@ export default function GumbuoFightersArena() {
         setBattleMessage(`${fighter1.name} ${messages[Math.floor(Math.random() * messages.length)]}`);
       }
 
+      // Play hit sound - critical hits (damage > 10) get special sound
+      if (damage > 10) {
+        playSound('success'); // Critical hit sound
+      } else {
+        playSound('click'); // Normal hit sound
+      }
+
       // Update health bars
       setFighter1Health(Math.max(0, health1));
       setFighter2Health(Math.max(0, health2));
@@ -321,6 +331,7 @@ export default function GumbuoFightersArena() {
     setTimeout(async () => {
       clearInterval(battleInterval);
       setBattleMessage("FINISH HIM!");
+      playSound('error'); // Dramatic finish sound
 
       // Determine winner based on remaining health
       const winner = health1 > health2 ? fighter1 : fighter2;
@@ -378,6 +389,9 @@ export default function GumbuoFightersArena() {
       };
 
       setFightResult(result);
+
+      // Victory sound
+      playSound('success');
 
       // Add to fight log
       const updatedLog = [result, ...fightLog].slice(0, 50); // Keep last 50 fights
