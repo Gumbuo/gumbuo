@@ -608,10 +608,9 @@ export default function GumbuoBoss() {
                   selectedAttack === 'normal' ? 'alien-button-glow' : ''
                 }`}
               >
-                <p className="text-xl mb-1">👊</p>
-                <p className="text-sm">Normal Attack</p>
-                <p className="text-xs text-black font-bold mt-1">
-                  {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP
+                <p className="text-sm mb-1">👊 Normal Attack</p>
+                <p className="text-xs text-black font-bold">
+                  {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP - Lvl {attackLevels.normal}/5
                 </p>
               </button>
               {attackLevels.normal < MAX_ATTACK_LEVEL && (
@@ -636,10 +635,9 @@ export default function GumbuoBoss() {
                     : 'alien-button alien-button-purple'
                 } ${selectedAttack === 'power' && powerCooldown === 0 ? 'alien-button-glow' : ''}`}
               >
-                <p className="text-xl mb-1">💪</p>
-                <p className="text-sm">Power Attack</p>
-                <p className={`text-xs font-bold mt-1 ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
-                  {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP
+                <p className="text-sm mb-1">💪 Power Attack</p>
+                <p className={`text-xs font-bold ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
+                  {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP - Lvl {attackLevels.power}/5
                 </p>
               </button>
               {attackLevels.power < MAX_ATTACK_LEVEL && (
@@ -664,10 +662,9 @@ export default function GumbuoBoss() {
                     : 'alien-button alien-button-gold'
                 } ${selectedAttack === 'ultimate' && ultimateCooldown === 0 ? 'alien-button-glow' : ''}`}
               >
-                <p className="text-xl mb-1">⚡</p>
-                <p className="text-sm">Cosmic Attack</p>
-                <p className={`text-xs font-bold mt-1 ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
-                  {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP
+                <p className="text-sm mb-1">⚡ Cosmic Attack</p>
+                <p className={`text-xs font-bold ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
+                  {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP - Lvl {attackLevels.ultimate}/5
                 </p>
               </button>
               {attackLevels.ultimate < MAX_ATTACK_LEVEL && (
