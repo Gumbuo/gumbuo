@@ -562,39 +562,6 @@ export default function GumbuoBoss() {
         </div>
       </div>
 
-      {/* User Stats */}
-      {isConnected && address && (
-        <div className="w-full bg-black/60 rounded-2xl p-6">
-          <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-black/60 rounded-xl p-4 text-center">
-              <p className="text-purple-400 text-base">Total Damage Dealt</p>
-              <p className="text-3xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
-            </div>
-
-            <div className="bg-black/60 rounded-xl p-4 text-center">
-              <p className="text-purple-400 text-base">Damage Contribution</p>
-              <p className="text-3xl font-bold text-purple-400 mt-2">
-                {bossState.isAlive
-                  ? `${((userTotalDamage / (BOSS_MAX_HP - bossState.currentHP)) * 100).toFixed(2)}%`
-                  : `${((userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`
-                }
-              </p>
-            </div>
-          </div>
-
-          {!bossState.isAlive && (
-            <div className="mt-4 bg-black/60 rounded-xl p-4 text-center">
-              <p className="text-green-400 text-base">Potential Reward</p>
-              <p className="text-3xl font-bold text-green-400 mt-2">
-                {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} GMB
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Attack Type Selector */}
       {bossState.isAlive && isConnected && (
         <div className="w-full bg-black/60 rounded-2xl p-6">
@@ -703,6 +670,39 @@ export default function GumbuoBoss() {
               )}
             </div>
           </div>
+
+          {/* User Stats - Inside Attack Section */}
+          {address && (
+            <div className="mt-6">
+              <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-black/60 rounded-xl p-4 text-center">
+                  <p className="text-purple-400 text-base">Total Damage Dealt</p>
+                  <p className="text-3xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
+                </div>
+
+                <div className="bg-black/60 rounded-xl p-4 text-center">
+                  <p className="text-purple-400 text-base">Damage Contribution</p>
+                  <p className="text-3xl font-bold text-purple-400 mt-2">
+                    {bossState.isAlive
+                      ? `${((userTotalDamage / (BOSS_MAX_HP - bossState.currentHP)) * 100).toFixed(2)}%`
+                      : `${((userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {!bossState.isAlive && (
+                <div className="mt-4 bg-black/60 rounded-xl p-4 text-center">
+                  <p className="text-green-400 text-base">Potential Reward</p>
+                  <p className="text-3xl font-bold text-green-400 mt-2">
+                    {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} GMB
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
