@@ -262,7 +262,7 @@ export default function AlienLeaderboard() {
             leaderboard.map((entry, index) => (
               <div
                 key={entry.wallet}
-                className={`grid grid-cols-4 gap-4 p-3 border-b border-purple-400 border-opacity-30 transition-colors ${
+                className={`grid grid-cols-4 gap-4 p-3 transition-colors ${
                   address && entry.wallet.toLowerCase() === address.toLowerCase()
                     ? 'bg-purple-400 bg-opacity-30'
                     : 'hover:bg-purple-400 hover:bg-opacity-10'
