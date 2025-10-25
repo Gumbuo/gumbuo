@@ -677,12 +677,12 @@ export default function GumbuoBoss() {
               <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-black/60 rounded-xl p-4 text-center">
+                <div className="p-4 text-center">
                   <p className="text-purple-400 text-base">Total Damage Dealt</p>
                   <p className="text-3xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
                 </div>
 
-                <div className="bg-black/60 rounded-xl p-4 text-center">
+                <div className="p-4 text-center">
                   <p className="text-purple-400 text-base">Damage Contribution</p>
                   <p className="text-3xl font-bold text-purple-400 mt-2">
                     {bossState.isAlive
@@ -694,7 +694,7 @@ export default function GumbuoBoss() {
               </div>
 
               {!bossState.isAlive && (
-                <div className="mt-4 bg-black/60 rounded-xl p-4 text-center">
+                <div className="mt-4 p-4 text-center">
                   <p className="text-green-400 text-base">Potential Reward</p>
                   <p className="text-3xl font-bold text-green-400 mt-2">
                     {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} GMB
@@ -709,7 +709,7 @@ export default function GumbuoBoss() {
       {/* Leaderboard & Recent Attackers */}
       <div className="w-full grid grid-cols-2 gap-6">
         {/* Leaderboard */}
-        <div className="bg-black/60 border-2 border-yellow-500/50 rounded-2xl p-6">
+        <div className="bg-black/60 rounded-2xl p-6">
           <h3 className="text-2xl font-alien text-yellow-400 text-center mb-4">🏆 TOP DAMAGE DEALERS 🏆</h3>
           <div className="space-y-2">
             {leaderboard.length === 0 ? (
@@ -739,7 +739,7 @@ export default function GumbuoBoss() {
         </div>
 
         {/* Recent Attackers */}
-        <div className="bg-black/60 border-2 border-cyan-500/50 rounded-2xl p-6">
+        <div className="bg-black/60 rounded-2xl p-6">
           <h3 className="text-2xl font-alien text-cyan-400 text-center mb-4">📡 LIVE ATTACKS 📡</h3>
           <div className="space-y-2 max-h-80 overflow-y-auto">
             {recentAttackers.length === 0 ? (
