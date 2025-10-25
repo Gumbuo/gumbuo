@@ -298,17 +298,7 @@ export default function GumbuoFightersArena() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible rounded-3xl">
-      {/* Corner glow accents */}
-      <div className="corner-glow corner-glow-tl"></div>
-      <div className="corner-glow corner-glow-tr"></div>
-      <div className="corner-glow corner-glow-bl"></div>
-      <div className="corner-glow corner-glow-br"></div>
-
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
-        <span className="text-red-400">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
-      </h2>
-
+    <div className="flex flex-col items-center space-y-6 w-full relative overflow-visible">
       {/* Betting Info Section */}
       <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
         <p className="font-bold mb-3 font-alien" style={{fontSize: '2.5rem'}}>
