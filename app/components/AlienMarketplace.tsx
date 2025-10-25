@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
@@ -29,6 +30,7 @@ const ALIEN_PICS: AlienPic[] = [
 
 export default function AlienMarketplace() {
   const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const { getUserBalance, spendPoints, pool } = useAlienPoints();
   const { playSound } = useCosmicSound();
   const [userPoints, setUserPoints] = useState(0);
@@ -50,8 +52,8 @@ export default function AlienMarketplace() {
 
   const handlePurchase = async (pic: AlienPic) => {
     if (!isConnected || !address) {
-      playSound('error');
-      alert("Please connect your wallet first!");
+      playSound('click');
+      openConnectModal?.();
       return;
     }
 
@@ -163,10 +165,10 @@ export default function AlienMarketplace() {
               {/* Buy button below */}
               <button
                 onClick={() => handlePurchase(pic)}
-                onMouseEnter={() => !isPurchasing && isConnected && playSound('hover')}
-                disabled={!isConnected || isPurchasing}
+                onMouseEnter={() => !isPurchasing && playSound('hover')}
+                disabled={isPurchasing}
                 className={`px-8 py-3 text-base font-bold rounded-xl transition-all duration-200 ${
-                  !isConnected || isPurchasing
+                  isPurchasing
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                     : "bg-orange-500 text-white hover:bg-orange-600"
                 }`}

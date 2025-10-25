@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
@@ -15,6 +16,7 @@ const MAX_FIRST_TIMERS = 50;
 
 export default function AlienLeaderboard() {
   const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const { getUserBalance } = useAlienPoints();
   const { playSound } = useCosmicSound();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -96,8 +98,8 @@ export default function AlienLeaderboard() {
 
   const handleRegister = async () => {
     if (!isConnected || !address) {
-      playSound('error');
-      alert("Please connect your wallet first!");
+      playSound('click');
+      openConnectModal?.();
       return;
     }
 
@@ -226,10 +228,10 @@ export default function AlienLeaderboard() {
       {!isRegistered && (
         <button
           onClick={handleRegister}
-          onMouseEnter={() => isConnected && leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
-          disabled={!isConnected || leaderboard.length >= MAX_FIRST_TIMERS}
+          onMouseEnter={() => leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
+          disabled={leaderboard.length >= MAX_FIRST_TIMERS}
           className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
-            !isConnected || leaderboard.length >= MAX_FIRST_TIMERS
+            leaderboard.length >= MAX_FIRST_TIMERS
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
               : "bg-purple-500 text-white hover:bg-purple-600"
           }`}

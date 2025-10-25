@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
@@ -26,6 +27,7 @@ interface AttackResult {
 
 export default function GumbuoBoss() {
   const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const { getUserBalance, addPoints } = useAlienPoints();
   const { playSound } = useCosmicSound();
 
@@ -167,8 +169,8 @@ export default function GumbuoBoss() {
 
   const handleAttack = async () => {
     if (!isConnected || !address) {
-      playSound('error');
-      alert("Please connect your wallet first!");
+      playSound('click');
+      openConnectModal?.();
       return;
     }
 
@@ -230,8 +232,8 @@ export default function GumbuoBoss() {
 
   const handleClaimReward = async () => {
     if (!isConnected || !address) {
-      playSound('error');
-      alert("Please connect your wallet first!");
+      playSound('click');
+      openConnectModal?.();
       return;
     }
 
@@ -384,10 +386,10 @@ export default function GumbuoBoss() {
       {bossState.isAlive && (
         <button
           onClick={handleAttack}
-          onMouseEnter={() => canAttack && playSound('hover')}
-          disabled={!isConnected || isAttacking || !canAttack}
+          onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
+          disabled={isAttacking || !canAttack}
           className={`px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
-            !isConnected || isAttacking || !canAttack
+            isAttacking || !canAttack
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
               : "bg-red-500 text-white hover:bg-red-600"
           }`}
@@ -409,12 +411,7 @@ export default function GumbuoBoss() {
         <button
           onClick={handleClaimReward}
           onMouseEnter={() => playSound('hover')}
-          disabled={!isConnected}
-          className={`px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
-            !isConnected
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-green-500 text-white hover:bg-green-600"
-          }`}
+          className="px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl bg-green-500 text-white hover:bg-green-600"
         >
           {!isConnected ? "CONNECT WALLET" : "🏆 CLAIM REWARD 🏆"}
         </button>
