@@ -617,11 +617,13 @@ export default function GumbuoFightersArena() {
               >
                 {/* Winner */}
                 <div className="flex items-center space-x-3 flex-1">
-                  <img
-                    src={fight.winner.image}
-                    alt={fight.winner.name}
-                    className="w-12 h-12 object-contain rounded border-2 border-green-400"
-                  />
+                  <div className="w-12 h-12 flex-shrink-0">
+                    <img
+                      src={fight.winner.image}
+                      alt={fight.winner.name}
+                      className="w-full h-full max-w-[48px] max-h-[48px] object-contain rounded border-2 border-green-400"
+                    />
+                  </div>
                   <div className="text-left">
                     <p className="text-green-400 font-bold text-sm">👑 {fight.winner.name}</p>
                     <p className="text-green-300 text-xs">WINNER</p>
@@ -637,11 +639,13 @@ export default function GumbuoFightersArena() {
                     <p className="text-red-400 font-bold text-sm">{fight.loser.name}</p>
                     <p className="text-red-300 text-xs">DEFEATED</p>
                   </div>
-                  <img
-                    src={fight.loser.image}
-                    alt={fight.loser.name}
-                    className="w-12 h-12 object-contain rounded border-2 border-red-400 grayscale opacity-60"
-                  />
+                  <div className="w-12 h-12 flex-shrink-0">
+                    <img
+                      src={fight.loser.image}
+                      alt={fight.loser.name}
+                      className="w-full h-full max-w-[48px] max-h-[48px] object-contain rounded border-2 border-red-400 grayscale opacity-60"
+                    />
+                  </div>
                 </div>
 
                 {/* Timestamp */}
