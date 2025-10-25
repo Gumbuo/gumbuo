@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
+import { useCosmicSound } from "../hooks/useCosmicSound";
 
 interface LeaderboardEntry {
   wallet: string;
@@ -15,6 +16,7 @@ const MAX_FIRST_TIMERS = 50;
 export default function AlienLeaderboard() {
   const { address, isConnected } = useAccount();
   const { getUserBalance } = useAlienPoints();
+  const { playSound } = useCosmicSound();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [userRank, setUserRank] = useState<number | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
@@ -94,6 +96,7 @@ export default function AlienLeaderboard() {
 
   const handleRegister = async () => {
     if (!isConnected || !address) {
+      playSound('error');
       alert("Please connect your wallet first!");
       return;
     }
@@ -104,15 +107,19 @@ export default function AlienLeaderboard() {
     );
 
     if (alreadyRegistered) {
+      playSound('error');
       alert("You're already registered! 👽");
       return;
     }
 
     // Check if spots are full
     if (leaderboard.length >= MAX_FIRST_TIMERS) {
+      playSound('error');
       alert("Sorry! All 50 spots have been claimed! 😢");
       return;
     }
+
+    playSound('click');
 
     try {
       // Register via API
@@ -128,6 +135,7 @@ export default function AlienLeaderboard() {
       const data = await response.json();
 
       if (data.success) {
+        playSound('success');
         setIsRegistered(true);
         setUserRank(data.entry.rank);
         setSpotsRemaining(data.spotsRemaining);
@@ -137,9 +145,11 @@ export default function AlienLeaderboard() {
         // Refresh leaderboard
         fetchLeaderboard();
       } else {
+        playSound('error');
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
+      playSound('error');
       console.error("Error registering:", error);
       alert("Failed to register. Please try again.");
     }
@@ -159,36 +169,37 @@ export default function AlienLeaderboard() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black bg-opacity-80 border-2 border-purple-400 rounded-xl max-w-4xl w-full min-h-96">
-        <div className="text-purple-400 text-2xl animate-pulse">Loading Leaderboard...</div>
-        <div className="text-purple-400 text-lg">Fetching galactic data 🛸</div>
+      <div className="flex flex-col items-center justify-center space-y-4 p-8 holographic-panel glass-panel rounded-3xl max-w-4xl w-full min-h-96 relative overflow-visible">
+        <div className="corner-glow corner-glow-tl"></div>
+        <div className="corner-glow corner-glow-tr"></div>
+        <div className="corner-glow corner-glow-bl"></div>
+        <div className="corner-glow corner-glow-br"></div>
+        <div className="text-purple-400 text-2xl animate-pulse relative z-10">Loading Leaderboard...</div>
+        <div className="text-purple-400 text-lg relative z-10">Fetching galactic data 🛸</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-gradient-to-br from-purple-900/40 via-black/90 to-pink-900/40 rounded-2xl border-4 border-purple-400 shadow-2xl shadow-purple-500/50 max-w-3xl relative overflow-hidden">
-      {/* Animated corner accents */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-purple-400 animate-pulse"></div>
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-pink-400 animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-pink-400 animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-purple-400 animate-pulse"></div>
+    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-3xl relative overflow-visible rounded-3xl">
+      {/* Corner glow accents */}
+      <div className="corner-glow corner-glow-tl"></div>
+      <div className="corner-glow corner-glow-tr"></div>
+      <div className="corner-glow corner-glow-bl"></div>
+      <div className="corner-glow corner-glow-br"></div>
 
-      {/* Scan line effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-400/5 to-transparent animate-scan pointer-events-none"></div>
-
-      <h2 className="font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text hex-pattern" style={{fontSize: '4rem'}}>
         <span className="animate-glow text-purple-400">👽 First Timer Leaderboard 🛸</span>
       </h2>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gradient-to-r from-purple-400/10 via-purple-400/20 to-purple-400/10 border-2 border-purple-400/50 rounded-lg p-4 relative overflow-hidden shadow-lg shadow-purple-400/30 z-10">
+      <div className="w-full glass-panel rounded-xl p-4 relative overflow-hidden shadow-lg shadow-purple-400/30 z-10">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400/10 to-transparent animate-shimmer pointer-events-none"></div>
         <div className="flex justify-between items-center mb-2 relative z-10">
-          <p className="text-purple-400 text-xl drop-shadow-glow">
+          <p className="text-purple-400 text-xl drop-shadow-glow font-electro">
             📊 Progress: <span className="font-bold text-2xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
           </p>
-          <p className={`text-xl font-bold ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse drop-shadow-lg' : 'text-pink-400 drop-shadow-glow'}`}>
+          <p className={`text-xl font-bold font-iceland ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse drop-shadow-lg' : 'text-pink-400 drop-shadow-glow'}`}>
             {spotsRemaining} spots left!
           </p>
         </div>
@@ -204,10 +215,10 @@ export default function AlienLeaderboard() {
 
       {/* User Status */}
       {isConnected && address && (
-        <div className={`w-full border rounded-lg p-4 ${
+        <div className={`w-full glass-panel rounded-xl p-4 border-2 ${
           isRegistered
-            ? 'bg-purple-400 bg-opacity-20 border-purple-400'
-            : 'bg-yellow-500 bg-opacity-20 border-yellow-500'
+            ? 'border-purple-400/50'
+            : 'border-yellow-500/50'
         }`}>
           {isRegistered ? (
             <div className="text-center">
@@ -228,11 +239,12 @@ export default function AlienLeaderboard() {
       {!isRegistered && (
         <button
           onClick={handleRegister}
+          onMouseEnter={() => isConnected && leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
           disabled={!isConnected || leaderboard.length >= MAX_FIRST_TIMERS}
-          className={`px-12 py-4 text-2xl font-bold rounded-xl tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
+          className={`px-12 py-4 text-2xl font-bold tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
             !isConnected || leaderboard.length >= MAX_FIRST_TIMERS
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-purple-400 via-green-500 to-purple-400 text-black hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow hover-ripple hover-color-shift"
+              ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
+              : "holographic-button organic-button text-white hover:scale-105 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow hover-ripple hover-color-shift"
           }`}
         >
           {!isConnected || leaderboard.length >= MAX_FIRST_TIMERS ? null : (
@@ -249,7 +261,7 @@ export default function AlienLeaderboard() {
       )}
 
       {/* Leaderboard Table */}
-      <div className="w-full bg-black bg-opacity-50 border border-purple-400 rounded-lg overflow-hidden">
+      <div className="w-full glass-panel border-2 border-purple-400/50 rounded-xl overflow-hidden">
         <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-purple-400 border-b border-purple-400">
           <div className="text-center">Rank</div>
           <div className="text-center">Wallet</div>
@@ -297,14 +309,14 @@ export default function AlienLeaderboard() {
 
       {/* Goal Reached Banner */}
       {leaderboard.length >= MAX_FIRST_TIMERS && (
-        <div className="w-full bg-yellow-400 bg-opacity-20 border-2 border-yellow-400 rounded-lg p-6 text-center animate-pulse">
+        <div className="w-full glass-panel border-2 border-yellow-400/50 rounded-xl p-6 text-center animate-pulse">
           <p className="text-yellow-400 text-3xl font-bold">🎉 GOAL REACHED! 🎉</p>
           <p className="text-yellow-400 text-lg mt-2">All 50 spots filled! Airdrops will be distributed soon! 👽</p>
         </div>
       )}
 
       {/* Info Section */}
-      <div className="w-full text-purple-400 text-xs text-center max-w-2xl bg-purple-400 bg-opacity-10 p-4 rounded-lg">
+      <div className="w-full text-purple-400 text-xs text-center max-w-2xl glass-panel p-4 rounded-xl">
         <p className="font-bold mb-2">ℹ️ Leaderboard Info</p>
         <p className="opacity-75">
           The first 50 wallets to register will receive an exclusive GMB token airdrop!

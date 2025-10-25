@@ -19,7 +19,11 @@ module.exports = {
         alienPurple: "#8e44ad"
       },
       fontFamily: {
-        techno: ["Orbitron", "sans-serif"]
+        techno: ["Orbitron", "sans-serif"],
+        alien: ["Audiowide", "Orbitron", "sans-serif"],
+        mono: ["Share Tech Mono", "monospace"],
+        iceland: ["Iceland", "sans-serif"],
+        electro: ["Electrolize", "sans-serif"]
       }
     }
   },

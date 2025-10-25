@@ -23,11 +23,17 @@ export default function StatsHUD() {
   }, [alien, gmbBalance]);
 
   return (
-    <div className="fixed top-24 right-4 z-40 pointer-events-auto bg-black bg-opacity-80 p-4 rounded-lg border border-blue-500 flex flex-col items-end space-y-4 text-blue-400 text-sm drop-shadow-lg">
-      <div className="space-y-1 text-right">
-        <div>Alien Points: {points}</div>
-        <div>GMB: {gmb}</div>
-        <div>Pool: 100,000,000</div>
+    <div className="fixed top-24 right-4 z-40 pointer-events-auto holographic-panel glass-panel p-6 rounded-2xl flex flex-col items-end space-y-4 text-cyan-400 text-lg drop-shadow-2xl">
+      {/* Corner glow accents */}
+      <div className="corner-glow corner-glow-tl"></div>
+      <div className="corner-glow corner-glow-tr"></div>
+      <div className="corner-glow corner-glow-bl"></div>
+      <div className="corner-glow corner-glow-br"></div>
+
+      <div className="space-y-2 text-right font-bold relative z-10 font-electro">
+        <div className="text-green-400 drop-shadow-glow">👽 Alien Points: <span className="text-2xl holographic-text font-alien">{points}</span></div>
+        <div className="text-cyan-400 drop-shadow-glow">💎 GMB: <span className="text-xl font-mono alien-code">{gmb}</span></div>
+        <div className="text-purple-400 drop-shadow-glow">🌊 Pool: <span className="text-xl font-mono alien-code">100,000,000</span></div>
       </div>
     </div>
   );
