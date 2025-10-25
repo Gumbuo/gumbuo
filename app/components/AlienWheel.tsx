@@ -262,41 +262,41 @@ export default function AlienWheel() {
         <div className="relative">
           {/* Rotating glow ring */}
           {!hasSpunToday && !mustSpin && (
-            <div className="absolute -inset-4 bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 rounded-full opacity-50 blur-md animate-spin-border-rotate pointer-events-none"></div>
+            <div className="absolute -inset-8 bg-gradient-to-r from-green-400 via-cyan-400 to-green-400 rounded-full opacity-50 blur-xl animate-spin-border-rotate pointer-events-none"></div>
           )}
 
           {/* UFO Button */}
           <button
             onClick={handleSpinClick}
             disabled={hasSpunToday || mustSpin}
-            className={`relative w-64 h-64 rounded-full transition-all duration-200 overflow-hidden ${
+            className={`relative w-96 h-96 rounded-full transition-all duration-200 overflow-visible ${
               hasSpunToday || mustSpin
                 ? "bg-gray-600 cursor-not-allowed"
-                : "bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-110 animate-spin-pulse animate-spin-wiggle"
+                : "bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-105 animate-spin-pulse animate-spin-wiggle"
             }`}
             style={{
               boxShadow: hasSpunToday || mustSpin
                 ? 'none'
-                : '0 0 40px rgba(74, 222, 128, 0.6), 0 0 80px rgba(74, 222, 128, 0.4), inset 0 -20px 40px rgba(0, 255, 153, 0.3)'
+                : '0 0 60px rgba(74, 222, 128, 0.8), 0 0 120px rgba(74, 222, 128, 0.6), inset 0 -40px 80px rgba(0, 255, 153, 0.4)'
             }}
           >
             {/* UFO Top Dome */}
-            <div className={`absolute top-8 left-1/2 -translate-x-1/2 w-32 h-20 rounded-t-full ${
+            <div className={`absolute top-16 left-1/2 -translate-x-1/2 w-48 h-32 rounded-t-full ${
               hasSpunToday || mustSpin ? "bg-gray-500" : "bg-gradient-to-b from-cyan-300 to-cyan-500"
-            } opacity-60`}></div>
+            } opacity-70`}></div>
 
             {/* UFO Windows */}
-            <div className="absolute top-16 left-1/2 -translate-x-1/2 flex space-x-4">
-              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`}></div>
-              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.2s'}}></div>
-              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.4s'}}></div>
+            <div className="absolute top-32 left-1/2 -translate-x-1/2 flex space-x-6">
+              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`}></div>
+              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.2s'}}></div>
+              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.4s'}}></div>
             </div>
 
             {/* Center Text */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center px-6">
-                <div className="text-4xl mb-2">🛸</div>
-                <div className={`text-xl font-bold ${hasSpunToday || mustSpin ? "text-gray-400" : "text-black"}`}>
+              <div className="text-center px-8">
+                <div className="text-7xl mb-4">🛸</div>
+                <div className={`text-4xl font-bold ${hasSpunToday || mustSpin ? "text-gray-400" : "text-black drop-shadow-lg"}`}>
                   {hasSpunToday ? "Come Back\nTomorrow!" : mustSpin ? "Spinning..." : "SPIN!"}
                 </div>
               </div>
@@ -304,12 +304,12 @@ export default function AlienWheel() {
 
             {/* Shimmer effect */}
             {!hasSpunToday && !mustSpin && (
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer rounded-full"></div>
             )}
 
             {/* Light beam effect */}
             {!hasSpunToday && !mustSpin && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-8 bg-gradient-to-b from-cyan-400/60 to-transparent blur-sm"></div>
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-16 bg-gradient-to-b from-cyan-400/60 to-transparent blur-md"></div>
             )}
           </button>
         </div>
