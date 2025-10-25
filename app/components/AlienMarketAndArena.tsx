@@ -38,7 +38,7 @@ export default function AlienMarketAndArena() {
       ))}
 
       {/* Top Control Panel Bar */}
-      <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 border-b-2 border-gray-600 flex items-center justify-between px-8" style={{ zIndex: 3 }}>
+      <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 flex items-center justify-between px-8" style={{ zIndex: 3 }}>
         <div className="flex gap-2">
           <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50 animate-pulse" style={{ animationDuration: '2s' }}></div>
           <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50 animate-pulse" style={{ animationDuration: '1.5s' }}></div>

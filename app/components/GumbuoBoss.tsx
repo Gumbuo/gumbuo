@@ -799,7 +799,7 @@ export default function GumbuoBoss() {
       <div className="w-full text-red-400 text-sm text-center max-w-3xl bg-black/60 p-6 rounded-xl">
         <p className="font-bold mb-3 text-lg">ℹ️ Battle Info ℹ️</p>
         <p className="opacity-75 font-electro text-base leading-relaxed">
-          Attack the Mega Gumbuo boss and deal massive damage! Each attack has a {ATTACK_COOLDOWN / 1000} second cooldown.
+          Attack the Gumbuo boss and deal massive damage! Each attack has a {ATTACK_COOLDOWN / 1000} second cooldown.
           Damage is randomly calculated between {MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP with a 10% chance for critical hits (2x damage).
           When defeated, rewards are distributed based on your damage contribution percentage.
           Boss respawns after 1 hour. More damage = bigger rewards! 🎯
