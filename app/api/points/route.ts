@@ -16,6 +16,7 @@ interface AlienPointsPool {
   reservePool: number;
   marketplacePool: number; // Points collected from alien pic purchases
   bossPool: number; // Boss battle reward pool
+  stakingPool: number; // Staking reward pool
   totalDistributed: number;
   totalAliensBurned: number; // Total aliens burned in arena
 }
@@ -25,12 +26,13 @@ interface UserBalances {
 }
 
 const INITIAL_POOL: AlienPointsPool = {
-  totalSupply: 450_000_000,
+  totalSupply: 550_000_000,
   wheelPool: 100_000_000,
   faucetPool: 100_000_000,
   reservePool: 150_000_000,
   marketplacePool: 0, // Grows as users spend points on alien pics
   bossPool: 100_000_000, // Boss battle reward pool
+  stakingPool: 100_000_000, // Staking reward pool
   totalDistributed: 0,
   totalAliensBurned: 0, // Total aliens burned in arena
 };
@@ -90,7 +92,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss') {
+    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss' && source !== 'staking') {
       return NextResponse.json(
         { success: false, error: "Invalid source" },
         { status: 400 }
@@ -113,6 +115,8 @@ export async function POST(request: NextRequest) {
       poolAmount = pool.reservePool; // Arena prizes come from reserve
     } else if (source === 'boss') {
       poolAmount = pool.bossPool; // Boss rewards come from boss pool
+    } else if (source === 'staking') {
+      poolAmount = pool.stakingPool; // Staking rewards come from staking pool
     }
 
     if (poolAmount && poolAmount < points) {
@@ -139,6 +143,8 @@ export async function POST(request: NextRequest) {
       pool.reservePool -= points; // Arena prizes come from reserve
     } else if (source === 'boss') {
       pool.bossPool -= points; // Boss rewards come from boss pool
+    } else if (source === 'staking') {
+      pool.stakingPool -= points; // Staking rewards come from staking pool
     }
     pool.totalDistributed += points;
 

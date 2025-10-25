@@ -8,27 +8,29 @@ interface AlienPointsPool {
   reservePool: number;
   marketplacePool: number;
   bossPool: number;
+  stakingPool: number;
   totalDistributed: number;
 }
 
 interface AlienPointsContextType {
   pool: AlienPointsPool;
   getUserBalance: (address: string) => number;
-  addPoints: (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss') => Promise<boolean>;
+  addPoints: (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss' | 'staking') => Promise<boolean>;
   spendPoints: (address: string, points: number, itemName: string) => Promise<boolean>;
-  getPoolRemaining: (source: 'wheel' | 'faucet' | 'boss') => number;
+  getPoolRemaining: (source: 'wheel' | 'faucet' | 'boss' | 'staking') => number;
   refreshPool: () => Promise<void>;
 }
 
 const AlienPointsContext = createContext<AlienPointsContextType | undefined>(undefined);
 
 const INITIAL_POOL: AlienPointsPool = {
-  totalSupply: 450_000_000,
+  totalSupply: 550_000_000,
   wheelPool: 100_000_000,
   faucetPool: 100_000_000,
   reservePool: 150_000_000,
   marketplacePool: 0,
   bossPool: 100_000_000,
+  stakingPool: 100_000_000,
   totalDistributed: 0,
 };
 
@@ -83,7 +85,7 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss'): Promise<boolean> => {
+  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss' | 'staking'): Promise<boolean> => {
     try {
       const response = await fetch('/api/points', {
         method: 'POST',
@@ -139,9 +141,10 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const getPoolRemaining = (source: 'wheel' | 'faucet' | 'boss'): number => {
+  const getPoolRemaining = (source: 'wheel' | 'faucet' | 'boss' | 'staking'): number => {
     if (source === 'wheel') return pool.wheelPool;
     if (source === 'faucet') return pool.faucetPool;
+    if (source === 'staking') return pool.stakingPool;
     return pool.bossPool;
   };
 
