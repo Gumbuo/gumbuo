@@ -581,23 +581,6 @@ export default function GumbuoFightersArena() {
                     className={`max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
                   />
                 </div>
-
-                {/* Health Bar */}
-                {fighting && (
-                  <div className="w-full mb-3">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-blue-400 font-bold text-sm">{fighter1.name}</span>
-                      <span className="text-blue-400 font-bold text-sm">{fighter1Health}%</span>
-                    </div>
-                    <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-blue-400 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-blue-400 to-cyan-400 h-full transition-all duration-300 shadow-lg shadow-blue-400/50"
-                        style={{width: `${fighter1Health}%`}}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
                 <p className="text-blue-400 font-bold text-2xl mb-2">{fighter1.name}</p>
                 {address && fighter1Owner?.toLowerCase() === address.toLowerCase() ? (
                   <button
@@ -731,12 +714,6 @@ export default function GumbuoFightersArena() {
               <div className="bg-gray-800 px-6 py-2 rounded-lg border-2 border-red-500 shadow-lg shadow-red-500/50 animate-pulse">
                 <p className="text-red-500 font-mono text-sm font-bold">BATTLE IN PROGRESS</p>
               </div>
-              {/* Battle Message */}
-              {battleMessage && (
-                <div className="bg-yellow-400 text-black px-8 py-4 rounded-lg border-4 border-yellow-500 shadow-2xl shadow-yellow-400/80 animate-pulse mt-2">
-                  <p className="font-alien font-bold text-3xl">{battleMessage}</p>
-                </div>
-              )}
             </div>
           ) : (
             <div className="bg-gray-800 p-6 rounded-lg border-2 border-gray-600 shadow-2xl" style={{
@@ -784,23 +761,6 @@ export default function GumbuoFightersArena() {
                     className={`max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
                   />
                 </div>
-
-                {/* Health Bar */}
-                {fighting && (
-                  <div className="w-full mb-3">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-red-400 font-bold text-sm">{fighter2.name}</span>
-                      <span className="text-red-400 font-bold text-sm">{fighter2Health}%</span>
-                    </div>
-                    <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-red-400 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-red-400 to-orange-400 h-full transition-all duration-300 shadow-lg shadow-red-400/50"
-                        style={{width: `${fighter2Health}%`}}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
                 <p className="text-red-400 font-bold text-2xl mb-2">{fighter2.name}</p>
                 {address && fighter2Owner?.toLowerCase() === address.toLowerCase() ? (
                   <button
@@ -924,6 +884,80 @@ export default function GumbuoFightersArena() {
         </div>
         </div>
       </div>
+
+      {/* Cinematic Battle Overlay */}
+      {fighting && fighter1 && fighter2 && (
+        <div className="w-full glass-panel border-4 border-red-500/70 rounded-2xl p-8 text-center shadow-2xl shadow-red-500/70 z-10 bg-black/90">
+          <p className="text-red-500 text-5xl font-bold mb-8 font-alien animate-pulse">⚔️ BATTLE IN PROGRESS ⚔️</p>
+
+          {/* Battle Message */}
+          {battleMessage && (
+            <div className="mb-8 animate-pulse">
+              <p className="text-yellow-400 text-6xl font-bold font-alien drop-shadow-[0_0_20px_rgba(250,204,21,0.8)]">{battleMessage}</p>
+            </div>
+          )}
+
+          {/* Fighters Side by Side */}
+          <div className="flex justify-center items-start space-x-12 mt-8">
+            {/* Fighter 1 */}
+            <div className="flex-1 max-w-md">
+              <div className="flex justify-center items-center h-48 mb-4">
+                <img
+                  src={fighter1.image}
+                  alt={fighter1.name}
+                  className="max-w-[192px] max-h-[192px] w-auto h-auto object-contain rounded-lg border-4 border-blue-400 animate-bounce shadow-2xl shadow-blue-400/50"
+                />
+              </div>
+              <p className="text-blue-400 font-bold text-3xl mb-4 font-alien">{fighter1.name}</p>
+
+              {/* Health Bar */}
+              <div className="w-full mb-3">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-blue-400 font-bold text-xl">HEALTH</span>
+                  <span className="text-blue-400 font-bold text-2xl">{fighter1Health}%</span>
+                </div>
+                <div className="w-full bg-gray-900 rounded-full h-8 border-4 border-blue-400 overflow-hidden shadow-lg shadow-blue-400/50">
+                  <div
+                    className="bg-gradient-to-r from-blue-400 to-cyan-400 h-full transition-all duration-300 shadow-lg shadow-blue-400/50"
+                    style={{width: `${fighter1Health}%`}}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            {/* VS */}
+            <div className="flex items-center justify-center">
+              <p className="text-8xl font-bold text-red-500 font-alien animate-pulse">VS</p>
+            </div>
+
+            {/* Fighter 2 */}
+            <div className="flex-1 max-w-md">
+              <div className="flex justify-center items-center h-48 mb-4">
+                <img
+                  src={fighter2.image}
+                  alt={fighter2.name}
+                  className="max-w-[192px] max-h-[192px] w-auto h-auto object-contain rounded-lg border-4 border-red-400 animate-bounce shadow-2xl shadow-red-400/50"
+                />
+              </div>
+              <p className="text-red-400 font-bold text-3xl mb-4 font-alien">{fighter2.name}</p>
+
+              {/* Health Bar */}
+              <div className="w-full mb-3">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-red-400 font-bold text-xl">HEALTH</span>
+                  <span className="text-red-400 font-bold text-2xl">{fighter2Health}%</span>
+                </div>
+                <div className="w-full bg-gray-900 rounded-full h-8 border-4 border-red-400 overflow-hidden shadow-lg shadow-red-400/50">
+                  <div
+                    className="bg-gradient-to-r from-red-400 to-orange-400 h-full transition-all duration-300 shadow-lg shadow-red-400/50"
+                    style={{width: `${fighter2Health}%`}}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Fight Result */}
       {fightResult && (
