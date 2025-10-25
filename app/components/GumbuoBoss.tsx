@@ -581,19 +581,17 @@ export default function GumbuoBoss() {
             <div className="flex flex-col space-y-2">
               <button
                 onClick={() => setSelectedAttack('normal')}
-                className={`px-6 py-4 rounded-xl font-bold text-lg transition-all ${
-                  selectedAttack === 'normal'
-                    ? 'bg-blue-500 text-white border-2 border-blue-300'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                className={`px-6 py-4 font-bold text-lg alien-button alien-button-secondary relative z-10 ${
+                  selectedAttack === 'normal' ? 'alien-button-glow' : ''
                 }`}
               >
                 <p className="text-2xl mb-1">👊</p>
                 <p>Normal Attack</p>
                 <p className="text-sm mt-1">Level {attackLevels.normal}/5</p>
-                <p className="text-xs text-yellow-400 mt-1">
+                <p className="text-xs text-black mt-1">
                   {(1 + ((attackLevels.normal - 1) * 0.1)).toFixed(1)}x Damage
                 </p>
-                <p className="text-xs text-orange-400 mt-1">
+                <p className="text-xs text-black font-bold mt-1">
                   Cost: {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP
                 </p>
               </button>
@@ -601,7 +599,7 @@ export default function GumbuoBoss() {
                 <button
                   onClick={() => handleUpgradeAttack('normal')}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold"
+                  className="px-4 py-2 text-sm font-bold alien-button alien-button-primary"
                 >
                   ⬆️ Upgrade ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
                 </button>
@@ -613,24 +611,22 @@ export default function GumbuoBoss() {
               <button
                 onClick={() => setSelectedAttack('power')}
                 disabled={powerCooldown > 0}
-                className={`px-6 py-4 rounded-xl font-bold text-lg transition-all ${
-                  selectedAttack === 'power' && powerCooldown === 0
-                    ? 'bg-purple-500 text-white border-2 border-purple-300'
-                    : powerCooldown > 0
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
+                className={`px-6 py-4 font-bold text-lg relative z-10 ${
+                  powerCooldown > 0
+                    ? 'alien-button-disabled'
+                    : 'alien-button alien-button-purple'
+                } ${selectedAttack === 'power' && powerCooldown === 0 ? 'alien-button-glow' : ''}`}
               >
                 <p className="text-2xl mb-1">💪</p>
                 <p>Power Attack</p>
                 <p className="text-sm mt-1">Level {attackLevels.power}/5</p>
-                <p className="text-xs text-yellow-400 mt-1">
+                <p className={`text-xs mt-1 ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
                   {(1.5 + ((attackLevels.power - 1) * 0.15)).toFixed(1)}x Damage
                 </p>
-                <p className="text-xs text-orange-400 mt-1">
+                <p className={`text-xs font-bold mt-1 ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
                   Cost: {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP
                 </p>
-                <p className={`text-xs mt-1 ${powerCooldown > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                <p className={`text-xs mt-1 font-bold ${powerCooldown > 0 ? 'text-red-400' : 'text-green-300'}`}>
                   {powerCooldown > 0 ? `CD: ${(powerCooldown / 1000).toFixed(1)}s` : 'Ready!'}
                 </p>
               </button>
@@ -638,7 +634,7 @@ export default function GumbuoBoss() {
                 <button
                   onClick={() => handleUpgradeAttack('power')}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold"
+                  className="px-4 py-2 text-sm font-bold alien-button alien-button-primary"
                 >
                   ⬆️ Upgrade ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
                 </button>
@@ -650,24 +646,22 @@ export default function GumbuoBoss() {
               <button
                 onClick={() => setSelectedAttack('ultimate')}
                 disabled={ultimateCooldown > 0}
-                className={`px-6 py-4 rounded-xl font-bold text-lg transition-all ${
-                  selectedAttack === 'ultimate' && ultimateCooldown === 0
-                    ? 'bg-yellow-500 text-black border-2 border-yellow-300'
-                    : ultimateCooldown > 0
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
+                className={`px-6 py-4 font-bold text-lg relative z-10 ${
+                  ultimateCooldown > 0
+                    ? 'alien-button-disabled'
+                    : 'alien-button alien-button-gold'
+                } ${selectedAttack === 'ultimate' && ultimateCooldown === 0 ? 'alien-button-glow' : ''}`}
               >
                 <p className="text-2xl mb-1">⚡</p>
                 <p>Ultimate Attack</p>
                 <p className="text-sm mt-1">Level {attackLevels.ultimate}/5</p>
-                <p className="text-xs text-yellow-400 mt-1">
+                <p className={`text-xs mt-1 ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
                   {(3 + ((attackLevels.ultimate - 1) * 0.2)).toFixed(1)}x Damage
                 </p>
-                <p className="text-xs text-orange-400 mt-1">
+                <p className={`text-xs font-bold mt-1 ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
                   Cost: {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP
                 </p>
-                <p className={`text-xs mt-1 ${ultimateCooldown > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                <p className={`text-xs mt-1 font-bold ${ultimateCooldown > 0 ? 'text-red-400' : 'text-green-600'}`}>
                   {ultimateCooldown > 0 ? `CD: ${(ultimateCooldown / 1000).toFixed(1)}s` : 'Ready!'}
                 </p>
               </button>
@@ -675,7 +669,7 @@ export default function GumbuoBoss() {
                 <button
                   onClick={() => handleUpgradeAttack('ultimate')}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold"
+                  className="px-4 py-2 text-sm font-bold alien-button alien-button-primary"
                 >
                   ⬆️ Upgrade ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
                 </button>
@@ -761,10 +755,10 @@ export default function GumbuoBoss() {
           onClick={handleAttack}
           onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
           disabled={isAttacking || !canAttack}
-          className={`px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
+          className={`px-16 py-6 text-3xl font-bold tracking-wider ${
             isAttacking || !canAttack
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-              : "bg-red-500 text-white hover:bg-red-600"
+              ? "alien-button-disabled"
+              : "alien-button alien-button-danger alien-button-glow alien-button-organic"
           }`}
         >
           <span className="relative z-10">
@@ -784,7 +778,7 @@ export default function GumbuoBoss() {
         <button
           onClick={handleClaimReward}
           onMouseEnter={() => playSound('hover')}
-          className="px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl bg-green-500 text-white hover:bg-green-600"
+          className="px-16 py-6 text-3xl font-bold tracking-wider alien-button alien-button-primary alien-button-glow alien-button-organic"
         >
           {!isConnected ? "CONNECT WALLET" : "🏆 CLAIM REWARD 🏆"}
         </button>
