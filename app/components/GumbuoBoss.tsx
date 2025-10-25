@@ -816,28 +816,28 @@ export default function GumbuoBoss() {
       )}
 
       {/* Reward Pool Info */}
-      <div className="w-full bg-black/60 border border-yellow-400/30 rounded-xl p-6">
-        <h3 className="text-xl font-alien text-yellow-400 text-center mb-4">💰 REWARD POOL 💰</h3>
+      <div className="w-full bg-black/60 border-2 border-yellow-400/50 rounded-xl p-6 max-w-3xl mx-auto">
+        <h3 className="text-3xl font-alien text-yellow-400 text-center mb-6 holographic-text">💰 REWARD POOL ANNOUNCEMENT 💰</h3>
 
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-base">Total Pool Size:</p>
-            <p className="text-lg font-bold text-yellow-400">{REWARD_POOL_SIZE.toLocaleString()} GMB</p>
+        <div className="space-y-3 text-center">
+          <div className="inline-block bg-yellow-500/10 px-8 py-3 rounded-xl border border-yellow-400/30">
+            <p className="text-yellow-400 text-lg font-bold">
+              Total Pool: <span className="text-2xl text-yellow-300">{REWARD_POOL_SIZE.toLocaleString()} GMB</span>
+            </p>
           </div>
 
-          <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-base">Distribution Method:</p>
-            <p className="text-base font-bold text-yellow-400">By Damage %</p>
-          </div>
+          <div className="flex justify-center gap-6 flex-wrap">
+            <div className="bg-yellow-500/10 px-6 py-2 rounded-lg border border-yellow-400/30">
+              <p className="text-yellow-400 font-bold">Distribution: <span className="text-yellow-300">By Damage %</span></p>
+            </div>
 
-          <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-base">Attack Damage Range:</p>
-            <p className="text-base font-bold text-yellow-400">{MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP</p>
-          </div>
+            <div className="bg-yellow-500/10 px-6 py-2 rounded-lg border border-yellow-400/30">
+              <p className="text-yellow-400 font-bold">Damage Range: <span className="text-yellow-300">{MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP</span></p>
+            </div>
 
-          <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-base">Critical Hit Chance:</p>
-            <p className="text-base font-bold text-yellow-400">10% (2x Damage)</p>
+            <div className="bg-yellow-500/10 px-6 py-2 rounded-lg border border-yellow-400/30">
+              <p className="text-yellow-400 font-bold">Critical: <span className="text-yellow-300">10% (2x Damage)</span></p>
+            </div>
           </div>
         </div>
       </div>
