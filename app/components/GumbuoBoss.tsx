@@ -301,6 +301,29 @@ export default function GumbuoBoss() {
       return;
     }
 
+    // Confirmation prompt with cost details
+    const attackName = selectedAttack.charAt(0).toUpperCase() + selectedAttack.slice(1);
+    const damageMultiplier = selectedAttack === 'normal'
+      ? (1 + ((currentLevel - 1) * 0.1)).toFixed(1)
+      : selectedAttack === 'power'
+      ? (1.5 + ((currentLevel - 1) * 0.15)).toFixed(1)
+      : (3 + ((currentLevel - 1) * 0.2)).toFixed(1);
+
+    const confirmed = window.confirm(
+      `⚔️ CONFIRM ATTACK ⚔️\n\n` +
+      `Attack Type: ${attackName} (Level ${currentLevel})\n` +
+      `Damage Multiplier: ${damageMultiplier}x\n` +
+      `Cost: ${entryFee.toLocaleString()} Alien Points\n\n` +
+      `Your Balance: ${userBalance.toLocaleString()} AP\n` +
+      `After Attack: ${(userBalance - entryFee).toLocaleString()} AP\n\n` +
+      `Proceed with attack?`
+    );
+
+    if (!confirmed) {
+      playSound('error');
+      return;
+    }
+
     // Deduct entry fee
     await addPoints(address, -entryFee, 'boss');
 
