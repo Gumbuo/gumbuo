@@ -337,31 +337,6 @@ export default function GumbuoFightersArena() {
         </div>
       </div>
 
-      {/* Betting Info Section */}
-      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
-        <p className="font-bold mb-3 font-alien" style={{fontSize: '2.5rem'}}>
-          💰 ALIEN POINTS BETTING 💰
-        </p>
-        <div className="opacity-90 space-y-2 font-electro">
-          <p className="text-base">💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
-          <p className="text-base">🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
-          <p className="text-base">🔥 <strong>Burn Pool:</strong> 200 AP per fight (1000 AP collected - 800 AP winner prize)</p>
-        </div>
-      </div>
-
-      {/* Burn Warning */}
-      <div className="w-full text-red-400 text-lg text-center glass-panel p-4 rounded-xl border-2 border-red-400/50 z-10 animate-pulse shadow-lg shadow-red-500/50">
-        <p className="font-bold font-alien holographic-text text-2xl">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
-      </div>
-
-      {/* Burn Pool Display */}
-      <div className="w-full glass-panel border-2 border-purple-500/50 rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
-        <p className="text-purple-400 text-2xl font-bold mb-3 font-alien holographic-text">🔥 Burn Pool: {pool.marketplacePool.toLocaleString()} AP 🔥</p>
-        <p className="text-purple-300 text-base font-electro">
-          Arena fees accumulate here for future airdrops & leaderboard rewards!
-        </p>
-      </div>
-
       {/* Organic Alien Hive Arena */}
       <div className="w-full relative mb-6">
         {/* Floating Spore Particles */}
@@ -682,6 +657,31 @@ export default function GumbuoFightersArena() {
           <p>🔥 <strong>BURN MECHANIC:</strong> Both aliens are permanently destroyed after the fight!</p>
           <p>⚠️ <strong>Risk vs Reward:</strong> Lose 500 AP + alien, or win 800 AP (net +300 AP after fees)</p>
         </div>
+      </div>
+
+      {/* Betting Info Section */}
+      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
+        <p className="font-bold mb-3 font-alien" style={{fontSize: '2.5rem'}}>
+          💰 ALIEN POINTS BETTING 💰
+        </p>
+        <div className="opacity-90 space-y-2 font-electro">
+          <p className="text-base">💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
+          <p className="text-base">🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
+          <p className="text-base">🔥 <strong>Burn Pool:</strong> 200 AP per fight (1000 AP collected - 800 AP winner prize)</p>
+        </div>
+      </div>
+
+      {/* Burn Warning */}
+      <div className="w-full text-red-400 text-lg text-center glass-panel p-4 rounded-xl border-2 border-red-400/50 z-10 animate-pulse shadow-lg shadow-red-500/50">
+        <p className="font-bold font-alien holographic-text text-2xl">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
+      </div>
+
+      {/* Burn Pool Display */}
+      <div className="w-full glass-panel border-2 border-purple-500/50 rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
+        <p className="text-purple-400 text-2xl font-bold mb-3 font-alien holographic-text">🔥 Burn Pool: {pool.marketplacePool.toLocaleString()} AP 🔥</p>
+        <p className="text-purple-300 text-base font-electro">
+          Arena fees accumulate here for future airdrops & leaderboard rewards!
+        </p>
       </div>
     </div>
   );
