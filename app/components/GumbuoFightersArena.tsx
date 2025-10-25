@@ -39,12 +39,18 @@ export default function GumbuoFightersArena() {
   const [userBalance, setUserBalance] = useState(0);
 
   useEffect(() => {
-    if (!address) return;
+    if (!address) {
+      setOwnedAliens([]);
+      setUserBalance(0);
+      return;
+    }
 
     // Load user's owned aliens
     const owned = localStorage.getItem(`ownedAliens_${address}`);
     if (owned) {
       setOwnedAliens(JSON.parse(owned));
+    } else {
+      setOwnedAliens([]); // Clear aliens if new wallet has none
     }
 
     // Update user balance

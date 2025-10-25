@@ -38,12 +38,18 @@ export default function AlienMarketplace() {
   const [ownedAliens, setOwnedAliens] = useState<OwnedAlien[]>([]);
 
   useEffect(() => {
-    if (!address) return;
+    if (!address) {
+      setOwnedAliens([]);
+      setUserPoints(0);
+      return;
+    }
 
     // Load user's owned aliens from localStorage
     const owned = localStorage.getItem(`ownedAliens_${address}`);
     if (owned) {
       setOwnedAliens(JSON.parse(owned));
+    } else {
+      setOwnedAliens([]); // Clear aliens if new wallet has none
     }
 
     // Update user balance
