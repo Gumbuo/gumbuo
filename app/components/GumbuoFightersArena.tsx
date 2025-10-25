@@ -18,9 +18,9 @@ interface FightResult {
   timestamp: number;
 }
 
-const ENTRY_FEE = 500; // AP or GMB
-const WINNER_PRIZE = 800; // AP or GMB
-const HOUSE_FEE = 200; // Total collected (1000 AP) - Winner prize (800 AP) = 200 AP to burn pool
+const ENTRY_FEE = 100; // AP or GMB
+const WINNER_PRIZE = 160; // AP or GMB (80% of total)
+const HOUSE_FEE = 40; // Total collected (200 AP) - Winner prize (160 AP) = 40 AP to burn pool
 
 export default function GumbuoFightersArena() {
   const { address } = useAccount();
@@ -1085,7 +1085,7 @@ export default function GumbuoFightersArena() {
         <p className="font-bold mb-3 text-xl font-iceland">ℹ️ Arena Rules</p>
         <div className="opacity-75 space-y-2 text-center">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
-          <p>💰 <strong>Entry Fee:</strong> Each player pays 500 AP to enter the arena</p>
+          <p>💰 <strong>Entry Fee:</strong> Each player pays 100 AP to enter the arena</p>
           <p>⚔️ <strong>Fight:</strong> When both slots filled and paid, fight starts automatically (random winner)</p>
           <p>🔥 <strong>BURN MECHANIC:</strong> Both aliens are permanently destroyed after the fight!</p>
         </div>
