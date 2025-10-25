@@ -283,49 +283,79 @@ export default function AlienWheel() {
             onClick={handleSpinClick}
             onMouseEnter={() => !hasSpunToday && !mustSpin && playSound('hover')}
             disabled={hasSpunToday || mustSpin}
-            className={`relative rounded-full transition-all duration-200 overflow-visible hover-ripple ${
+            className={`relative transition-all duration-300 overflow-visible ${
               hasSpunToday || mustSpin
-                ? "bg-gray-600 cursor-not-allowed"
-                : "holographic-button bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-105 animate-spin-pulse animate-spin-wiggle hover-float hover-cosmic-pulse"
+                ? "cursor-not-allowed opacity-50"
+                : "hover:scale-105 hover-float"
             }`}
             style={{
-              width: '600px',
-              height: '600px',
-              boxShadow: hasSpunToday || mustSpin
-                ? 'none'
-                : '0 0 60px rgba(74, 222, 128, 0.8), 0 0 120px rgba(74, 222, 128, 0.6), inset 0 -40px 80px rgba(0, 255, 153, 0.4)'
+              width: '320px',
+              height: '200px',
             }}
           >
-            {/* UFO Top Dome */}
-            <div className={`absolute top-16 left-1/2 -translate-x-1/2 w-48 h-32 rounded-t-full ${
-              hasSpunToday || mustSpin ? "bg-gray-500" : "bg-gradient-to-b from-cyan-300 to-cyan-500"
-            } opacity-70`}></div>
+            {/* UFO Main Saucer Body */}
+            <div
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-24 rounded-full ${
+                hasSpunToday || mustSpin
+                  ? "bg-gray-600"
+                  : "bg-gradient-to-b from-cyan-400 via-green-400 to-cyan-500"
+              } shadow-2xl`}
+              style={{
+                boxShadow: hasSpunToday || mustSpin
+                  ? 'none'
+                  : '0 0 40px rgba(74, 222, 128, 0.8), 0 0 80px rgba(74, 222, 128, 0.6), inset 0 -20px 40px rgba(0, 255, 153, 0.4)'
+              }}
+            >
+              {/* Shimmer effect on saucer */}
+              {!hasSpunToday && !mustSpin && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer rounded-full"></div>
+              )}
+            </div>
 
-            {/* UFO Windows */}
-            <div className="absolute top-32 left-1/2 -translate-x-1/2 flex space-x-6">
-              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`}></div>
-              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.2s'}}></div>
-              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse"}`} style={{animationDelay: '0.4s'}}></div>
+            {/* UFO Top Dome */}
+            <div
+              className={`absolute top-8 left-1/2 -translate-x-1/2 w-32 h-20 rounded-t-full ${
+                hasSpunToday || mustSpin ? "bg-gray-500" : "bg-gradient-to-b from-cyan-300 via-cyan-400 to-transparent"
+              } opacity-80`}
+              style={{
+                borderTopLeftRadius: '100px',
+                borderTopRightRadius: '100px',
+              }}
+            ></div>
+
+            {/* UFO Windows around the dome */}
+            <div className="absolute top-14 left-1/2 -translate-x-1/2 flex space-x-3">
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`}></div>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.2s'}}></div>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.4s'}}></div>
             </div>
 
             {/* Center Text */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center px-8">
-                <div className="text-7xl mb-4">🛸</div>
-                <div className={`text-4xl font-bold ${hasSpunToday || mustSpin ? "text-gray-400" : "text-black drop-shadow-lg"}`}>
-                  {hasSpunToday ? "Come Back\nTomorrow!" : mustSpin ? "Spinning..." : "SPIN!"}
-                </div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
+              <div className="text-5xl mb-1">🛸</div>
+              <div className={`text-2xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-white drop-shadow-lg"}`}>
+                {hasSpunToday ? "Tomorrow!" : mustSpin ? "Spinning..." : "SPIN!"}
               </div>
             </div>
 
-            {/* Shimmer effect */}
+            {/* Light beam effect below UFO */}
             {!hasSpunToday && !mustSpin && (
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer rounded-full"></div>
+              <div
+                className="absolute top-28 left-1/2 -translate-x-1/2 bg-gradient-to-b from-cyan-400/60 via-green-400/40 to-transparent blur-md animate-pulse"
+                style={{
+                  width: '120px',
+                  height: '100px',
+                  clipPath: 'polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)',
+                }}
+              ></div>
             )}
 
-            {/* Light beam effect */}
+            {/* Side lights on the saucer */}
             {!hasSpunToday && !mustSpin && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-16 bg-gradient-to-b from-cyan-400/60 to-transparent blur-md"></div>
+              <>
+                <div className="absolute top-1/2 left-4 w-3 h-3 rounded-full bg-red-400 animate-pulse"></div>
+                <div className="absolute top-1/2 right-4 w-3 h-3 rounded-full bg-red-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+              </>
             )}
           </button>
         </div>
