@@ -283,7 +283,7 @@ export default function AlienWheel() {
             onClick={handleSpinClick}
             onMouseEnter={() => !hasSpunToday && !mustSpin && playSound('hover')}
             disabled={hasSpunToday || mustSpin}
-            className={`relative transition-all duration-300 overflow-visible ${
+            className={`relative transition-all duration-300 overflow-visible bg-transparent border-none outline-none ${
               hasSpunToday || mustSpin
                 ? "cursor-not-allowed opacity-50"
                 : "hover:scale-105 hover-float"
@@ -291,6 +291,7 @@ export default function AlienWheel() {
             style={{
               width: '500px',
               height: '320px',
+              background: 'transparent',
             }}
           >
             {/* UFO Main Saucer Body */}

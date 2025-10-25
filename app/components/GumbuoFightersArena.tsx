@@ -88,6 +88,34 @@ export default function GumbuoFightersArena() {
     }
   }, []);
 
+  // Check for pending fight results when user connects
+  useEffect(() => {
+    if (!address) return;
+
+    const pendingFightKey = `pendingFight_${address}`;
+    const pendingFight = localStorage.getItem(pendingFightKey);
+
+    if (pendingFight) {
+      try {
+        const fightData = JSON.parse(pendingFight);
+
+        // Replay the fight animation
+        setFighting(true);
+
+        setTimeout(() => {
+          setFightResult(fightData.result);
+          setFighting(false);
+
+          // Clear pending fight from localStorage
+          localStorage.removeItem(pendingFightKey);
+        }, 3000); // Match the original fight animation duration
+      } catch (e) {
+        console.error('Failed to load pending fight:', e);
+        localStorage.removeItem(pendingFightKey);
+      }
+    }
+  }, [address]);
+
   // Save arena state to localStorage whenever fighters change
   useEffect(() => {
     const arenaState = {
@@ -311,6 +339,15 @@ export default function GumbuoFightersArena() {
       setFightLog(updatedLog);
       localStorage.setItem('fightLog', JSON.stringify(updatedLog));
 
+      // Save pending fight result for both participants so they can see it if they log out/in
+      const fightData = { result, timestamp: Date.now() };
+      if (fighter1Owner) {
+        localStorage.setItem(`pendingFight_${fighter1Owner}`, JSON.stringify(fightData));
+      }
+      if (fighter2Owner) {
+        localStorage.setItem(`pendingFight_${fighter2Owner}`, JSON.stringify(fightData));
+      }
+
       setFighting(false);
     }, 3000); // 3 second fight animation
   };
@@ -323,6 +360,11 @@ export default function GumbuoFightersArena() {
     setFighter1Paid(false);
     setFighter2Paid(false);
     setFightResult(null);
+
+    // Clear pending fight from localStorage when user dismisses result
+    if (address) {
+      localStorage.removeItem(`pendingFight_${address}`);
+    }
   };
 
   return (
@@ -519,13 +561,13 @@ export default function GumbuoFightersArena() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   {/* Left Door */}
                   <div
-                    className="absolute left-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    className="absolute left-0 top-0 bottom-0 transition-transform duration-700 ease-in-out border-r-4 border-gray-900"
                     style={{
                       width: '50%',
                       transform: isDraggingOverSlot1 ? 'translateX(-100%)' : 'translateX(0)',
-                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
-                      boxShadow: 'inset -5px 0 10px rgba(0,0,0,0.5), 5px 0 15px rgba(0,0,0,0.3)',
-                      zIndex: 20
+                      background: 'linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%)',
+                      boxShadow: 'inset -5px 0 10px rgba(0,0,0,0.9), 5px 0 20px rgba(0,0,0,0.8)',
+                      zIndex: 30
                     }}
                   >
                     {/* Door Panel Details */}
@@ -553,13 +595,13 @@ export default function GumbuoFightersArena() {
 
                   {/* Right Door */}
                   <div
-                    className="absolute right-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    className="absolute right-0 top-0 bottom-0 transition-transform duration-700 ease-in-out border-l-4 border-gray-900"
                     style={{
                       width: '50%',
                       transform: isDraggingOverSlot1 ? 'translateX(100%)' : 'translateX(0)',
-                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
-                      boxShadow: 'inset 5px 0 10px rgba(0,0,0,0.5), -5px 0 15px rgba(0,0,0,0.3)',
-                      zIndex: 20
+                      background: 'linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%)',
+                      boxShadow: 'inset 5px 0 10px rgba(0,0,0,0.9), -5px 0 20px rgba(0,0,0,0.8)',
+                      zIndex: 30
                     }}
                   >
                     {/* Door Panel Details */}
@@ -692,6 +734,13 @@ export default function GumbuoFightersArena() {
                     Owner: {fighter2Owner ? `${fighter2Owner.slice(0, 6)}...${fighter2Owner.slice(-4)}` : 'Unknown'}
                   </div>
                 )}
+
+            {/* Waiting message when fighter2 is set but fighter1 is not */}
+            {fighter2 && !fighter1 && !fighting && (
+              <div className="absolute -bottom-4 bg-yellow-400 text-black px-4 py-2 rounded-full text-base font-bold animate-pulse">
+                Waiting for Player 1...
+              </div>
+            )}
               </div>
             ) : (
               <div className="text-center relative w-full h-full">
@@ -699,13 +748,13 @@ export default function GumbuoFightersArena() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   {/* Left Door */}
                   <div
-                    className="absolute left-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    className="absolute left-0 top-0 bottom-0 transition-transform duration-700 ease-in-out border-r-4 border-gray-900"
                     style={{
                       width: '50%',
                       transform: isDraggingOverSlot2 ? 'translateX(-100%)' : 'translateX(0)',
-                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
-                      boxShadow: 'inset -5px 0 10px rgba(0,0,0,0.5), 5px 0 15px rgba(0,0,0,0.3)',
-                      zIndex: 20
+                      background: 'linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%)',
+                      boxShadow: 'inset -5px 0 10px rgba(0,0,0,0.9), 5px 0 20px rgba(0,0,0,0.8)',
+                      zIndex: 30
                     }}
                   >
                     {/* Door Panel Details */}
@@ -733,13 +782,13 @@ export default function GumbuoFightersArena() {
 
                   {/* Right Door */}
                   <div
-                    className="absolute right-0 top-0 bottom-0 transition-transform duration-700 ease-in-out"
+                    className="absolute right-0 top-0 bottom-0 transition-transform duration-700 ease-in-out border-l-4 border-gray-900"
                     style={{
                       width: '50%',
                       transform: isDraggingOverSlot2 ? 'translateX(100%)' : 'translateX(0)',
-                      background: 'linear-gradient(90deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
-                      boxShadow: 'inset 5px 0 10px rgba(0,0,0,0.5), -5px 0 15px rgba(0,0,0,0.3)',
-                      zIndex: 20
+                      background: 'linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%)',
+                      boxShadow: 'inset 5px 0 10px rgba(0,0,0,0.9), -5px 0 20px rgba(0,0,0,0.8)',
+                      zIndex: 30
                     }}
                   >
                     {/* Door Panel Details */}
