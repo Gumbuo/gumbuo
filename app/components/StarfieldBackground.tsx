@@ -45,6 +45,17 @@ export default function StarfieldBackground() {
       speedY: (Math.random() - 0.5) * 0.1,
     }));
 
+    // Flying UFO
+    const ufo = {
+      x: Math.random() * canvas!.width,
+      y: Math.random() * canvas!.height,
+      baseSpeed: 2,
+      angle: Math.random() * Math.PI * 2,
+      wobbleOffset: 0,
+      targetAngle: Math.random() * Math.PI * 2,
+      tilt: 0,
+    };
+
     let animationFrameId: number;
 
     const animate = () => {
@@ -81,6 +92,84 @@ export default function StarfieldBackground() {
         if (nebula.y < -nebula.radius) nebula.y = canvas!.height + nebula.radius;
         if (nebula.y > canvas!.height + nebula.radius) nebula.y = -nebula.radius;
       });
+
+      // Update and draw UFO
+      // Smooth angle interpolation
+      let angleDiff = ufo.targetAngle - ufo.angle;
+      if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+      if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+      ufo.angle += angleDiff * 0.02;
+
+      // Occasionally change direction
+      if (Math.random() < 0.01) {
+        ufo.targetAngle = Math.random() * Math.PI * 2;
+      }
+
+      // Add wobble for natural movement
+      ufo.wobbleOffset += 0.05;
+      const wobbleX = Math.sin(ufo.wobbleOffset) * 0.5;
+      const wobbleY = Math.cos(ufo.wobbleOffset * 0.7) * 0.3;
+
+      // Update position with wobble
+      ufo.x += Math.cos(ufo.angle) * ufo.baseSpeed + wobbleX;
+      ufo.y += Math.sin(ufo.angle) * ufo.baseSpeed + wobbleY;
+
+      // Calculate tilt based on movement direction
+      ufo.tilt = Math.cos(ufo.angle) * 0.3;
+
+      // Wrap around screen
+      if (ufo.x < -100) ufo.x = canvas!.width + 100;
+      if (ufo.x > canvas!.width + 100) ufo.x = -100;
+      if (ufo.y < -100) ufo.y = canvas!.height + 100;
+      if (ufo.y > canvas!.height + 100) ufo.y = -100;
+
+      // Draw UFO
+      ctx!.save();
+      ctx!.translate(ufo.x, ufo.y);
+
+      // Light beam (subtle)
+      const beamGradient = ctx!.createLinearGradient(0, 0, 0, 60);
+      beamGradient.addColorStop(0, "rgba(0, 255, 153, 0.1)");
+      beamGradient.addColorStop(1, "rgba(0, 255, 153, 0)");
+      ctx!.fillStyle = beamGradient;
+      ctx!.beginPath();
+      ctx!.moveTo(-8, 0);
+      ctx!.lineTo(8, 0);
+      ctx!.lineTo(15, 60);
+      ctx!.lineTo(-15, 60);
+      ctx!.closePath();
+      ctx!.fill();
+
+      // UFO body (saucer)
+      ctx!.beginPath();
+      ctx!.ellipse(0, ufo.tilt * 5, 25, 10, 0, 0, Math.PI * 2);
+      const saucerGradient = ctx!.createLinearGradient(-25, 0, 25, 0);
+      saucerGradient.addColorStop(0, "#1a4d4d");
+      saucerGradient.addColorStop(0.5, "#00ffaa");
+      saucerGradient.addColorStop(1, "#1a4d4d");
+      ctx!.fillStyle = saucerGradient;
+      ctx!.fill();
+
+      // UFO dome
+      ctx!.beginPath();
+      ctx!.ellipse(0, -3 + ufo.tilt * 3, 12, 8, 0, Math.PI, 0);
+      ctx!.fillStyle = "rgba(0, 255, 200, 0.3)";
+      ctx!.fill();
+
+      // Glowing lights
+      const lights = [-15, -5, 5, 15];
+      lights.forEach((x, i) => {
+        const pulse = Math.sin(Date.now() * 0.01 + i) * 0.5 + 0.5;
+        ctx!.beginPath();
+        ctx!.arc(x, 0, 2, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255, 200, 0, ${pulse})`;
+        ctx!.shadowBlur = 10;
+        ctx!.shadowColor = "#ffcc00";
+        ctx!.fill();
+        ctx!.shadowBlur = 0;
+      });
+
+      ctx!.restore();
 
       // Draw star layers (parallax)
       starLayers.forEach((layer) => {
