@@ -283,12 +283,14 @@ export default function AlienWheel() {
             onClick={handleSpinClick}
             onMouseEnter={() => !hasSpunToday && !mustSpin && playSound('hover')}
             disabled={hasSpunToday || mustSpin}
-            className={`relative w-96 h-96 rounded-full transition-all duration-200 overflow-visible hover-ripple ${
+            className={`relative rounded-full transition-all duration-200 overflow-visible hover-ripple ${
               hasSpunToday || mustSpin
                 ? "bg-gray-600 cursor-not-allowed"
-                : "holographic-button bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-110 animate-spin-pulse animate-spin-wiggle hover-float hover-cosmic-pulse"
+                : "holographic-button bg-gradient-to-b from-green-400 via-cyan-400 to-green-600 hover:scale-105 animate-spin-pulse animate-spin-wiggle hover-float hover-cosmic-pulse"
             }`}
             style={{
+              width: '600px',
+              height: '600px',
               boxShadow: hasSpunToday || mustSpin
                 ? 'none'
                 : '0 0 60px rgba(74, 222, 128, 0.8), 0 0 120px rgba(74, 222, 128, 0.6), inset 0 -40px 80px rgba(0, 255, 153, 0.4)'

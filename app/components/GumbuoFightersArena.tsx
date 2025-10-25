@@ -240,14 +240,14 @@ export default function GumbuoFightersArena() {
       <div className="corner-glow corner-glow-bl"></div>
       <div className="corner-glow corner-glow-br"></div>
 
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text tech-corners" style={{fontSize: '4rem'}}>
-        <span className="animate-glow text-red-400">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
+        <span className="text-red-400">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
       </h2>
 
       {/* Betting Info Section */}
       <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
-        <p className="font-bold mb-3 font-alien holographic-text" style={{fontSize: '2.5rem'}}>
-          <span className="animate-glow">💰 ALIEN POINTS BETTING 💰</span>
+        <p className="font-bold mb-3 font-alien" style={{fontSize: '2.5rem'}}>
+          💰 ALIEN POINTS BETTING 💰
         </p>
         <div className="opacity-90 space-y-2 font-electro">
           <p className="text-base">💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
@@ -418,8 +418,8 @@ export default function GumbuoFightersArena() {
 
       {/* User's Alien Collection - Draggable */}
       <div className="w-full z-10">
-        <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4 alien-brackets" style={{fontSize: '3.5rem'}}>
-          <span className="animate-glow text-red-400">👽 Your Alien Collection 👽</span>
+        <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4" style={{fontSize: '3.5rem'}}>
+          <span className="text-red-400">👽 Your Alien Collection 👽</span>
         </h3>
         <p className="text-red-400 text-sm text-center mb-4 opacity-75">
           Drag and drop your aliens into the arena
@@ -466,7 +466,7 @@ export default function GumbuoFightersArena() {
 
       {/* Info */}
       <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10">
-        <p className="font-bold mb-3 text-xl font-iceland circuit-text">ℹ️ Arena Rules</p>
+        <p className="font-bold mb-3 text-xl font-iceland">ℹ️ Arena Rules</p>
         <div className="opacity-75 space-y-2 text-center">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
           <p>💰 <strong>Entry Fee:</strong> Each player pays 500 AP to enter the arena</p>

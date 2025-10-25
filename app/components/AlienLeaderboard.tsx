@@ -188,8 +188,8 @@ export default function AlienLeaderboard() {
       <div className="corner-glow corner-glow-bl"></div>
       <div className="corner-glow corner-glow-br"></div>
 
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text hex-pattern" style={{fontSize: '4rem'}}>
-        <span className="animate-glow text-purple-400">👽 First Timer Leaderboard 🛸</span>
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
+        <span className="text-purple-400">👽 First Timer Leaderboard 🛸</span>
       </h2>
 
       {/* Progress Bar */}
