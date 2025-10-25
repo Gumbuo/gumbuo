@@ -51,8 +51,17 @@ export async function GET(request: NextRequest) {
     // Get user balance if wallet provided
     let userBalance = 0;
     if (wallet) {
-      const balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
-      userBalance = balances[wallet.toLowerCase()] || 0;
+      let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
+      const normalizedWallet = wallet.toLowerCase();
+
+      // If user doesn't exist, give them 5000 AP starting balance
+      if (balances[normalizedWallet] === undefined) {
+        balances[normalizedWallet] = 5000;
+        await redis.set(BALANCES_KEY, balances);
+        userBalance = 5000;
+      } else {
+        userBalance = balances[normalizedWallet];
+      }
     }
 
     return NextResponse.json({
@@ -192,8 +201,8 @@ export async function PATCH(request: NextRequest) {
       // We need to track this per fight, not per entry
       // For now, don't add anything to marketplace pool on entry - it will be added when fight completes
     } else {
-      // Marketplace purchases go fully to marketplace pool
-      pool.marketplacePool += points;
+      // Marketplace purchases: Points are spent but NOT added to burn pool
+      // Only arena house fees (200 AP per fight) go to burn pool
     }
 
     // Save to database
