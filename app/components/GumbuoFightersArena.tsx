@@ -40,6 +40,9 @@ export default function GumbuoFightersArena() {
   const [fightLog, setFightLog] = useState<FightResult[]>([]);
   const [isDraggingOverSlot1, setIsDraggingOverSlot1] = useState(false);
   const [isDraggingOverSlot2, setIsDraggingOverSlot2] = useState(false);
+  const [fighter1Health, setFighter1Health] = useState(100);
+  const [fighter2Health, setFighter2Health] = useState(100);
+  const [battleMessage, setBattleMessage] = useState("");
 
   useEffect(() => {
     if (!address) {
@@ -276,9 +279,51 @@ export default function GumbuoFightersArena() {
     setFighting(true);
     setFightResult(null);
 
-    // Simulate fight with random winner
+    // Reset health bars
+    setFighter1Health(100);
+    setFighter2Health(100);
+    setBattleMessage("FIGHT!");
+
+    // Battle messages
+    const messages = ["HIT!", "COMBO!", "CRITICAL!", "SMASH!", "POW!", "BOOM!", "ULTRA!"];
+
+    let health1 = 100;
+    let health2 = 100;
+    let hitCount = 0;
+
+    // Simulate battle over 15 seconds with health bars
+    const battleInterval = setInterval(() => {
+      hitCount++;
+
+      // Random damage between 5-15 per hit
+      const damage = Math.floor(Math.random() * 11) + 5;
+
+      // Randomly choose who gets hit
+      if (Math.random() > 0.5) {
+        health1 -= damage;
+        setBattleMessage(`${fighter2.name} ${messages[Math.floor(Math.random() * messages.length)]}`);
+      } else {
+        health2 -= damage;
+        setBattleMessage(`${fighter1.name} ${messages[Math.floor(Math.random() * messages.length)]}`);
+      }
+
+      // Update health bars
+      setFighter1Health(Math.max(0, health1));
+      setFighter2Health(Math.max(0, health2));
+
+      // Check if someone lost all health
+      if (health1 <= 0 || health2 <= 0) {
+        clearInterval(battleInterval);
+      }
+    }, 800); // Hit every 800ms for dramatic effect
+
+    // End fight after 15 seconds
     setTimeout(async () => {
-      const winner = Math.random() > 0.5 ? fighter1 : fighter2;
+      clearInterval(battleInterval);
+      setBattleMessage("FINISH HIM!");
+
+      // Determine winner based on remaining health
+      const winner = health1 > health2 ? fighter1 : fighter2;
       const loser = winner === fighter1 ? fighter2 : fighter1;
       const winnerOwner = winner === fighter1 ? fighter1Owner : fighter2Owner;
 
@@ -349,7 +394,8 @@ export default function GumbuoFightersArena() {
       }
 
       setFighting(false);
-    }, 3000); // 3 second fight animation
+      setBattleMessage("");
+    }, 15000); // 15 second cinematic fight animation
   };
 
   const resetArena = () => {
@@ -360,6 +406,9 @@ export default function GumbuoFightersArena() {
     setFighter1Paid(false);
     setFighter2Paid(false);
     setFightResult(null);
+    setFighter1Health(100);
+    setFighter2Health(100);
+    setBattleMessage("");
 
     // Clear pending fight from localStorage when user dismisses result
     if (address) {
@@ -532,6 +581,23 @@ export default function GumbuoFightersArena() {
                     className={`max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-blue-400 ${fighting ? 'animate-bounce' : ''}`}
                   />
                 </div>
+
+                {/* Health Bar */}
+                {fighting && (
+                  <div className="w-full mb-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-blue-400 font-bold text-sm">{fighter1.name}</span>
+                      <span className="text-blue-400 font-bold text-sm">{fighter1Health}%</span>
+                    </div>
+                    <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-blue-400 overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-blue-400 to-cyan-400 h-full transition-all duration-300 shadow-lg shadow-blue-400/50"
+                        style={{width: `${fighter1Health}%`}}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-blue-400 font-bold text-2xl mb-2">{fighter1.name}</p>
                 {address && fighter1Owner?.toLowerCase() === address.toLowerCase() ? (
                   <button
@@ -665,6 +731,12 @@ export default function GumbuoFightersArena() {
               <div className="bg-gray-800 px-6 py-2 rounded-lg border-2 border-red-500 shadow-lg shadow-red-500/50 animate-pulse">
                 <p className="text-red-500 font-mono text-sm font-bold">BATTLE IN PROGRESS</p>
               </div>
+              {/* Battle Message */}
+              {battleMessage && (
+                <div className="bg-yellow-400 text-black px-8 py-4 rounded-lg border-4 border-yellow-500 shadow-2xl shadow-yellow-400/80 animate-pulse mt-2">
+                  <p className="font-alien font-bold text-3xl">{battleMessage}</p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="bg-gray-800 p-6 rounded-lg border-2 border-gray-600 shadow-2xl" style={{
@@ -712,6 +784,23 @@ export default function GumbuoFightersArena() {
                     className={`max-w-[128px] max-h-[128px] w-auto h-auto object-contain rounded-lg border-4 border-red-400 ${fighting ? 'animate-bounce' : ''}`}
                   />
                 </div>
+
+                {/* Health Bar */}
+                {fighting && (
+                  <div className="w-full mb-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-red-400 font-bold text-sm">{fighter2.name}</span>
+                      <span className="text-red-400 font-bold text-sm">{fighter2Health}%</span>
+                    </div>
+                    <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-red-400 overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-red-400 to-orange-400 h-full transition-all duration-300 shadow-lg shadow-red-400/50"
+                        style={{width: `${fighter2Health}%`}}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-red-400 font-bold text-2xl mb-2">{fighter2.name}</p>
                 {address && fighter2Owner?.toLowerCase() === address.toLowerCase() ? (
                   <button

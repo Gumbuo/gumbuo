@@ -338,7 +338,7 @@ export default function AlienWheel() {
 
             {/* Center Text - No UFO Emoji */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
-              <div className={`text-3xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-white drop-shadow-lg"}`}>
+              <div className={`text-3xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-green-400 drop-shadow-[0_0_10px_rgba(74,222,128,0.8)]"}`}>
                 {hasSpunToday ? "Tomorrow!" : mustSpin ? "Spinning..." : "SPIN WHEEL"}
               </div>
             </div>
