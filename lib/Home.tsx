@@ -8,6 +8,7 @@ const AlienDripStation = dynamic(() => import("../app/components/AlienDripStatio
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
 const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
 const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
+const GumbuoBoss = dynamic(() => import("../app/components/GumbuoBoss"), { ssr: false });
 const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
 const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
 
@@ -87,8 +88,13 @@ export default function Home() {
         </div>
 
         {/* Gumbuo Fighters Arena */}
-        <div className="flex justify-center mt-12 mb-12">
+        <div className="flex justify-center mt-12">
           <GumbuoFightersArena />
+        </div>
+
+        {/* Gumbuo Boss Battle */}
+        <div className="flex justify-center mt-12 mb-12">
+          <GumbuoBoss />
         </div>
       </div>
     </main>

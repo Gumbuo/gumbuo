@@ -7,26 +7,28 @@ interface AlienPointsPool {
   faucetPool: number;
   reservePool: number;
   marketplacePool: number;
+  bossPool: number;
   totalDistributed: number;
 }
 
 interface AlienPointsContextType {
   pool: AlienPointsPool;
   getUserBalance: (address: string) => number;
-  addPoints: (address: string, points: number, source: 'wheel' | 'faucet' | 'arena') => Promise<boolean>;
+  addPoints: (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss') => Promise<boolean>;
   spendPoints: (address: string, points: number, itemName: string) => Promise<boolean>;
-  getPoolRemaining: (source: 'wheel' | 'faucet') => number;
+  getPoolRemaining: (source: 'wheel' | 'faucet' | 'boss') => number;
   refreshPool: () => Promise<void>;
 }
 
 const AlienPointsContext = createContext<AlienPointsContextType | undefined>(undefined);
 
 const INITIAL_POOL: AlienPointsPool = {
-  totalSupply: 350_000_000,
+  totalSupply: 450_000_000,
   wheelPool: 100_000_000,
   faucetPool: 100_000_000,
   reservePool: 150_000_000,
   marketplacePool: 0,
+  bossPool: 100_000_000,
   totalDistributed: 0,
 };
 
@@ -81,7 +83,7 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena'): Promise<boolean> => {
+  const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss'): Promise<boolean> => {
     try {
       const response = await fetch('/api/points', {
         method: 'POST',
@@ -137,8 +139,10 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const getPoolRemaining = (source: 'wheel' | 'faucet'): number => {
-    return source === 'wheel' ? pool.wheelPool : pool.faucetPool;
+  const getPoolRemaining = (source: 'wheel' | 'faucet' | 'boss'): number => {
+    if (source === 'wheel') return pool.wheelPool;
+    if (source === 'faucet') return pool.faucetPool;
+    return pool.bossPool;
   };
 
   return (

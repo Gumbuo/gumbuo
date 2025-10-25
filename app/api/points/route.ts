@@ -15,6 +15,7 @@ interface AlienPointsPool {
   faucetPool: number;
   reservePool: number;
   marketplacePool: number; // Points collected from alien pic purchases
+  bossPool: number; // Boss battle reward pool
   totalDistributed: number;
   totalAliensBurned: number; // Total aliens burned in arena
 }
@@ -24,11 +25,12 @@ interface UserBalances {
 }
 
 const INITIAL_POOL: AlienPointsPool = {
-  totalSupply: 350_000_000,
+  totalSupply: 450_000_000,
   wheelPool: 100_000_000,
   faucetPool: 100_000_000,
   reservePool: 150_000_000,
   marketplacePool: 0, // Grows as users spend points on alien pics
+  bossPool: 100_000_000, // Boss battle reward pool
   totalDistributed: 0,
   totalAliensBurned: 0, // Total aliens burned in arena
 };
@@ -79,7 +81,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena') {
+    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss') {
       return NextResponse.json(
         { success: false, error: "Invalid source" },
         { status: 400 }
@@ -92,7 +94,7 @@ export async function POST(request: NextRequest) {
     let pool = await redis.get<AlienPointsPool>(POOL_KEY) || INITIAL_POOL;
     let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
 
-    // Check if pool has enough points (arena awards from reserve pool)
+    // Check if pool has enough points (arena and boss awards from their respective pools)
     let poolAmount;
     if (source === 'wheel') {
       poolAmount = pool.wheelPool;
@@ -100,6 +102,8 @@ export async function POST(request: NextRequest) {
       poolAmount = pool.faucetPool;
     } else if (source === 'arena') {
       poolAmount = pool.reservePool; // Arena prizes come from reserve
+    } else if (source === 'boss') {
+      poolAmount = pool.bossPool; // Boss rewards come from boss pool
     }
 
     if (poolAmount && poolAmount < points) {
@@ -124,6 +128,8 @@ export async function POST(request: NextRequest) {
       pool.faucetPool -= points;
     } else if (source === 'arena') {
       pool.reservePool -= points; // Arena prizes come from reserve
+    } else if (source === 'boss') {
+      pool.bossPool -= points; // Boss rewards come from boss pool
     }
     pool.totalDistributed += points;
 
