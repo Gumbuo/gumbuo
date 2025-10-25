@@ -287,29 +287,21 @@ export default function GumbuoBoss() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible rounded-3xl">
-      {/* Corner glow accents */}
-      <div className="corner-glow corner-glow-tl"></div>
-      <div className="corner-glow corner-glow-tr"></div>
-      <div className="corner-glow corner-glow-bl"></div>
-      <div className="corner-glow corner-glow-br"></div>
-
+    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl border border-red-400/30">
       {/* Title */}
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text tech-corners" style={{fontSize: '4.5rem'}}>
-        <span className="animate-glow text-red-400">💀 GUMBUO BOSS BATTLE ⚔️</span>
+      <h2 className="font-alien font-bold tracking-wider text-center text-red-400" style={{fontSize: '3rem'}}>
+        💀 GUMBUO BOSS BATTLE ⚔️
       </h2>
 
       {/* Boss Status */}
-      <div className="w-full glass-panel border-4 border-red-500/70 rounded-3xl p-8 relative overflow-hidden shadow-2xl shadow-red-500/70">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400/10 to-transparent animate-shimmer pointer-events-none"></div>
-
-        <div className="relative z-10 space-y-6">
+      <div className="w-full bg-black/60 border-2 border-red-500/50 rounded-3xl p-8">
+        <div className="space-y-6">
           {/* Boss Name & Status */}
           <div className="text-center">
-            <h3 className="text-6xl font-alien holographic-text mb-2">
+            <h3 className="text-5xl font-alien mb-2">
               {bossState.isAlive ? "👹 MEGA GUMBUO 👹" : "💀 DEFEATED 💀"}
             </h3>
-            <p className="text-3xl font-electro text-red-400">
+            <p className="text-2xl text-red-400">
               {bossState.isAlive ? "DESTROYER OF WORLDS" : "AWAITING RESPAWN"}
             </p>
           </div>
@@ -317,39 +309,37 @@ export default function GumbuoBoss() {
           {/* HP Bar */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <p className="text-red-400 text-2xl font-bold font-iceland">
+              <p className="text-red-400 text-xl font-bold">
                 HP: {bossState.currentHP.toLocaleString()} / {bossState.maxHP.toLocaleString()}
               </p>
-              <p className="text-red-400 text-2xl font-bold">
+              <p className="text-red-400 text-xl font-bold">
                 {getHPPercentage().toFixed(1)}%
               </p>
             </div>
 
-            <div className="w-full bg-gray-900 rounded-full h-8 border-4 border-red-900 shadow-inner relative overflow-hidden">
+            <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-red-900">
               <div
-                className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-500 shadow-lg shadow-red-400/50 relative overflow-hidden`}
+                className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-500`}
                 style={{width: `${getHPPercentage()}%`}}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-              </div>
+              ></div>
             </div>
           </div>
 
           {/* Respawn Timer */}
           {!bossState.isAlive && (
-            <div className="glass-panel border-2 border-yellow-500/50 rounded-xl p-4 text-center">
-              <p className="text-yellow-400 text-xl font-bold">⏰ Respawns in:</p>
-              <p className="text-3xl text-yellow-300 font-bold mt-2">{timeUntilRespawn}</p>
+            <div className="bg-black/60 border border-yellow-500/50 rounded-xl p-4 text-center">
+              <p className="text-yellow-400 text-lg font-bold">⏰ Respawns in:</p>
+              <p className="text-2xl text-yellow-300 font-bold mt-2">{timeUntilRespawn}</p>
             </div>
           )}
 
           {/* Last Attack Result */}
           {lastDamage && bossState.isAlive && (
-            <div className={`glass-panel border-2 ${lastDamage.isCritical ? 'border-yellow-400/70' : 'border-orange-400/50'} rounded-xl p-4 text-center animate-pulse`}>
-              <p className={`text-3xl font-bold ${lastDamage.isCritical ? 'text-yellow-400' : 'text-orange-400'}`}>
+            <div className={`bg-black/60 border ${lastDamage.isCritical ? 'border-yellow-400/50' : 'border-orange-400/50'} rounded-xl p-4 text-center`}>
+              <p className={`text-2xl font-bold ${lastDamage.isCritical ? 'text-yellow-400' : 'text-orange-400'}`}>
                 {lastDamage.isCritical ? '⚡ CRITICAL HIT! ⚡' : '💥 HIT! 💥'}
               </p>
-              <p className={`text-5xl font-alien ${lastDamage.isCritical ? 'text-yellow-400' : 'text-orange-400'} mt-2`}>
+              <p className={`text-4xl font-alien ${lastDamage.isCritical ? 'text-yellow-400' : 'text-orange-400'} mt-2`}>
                 -{lastDamage.damage.toLocaleString()} HP
               </p>
             </div>
@@ -359,18 +349,18 @@ export default function GumbuoBoss() {
 
       {/* User Stats */}
       {isConnected && address && (
-        <div className="w-full glass-panel border-4 border-purple-500/70 rounded-2xl p-6 shadow-2xl shadow-purple-500/70">
-          <h3 className="text-3xl font-alien text-purple-400 text-center mb-4 circuit-text">👤 YOUR BATTLE STATS 👤</h3>
+        <div className="w-full bg-black/60 border-2 border-purple-500/50 rounded-2xl p-6">
+          <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="glass-panel border-2 border-purple-400/50 rounded-xl p-4 text-center">
-              <p className="text-purple-400 text-lg font-electro">Total Damage Dealt</p>
-              <p className="text-4xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
+            <div className="bg-black/60 border border-purple-400/30 rounded-xl p-4 text-center">
+              <p className="text-purple-400 text-base">Total Damage Dealt</p>
+              <p className="text-3xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
             </div>
 
-            <div className="glass-panel border-2 border-purple-400/50 rounded-xl p-4 text-center">
-              <p className="text-purple-400 text-lg font-electro">Damage Contribution</p>
-              <p className="text-4xl font-bold text-purple-400 mt-2">
+            <div className="bg-black/60 border border-purple-400/30 rounded-xl p-4 text-center">
+              <p className="text-purple-400 text-base">Damage Contribution</p>
+              <p className="text-3xl font-bold text-purple-400 mt-2">
                 {bossState.isAlive
                   ? `${((userTotalDamage / (BOSS_MAX_HP - bossState.currentHP)) * 100).toFixed(2)}%`
                   : `${((userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`
@@ -380,9 +370,9 @@ export default function GumbuoBoss() {
           </div>
 
           {!bossState.isAlive && (
-            <div className="mt-4 glass-panel border-2 border-green-400/50 rounded-xl p-4 text-center">
-              <p className="text-green-400 text-lg font-electro">Potential Reward</p>
-              <p className="text-4xl font-bold text-green-400 mt-2">
+            <div className="mt-4 bg-black/60 border border-green-400/30 rounded-xl p-4 text-center">
+              <p className="text-green-400 text-base">Potential Reward</p>
+              <p className="text-3xl font-bold text-green-400 mt-2">
                 {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} GMB
               </p>
             </div>
@@ -396,15 +386,12 @@ export default function GumbuoBoss() {
           onClick={handleAttack}
           onMouseEnter={() => canAttack && playSound('hover')}
           disabled={!isConnected || isAttacking || !canAttack}
-          className={`px-16 py-6 text-4xl font-bold tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
+          className={`px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
             !isConnected || isAttacking || !canAttack
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-              : "holographic-button organic-button text-white hover:scale-110 hover:shadow-2xl hover:shadow-red-400/80 animate-pulse-glow hover-ripple hover-color-shift hover-morph"
+              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+              : "bg-red-500 text-white hover:bg-red-600"
           }`}
         >
-          {!isConnected || isAttacking || !canAttack ? null : (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-          )}
           <span className="relative z-10">
             {!isConnected
               ? "CONNECT WALLET"
@@ -423,59 +410,54 @@ export default function GumbuoBoss() {
           onClick={handleClaimReward}
           onMouseEnter={() => playSound('hover')}
           disabled={!isConnected}
-          className={`px-16 py-6 text-4xl font-bold tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
+          className={`px-16 py-6 text-3xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
             !isConnected
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-              : "holographic-button organic-button text-white hover:scale-110 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow hover-ripple hover-cosmic-pulse hover-morph"
+              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+              : "bg-green-500 text-white hover:bg-green-600"
           }`}
         >
-          {!isConnected ? null : (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-          )}
-          <span className="relative z-10">
-            {!isConnected ? "CONNECT WALLET" : "🏆 CLAIM REWARD 🏆"}
-          </span>
+          {!isConnected ? "CONNECT WALLET" : "🏆 CLAIM REWARD 🏆"}
         </button>
       )}
 
       {/* Already Claimed */}
       {!bossState.isAlive && hasClaimedReward && (
-        <div className="glass-panel border-2 border-green-500/50 rounded-xl p-6 text-center">
-          <p className="text-green-400 text-2xl font-bold">✅ Reward Already Claimed! ✅</p>
-          <p className="text-green-400 text-lg mt-2">Wait for boss respawn to earn more rewards!</p>
+        <div className="bg-black/60 border border-green-500/30 rounded-xl p-6 text-center">
+          <p className="text-green-400 text-xl font-bold">✅ Reward Already Claimed! ✅</p>
+          <p className="text-green-400 text-base mt-2">Wait for boss respawn to earn more rewards!</p>
         </div>
       )}
 
       {/* Reward Pool Info */}
-      <div className="w-full glass-panel border-2 border-yellow-400/50 rounded-xl p-6">
-        <h3 className="text-2xl font-alien text-yellow-400 text-center mb-4 hex-pattern">💰 REWARD POOL 💰</h3>
+      <div className="w-full bg-black/60 border border-yellow-400/30 rounded-xl p-6">
+        <h3 className="text-xl font-alien text-yellow-400 text-center mb-4">💰 REWARD POOL 💰</h3>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-lg font-electro">Total Pool Size:</p>
-            <p className="text-2xl font-bold text-yellow-400">{REWARD_POOL_SIZE.toLocaleString()} GMB</p>
+            <p className="text-yellow-400 text-base">Total Pool Size:</p>
+            <p className="text-lg font-bold text-yellow-400">{REWARD_POOL_SIZE.toLocaleString()} GMB</p>
           </div>
 
           <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-lg font-electro">Distribution Method:</p>
-            <p className="text-xl font-bold text-yellow-400">By Damage %</p>
+            <p className="text-yellow-400 text-base">Distribution Method:</p>
+            <p className="text-base font-bold text-yellow-400">By Damage %</p>
           </div>
 
           <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-lg font-electro">Attack Damage Range:</p>
-            <p className="text-xl font-bold text-yellow-400">{MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP</p>
+            <p className="text-yellow-400 text-base">Attack Damage Range:</p>
+            <p className="text-base font-bold text-yellow-400">{MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP</p>
           </div>
 
           <div className="flex justify-between items-center">
-            <p className="text-yellow-400 text-lg font-electro">Critical Hit Chance:</p>
-            <p className="text-xl font-bold text-yellow-400">10% (2x Damage)</p>
+            <p className="text-yellow-400 text-base">Critical Hit Chance:</p>
+            <p className="text-base font-bold text-yellow-400">10% (2x Damage)</p>
           </div>
         </div>
       </div>
 
       {/* Battle Info */}
-      <div className="w-full text-red-400 text-sm text-center max-w-3xl glass-panel p-6 rounded-xl border-2 border-red-400/50">
-        <p className="font-bold mb-3 text-2xl font-iceland circuit-text">ℹ️ Battle Info ℹ️</p>
+      <div className="w-full text-red-400 text-sm text-center max-w-3xl bg-black/60 p-6 rounded-xl border border-red-400/30">
+        <p className="font-bold mb-3 text-lg">ℹ️ Battle Info ℹ️</p>
         <p className="opacity-75 font-electro text-base leading-relaxed">
           Attack the Mega Gumbuo boss and deal massive damage! Each attack has a {ATTACK_COOLDOWN / 1000} second cooldown.
           Damage is randomly calculated between {MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP with a 10% chance for critical hits (2x damage).

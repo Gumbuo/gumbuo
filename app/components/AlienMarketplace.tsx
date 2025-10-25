@@ -117,21 +117,15 @@ export default function AlienMarketplace() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl w-full relative overflow-visible rounded-3xl">
-      {/* Corner glow accents */}
-      <div className="corner-glow corner-glow-tl"></div>
-      <div className="corner-glow corner-glow-tr"></div>
-      <div className="corner-glow corner-glow-bl"></div>
-      <div className="corner-glow corner-glow-br"></div>
-
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text hex-pattern" style={{fontSize: '4rem'}}>
-        <span className="animate-glow">👽 Alien Marketplace 🛸</span>
+    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl w-full rounded-3xl border border-orange-400/30">
+      <h2 className="font-alien font-bold tracking-wider text-center text-orange-400" style={{fontSize: '3rem'}}>
+        👽 Alien Marketplace 🛸
       </h2>
 
       {/* Info Section */}
-      <div className="w-full text-orange-400 text-sm text-center max-w-2xl glass-panel p-4 rounded-xl border-2 border-orange-400/50 z-10">
-        <p className="font-bold mb-2 text-xl font-iceland circuit-text">ℹ️ Marketplace Info</p>
-        <p className="opacity-75 font-electro">
+      <div className="w-full text-orange-400 text-sm text-center max-w-2xl bg-black/60 p-4 rounded-xl border border-orange-400/30">
+        <p className="font-bold mb-2 text-lg">ℹ️ Marketplace Info</p>
+        <p className="opacity-75">
           Use your Alien Points to purchase exclusive Gumbuo Fighters alien pics!
           Each purchase is permanent and unique to your wallet. More pics coming soon! 🚀
         </p>
@@ -149,10 +143,10 @@ export default function AlienMarketplace() {
               className="flex flex-col items-center"
             >
               {/* Name above */}
-              <h3 className="text-2xl font-bold text-orange-400 mb-3 font-alien holographic-text">{pic.name}</h3>
+              <h3 className="text-xl font-bold text-orange-400 mb-3 font-alien">{pic.name}</h3>
 
               {/* Image */}
-              <div className="relative mb-4 flex justify-center items-center glass-panel p-6 rounded-xl border-2 border-orange-400/50 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-400/50">
+              <div className="relative mb-4 flex justify-center items-center bg-black/60 p-6 rounded-xl border border-orange-400/30">
                 <img
                   src={pic.image}
                   alt={pic.name}
@@ -160,33 +154,28 @@ export default function AlienMarketplace() {
                   style={{ width: '128px', height: '128px', objectFit: 'contain' }}
                 />
                 {ownedCount > 0 && (
-                  <div className="absolute -top-3 -right-3 bg-orange-400 text-black font-bold px-3 py-2 rounded-full text-sm animate-pulse shadow-lg shadow-orange-400/50 font-alien">
+                  <div className="absolute -top-2 -right-2 bg-orange-400 text-black font-bold px-2 py-1 rounded-full text-sm">
                     x{ownedCount}
                   </div>
                 )}
               </div>
 
-              {/* Animated buy button below */}
+              {/* Buy button below */}
               <button
                 onClick={() => handlePurchase(pic)}
                 onMouseEnter={() => !isPurchasing && isConnected && playSound('hover')}
                 disabled={!isConnected || isPurchasing}
-                className={`px-8 py-3 text-lg font-bold tracking-wider transition-all duration-200 relative overflow-hidden ${
+                className={`px-8 py-3 text-base font-bold rounded-xl transition-all duration-200 ${
                   !isConnected || isPurchasing
-                    ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-                    : "holographic-button organic-button text-white hover:scale-110 hover:shadow-2xl hover:shadow-orange-400/80 animate-pulse-glow hover-ripple hover-float"
+                    ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                    : "bg-orange-500 text-white hover:bg-orange-600"
                 }`}
               >
-                {!isConnected || isPurchasing ? null : (
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-                )}
-                <span className="relative z-10">
-                  {!isConnected
-                    ? "Connect"
-                    : isPurchasing
-                    ? "Buying..."
-                    : `BUY ${pic.price.toLocaleString()} AP`}
-                </span>
+                {!isConnected
+                  ? "Connect"
+                  : isPurchasing
+                  ? "Buying..."
+                  : `BUY ${pic.price.toLocaleString()} AP`}
               </button>
             </div>
           );

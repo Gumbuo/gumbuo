@@ -169,66 +169,53 @@ export default function AlienLeaderboard() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 p-8 holographic-panel glass-panel rounded-3xl max-w-4xl w-full min-h-96 relative overflow-visible">
-        <div className="corner-glow corner-glow-tl"></div>
-        <div className="corner-glow corner-glow-tr"></div>
-        <div className="corner-glow corner-glow-bl"></div>
-        <div className="corner-glow corner-glow-br"></div>
-        <div className="text-purple-400 text-2xl animate-pulse relative z-10">Loading Leaderboard...</div>
-        <div className="text-purple-400 text-lg relative z-10">Fetching galactic data 🛸</div>
+      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm rounded-3xl max-w-4xl w-full min-h-96 border border-purple-400/30">
+        <div className="text-purple-400 text-xl">Loading Leaderboard...</div>
+        <div className="text-purple-400 text-base">Fetching galactic data 🛸</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-3xl relative overflow-visible rounded-3xl">
-      {/* Corner glow accents */}
-      <div className="corner-glow corner-glow-tl"></div>
-      <div className="corner-glow corner-glow-tr"></div>
-      <div className="corner-glow corner-glow-bl"></div>
-      <div className="corner-glow corner-glow-br"></div>
-
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
-        <span className="text-purple-400">👽 First Timer Leaderboard 🛸</span>
+    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-3xl rounded-3xl border border-purple-400/30">
+      <h2 className="font-alien font-bold tracking-wider text-center text-purple-400" style={{fontSize: '3rem'}}>
+        👽 First Timer Leaderboard 🛸
       </h2>
 
       {/* Progress Bar */}
-      <div className="w-full glass-panel rounded-xl p-4 relative overflow-hidden shadow-lg shadow-purple-400/30 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-400/10 to-transparent animate-shimmer pointer-events-none"></div>
-        <div className="flex justify-between items-center mb-2 relative z-10">
-          <p className="text-purple-400 text-xl drop-shadow-glow font-electro">
-            📊 Progress: <span className="font-bold text-2xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
+      <div className="w-full bg-black/60 rounded-xl p-4 border border-purple-400/30">
+        <div className="flex justify-between items-center mb-2">
+          <p className="text-purple-400 text-lg">
+            📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
           </p>
-          <p className={`text-xl font-bold font-iceland ${spotsRemaining <= 10 ? 'text-red-400 animate-pulse drop-shadow-lg' : 'text-pink-400 drop-shadow-glow'}`}>
+          <p className={`text-lg font-bold ${spotsRemaining <= 10 ? 'text-red-400' : 'text-pink-400'}`}>
             {spotsRemaining} spots left!
           </p>
         </div>
-        <div className="w-full bg-gray-900 rounded-full h-6 border-2 border-gray-700 shadow-inner relative overflow-hidden">
+        <div className="w-full bg-gray-900 rounded-full h-6 border border-gray-700">
           <div
-            className="bg-gradient-to-r from-purple-500 via-pink-400 to-purple-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-purple-400/50 relative overflow-hidden"
+            className="bg-gradient-to-r from-purple-500 to-pink-400 h-full rounded-full transition-all duration-500"
             style={{width: `${getProgressPercentage()}%`}}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-          </div>
+          ></div>
         </div>
       </div>
 
       {/* User Status */}
       {isConnected && address && (
-        <div className={`w-full glass-panel rounded-xl p-4 border-2 ${
+        <div className={`w-full bg-black/60 rounded-xl p-4 border ${
           isRegistered
             ? 'border-purple-400/50'
             : 'border-yellow-500/50'
         }`}>
           {isRegistered ? (
             <div className="text-center">
-              <p className="text-purple-400 text-xl font-bold">✅ You're Registered!</p>
-              <p className="text-purple-400 text-lg mt-1">Your Rank: <span className="text-3xl font-bold">#{userRank}</span></p>
+              <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
+              <p className="text-purple-400 text-base mt-1">Your Rank: <span className="text-2xl font-bold">#{userRank}</span></p>
               <p className="text-purple-400 text-sm mt-2">You'll receive a GMB airdrop when we reach 50 members! 🎉</p>
             </div>
           ) : (
             <div className="text-center">
-              <p className="text-yellow-400 text-xl font-bold">⚠️ Not Registered Yet!</p>
+              <p className="text-yellow-400 text-lg font-bold">⚠️ Not Registered Yet!</p>
               <p className="text-yellow-400 text-sm mt-1">Click the button below to join the leaderboard!</p>
             </div>
           )}
@@ -241,27 +228,22 @@ export default function AlienLeaderboard() {
           onClick={handleRegister}
           onMouseEnter={() => isConnected && leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
           disabled={!isConnected || leaderboard.length >= MAX_FIRST_TIMERS}
-          className={`px-12 py-4 text-2xl font-bold tracking-wider transition-all duration-200 relative overflow-hidden z-10 ${
+          className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
             !isConnected || leaderboard.length >= MAX_FIRST_TIMERS
-              ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-              : "holographic-button organic-button text-white hover:scale-105 hover:shadow-2xl hover:shadow-green-400/80 animate-pulse-glow hover-ripple hover-color-shift"
+              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+              : "bg-purple-500 text-white hover:bg-purple-600"
           }`}
         >
-          {!isConnected || leaderboard.length >= MAX_FIRST_TIMERS ? null : (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-          )}
-          <span className="relative z-10">
-            {!isConnected
-              ? "Connect Wallet to Register"
-              : leaderboard.length >= MAX_FIRST_TIMERS
-              ? "All Spots Claimed! 😢"
-              : "REGISTER NOW! 🚀"}
-          </span>
+          {!isConnected
+            ? "Connect Wallet to Register"
+            : leaderboard.length >= MAX_FIRST_TIMERS
+            ? "All Spots Claimed! 😢"
+            : "REGISTER NOW! 🚀"}
         </button>
       )}
 
       {/* Leaderboard Table */}
-      <div className="w-full glass-panel border-2 border-purple-400/50 rounded-xl overflow-hidden">
+      <div className="w-full bg-black/60 border border-purple-400/50 rounded-xl overflow-hidden">
         <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-purple-400 border-b border-purple-400">
           <div className="text-center">Rank</div>
           <div className="text-center">Wallet</div>
@@ -309,14 +291,14 @@ export default function AlienLeaderboard() {
 
       {/* Goal Reached Banner */}
       {leaderboard.length >= MAX_FIRST_TIMERS && (
-        <div className="w-full glass-panel border-2 border-yellow-400/50 rounded-xl p-6 text-center animate-pulse">
+        <div className="w-full bg-black/60 border-2 border-yellow-400/50 rounded-xl p-6 text-center animate-pulse">
           <p className="text-yellow-400 text-3xl font-bold">🎉 GOAL REACHED! 🎉</p>
           <p className="text-yellow-400 text-lg mt-2">All 50 spots filled! Airdrops will be distributed soon! 👽</p>
         </div>
       )}
 
       {/* Info Section */}
-      <div className="w-full text-purple-400 text-xs text-center max-w-2xl glass-panel p-4 rounded-xl">
+      <div className="w-full text-purple-400 text-xs text-center max-w-2xl bg-black/60 p-4 rounded-xl">
         <p className="font-bold mb-2">ℹ️ Leaderboard Info</p>
         <p className="opacity-75">
           The first 50 wallets to register will receive an exclusive GMB token airdrop!
