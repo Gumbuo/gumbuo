@@ -179,8 +179,8 @@ export default function AlienLeaderboard() {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-3xl rounded-3xl border border-purple-400/30">
-      <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '3rem'}}>
+    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl border border-purple-400/30">
+      <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '4rem'}}>
         <span className="text-purple-400">👽 First Timer Leaderboard 🛸</span>
       </h2>
 
