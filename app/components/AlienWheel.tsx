@@ -333,8 +333,8 @@ export default function AlienWheel() {
             {/* Center Text */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
               <div className="text-5xl mb-1">🛸</div>
-              <div className={`text-2xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-white drop-shadow-lg"}`}>
-                {hasSpunToday ? "Tomorrow!" : mustSpin ? "Spinning..." : "SPIN!"}
+              <div className={`text-xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-white drop-shadow-lg"}`}>
+                {hasSpunToday ? "Tomorrow!" : mustSpin ? "Spinning..." : "SPIN WHEEL"}
               </div>
             </div>
 
