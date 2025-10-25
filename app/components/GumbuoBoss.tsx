@@ -604,18 +604,14 @@ export default function GumbuoBoss() {
             <div className="flex flex-col space-y-2">
               <button
                 onClick={() => setSelectedAttack('normal')}
-                className={`px-6 py-4 font-bold text-lg alien-button alien-button-secondary relative z-10 ${
+                className={`px-4 py-3 font-bold text-base alien-button alien-button-secondary relative z-10 ${
                   selectedAttack === 'normal' ? 'alien-button-glow' : ''
                 }`}
               >
-                <p className="text-2xl mb-1">👊</p>
-                <p>Normal Attack</p>
-                <p className="text-sm mt-1">Level {attackLevels.normal}/5</p>
-                <p className="text-xs text-black mt-1">
-                  {(1 + ((attackLevels.normal - 1) * 0.1)).toFixed(1)}x Damage
-                </p>
+                <p className="text-xl mb-1">👊</p>
+                <p className="text-sm">Normal Attack</p>
                 <p className="text-xs text-black font-bold mt-1">
-                  Cost: {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP
+                  {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP
                 </p>
               </button>
               {attackLevels.normal < MAX_ATTACK_LEVEL && (
@@ -634,23 +630,16 @@ export default function GumbuoBoss() {
               <button
                 onClick={() => setSelectedAttack('power')}
                 disabled={powerCooldown > 0}
-                className={`px-6 py-4 font-bold text-lg relative z-10 ${
+                className={`px-4 py-3 font-bold text-base relative z-10 ${
                   powerCooldown > 0
                     ? 'alien-button-disabled'
                     : 'alien-button alien-button-purple'
                 } ${selectedAttack === 'power' && powerCooldown === 0 ? 'alien-button-glow' : ''}`}
               >
-                <p className="text-2xl mb-1">💪</p>
-                <p>Power Attack</p>
-                <p className="text-sm mt-1">Level {attackLevels.power}/5</p>
-                <p className={`text-xs mt-1 ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
-                  {(1.5 + ((attackLevels.power - 1) * 0.15)).toFixed(1)}x Damage
-                </p>
+                <p className="text-xl mb-1">💪</p>
+                <p className="text-sm">Power Attack</p>
                 <p className={`text-xs font-bold mt-1 ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
-                  Cost: {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP
-                </p>
-                <p className={`text-xs mt-1 font-bold ${powerCooldown > 0 ? 'text-red-400' : 'text-green-300'}`}>
-                  {powerCooldown > 0 ? `CD: ${(powerCooldown / 1000).toFixed(1)}s` : 'Ready!'}
+                  {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP
                 </p>
               </button>
               {attackLevels.power < MAX_ATTACK_LEVEL && (
@@ -664,28 +653,21 @@ export default function GumbuoBoss() {
               )}
             </div>
 
-            {/* Ultimate Attack */}
+            {/* Cosmic Attack */}
             <div className="flex flex-col space-y-2">
               <button
                 onClick={() => setSelectedAttack('ultimate')}
                 disabled={ultimateCooldown > 0}
-                className={`px-6 py-4 font-bold text-lg relative z-10 ${
+                className={`px-4 py-3 font-bold text-base relative z-10 ${
                   ultimateCooldown > 0
                     ? 'alien-button-disabled'
                     : 'alien-button alien-button-gold'
                 } ${selectedAttack === 'ultimate' && ultimateCooldown === 0 ? 'alien-button-glow' : ''}`}
               >
-                <p className="text-2xl mb-1">⚡</p>
-                <p>Ultimate Attack</p>
-                <p className="text-sm mt-1">Level {attackLevels.ultimate}/5</p>
-                <p className={`text-xs mt-1 ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
-                  {(3 + ((attackLevels.ultimate - 1) * 0.2)).toFixed(1)}x Damage
-                </p>
+                <p className="text-xl mb-1">⚡</p>
+                <p className="text-sm">Cosmic Attack</p>
                 <p className={`text-xs font-bold mt-1 ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
-                  Cost: {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP
-                </p>
-                <p className={`text-xs mt-1 font-bold ${ultimateCooldown > 0 ? 'text-red-400' : 'text-green-600'}`}>
-                  {ultimateCooldown > 0 ? `CD: ${(ultimateCooldown / 1000).toFixed(1)}s` : 'Ready!'}
+                  {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP
                 </p>
               </button>
               {attackLevels.ultimate < MAX_ATTACK_LEVEL && (
@@ -778,7 +760,7 @@ export default function GumbuoBoss() {
           onClick={handleAttack}
           onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
           disabled={isAttacking || !canAttack}
-          className={`px-24 py-8 text-5xl font-bold tracking-wider ${
+          className={`px-48 py-16 text-8xl font-bold tracking-wider ${
             isAttacking || !canAttack
               ? "alien-button-disabled"
               : "alien-button alien-button-danger alien-button-glow alien-button-organic"
