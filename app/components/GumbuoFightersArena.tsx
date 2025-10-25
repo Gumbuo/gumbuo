@@ -51,6 +51,37 @@ export default function GumbuoFightersArena() {
     setUserBalance(getUserBalance(address));
   }, [address, getUserBalance]);
 
+  // Load arena state from localStorage on mount
+  useEffect(() => {
+    const savedArena = localStorage.getItem('arenaState');
+    if (savedArena) {
+      try {
+        const arenaState = JSON.parse(savedArena);
+        if (arenaState.fighter1) setFighter1(arenaState.fighter1);
+        if (arenaState.fighter2) setFighter2(arenaState.fighter2);
+        if (arenaState.fighter1Owner) setFighter1Owner(arenaState.fighter1Owner);
+        if (arenaState.fighter2Owner) setFighter2Owner(arenaState.fighter2Owner);
+        if (arenaState.fighter1Paid) setFighter1Paid(arenaState.fighter1Paid);
+        if (arenaState.fighter2Paid) setFighter2Paid(arenaState.fighter2Paid);
+      } catch (e) {
+        console.error('Failed to load arena state:', e);
+      }
+    }
+  }, []);
+
+  // Save arena state to localStorage whenever fighters change
+  useEffect(() => {
+    const arenaState = {
+      fighter1,
+      fighter2,
+      fighter1Owner,
+      fighter2Owner,
+      fighter1Paid,
+      fighter2Paid,
+    };
+    localStorage.setItem('arenaState', JSON.stringify(arenaState));
+  }, [fighter1, fighter2, fighter1Owner, fighter2Owner, fighter1Paid, fighter2Paid]);
+
   // Auto-start fight when both slots filled AND both paid
   useEffect(() => {
     if (fighter1 && fighter2 && fighter1Paid && fighter2Paid && !fighting && !fightResult) {

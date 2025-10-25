@@ -127,43 +127,43 @@ export default function StarfieldBackground() {
       ctx!.save();
       ctx!.translate(ufo.x, ufo.y);
 
-      // Light beam (subtle)
-      const beamGradient = ctx!.createLinearGradient(0, 0, 0, 60);
+      // Light beam (subtle) - 4x bigger
+      const beamGradient = ctx!.createLinearGradient(0, 0, 0, 240);
       beamGradient.addColorStop(0, "rgba(0, 255, 153, 0.1)");
       beamGradient.addColorStop(1, "rgba(0, 255, 153, 0)");
       ctx!.fillStyle = beamGradient;
       ctx!.beginPath();
-      ctx!.moveTo(-8, 0);
-      ctx!.lineTo(8, 0);
-      ctx!.lineTo(15, 60);
-      ctx!.lineTo(-15, 60);
+      ctx!.moveTo(-32, 0);
+      ctx!.lineTo(32, 0);
+      ctx!.lineTo(60, 240);
+      ctx!.lineTo(-60, 240);
       ctx!.closePath();
       ctx!.fill();
 
-      // UFO body (saucer)
+      // UFO body (saucer) - 4x bigger
       ctx!.beginPath();
-      ctx!.ellipse(0, ufo.tilt * 5, 25, 10, 0, 0, Math.PI * 2);
-      const saucerGradient = ctx!.createLinearGradient(-25, 0, 25, 0);
+      ctx!.ellipse(0, ufo.tilt * 20, 100, 40, 0, 0, Math.PI * 2);
+      const saucerGradient = ctx!.createLinearGradient(-100, 0, 100, 0);
       saucerGradient.addColorStop(0, "#1a4d4d");
       saucerGradient.addColorStop(0.5, "#00ffaa");
       saucerGradient.addColorStop(1, "#1a4d4d");
       ctx!.fillStyle = saucerGradient;
       ctx!.fill();
 
-      // UFO dome
+      // UFO dome - 4x bigger
       ctx!.beginPath();
-      ctx!.ellipse(0, -3 + ufo.tilt * 3, 12, 8, 0, Math.PI, 0);
+      ctx!.ellipse(0, -12 + ufo.tilt * 12, 48, 32, 0, Math.PI, 0);
       ctx!.fillStyle = "rgba(0, 255, 200, 0.3)";
       ctx!.fill();
 
-      // Glowing lights
-      const lights = [-15, -5, 5, 15];
+      // Glowing lights - 4x bigger
+      const lights = [-60, -20, 20, 60];
       lights.forEach((x, i) => {
         const pulse = Math.sin(Date.now() * 0.01 + i) * 0.5 + 0.5;
         ctx!.beginPath();
-        ctx!.arc(x, 0, 2, 0, Math.PI * 2);
+        ctx!.arc(x, 0, 8, 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(255, 200, 0, ${pulse})`;
-        ctx!.shadowBlur = 10;
+        ctx!.shadowBlur = 40;
         ctx!.shadowColor = "#ffcc00";
         ctx!.fill();
         ctx!.shadowBlur = 0;
