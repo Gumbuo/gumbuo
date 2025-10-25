@@ -1087,22 +1087,7 @@ export default function GumbuoFightersArena() {
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
           <p>💰 <strong>Entry Fee:</strong> Each player pays 500 AP to enter the arena</p>
           <p>⚔️ <strong>Fight:</strong> When both slots filled and paid, fight starts automatically (random winner)</p>
-          <p>🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
-          <p>🏠 <strong>Burn Pool:</strong> 200 AP goes to burn pool for future airdrops/rewards</p>
           <p>🔥 <strong>BURN MECHANIC:</strong> Both aliens are permanently destroyed after the fight!</p>
-          <p>⚠️ <strong>Risk vs Reward:</strong> Lose 500 AP + alien, or win 800 AP (net +300 AP after fees)</p>
-        </div>
-      </div>
-
-      {/* Betting Info Section */}
-      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
-        <p className="font-bold mb-3 font-alien" style={{fontSize: '2.5rem'}}>
-          💰 ALIEN POINTS BETTING 💰
-        </p>
-        <div className="opacity-90 space-y-2 font-electro">
-          <p className="text-base">💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
-          <p className="text-base">🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
-          <p className="text-base">🔥 <strong>Burn Pool:</strong> 200 AP per fight (1000 AP collected - 800 AP winner prize)</p>
         </div>
       </div>
 
