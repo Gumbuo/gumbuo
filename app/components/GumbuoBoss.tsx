@@ -778,7 +778,7 @@ export default function GumbuoBoss() {
           onClick={handleAttack}
           onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
           disabled={isAttacking || !canAttack}
-          className={`px-16 py-6 text-3xl font-bold tracking-wider ${
+          className={`px-24 py-8 text-5xl font-bold tracking-wider ${
             isAttacking || !canAttack
               ? "alien-button-disabled"
               : "alien-button alien-button-danger alien-button-glow alien-button-organic"
