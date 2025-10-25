@@ -598,7 +598,32 @@ export default function GumbuoBoss() {
       {/* Attack Type Selector */}
       {bossState.isAlive && isConnected && (
         <div className="w-full bg-black/60 border-2 border-orange-500/50 rounded-2xl p-6">
-          <h3 className="text-2xl font-alien text-orange-400 text-center mb-4 holographic-text">⚔️ SELECT ATTACK TYPE ⚔️</h3>
+          <h3 className="text-2xl font-alien text-orange-400 text-center mb-6 holographic-text">⚔️ SELECT ATTACK TYPE ⚔️</h3>
+
+          {/* Attack Button - Centered */}
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={handleAttack}
+              onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
+              disabled={isAttacking || !canAttack}
+              className={`px-48 py-16 text-8xl font-bold tracking-wider ${
+                isAttacking || !canAttack
+                  ? "alien-button-disabled"
+                  : "alien-button alien-button-danger alien-button-glow alien-button-organic"
+              }`}
+            >
+              <span className="relative z-10">
+                {!isConnected
+                  ? "CONNECT WALLET"
+                  : isAttacking
+                  ? "⚔️ ATTACKING... ⚔️"
+                  : !canAttack
+                  ? `COOLDOWN: ${(cooldownRemaining / 1000).toFixed(1)}s`
+                  : "⚔️ ATTACK BOSS ⚔️"}
+              </span>
+            </button>
+          </div>
+
           <div className="grid grid-cols-3 gap-4">
             {/* Normal Attack */}
             <div className="flex flex-col space-y-2">
@@ -750,30 +775,6 @@ export default function GumbuoBoss() {
           </div>
         </div>
       </div>
-
-      {/* Attack Button */}
-      {bossState.isAlive && (
-        <button
-          onClick={handleAttack}
-          onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
-          disabled={isAttacking || !canAttack}
-          className={`px-48 py-16 text-8xl font-bold tracking-wider ${
-            isAttacking || !canAttack
-              ? "alien-button-disabled"
-              : "alien-button alien-button-danger alien-button-glow alien-button-organic"
-          }`}
-        >
-          <span className="relative z-10">
-            {!isConnected
-              ? "CONNECT WALLET"
-              : isAttacking
-              ? "⚔️ ATTACKING... ⚔️"
-              : !canAttack
-              ? `COOLDOWN: ${(cooldownRemaining / 1000).toFixed(1)}s`
-              : "⚔️ ATTACK BOSS ⚔️"}
-          </span>
-        </button>
-      )}
 
       {/* Claim Reward Button */}
       {!bossState.isAlive && !hasClaimedReward && userTotalDamage > 0 && (
