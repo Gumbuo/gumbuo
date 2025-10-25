@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
+import { useCosmicSound } from "../hooks/useCosmicSound";
 
 interface OwnedAlien {
   id: string;
@@ -24,6 +25,7 @@ const HOUSE_FEE = 200; // Total collected (1000 AP) - Winner prize (800 AP) = 20
 export default function GumbuoFightersArena() {
   const { address } = useAccount();
   const { getUserBalance, spendPoints, addPoints, pool } = useAlienPoints();
+  const { playSound } = useCosmicSound();
   const [ownedAliens, setOwnedAliens] = useState<OwnedAlien[]>([]);
   const [fighter1, setFighter1] = useState<OwnedAlien | null>(null);
   const [fighter2, setFighter2] = useState<OwnedAlien | null>(null);
@@ -231,41 +233,38 @@ export default function GumbuoFightersArena() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6 bg-gradient-to-br from-black via-red-900/30 to-black bg-opacity-95 rounded-xl max-w-6xl w-full relative overflow-hidden shadow-2xl shadow-red-500/50">
-      {/* Animated corner accents */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-red-500 animate-pulse"></div>
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-red-500 animate-pulse"></div>
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-red-500 animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-red-500 animate-pulse"></div>
+    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl w-full relative overflow-visible rounded-3xl">
+      {/* Corner glow accents */}
+      <div className="corner-glow corner-glow-tl"></div>
+      <div className="corner-glow corner-glow-tr"></div>
+      <div className="corner-glow corner-glow-bl"></div>
+      <div className="corner-glow corner-glow-br"></div>
 
-      {/* Lightning effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-400/5 to-transparent animate-scan pointer-events-none"></div>
-
-      <h2 className="font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{fontSize: '4rem'}}>
-        <span className="animate-glow">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text tech-corners" style={{fontSize: '4rem'}}>
+        <span className="animate-glow text-red-400">⚔️ Gumbuo Fighters - Alien Arena ⚔️</span>
       </h2>
 
       {/* Betting Info Section */}
-      <div className="w-full text-red-400 text-xs text-center max-w-2xl bg-red-400 bg-opacity-10 p-4 rounded-lg">
-        <p className="font-bold mb-2" style={{fontSize: '2rem'}}>
+      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10 shadow-2xl shadow-red-500/50">
+        <p className="font-bold mb-3 font-alien holographic-text" style={{fontSize: '2.5rem'}}>
           <span className="animate-glow">💰 ALIEN POINTS BETTING 💰</span>
         </p>
-        <div className="opacity-75 space-y-1">
-          <p>💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
-          <p>🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
-          <p>🔥 <strong>Burn Pool:</strong> 200 AP per fight (1000 AP collected - 800 AP winner prize)</p>
+        <div className="opacity-90 space-y-2 font-electro">
+          <p className="text-base">💵 <strong>Entry Fee:</strong> 500 AP per player (1000 AP total collected)</p>
+          <p className="text-base">🏆 <strong>Winner Gets:</strong> 800 AP (net +300 AP profit after entry fee)</p>
+          <p className="text-base">🔥 <strong>Burn Pool:</strong> 200 AP per fight (1000 AP collected - 800 AP winner prize)</p>
         </div>
       </div>
 
       {/* Burn Warning */}
-      <div className="w-full text-red-400 text-sm text-center bg-red-400 bg-opacity-10 p-3 rounded-lg border border-red-400/50">
-        <p className="font-bold">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
+      <div className="w-full text-red-400 text-lg text-center glass-panel p-4 rounded-xl border-2 border-red-400/50 z-10 animate-pulse shadow-lg shadow-red-500/50">
+        <p className="font-bold font-alien holographic-text text-2xl">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
       </div>
 
       {/* Burn Pool Display */}
-      <div className="w-full bg-purple-900/30 border-2 border-purple-500 rounded-lg p-4 text-center">
-        <p className="text-purple-400 text-xl font-bold mb-2">🔥 Burn Pool: {pool.marketplacePool.toLocaleString()} AP 🔥</p>
-        <p className="text-purple-300 text-sm">
+      <div className="w-full glass-panel border-2 border-purple-500/50 rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
+        <p className="text-purple-400 text-2xl font-bold mb-3 font-alien holographic-text">🔥 Burn Pool: {pool.marketplacePool.toLocaleString()} AP 🔥</p>
+        <p className="text-purple-300 text-base font-electro">
           Arena fees accumulate here for future airdrops & leaderboard rewards!
         </p>
       </div>
@@ -276,10 +275,10 @@ export default function GumbuoFightersArena() {
         <div
           onDragOver={handleDragOver}
           onDrop={handleDropFighter1}
-          className={`relative h-64 border-4 rounded-xl flex items-center justify-center transition-all duration-300 ${
+          className={`relative h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
             fighter1
-              ? 'border-blue-500 bg-blue-900/20 shadow-lg shadow-blue-500/50'
-              : 'border-dashed border-gray-600 bg-gray-900/20'
+              ? 'glass-panel border-4 border-blue-500/70 shadow-2xl shadow-blue-500/70 hover:shadow-blue-500/90'
+              : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
           } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
         >
           {fighter1 ? (
@@ -334,10 +333,10 @@ export default function GumbuoFightersArena() {
         <div
           onDragOver={handleDragOver}
           onDrop={handleDropFighter2}
-          className={`relative h-64 border-4 rounded-xl flex items-center justify-center transition-all duration-300 ${
+          className={`relative h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
             fighter2
-              ? 'border-red-500 bg-red-900/20 shadow-lg shadow-red-500/50'
-              : 'border-dashed border-gray-600 bg-gray-900/20'
+              ? 'glass-panel border-4 border-red-500/70 shadow-2xl shadow-red-500/70 hover:shadow-red-500/90'
+              : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
           } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
         >
           {fighter2 ? (
@@ -379,7 +378,7 @@ export default function GumbuoFightersArena() {
 
       {/* Fight Result */}
       {fightResult && (
-        <div className="w-full bg-gradient-to-r from-yellow-400/20 via-yellow-400/30 to-yellow-400/20 border-2 border-yellow-400 rounded-lg p-6 text-center animate-pulse">
+        <div className="w-full glass-panel border-4 border-yellow-400/70 rounded-2xl p-8 text-center animate-pulse shadow-2xl shadow-yellow-400/70 z-10">
           <p className="text-yellow-400 text-3xl font-bold mb-4">🏆 FIGHT RESULT! 🏆</p>
           <div className="flex justify-center items-center space-x-8">
             <div>
@@ -418,9 +417,9 @@ export default function GumbuoFightersArena() {
       )}
 
       {/* User's Alien Collection - Draggable */}
-      <div className="w-full">
-        <h3 className="font-bold holographic-text tracking-wider text-center mb-2" style={{fontSize: '4rem'}}>
-          <span className="animate-glow">👽 Your Alien Collection 👽</span>
+      <div className="w-full z-10">
+        <h3 className="font-alien font-bold holographic-text tracking-wider text-center mb-4 alien-brackets" style={{fontSize: '3.5rem'}}>
+          <span className="animate-glow text-red-400">👽 Your Alien Collection 👽</span>
         </h3>
         <p className="text-red-400 text-sm text-center mb-4 opacity-75">
           Drag and drop your aliens into the arena
@@ -457,17 +456,17 @@ export default function GumbuoFightersArena() {
       </div>
 
       {/* GMB Arena Coming Soon */}
-      <div className="w-full bg-yellow-900/30 border-2 border-yellow-500 rounded-lg p-4 text-center">
-        <p className="text-yellow-400 text-xl font-bold mb-2">🚧 GMB ARENA COMING SOON! 🚧</p>
-        <p className="text-yellow-300 text-sm">
+      <div className="w-full glass-panel border-2 border-yellow-500/50 rounded-xl p-6 text-center shadow-lg shadow-yellow-500/50 z-10">
+        <p className="text-yellow-400 text-2xl font-bold mb-3 font-alien holographic-text">🚧 GMB ARENA COMING SOON! 🚧</p>
+        <p className="text-yellow-300 text-base font-electro">
           Same mechanics with GMB tokens (500 GMB entry, 800 GMB prize).
           Requires smart contract - in development!
         </p>
       </div>
 
       {/* Info */}
-      <div className="w-full text-red-400 text-xs text-center max-w-2xl bg-red-400 bg-opacity-10 p-4 rounded-lg">
-        <p className="font-bold mb-2">ℹ️ Arena Rules</p>
+      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10">
+        <p className="font-bold mb-3 text-xl font-iceland circuit-text">ℹ️ Arena Rules</p>
         <div className="opacity-75 space-y-2 text-center">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
           <p>💰 <strong>Entry Fee:</strong> Each player pays 500 AP to enter the arena</p>
