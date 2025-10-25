@@ -310,22 +310,56 @@ export default function GumbuoFightersArena() {
         </p>
       </div>
 
-      {/* Arena - Two Fighter Slots - SIMPLE GRID */}
-      <div className="w-full grid grid-cols-2 gap-8 mb-6 relative">
-        {/* Fighter 1 Slot */}
-        <div className="relative flex flex-col">
-          <h3 className="text-blue-400 font-bold text-3xl mb-4 text-center font-alien holographic-text">
-            🛡️ PLAYER 1 🛡️
-          </h3>
-          <div
-            onDragOver={handleDragOver}
-            onDrop={handleDropFighter1}
-            className={`relative h-96 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-              fighter1
-                ? 'glass-panel border-4 border-blue-500/70 shadow-2xl shadow-blue-500/70 hover:shadow-blue-500/90'
-                : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
-            } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
-          >
+      {/* Organic Alien Hive Arena */}
+      <div className="w-full relative mb-6">
+        {/* Floating Spore Particles */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 5 }}>
+          <div className="absolute top-[10%] left-[20%] w-2 h-2 bg-green-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
+          <div className="absolute top-[30%] left-[40%] w-3 h-3 bg-purple-400/50 rounded-full blur-sm animate-pulse" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
+          <div className="absolute top-[50%] left-[60%] w-2 h-2 bg-cyan-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '2s', animationDuration: '3.5s' }}></div>
+          <div className="absolute top-[70%] left-[80%] w-3 h-3 bg-green-400/50 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0.5s', animationDuration: '4.5s' }}></div>
+          <div className="absolute top-[15%] right-[20%] w-2 h-2 bg-purple-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '1.5s', animationDuration: '3s' }}></div>
+          <div className="absolute top-[35%] right-[40%] w-3 h-3 bg-cyan-400/50 rounded-full blur-sm animate-pulse" style={{ animationDelay: '2.5s', animationDuration: '4s' }}></div>
+          <div className="absolute top-[55%] right-[60%] w-2 h-2 bg-green-400/60 rounded-full blur-sm animate-pulse" style={{ animationDelay: '0.8s', animationDuration: '3.5s' }}></div>
+        </div>
+
+        {/* Bio-organic Background Membrane */}
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-green-900/10 to-blue-900/10 rounded-3xl blur-3xl" style={{ zIndex: 1 }}></div>
+
+        {/* Arena Grid */}
+        <div className="w-full grid grid-cols-2 gap-8 relative" style={{ zIndex: 10 }}>
+          {/* Fighter 1 Slot */}
+          <div className="relative flex flex-col">
+            <h3 className="text-green-400 font-bold text-3xl mb-4 text-center font-alien holographic-text drop-shadow-glow">
+              🧬 PLAYER 1 🧬
+            </h3>
+
+            {/* Living Tendrils/Vines for Player 1 */}
+            {fighter1 && (
+              <>
+                <svg className="absolute -left-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
+                  <path d="M 4 0 Q 8 30, 4 60 Q 0 90, 4 120 Q 8 150, 4 180 Q 0 210, 4 240"
+                    stroke="#00ff99" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
+                </svg>
+                <svg className="absolute -right-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
+                  <path d="M 4 0 Q 0 30, 4 60 Q 8 90, 4 120 Q 0 150, 4 180 Q 8 210, 4 240"
+                    stroke="#00ff99" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
+                </svg>
+              </>
+            )}
+
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDropFighter1}
+              className={`relative h-96 rounded-3xl flex items-center justify-center transition-all duration-500 overflow-hidden ${
+                fighter1
+                  ? 'bg-gradient-to-br from-green-900/40 via-cyan-900/30 to-green-900/40 border-4 border-green-500/50 shadow-2xl shadow-green-500/50'
+                  : 'border-4 border-dashed border-green-600/30 bg-gradient-to-br from-gray-900/40 to-green-900/20'
+              } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
+              style={{
+                backgroundImage: fighter1 ? 'radial-gradient(circle at 50% 50%, rgba(0, 255, 153, 0.1) 0%, transparent 70%)' : 'none'
+              }}
+            >
             {fighter1 ? (
               <div className="text-center">
                 <div className="flex justify-center items-center h-32 mb-4">
@@ -359,9 +393,20 @@ export default function GumbuoFightersArena() {
                 )}
               </div>
             ) : (
-              <div className="text-center text-gray-500">
-                <p className="text-6xl mb-4">👽</p>
-                <p className="text-xl">Drop Player 1 Here</p>
+              <div className="text-center relative">
+                {/* Alien Egg/Cocoon Style */}
+                <div className="relative w-40 h-56 mx-auto mb-4">
+                  <div className="absolute inset-0 bg-gradient-to-b from-green-800/30 to-green-900/50 rounded-full blur-sm animate-pulse"></div>
+                  <div className="absolute inset-2 bg-gradient-to-b from-green-700/20 to-green-900/40 rounded-full border-2 border-green-600/30 flex items-center justify-center">
+                    <p className="text-7xl opacity-50">🥚</p>
+                  </div>
+                  {/* Organic membrane texture */}
+                  <div className="absolute inset-0 rounded-full" style={{
+                    background: 'radial-gradient(circle at 30% 30%, rgba(0, 255, 153, 0.1) 0%, transparent 50%)',
+                  }}></div>
+                </div>
+                <p className="text-xl text-green-400/60 font-alien">Drop Player 1 Here</p>
+                <p className="text-sm text-green-400/40 mt-2">Awaiting Life Form...</p>
               </div>
             )}
             {fighter1 && !fighter2 && !fighting && (
@@ -372,26 +417,47 @@ export default function GumbuoFightersArena() {
           </div>
         </div>
 
-        {/* VS in center */}
+        {/* VS in center - Bio-organic Style */}
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
-          <div className={`text-8xl font-bold font-alien ${fighting ? 'text-yellow-400 animate-ping holographic-text' : 'text-gray-600'}`}>
-            {fighting ? '⚡ VS ⚡' : 'VS'}
+          {fighting && (
+            <div className="absolute inset-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl animate-pulse"></div>
+          )}
+          <div className={`text-8xl font-bold font-alien ${fighting ? 'text-purple-400 animate-ping holographic-text' : 'text-green-600/40'}`}>
+            {fighting ? '💥 VS 💥' : 'VS'}
           </div>
         </div>
 
         {/* Fighter 2 Slot */}
         <div className="relative flex flex-col">
-          <h3 className="text-red-400 font-bold text-3xl mb-4 text-center font-alien holographic-text">
-            ⚔️ PLAYER 2 ⚔️
+          <h3 className="text-purple-400 font-bold text-3xl mb-4 text-center font-alien holographic-text drop-shadow-glow">
+            🦠 PLAYER 2 🦠
           </h3>
+
+          {/* Living Tendrils/Vines for Player 2 */}
+          {fighter2 && (
+            <>
+              <svg className="absolute -left-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
+                <path d="M 4 0 Q 8 30, 4 60 Q 0 90, 4 120 Q 8 150, 4 180 Q 0 210, 4 240"
+                  stroke="#a855f7" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
+              </svg>
+              <svg className="absolute -right-4 top-20 w-8 h-64 pointer-events-none" style={{ zIndex: 15 }}>
+                <path d="M 4 0 Q 0 30, 4 60 Q 8 90, 4 120 Q 0 150, 4 180 Q 8 210, 4 240"
+                  stroke="#a855f7" strokeWidth="2" fill="none" opacity="0.4" className="animate-pulse" strokeDasharray="5,5"/>
+              </svg>
+            </>
+          )}
+
           <div
             onDragOver={handleDragOver}
             onDrop={handleDropFighter2}
-            className={`relative h-96 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+            className={`relative h-96 rounded-3xl flex items-center justify-center transition-all duration-500 overflow-hidden ${
               fighter2
-                ? 'glass-panel border-4 border-red-500/70 shadow-2xl shadow-red-500/70 hover:shadow-red-500/90'
-                : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
+                ? 'bg-gradient-to-br from-purple-900/40 via-blue-900/30 to-purple-900/40 border-4 border-purple-500/50 shadow-2xl shadow-purple-500/50'
+                : 'border-4 border-dashed border-purple-600/30 bg-gradient-to-br from-gray-900/40 to-purple-900/20'
             } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
+            style={{
+              backgroundImage: fighter2 ? 'radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 70%)' : 'none'
+            }}
           >
             {fighter2 ? (
               <div className="text-center">
@@ -426,12 +492,24 @@ export default function GumbuoFightersArena() {
                 )}
               </div>
             ) : (
-              <div className="text-center text-gray-500">
-                <p className="text-6xl mb-4">👽</p>
-                <p className="text-xl">Drop Player 2 Here</p>
+              <div className="text-center relative">
+                {/* Alien Egg/Cocoon Style - Purple Theme */}
+                <div className="relative w-40 h-56 mx-auto mb-4">
+                  <div className="absolute inset-0 bg-gradient-to-b from-purple-800/30 to-purple-900/50 rounded-full blur-sm animate-pulse"></div>
+                  <div className="absolute inset-2 bg-gradient-to-b from-purple-700/20 to-purple-900/40 rounded-full border-2 border-purple-600/30 flex items-center justify-center">
+                    <p className="text-7xl opacity-50">🥚</p>
+                  </div>
+                  {/* Organic membrane texture */}
+                  <div className="absolute inset-0 rounded-full" style={{
+                    background: 'radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 50%)',
+                  }}></div>
+                </div>
+                <p className="text-xl text-purple-400/60 font-alien">Drop Player 2 Here</p>
+                <p className="text-sm text-purple-400/40 mt-2">Awaiting Life Form...</p>
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
 
