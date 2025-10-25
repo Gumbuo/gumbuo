@@ -13,9 +13,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Gumbuo - Alien Points Economy",
     description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
+    url: "https://www.gumbuo.io",
+    siteName: "Gumbuo",
     images: [
       {
-        url: "/logo.png",
+        url: "https://www.gumbuo.io/logo.png",
         width: 1200,
         height: 630,
         alt: "Gumbuo Logo",
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Gumbuo - Alien Points Economy",
     description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
-    images: ["/logo.png"],
+    images: ["https://www.gumbuo.io/logo.png"],
   },
 };
 
