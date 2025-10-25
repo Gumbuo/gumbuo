@@ -209,7 +209,7 @@ export default function AlienWheel() {
 
       {/* User Balance */}
       {isConnected && address && (
-        <div className="w-full glass-panel border-2 border-blue-400/50 rounded-xl p-4 text-center shadow-lg shadow-blue-400/30 z-10">
+        <div className="w-full glass-panel rounded-xl p-4 text-center shadow-lg shadow-blue-400/30 z-10">
           <p className="text-blue-400 text-xl font-electro">
             👽 Your Alien Points: <span className="font-bold text-3xl font-alien holographic-text">{userPoints.toLocaleString()}</span>
           </p>
@@ -260,7 +260,7 @@ export default function AlienWheel() {
       </div>
 
       {wonPoints !== null && hasSpunToday && (
-        <div className="text-center p-6 glass-panel border-2 border-blue-400/50 rounded-xl shadow-lg shadow-blue-400/30 relative overflow-hidden z-10">
+        <div className="text-center p-6 glass-panel rounded-xl shadow-lg shadow-blue-400/30 relative overflow-hidden z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-shimmer pointer-events-none"></div>
           <p className="text-3xl text-blue-400 font-bold relative z-10 font-alien holographic-text">
             Today's Win: {wonPoints} Alien Points! 🎉
@@ -371,7 +371,7 @@ export default function AlienWheel() {
         <p className="text-yellow-400 text-lg font-bold animate-pulse">⚠️ Connect your wallet to spin!</p>
       )}
 
-      <div className="w-full glass-panel border-2 border-blue-400/50 rounded-xl p-6 shadow-lg shadow-blue-400/20 z-10">
+      <div className="w-full glass-panel rounded-xl p-6 shadow-lg shadow-blue-400/20 z-10">
         <p className="font-bold text-xl mb-4 text-blue-400 text-center font-iceland circuit-text">🎰 Prize Probabilities 🎰</p>
         <div className="grid grid-cols-2 gap-3 text-base">
           <span className="text-blue-300">50 pts: Common</span>

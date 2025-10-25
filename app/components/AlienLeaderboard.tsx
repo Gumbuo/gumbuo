@@ -171,7 +171,7 @@ export default function AlienLeaderboard() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm rounded-3xl max-w-4xl w-full min-h-96 border border-purple-400/30">
+      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm rounded-3xl max-w-4xl w-full min-h-96">
         <div className="text-purple-400 text-xl">Loading Leaderboard...</div>
         <div className="text-purple-400 text-base">Fetching galactic data 🛸</div>
       </div>
@@ -185,7 +185,7 @@ export default function AlienLeaderboard() {
       </h2>
 
       {/* Progress Bar */}
-      <div className="w-full bg-black/60 rounded-xl p-4 border border-purple-400/30">
+      <div className="w-full bg-black/60 rounded-xl p-4">
         <div className="flex justify-between items-center mb-2">
           <p className="text-purple-400 text-lg">
             📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
@@ -194,7 +194,7 @@ export default function AlienLeaderboard() {
             {spotsRemaining} spots left!
           </p>
         </div>
-        <div className="w-full bg-gray-900 rounded-full h-6 border border-gray-700">
+        <div className="w-full bg-gray-900 rounded-full h-6">
           <div
             className="bg-gradient-to-r from-purple-500 to-pink-400 h-full rounded-full transition-all duration-500"
             style={{width: `${getProgressPercentage()}%`}}
@@ -204,11 +204,7 @@ export default function AlienLeaderboard() {
 
       {/* User Status */}
       {isConnected && address && (
-        <div className={`w-full bg-black/60 rounded-xl p-4 border ${
-          isRegistered
-            ? 'border-purple-400/50'
-            : 'border-yellow-500/50'
-        }`}>
+        <div className={`w-full bg-black/60 rounded-xl p-4`}>
           {isRegistered ? (
             <div className="text-center">
               <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
@@ -245,8 +241,8 @@ export default function AlienLeaderboard() {
       )}
 
       {/* Leaderboard Table */}
-      <div className="w-full bg-black/60 border border-purple-400/50 rounded-xl overflow-hidden">
-        <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-purple-400 border-b border-purple-400">
+      <div className="w-full bg-black/60 rounded-xl overflow-hidden">
+        <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-purple-400">
           <div className="text-center">Rank</div>
           <div className="text-center">Wallet</div>
           <div className="text-center">Alien Points</div>
@@ -293,7 +289,7 @@ export default function AlienLeaderboard() {
 
       {/* Goal Reached Banner */}
       {leaderboard.length >= MAX_FIRST_TIMERS && (
-        <div className="w-full bg-black/60 border-2 border-yellow-400/50 rounded-xl p-6 text-center animate-pulse">
+        <div className="w-full bg-black/60 rounded-xl p-6 text-center animate-pulse">
           <p className="text-yellow-400 text-3xl font-bold">🎉 GOAL REACHED! 🎉</p>
           <p className="text-yellow-400 text-lg mt-2">All 50 spots filled! Airdrops will be distributed soon! 👽</p>
         </div>

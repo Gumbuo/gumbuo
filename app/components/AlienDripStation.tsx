@@ -235,7 +235,7 @@ export default function AlienDripStation() {
       {isConnected && address ? (
         <div className="w-full space-y-4">
           {/* GMB Balance & Tier */}
-          <div className="glass-panel rounded-xl p-4 border-2 border-purple-500/50">
+          <div className="glass-panel rounded-xl p-4">
             <p className="text-white text-center mb-2">
               Your GMB Balance: <span className="font-bold text-2xl">{gmbAmount.toFixed(2)}</span>
             </p>
@@ -258,7 +258,7 @@ export default function AlienDripStation() {
           </div>
 
           {/* User Points Balance */}
-          <div className="glass-panel rounded-xl p-4 border-2 border-green-400/50 text-center">
+          <div className="glass-panel rounded-xl p-4 text-center">
             <p className="text-green-400 text-lg">
               👽 Your Alien Points: <span className="font-bold text-3xl">{userPoints.toLocaleString()}</span>
             </p>
@@ -266,7 +266,7 @@ export default function AlienDripStation() {
 
           {/* Claim Status */}
           {hasClaimedToday && nextClaimTime && (
-            <div className="glass-panel rounded-xl p-4 border-2 border-yellow-500/50 text-center">
+            <div className="glass-panel rounded-xl p-4 text-center">
               <p className="text-yellow-400 font-bold">✅ Already claimed today!</p>
               <p className="text-yellow-400 text-sm mt-1">Next claim available in:</p>
               <p className="text-xl text-yellow-300 font-bold mt-1">⏰ {timeUntilReset}</p>
@@ -297,14 +297,14 @@ export default function AlienDripStation() {
       )}
 
       {/* Tier Chart */}
-      <div className="w-full glass-panel border-2 border-green-400/50 rounded-xl p-4">
+      <div className="w-full glass-panel rounded-xl p-4">
         <p className="text-green-400 font-bold text-center mb-3 font-iceland text-2xl circuit-text">💎 Drip Tiers 💎</p>
         <div className="space-y-2 text-sm">
           {DRIP_TIERS.map((tier, idx) => (
             <div
               key={idx}
               className={`flex justify-between items-center p-2 rounded ${
-                currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20 border border-green-400' : ''
+                currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20' : ''
               }`}
             >
               <span style={{color: tier.color}} className="font-bold">{tier.name}</span>

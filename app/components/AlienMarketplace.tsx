@@ -127,7 +127,7 @@ export default function AlienMarketplace() {
   return (
     <div className="flex flex-col items-center space-y-6 w-full">
       {/* Info Section */}
-      <div className="w-full text-orange-400 text-sm text-center max-w-2xl bg-black/60 p-4 rounded-xl border border-orange-400/30">
+      <div className="w-full text-orange-400 text-sm text-center max-w-2xl bg-black/60 p-4 rounded-xl">
         <p className="font-bold mb-2 text-lg">ℹ️ Marketplace Info</p>
         <p className="opacity-75">
           Use your Alien Points to purchase exclusive Gumbuo Fighters alien pics!
@@ -150,7 +150,7 @@ export default function AlienMarketplace() {
               <h3 className="text-xl font-bold text-orange-400 mb-3 font-alien">{pic.name}</h3>
 
               {/* Image */}
-              <div className="relative mb-4 flex justify-center items-center bg-black/60 p-6 rounded-xl border border-orange-400/30">
+              <div className="relative mb-4 flex justify-center items-center bg-black/60 p-6 rounded-xl">
                 <img
                   src={pic.image}
                   alt={pic.name}

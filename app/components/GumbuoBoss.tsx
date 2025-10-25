@@ -542,7 +542,7 @@ export default function GumbuoBoss() {
 
           {/* Respawn Timer */}
           {!bossState.isAlive && (
-            <div className="bg-black/60 border border-yellow-500/50 rounded-xl p-4 text-center">
+            <div className="bg-black/60 rounded-xl p-4 text-center">
               <p className="text-yellow-400 text-lg font-bold">⏰ Respawns in:</p>
               <p className="text-2xl text-yellow-300 font-bold mt-2">{timeUntilRespawn}</p>
             </div>
@@ -550,7 +550,7 @@ export default function GumbuoBoss() {
 
           {/* Last Attack Result */}
           {lastDamage && bossState.isAlive && (
-            <div className={`bg-black/60 border ${lastDamage.isCritical ? 'border-yellow-400/50' : 'border-orange-400/50'} rounded-xl p-4 text-center`}>
+            <div className={`bg-black/60 rounded-xl p-4 text-center`}>
               <p className={`text-2xl font-bold ${lastDamage.isCritical ? 'text-yellow-400' : 'text-orange-400'}`}>
                 {lastDamage.isCritical ? '⚡ CRITICAL HIT! ⚡' : '💥 HIT! 💥'}
               </p>
@@ -568,12 +568,12 @@ export default function GumbuoBoss() {
           <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-black/60 border border-purple-400/30 rounded-xl p-4 text-center">
+            <div className="bg-black/60 rounded-xl p-4 text-center">
               <p className="text-purple-400 text-base">Total Damage Dealt</p>
               <p className="text-3xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
             </div>
 
-            <div className="bg-black/60 border border-purple-400/30 rounded-xl p-4 text-center">
+            <div className="bg-black/60 rounded-xl p-4 text-center">
               <p className="text-purple-400 text-base">Damage Contribution</p>
               <p className="text-3xl font-bold text-purple-400 mt-2">
                 {bossState.isAlive
@@ -585,7 +585,7 @@ export default function GumbuoBoss() {
           </div>
 
           {!bossState.isAlive && (
-            <div className="mt-4 bg-black/60 border border-green-400/30 rounded-xl p-4 text-center">
+            <div className="mt-4 bg-black/60 rounded-xl p-4 text-center">
               <p className="text-green-400 text-base">Potential Reward</p>
               <p className="text-3xl font-bold text-green-400 mt-2">
                 {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} GMB
@@ -713,9 +713,9 @@ export default function GumbuoBoss() {
             ) : (
               leaderboard.map((entry, index) => (
                 <div key={index} className={`flex justify-between items-center p-3 rounded-xl ${
-                  index === 0 ? 'bg-yellow-500/20 border border-yellow-400/50' :
-                  index === 1 ? 'bg-gray-400/20 border border-gray-400/50' :
-                  index === 2 ? 'bg-orange-500/20 border border-orange-400/50' :
+                  index === 0 ? 'bg-yellow-500/20' :
+                  index === 1 ? 'bg-gray-400/20' :
+                  index === 2 ? 'bg-orange-500/20' :
                   'bg-black/40'
                 }`}>
                   <div className="flex items-center space-x-3">
@@ -742,10 +742,10 @@ export default function GumbuoBoss() {
               <p className="text-gray-400 text-center text-sm">Waiting for attacks...</p>
             ) : (
               recentAttackers.map((attacker, index) => (
-                <div key={index} className={`p-3 rounded-xl border ${
-                  attacker.attackType === 'ultimate' ? 'bg-yellow-500/20 border-yellow-400/50' :
-                  attacker.attackType === 'power' ? 'bg-purple-500/20 border-purple-400/50' :
-                  'bg-blue-500/20 border-blue-400/50'
+                <div key={index} className={`p-3 rounded-xl ${
+                  attacker.attackType === 'ultimate' ? 'bg-yellow-500/20' :
+                  attacker.attackType === 'power' ? 'bg-purple-500/20' :
+                  'bg-blue-500/20'
                 } animate-pulse`} style={{animationDuration: '2s'}}>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
@@ -809,7 +809,7 @@ export default function GumbuoBoss() {
 
       {/* Already Claimed */}
       {!bossState.isAlive && hasClaimedReward && (
-        <div className="bg-black/60 border border-green-500/30 rounded-xl p-6 text-center">
+        <div className="bg-black/60 rounded-xl p-6 text-center">
           <p className="text-green-400 text-xl font-bold">✅ Reward Already Claimed! ✅</p>
           <p className="text-green-400 text-base mt-2">Wait for boss respawn to earn more rewards!</p>
         </div>
@@ -845,7 +845,7 @@ export default function GumbuoBoss() {
       </div>
 
       {/* Battle Info */}
-      <div className="w-full text-red-400 text-sm text-center max-w-3xl bg-black/60 p-6 rounded-xl border border-red-400/30">
+      <div className="w-full text-red-400 text-sm text-center max-w-3xl bg-black/60 p-6 rounded-xl">
         <p className="font-bold mb-3 text-lg">ℹ️ Battle Info ℹ️</p>
         <p className="opacity-75 font-electro text-base leading-relaxed">
           Attack the Mega Gumbuo boss and deal massive damage! Each attack has a {ATTACK_COOLDOWN / 1000} second cooldown.

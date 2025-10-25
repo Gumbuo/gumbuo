@@ -442,7 +442,7 @@ export default function GumbuoFightersArena() {
             ⬇️ Drag and drop your aliens into the arena below to fight ⬇️
           </span>
         </p>
-        <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4 bg-black/40 rounded-xl border border-red-400/30">
+        <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4 bg-black/40 rounded-xl">
           {ownedAliens.length === 0 ? (
             <div className="w-full text-center text-gray-500 py-8">
               <p className="text-xl">No aliens yet!</p>
@@ -458,7 +458,7 @@ export default function GumbuoFightersArena() {
                   fighting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
                 }`}
               >
-                <div className="flex justify-center items-center mb-1 bg-black/60 p-4 rounded-xl border border-orange-400/30">
+                <div className="flex justify-center items-center mb-1 bg-black/60 p-4 rounded-xl">
                   <img
                     src={alien.image}
                     alt={alien.name}
@@ -1072,7 +1072,7 @@ export default function GumbuoFightersArena() {
       )}
 
       {/* GMB Arena Coming Soon */}
-      <div className="w-full glass-panel border-2 border-yellow-500/50 rounded-xl p-6 text-center shadow-lg shadow-yellow-500/50 z-10">
+      <div className="w-full glass-panel rounded-xl p-6 text-center shadow-lg shadow-yellow-500/50 z-10">
         <p className="text-yellow-400 text-2xl font-bold mb-3 font-alien holographic-text">🚧 GMB ARENA COMING SOON! 🚧</p>
         <p className="text-yellow-300 text-base font-electro">
           Same mechanics with GMB tokens (500 GMB entry, 800 GMB prize).
@@ -1081,7 +1081,7 @@ export default function GumbuoFightersArena() {
       </div>
 
       {/* Info */}
-      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl border-2 border-red-400/50 z-10">
+      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl z-10">
         <p className="font-bold mb-3 text-xl font-iceland">ℹ️ Arena Rules</p>
         <div className="opacity-75 space-y-2 text-center">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
@@ -1092,12 +1092,12 @@ export default function GumbuoFightersArena() {
       </div>
 
       {/* Burn Warning */}
-      <div className="w-full text-red-400 text-lg text-center glass-panel p-4 rounded-xl border-2 border-red-400/50 z-10 animate-pulse shadow-lg shadow-red-500/50">
+      <div className="w-full text-red-400 text-lg text-center glass-panel p-4 rounded-xl z-10 animate-pulse shadow-lg shadow-red-500/50">
         <p className="font-bold font-alien holographic-text text-2xl">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
       </div>
 
       {/* Burn Pool Display */}
-      <div className="w-full glass-panel border-2 border-purple-500/50 rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
+      <div className="w-full glass-panel rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
         <p className="text-purple-400 text-2xl font-bold mb-3 font-alien holographic-text">🔥 Burn Pool: {pool.marketplacePool.toLocaleString()} AP 🔥</p>
         <p className="text-purple-300 text-base font-electro">
           Arena fees accumulate here for future airdrops & leaderboard rewards!
