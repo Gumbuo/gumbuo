@@ -20,10 +20,11 @@ interface OwnedAlien {
   purchasedAt: number;
 }
 
-// Alien pics for Gumbuo Fighters - Starting with Nyx and Zorb
+// Alien pics for Gumbuo Fighters - Nyx, Zorb, and Baob
 const ALIEN_PICS: AlienPic[] = [
   { id: "nyx", name: "Nyx the Void Walker", price: 500, image: "/nyx.png", description: "Master of shadows and the void, Nyx walks between dimensions" },
   { id: "zorb", name: "Zorb the Cosmic Orb", price: 500, image: "/zorb.png", description: "Ancient cosmic entity with infinite wisdom and power" },
+  { id: "baob", name: "Baob the Eternal Guardian", price: 500, image: "/baob.png", description: "Wise protector of the ancient realms, Baob defends cosmic balance" },
 ];
 
 export default function AlienMarketplace() {
