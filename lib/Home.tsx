@@ -6,8 +6,7 @@ const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { s
 const AlienWheel = dynamic(() => import("../app/components/AlienWheel"), { ssr: false });
 const AlienDripStation = dynamic(() => import("../app/components/AlienDripStation"), { ssr: false });
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
-const AlienMarketplace = dynamic(() => import("../app/components/AlienMarketplace"), { ssr: false });
-const GumbuoFightersArena = dynamic(() => import("../app/components/GumbuoFightersArena"), { ssr: false });
+const AlienMarketAndArena = dynamic(() => import("../app/components/AlienMarketAndArena"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../app/components/GumbuoBoss"), { ssr: false });
 const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
 const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
@@ -56,6 +55,28 @@ export default function Home() {
               <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
             </div>
             <p className="text-green-400 font-bold text-3xl animate-pulse tracking-wider">👆 CLICK HERE 👆</p>
+
+            {/* Social Links */}
+            <div className="flex gap-4 mt-4">
+              <a
+                href="https://x.com/gumbuogw3"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-500/80 hover:bg-blue-600 px-6 py-3 rounded-xl text-white font-bold text-lg transition-all hover:scale-110 shadow-lg hover:shadow-blue-400/50 flex items-center gap-2"
+              >
+                <span>𝕏</span>
+                <span>Twitter</span>
+              </a>
+              <a
+                href="https://discord.gg/NptkDYn8fm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-purple-500/80 hover:bg-purple-600 px-6 py-3 rounded-xl text-white font-bold text-lg transition-all hover:scale-110 shadow-lg hover:shadow-purple-400/50 flex items-center gap-2"
+              >
+                <span>💬</span>
+                <span>Discord</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -82,14 +103,9 @@ export default function Home() {
           <AlienLeaderboard />
         </div>
 
-        {/* Alien Marketplace */}
+        {/* Alien Market & Arena (Combined) */}
         <div className="flex justify-center mt-12">
-          <AlienMarketplace />
-        </div>
-
-        {/* Gumbuo Fighters Arena */}
-        <div className="flex justify-center mt-12">
-          <GumbuoFightersArena />
+          <AlienMarketAndArena />
         </div>
 
         {/* Gumbuo Boss Battle */}

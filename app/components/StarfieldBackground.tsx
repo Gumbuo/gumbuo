@@ -67,6 +67,39 @@ export default function StarfieldBackground() {
       tilt: 0,
     };
 
+    // Flying UFO 3 (Red)
+    const ufo3 = {
+      x: Math.random() * canvas!.width,
+      y: Math.random() * canvas!.height,
+      baseSpeed: 1.8,
+      angle: Math.random() * Math.PI * 2,
+      wobbleOffset: Math.PI * 1.5,
+      targetAngle: Math.random() * Math.PI * 2,
+      tilt: 0,
+    };
+
+    // Flying UFO 4 (Orange)
+    const ufo4 = {
+      x: Math.random() * canvas!.width,
+      y: Math.random() * canvas!.height,
+      baseSpeed: 2.2,
+      angle: Math.random() * Math.PI * 2,
+      wobbleOffset: Math.PI * 0.5,
+      targetAngle: Math.random() * Math.PI * 2,
+      tilt: 0,
+    };
+
+    // Flying UFO 5 (Yellow)
+    const ufo5 = {
+      x: Math.random() * canvas!.width,
+      y: Math.random() * canvas!.height,
+      baseSpeed: 1.7,
+      angle: Math.random() * Math.PI * 2,
+      wobbleOffset: Math.PI * 1.2,
+      targetAngle: Math.random() * Math.PI * 2,
+      tilt: 0,
+    };
+
     let animationFrameId: number;
 
     const animate = () => {
@@ -248,6 +281,216 @@ export default function StarfieldBackground() {
       // Glowing lights - 4x bigger
       const lights2 = [-60, -20, 20, 60];
       lights2.forEach((x, i) => {
+        const pulse = Math.sin(Date.now() * 0.01 + i) * 0.5 + 0.5;
+        ctx!.beginPath();
+        ctx!.arc(x, 0, 8, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255, 200, 0, ${pulse})`;
+        ctx!.shadowBlur = 40;
+        ctx!.shadowColor = "#ffcc00";
+        ctx!.fill();
+        ctx!.shadowBlur = 0;
+      });
+
+      ctx!.restore();
+
+      // Update and draw UFO 3 (Red)
+      let angleDiff3 = ufo3.targetAngle - ufo3.angle;
+      if (angleDiff3 > Math.PI) angleDiff3 -= Math.PI * 2;
+      if (angleDiff3 < -Math.PI) angleDiff3 += Math.PI * 2;
+      ufo3.angle += angleDiff3 * 0.02;
+
+      if (Math.random() < 0.01) {
+        ufo3.targetAngle = Math.random() * Math.PI * 2;
+      }
+
+      ufo3.wobbleOffset += 0.05;
+      const wobbleX3 = Math.sin(ufo3.wobbleOffset) * 0.5;
+      const wobbleY3 = Math.cos(ufo3.wobbleOffset * 0.7) * 0.3;
+
+      ufo3.x += Math.cos(ufo3.angle) * ufo3.baseSpeed + wobbleX3;
+      ufo3.y += Math.sin(ufo3.angle) * ufo3.baseSpeed + wobbleY3;
+      ufo3.tilt = Math.cos(ufo3.angle) * 0.3;
+
+      if (ufo3.x < -100) ufo3.x = canvas!.width + 100;
+      if (ufo3.x > canvas!.width + 100) ufo3.x = -100;
+      if (ufo3.y < -100) ufo3.y = canvas!.height + 100;
+      if (ufo3.y > canvas!.height + 100) ufo3.y = -100;
+
+      ctx!.save();
+      ctx!.translate(ufo3.x, ufo3.y);
+
+      // Light beam - RED
+      const beamGradient3 = ctx!.createLinearGradient(0, 0, 0, 240);
+      beamGradient3.addColorStop(0, "rgba(255, 50, 50, 0.1)");
+      beamGradient3.addColorStop(1, "rgba(255, 50, 50, 0)");
+      ctx!.fillStyle = beamGradient3;
+      ctx!.beginPath();
+      ctx!.moveTo(-32, 0);
+      ctx!.lineTo(32, 0);
+      ctx!.lineTo(60, 240);
+      ctx!.lineTo(-60, 240);
+      ctx!.closePath();
+      ctx!.fill();
+
+      // UFO body - RED
+      ctx!.beginPath();
+      ctx!.ellipse(0, ufo3.tilt * 20, 100, 40, 0, 0, Math.PI * 2);
+      const saucerGradient3 = ctx!.createLinearGradient(-100, 0, 100, 0);
+      saucerGradient3.addColorStop(0, "#4d1a1a");
+      saucerGradient3.addColorStop(0.5, "#ff3333");
+      saucerGradient3.addColorStop(1, "#4d1a1a");
+      ctx!.fillStyle = saucerGradient3;
+      ctx!.fill();
+
+      // UFO dome - RED
+      ctx!.beginPath();
+      ctx!.ellipse(0, -12 + ufo3.tilt * 12, 48, 32, 0, Math.PI, 0);
+      ctx!.fillStyle = "rgba(255, 100, 100, 0.3)";
+      ctx!.fill();
+
+      // Glowing lights
+      const lights3 = [-60, -20, 20, 60];
+      lights3.forEach((x, i) => {
+        const pulse = Math.sin(Date.now() * 0.01 + i) * 0.5 + 0.5;
+        ctx!.beginPath();
+        ctx!.arc(x, 0, 8, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255, 200, 0, ${pulse})`;
+        ctx!.shadowBlur = 40;
+        ctx!.shadowColor = "#ffcc00";
+        ctx!.fill();
+        ctx!.shadowBlur = 0;
+      });
+
+      ctx!.restore();
+
+      // Update and draw UFO 4 (Orange)
+      let angleDiff4 = ufo4.targetAngle - ufo4.angle;
+      if (angleDiff4 > Math.PI) angleDiff4 -= Math.PI * 2;
+      if (angleDiff4 < -Math.PI) angleDiff4 += Math.PI * 2;
+      ufo4.angle += angleDiff4 * 0.02;
+
+      if (Math.random() < 0.01) {
+        ufo4.targetAngle = Math.random() * Math.PI * 2;
+      }
+
+      ufo4.wobbleOffset += 0.05;
+      const wobbleX4 = Math.sin(ufo4.wobbleOffset) * 0.5;
+      const wobbleY4 = Math.cos(ufo4.wobbleOffset * 0.7) * 0.3;
+
+      ufo4.x += Math.cos(ufo4.angle) * ufo4.baseSpeed + wobbleX4;
+      ufo4.y += Math.sin(ufo4.angle) * ufo4.baseSpeed + wobbleY4;
+      ufo4.tilt = Math.cos(ufo4.angle) * 0.3;
+
+      if (ufo4.x < -100) ufo4.x = canvas!.width + 100;
+      if (ufo4.x > canvas!.width + 100) ufo4.x = -100;
+      if (ufo4.y < -100) ufo4.y = canvas!.height + 100;
+      if (ufo4.y > canvas!.height + 100) ufo4.y = -100;
+
+      ctx!.save();
+      ctx!.translate(ufo4.x, ufo4.y);
+
+      // Light beam - ORANGE
+      const beamGradient4 = ctx!.createLinearGradient(0, 0, 0, 240);
+      beamGradient4.addColorStop(0, "rgba(255, 165, 0, 0.1)");
+      beamGradient4.addColorStop(1, "rgba(255, 165, 0, 0)");
+      ctx!.fillStyle = beamGradient4;
+      ctx!.beginPath();
+      ctx!.moveTo(-32, 0);
+      ctx!.lineTo(32, 0);
+      ctx!.lineTo(60, 240);
+      ctx!.lineTo(-60, 240);
+      ctx!.closePath();
+      ctx!.fill();
+
+      // UFO body - ORANGE
+      ctx!.beginPath();
+      ctx!.ellipse(0, ufo4.tilt * 20, 100, 40, 0, 0, Math.PI * 2);
+      const saucerGradient4 = ctx!.createLinearGradient(-100, 0, 100, 0);
+      saucerGradient4.addColorStop(0, "#4d3d1a");
+      saucerGradient4.addColorStop(0.5, "#ff9933");
+      saucerGradient4.addColorStop(1, "#4d3d1a");
+      ctx!.fillStyle = saucerGradient4;
+      ctx!.fill();
+
+      // UFO dome - ORANGE
+      ctx!.beginPath();
+      ctx!.ellipse(0, -12 + ufo4.tilt * 12, 48, 32, 0, Math.PI, 0);
+      ctx!.fillStyle = "rgba(255, 165, 0, 0.3)";
+      ctx!.fill();
+
+      // Glowing lights
+      const lights4 = [-60, -20, 20, 60];
+      lights4.forEach((x, i) => {
+        const pulse = Math.sin(Date.now() * 0.01 + i) * 0.5 + 0.5;
+        ctx!.beginPath();
+        ctx!.arc(x, 0, 8, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255, 200, 0, ${pulse})`;
+        ctx!.shadowBlur = 40;
+        ctx!.shadowColor = "#ffcc00";
+        ctx!.fill();
+        ctx!.shadowBlur = 0;
+      });
+
+      ctx!.restore();
+
+      // Update and draw UFO 5 (Yellow)
+      let angleDiff5 = ufo5.targetAngle - ufo5.angle;
+      if (angleDiff5 > Math.PI) angleDiff5 -= Math.PI * 2;
+      if (angleDiff5 < -Math.PI) angleDiff5 += Math.PI * 2;
+      ufo5.angle += angleDiff5 * 0.02;
+
+      if (Math.random() < 0.01) {
+        ufo5.targetAngle = Math.random() * Math.PI * 2;
+      }
+
+      ufo5.wobbleOffset += 0.05;
+      const wobbleX5 = Math.sin(ufo5.wobbleOffset) * 0.5;
+      const wobbleY5 = Math.cos(ufo5.wobbleOffset * 0.7) * 0.3;
+
+      ufo5.x += Math.cos(ufo5.angle) * ufo5.baseSpeed + wobbleX5;
+      ufo5.y += Math.sin(ufo5.angle) * ufo5.baseSpeed + wobbleY5;
+      ufo5.tilt = Math.cos(ufo5.angle) * 0.3;
+
+      if (ufo5.x < -100) ufo5.x = canvas!.width + 100;
+      if (ufo5.x > canvas!.width + 100) ufo5.x = -100;
+      if (ufo5.y < -100) ufo5.y = canvas!.height + 100;
+      if (ufo5.y > canvas!.height + 100) ufo5.y = -100;
+
+      ctx!.save();
+      ctx!.translate(ufo5.x, ufo5.y);
+
+      // Light beam - YELLOW
+      const beamGradient5 = ctx!.createLinearGradient(0, 0, 0, 240);
+      beamGradient5.addColorStop(0, "rgba(255, 255, 0, 0.1)");
+      beamGradient5.addColorStop(1, "rgba(255, 255, 0, 0)");
+      ctx!.fillStyle = beamGradient5;
+      ctx!.beginPath();
+      ctx!.moveTo(-32, 0);
+      ctx!.lineTo(32, 0);
+      ctx!.lineTo(60, 240);
+      ctx!.lineTo(-60, 240);
+      ctx!.closePath();
+      ctx!.fill();
+
+      // UFO body - YELLOW
+      ctx!.beginPath();
+      ctx!.ellipse(0, ufo5.tilt * 20, 100, 40, 0, 0, Math.PI * 2);
+      const saucerGradient5 = ctx!.createLinearGradient(-100, 0, 100, 0);
+      saucerGradient5.addColorStop(0, "#4d4d1a");
+      saucerGradient5.addColorStop(0.5, "#ffff33");
+      saucerGradient5.addColorStop(1, "#4d4d1a");
+      ctx!.fillStyle = saucerGradient5;
+      ctx!.fill();
+
+      // UFO dome - YELLOW
+      ctx!.beginPath();
+      ctx!.ellipse(0, -12 + ufo5.tilt * 12, 48, 32, 0, Math.PI, 0);
+      ctx!.fillStyle = "rgba(255, 255, 150, 0.3)";
+      ctx!.fill();
+
+      // Glowing lights
+      const lights5 = [-60, -20, 20, 60];
+      lights5.forEach((x, i) => {
         const pulse = Math.sin(Date.now() * 0.01 + i) * 0.5 + 0.5;
         ctx!.beginPath();
         ctx!.arc(x, 0, 8, 0, Math.PI * 2);
