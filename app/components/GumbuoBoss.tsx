@@ -598,7 +598,7 @@ export default function GumbuoBoss() {
       {/* Attack Type Selector */}
       {bossState.isAlive && isConnected && (
         <div className="w-full bg-black/60 border-2 border-orange-500/50 rounded-2xl p-6">
-          <h3 className="text-2xl font-alien text-orange-400 text-center mb-4">⚔️ SELECT ATTACK TYPE ⚔️</h3>
+          <h3 className="text-2xl font-alien text-orange-400 text-center mb-4 holographic-text">⚔️ SELECT ATTACK TYPE ⚔️</h3>
           <div className="grid grid-cols-3 gap-4">
             {/* Normal Attack */}
             <div className="flex flex-col space-y-2">
