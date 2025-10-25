@@ -21,7 +21,7 @@ const wheelData = [
 
 export default function AlienWheel() {
   const { address, isConnected } = useAccount();
-  const { getUserBalance, addPoints, getPoolRemaining } = useAlienPoints();
+  const { getUserBalance, addPoints } = useAlienPoints();
   const { playSound } = useCosmicSound();
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
@@ -190,22 +190,6 @@ export default function AlienWheel() {
         <span className="animate-glow text-blue-400">🎰 Daily Alien Wheel 🎰</span>
         <img src="/zorb.png" alt="Zorb" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
       </h2>
-
-      {/* Pool Status */}
-      <div className="w-full glass-panel rounded-xl p-4 relative overflow-hidden shadow-lg shadow-blue-400/30 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-shimmer pointer-events-none"></div>
-        <p className="text-blue-400 text-center text-xl drop-shadow-glow relative z-10">
-          🎰 Wheel Pool: <span className="font-bold text-2xl">{getPoolRemaining('wheel').toLocaleString()}</span> / 100,000,000 AP
-        </p>
-        <div className="w-full bg-gray-900 rounded-full h-5 border-2 border-gray-700 shadow-inner mt-2 relative overflow-hidden">
-          <div
-            className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-blue-400/50 relative overflow-hidden"
-            style={{width: `${(getPoolRemaining('wheel') / 100_000_000) * 100}%`}}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-          </div>
-        </div>
-      </div>
 
       {/* User Balance */}
       {isConnected && address && (

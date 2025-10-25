@@ -41,7 +41,7 @@ export default function AlienDripStation() {
     address,
     token: GMB_TOKEN_ADDRESS as `0x${string}`
   });
-  const { getUserBalance, addPoints, getPoolRemaining } = useAlienPoints();
+  const { getUserBalance, addPoints } = useAlienPoints();
   const { playSound } = useCosmicSound();
 
   // Daily claim states
@@ -346,13 +346,6 @@ export default function AlienDripStation() {
       return;
     }
 
-    const poolRemaining = getPoolRemaining('faucet');
-    if (poolRemaining < currentTier.points) {
-      playSound('error');
-      alert("Faucet pool is depleted! 😢 Check back later or try the wheel!");
-      return;
-    }
-
     playSound('click');
     setClaiming(true);
 
@@ -400,22 +393,6 @@ export default function AlienDripStation() {
       <div className="text-center text-green-400 relative z-10">
         <p className="text-xl mb-2 font-electro alien-brackets">💧 Daily Claims & Continuous Staking 💧</p>
         <p className="text-sm opacity-75 font-mono alien-code">Hold GMB for daily claims OR stake for continuous rewards!</p>
-      </div>
-
-      {/* Pool Status */}
-      <div className="w-full glass-panel rounded-xl p-4 relative overflow-hidden shadow-lg shadow-cyan-400/30 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent animate-shimmer pointer-events-none"></div>
-        <p className="text-cyan-400 text-center text-lg drop-shadow-glow relative z-10">
-          🌊 Faucet Pool: <span className="font-bold text-xl">{getPoolRemaining('faucet').toLocaleString()}</span> / 100,000,000 AP
-        </p>
-        <div className="w-full bg-gray-900 rounded-full h-5 border-2 border-gray-700 shadow-inner mt-2 relative overflow-hidden">
-          <div
-            className="bg-gradient-to-r from-cyan-500 via-cyan-400 to-cyan-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-cyan-400/50 relative overflow-hidden"
-            style={{width: `${(getPoolRemaining('faucet') / 100_000_000) * 100}%`}}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-          </div>
-        </div>
       </div>
 
       {/* User Status */}

@@ -105,47 +105,19 @@ export async function POST(request: NextRequest) {
     let pool = await redis.get<AlienPointsPool>(POOL_KEY) || INITIAL_POOL;
     let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
 
-    // Check if pool has enough points (arena and boss awards from their respective pools)
-    let poolAmount;
-    if (source === 'wheel') {
-      poolAmount = pool.wheelPool;
-    } else if (source === 'faucet') {
-      poolAmount = pool.faucetPool;
-    } else if (source === 'arena') {
-      poolAmount = pool.reservePool; // Arena prizes come from reserve
-    } else if (source === 'boss') {
-      poolAmount = pool.bossPool; // Boss rewards come from boss pool
-    } else if (source === 'staking') {
-      poolAmount = pool.stakingPool; // Staking rewards come from staking pool
+    // Only check pool limits for GMB token rewards (boss)
+    // Alien points (wheel, faucet, staking, arena) are unlimited
+    if (source === 'boss') {
+      if (pool.bossPool < points) {
+        return NextResponse.json({
+          success: false,
+          error: `Insufficient boss pool balance`,
+        });
+      }
+      pool.bossPool -= points;
     }
 
-    if (poolAmount && poolAmount < points) {
-      return NextResponse.json({
-        success: false,
-        error: `Insufficient ${source} pool balance`,
-      });
-    }
-
-    // Safety check: Don't exceed total supply
-    if (pool.totalDistributed + points > pool.totalSupply) {
-      return NextResponse.json({
-        success: false,
-        error: "Total supply limit reached",
-      });
-    }
-
-    // Update pool
-    if (source === 'wheel') {
-      pool.wheelPool -= points;
-    } else if (source === 'faucet') {
-      pool.faucetPool -= points;
-    } else if (source === 'arena') {
-      pool.reservePool -= points; // Arena prizes come from reserve
-    } else if (source === 'boss') {
-      pool.bossPool -= points; // Boss rewards come from boss pool
-    } else if (source === 'staking') {
-      pool.stakingPool -= points; // Staking rewards come from staking pool
-    }
+    // Track total distributed (for stats only, not enforced)
     pool.totalDistributed += points;
 
     // Update user balance
