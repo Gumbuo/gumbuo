@@ -323,22 +323,28 @@ export default function GumbuoFightersArena() {
                 />
               </div>
               <p className="text-blue-400 font-bold text-xl">{fighter1.name}</p>
-              <button
-                onClick={async () => {
-                  if (fighter1Paid && address) {
-                    // Refund entry fee
-                    await addPoints(address, ENTRY_FEE, 'arena');
-                    setUserBalance(getUserBalance(address));
-                  }
-                  setFighter1(null);
-                  setFighter1Owner(null);
-                  setFighter1Paid(false);
-                }}
-                disabled={fighting}
-                className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-              >
-                Remove {fighter1Paid ? '(Refund 500 AP)' : ''}
-              </button>
+              {address && fighter1Owner?.toLowerCase() === address.toLowerCase() ? (
+                <button
+                  onClick={async () => {
+                    if (fighter1Paid && address) {
+                      // Refund entry fee
+                      await addPoints(address, ENTRY_FEE, 'arena');
+                      setUserBalance(getUserBalance(address));
+                    }
+                    setFighter1(null);
+                    setFighter1Owner(null);
+                    setFighter1Paid(false);
+                  }}
+                  disabled={fighting}
+                  className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                >
+                  Remove {fighter1Paid ? '(Refund 500 AP)' : ''}
+                </button>
+              ) : (
+                <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
+                  Owner: {fighter1Owner ? `${fighter1Owner.slice(0, 6)}...${fighter1Owner.slice(-4)}` : 'Unknown'}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center text-gray-500">
@@ -381,22 +387,28 @@ export default function GumbuoFightersArena() {
                 />
               </div>
               <p className="text-red-400 font-bold text-xl">{fighter2.name}</p>
-              <button
-                onClick={async () => {
-                  if (fighter2Paid && address) {
-                    // Refund entry fee
-                    await addPoints(address, ENTRY_FEE, 'arena');
-                    setUserBalance(getUserBalance(address));
-                  }
-                  setFighter2(null);
-                  setFighter2Owner(null);
-                  setFighter2Paid(false);
-                }}
-                disabled={fighting}
-                className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-              >
-                Remove {fighter2Paid ? '(Refund 500 AP)' : ''}
-              </button>
+              {address && fighter2Owner?.toLowerCase() === address.toLowerCase() ? (
+                <button
+                  onClick={async () => {
+                    if (fighter2Paid && address) {
+                      // Refund entry fee
+                      await addPoints(address, ENTRY_FEE, 'arena');
+                      setUserBalance(getUserBalance(address));
+                    }
+                    setFighter2(null);
+                    setFighter2Owner(null);
+                    setFighter2Paid(false);
+                  }}
+                  disabled={fighting}
+                  className="mt-2 px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                >
+                  Remove {fighter2Paid ? '(Refund 500 AP)' : ''}
+                </button>
+              ) : (
+                <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
+                  Owner: {fighter2Owner ? `${fighter2Owner.slice(0, 6)}...${fighter2Owner.slice(-4)}` : 'Unknown'}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center text-gray-500">
