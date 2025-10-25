@@ -118,8 +118,8 @@ export default function AlienMarketplace() {
 
   return (
     <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl w-full rounded-3xl border border-orange-400/30">
-      <h2 className="font-alien font-bold tracking-wider text-center text-orange-400" style={{fontSize: '3rem'}}>
-        👽 Alien Marketplace 🛸
+      <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '3rem'}}>
+        <span className="text-orange-400">👽 Alien Marketplace 🛸</span>
       </h2>
 
       {/* Info Section */}

@@ -289,8 +289,8 @@ export default function GumbuoBoss() {
   return (
     <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl border border-red-400/30">
       {/* Title */}
-      <h2 className="font-alien font-bold tracking-wider text-center text-red-400" style={{fontSize: '3rem'}}>
-        💀 GUMBUO BOSS BATTLE ⚔️
+      <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '3rem'}}>
+        <span className="text-red-400">💀 GUMBUO BOSS BATTLE ⚔️</span>
       </h2>
 
       {/* Boss Status */}
