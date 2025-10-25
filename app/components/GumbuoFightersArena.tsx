@@ -300,18 +300,87 @@ export default function GumbuoFightersArena() {
         </p>
       </div>
 
-      {/* Arena - Two Fighter Slots */}
-      <div className="w-full grid grid-cols-2 gap-8 mb-6">
-        {/* Fighter 1 Slot */}
-        <div
-          onDragOver={handleDragOver}
-          onDrop={handleDropFighter1}
-          className={`relative h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-            fighter1
-              ? 'glass-panel border-4 border-blue-500/70 shadow-2xl shadow-blue-500/70 hover:shadow-blue-500/90'
-              : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
-          } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
-        >
+      {/* UFO Battle Dome Arena */}
+      <div className="w-full relative mb-6" style={{ minHeight: '600px' }}>
+        {/* Circular Arena Platform */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative w-[800px] h-[500px]">
+            {/* Energy Dome Shield */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 30 }}>
+              <defs>
+                <linearGradient id="domeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style={{ stopColor: '#00ffff', stopOpacity: 0.3 }} />
+                  <stop offset="100%" style={{ stopColor: '#ff00ff', stopOpacity: 0.1 }} />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              {/* Dome arc */}
+              <ellipse cx="400" cy="450" rx="350" ry="80" fill="none" stroke="url(#domeGradient)" strokeWidth="3" opacity="0.6" className="animate-pulse"/>
+              <path d="M 50 450 Q 400 50, 750 450" fill="none" stroke="url(#domeGradient)" strokeWidth="2" opacity="0.4" filter="url(#glow)" className="animate-pulse"/>
+              {/* Energy grid lines */}
+              <line x1="400" y1="450" x2="400" y2="150" stroke="#00ffff" strokeWidth="1" opacity="0.2" strokeDasharray="5,5"/>
+              <line x1="200" y1="450" x2="200" y2="300" stroke="#00ffff" strokeWidth="1" opacity="0.2" strokeDasharray="5,5"/>
+              <line x1="600" y1="450" x2="600" y2="300" stroke="#00ffff" strokeWidth="1" opacity="0.2" strokeDasharray="5,5"/>
+            </svg>
+
+            {/* Rotating Alien Glyphs Platform */}
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[600px]" style={{ zIndex: 1 }}>
+              <div className="absolute inset-0 rounded-full border-4 border-purple-500/30 bg-gradient-to-br from-purple-900/20 to-blue-900/20 animate-spin-slow" style={{ animationDuration: '20s' }}>
+                {/* Alien glyphs */}
+                <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-green-400/40 text-4xl">◬</div>
+                <div className="absolute top-1/2 right-[10%] transform -translate-y-1/2 text-cyan-400/40 text-4xl">◭</div>
+                <div className="absolute bottom-[10%] left-1/2 transform -translate-x-1/2 text-purple-400/40 text-4xl">◮</div>
+                <div className="absolute top-1/2 left-[10%] transform -translate-y-1/2 text-pink-400/40 text-4xl">◯</div>
+              </div>
+              {/* Inner energy ring */}
+              <div className="absolute inset-[20%] rounded-full border-2 border-cyan-400/40 animate-pulse"></div>
+              <div className="absolute inset-[40%] rounded-full border border-green-400/30"></div>
+            </div>
+
+            {/* Energy Vortex Center (during fight) */}
+            {fighting && (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ zIndex: 15 }}>
+                <div className="w-32 h-32 rounded-full bg-gradient-to-r from-purple-500/50 to-cyan-500/50 animate-spin blur-xl"></div>
+                <div className="absolute inset-0 w-32 h-32 rounded-full border-4 border-yellow-400/60 animate-ping"></div>
+              </div>
+            )}
+
+            {/* Lightning Bolts (during fight) */}
+            {fighting && fighter1 && fighter2 && (
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 25 }}>
+                <defs>
+                  <filter id="lightning-glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                {/* Animated lightning between fighters */}
+                <path d="M 150 250 L 400 240 L 650 250" fill="none" stroke="#ffff00" strokeWidth="3" opacity="0.8" filter="url(#lightning-glow)" className="animate-pulse" strokeDasharray="10,5"/>
+                <path d="M 150 260 L 380 270 L 650 260" fill="none" stroke="#00ffff" strokeWidth="2" opacity="0.6" filter="url(#lightning-glow)" className="animate-pulse" strokeDasharray="8,4"/>
+              </svg>
+            )}
+
+            {/* Fighter 1 Slot - Left Side */}
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDropFighter1}
+              className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-72 h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                fighter1
+                  ? 'glass-panel border-4 border-blue-500/70 shadow-2xl shadow-blue-500/70 hover:shadow-blue-500/90'
+                  : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
+              } ${fighting && fighter1 ? 'animate-pulse' : ''}`}
+              style={{ zIndex: 20 }}
+            >
           {fighter1 ? (
             <div className="text-center">
               <div className="flex justify-center items-center h-16 mb-2">
@@ -359,23 +428,27 @@ export default function GumbuoFightersArena() {
           )}
         </div>
 
-        {/* VS */}
-        <div className="absolute left-1/2 top-32 transform -translate-x-1/2 z-20">
-          <div className={`text-6xl font-bold ${fighting ? 'text-red-500 animate-pulse' : 'text-gray-600'}`}>
-            {fighting ? '⚡ VS ⚡' : 'VS'}
-          </div>
-        </div>
+            {/* Holographic VS Display - Center */}
+            <div className="absolute top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ zIndex: 25 }}>
+              <div className={`text-7xl font-bold font-alien holographic-text ${fighting ? 'text-yellow-400 animate-ping' : 'text-cyan-400/60'}`}>
+                {fighting ? '⚡ VS ⚡' : 'VS'}
+              </div>
+              {fighting && (
+                <div className="absolute inset-0 blur-xl bg-yellow-400/50 animate-pulse"></div>
+              )}
+            </div>
 
-        {/* Fighter 2 Slot */}
-        <div
-          onDragOver={handleDragOver}
-          onDrop={handleDropFighter2}
-          className={`relative h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-            fighter2
-              ? 'glass-panel border-4 border-red-500/70 shadow-2xl shadow-red-500/70 hover:shadow-red-500/90'
-              : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
-          } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
-        >
+            {/* Fighter 2 Slot - Right Side */}
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDropFighter2}
+              className={`absolute right-0 top-1/2 transform -translate-y-1/2 w-72 h-80 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                fighter2
+                  ? 'glass-panel border-4 border-red-500/70 shadow-2xl shadow-red-500/70 hover:shadow-red-500/90'
+                  : 'border-4 border-dashed border-gray-600/50 bg-gray-900/20'
+              } ${fighting && fighter2 ? 'animate-pulse' : ''}`}
+              style={{ zIndex: 20 }}
+            >
           {fighter2 ? (
             <div className="text-center">
               <div className="flex justify-center items-center h-16 mb-2">
@@ -416,6 +489,9 @@ export default function GumbuoFightersArena() {
               <p>Drop Fighter 2 Here</p>
             </div>
           )}
+        </div>
+
+          </div>
         </div>
       </div>
 
