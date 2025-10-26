@@ -162,12 +162,17 @@ export default function AlienMarketplace() {
           purchasedAt: Date.now(),
         };
 
-        // Add to owned aliens
-        const updatedAliens = [...ownedAliens, newAlien];
-        setOwnedAliens(updatedAliens);
-
-        // Save to backend API
+        // Fetch latest aliens from backend to avoid race condition
         try {
+          const response = await fetch(`/api/user-data?wallet=${address}`);
+          const data = await response.json();
+          const currentAliens = data.success && data.userData ? data.userData.ownedAliens || [] : [];
+
+          // Add new alien to latest backend data
+          const updatedAliens = [...currentAliens, newAlien];
+          setOwnedAliens(updatedAliens);
+
+          // Save to backend API
           await fetch('/api/user-data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
