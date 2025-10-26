@@ -91,9 +91,9 @@ export default function Home() {
               className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 px-36 py-18 rounded-3xl text-black font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-yellow-400/80 flex items-center gap-8 mt-12 animate-pulse"
               style={{fontSize: '6rem'}}
             >
-              <span style={{fontSize: '8rem'}}>🎁</span>
+              <img src="/baob.png" alt="Baob" style={{width: '80px', height: '80px', objectFit: 'cover'}} className="animate-bounce" />
               <span>Register For Airdrop</span>
-              <span style={{fontSize: '8rem'}}>🎁</span>
+              <img src="/baob.png" alt="Baob" style={{width: '80px', height: '80px', objectFit: 'cover'}} className="animate-bounce" />
             </button>
           </div>
         </div>
@@ -137,7 +137,8 @@ export default function Home() {
             <img
               src="/foxholeproductions.jpg"
               alt="FoxHole Productions"
-              className="w-8 h-8 object-contain rounded-lg"
+              className="rounded-lg"
+              style={{width: '32px', height: '32px', maxWidth: '32px', maxHeight: '32px', objectFit: 'contain'}}
             />
             <div className="text-center">
               <p className="text-green-400 font-bold text-xl font-alien holographic-text">FoxHole Productions</p>
