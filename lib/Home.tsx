@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
-const AlienWheel = dynamic(() => import("../app/components/AlienWheel"), { ssr: false });
 const AlienDripStation = dynamic(() => import("../app/components/AlienDripStation"), { ssr: false });
 const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
 const AlienMarketAndArena = dynamic(() => import("../app/components/AlienMarketAndArena"), { ssr: false });
@@ -110,9 +109,8 @@ export default function Home() {
           <AlienMusicPlayer />
         </div>
 
-        {/* Wheel and Drip Station - Stacked */}
+        {/* Drip Station */}
         <div className="flex flex-col items-center space-y-24 mt-24">
-          <AlienWheel />
           <AlienDripStation />
         </div>
 
