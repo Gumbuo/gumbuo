@@ -134,12 +134,14 @@ export default function Home() {
         {/* FoxHole Productions Credit */}
         <div className="flex justify-center mt-32 mb-12">
           <div className="flex items-center space-x-2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-green-400/30 shadow-lg shadow-green-400/20">
-            <img
-              src="/foxholeproductions.jpg"
-              alt="FoxHole Productions"
-              className="rounded-lg"
-              style={{width: '32px', height: '32px', maxWidth: '32px', maxHeight: '32px', objectFit: 'contain'}}
-            />
+            <div style={{width: '32px', height: '32px', minWidth: '32px', minHeight: '32px', maxWidth: '32px', maxHeight: '32px', overflow: 'hidden'}}>
+              <img
+                src="/foxholeproductions.jpg"
+                alt="FoxHole Productions"
+                className="rounded-lg"
+                style={{width: '32px', height: '32px', objectFit: 'cover', display: 'block'}}
+              />
+            </div>
             <div className="text-center">
               <p className="text-green-400 font-bold text-xl font-alien holographic-text">FoxHole Productions</p>
             </div>
