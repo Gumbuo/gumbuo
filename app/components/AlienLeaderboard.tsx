@@ -202,21 +202,14 @@ export default function AlienLeaderboard() {
         </div>
       </div>
 
-      {/* User Status */}
-      {isConnected && address && (
-        <div className={`w-full bg-black/60 rounded-xl p-4`}>
-          {isRegistered ? (
-            <div className="text-center">
-              <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
-              <p className="text-purple-400 text-base mt-1">Your Rank: <span className="text-2xl font-bold">#{userRank}</span></p>
-              <p className="text-purple-400 text-sm mt-2">You'll receive a GMB airdrop when we reach 50 members! 🎉</p>
-            </div>
-          ) : (
-            <div className="text-center">
-              <p className="text-yellow-400 text-lg font-bold">⚠️ Not Registered Yet!</p>
-              <p className="text-yellow-400 text-sm mt-1">Click the button below to join the leaderboard!</p>
-            </div>
-          )}
+      {/* User Status - Only show if registered */}
+      {isConnected && address && isRegistered && (
+        <div className="w-full bg-black/60 rounded-xl p-4">
+          <div className="text-center">
+            <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
+            <p className="text-purple-400 text-base mt-1">Your Rank: <span className="text-2xl font-bold">#{userRank}</span></p>
+            <p className="text-purple-400 text-sm mt-2">You'll receive a GMB airdrop when we reach 50 members! 🎉</p>
+          </div>
         </div>
       )}
 
