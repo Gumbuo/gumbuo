@@ -34,7 +34,7 @@ export default function MothershipPage() {
       </div>
 
       {/* Top Right - Connect Button and HUD */}
-      <div className="absolute top-6 right-6 z-20 flex flex-col items-end space-y-4">
+      <div className="fixed top-6 right-6 z-50 flex flex-col items-end space-y-4">
         <ConnectButton />
         <AlienHUD />
       </div>
