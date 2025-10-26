@@ -276,6 +276,24 @@ export default function GumbuoFightersArena() {
       setFighter1Paid(true);
       setUserBalance(getUserBalance(address));
       setDraggedAlien(null);
+
+      // Save arena state to backend
+      try {
+        await fetch('/api/arena', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fighter1: draggedAlien,
+            fighter2,
+            fighter1Owner: address,
+            fighter2Owner,
+            fighter1Paid: true,
+            fighter2Paid,
+          }),
+        });
+      } catch (error) {
+        console.error('Failed to save arena state:', error);
+      }
     } else {
       alert("Payment failed! Please try again.");
     }
@@ -327,6 +345,24 @@ export default function GumbuoFightersArena() {
       setFighter2Paid(true);
       setUserBalance(getUserBalance(address));
       setDraggedAlien(null);
+
+      // Save arena state to backend
+      try {
+        await fetch('/api/arena', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fighter1,
+            fighter2: draggedAlien,
+            fighter1Owner,
+            fighter2Owner: address,
+            fighter1Paid,
+            fighter2Paid: true,
+          }),
+        });
+      } catch (error) {
+        console.error('Failed to save arena state:', error);
+      }
     } else {
       alert("Payment failed! Please try again.");
     }
