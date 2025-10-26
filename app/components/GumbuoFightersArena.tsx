@@ -15,6 +15,8 @@ interface OwnedAlien {
 interface FightResult {
   winner: OwnedAlien;
   loser: OwnedAlien;
+  winnerOwner: string;
+  loserOwner: string;
   timestamp: number;
 }
 
@@ -433,6 +435,7 @@ export default function GumbuoFightersArena() {
       const winner = health1 > health2 ? fighter1 : fighter2;
       const loser = winner === fighter1 ? fighter2 : fighter1;
       const winnerOwner = winner === fighter1 ? fighter1Owner : fighter2Owner;
+      const loserOwner = loser === fighter1 ? fighter1Owner : fighter2Owner;
 
       // Award winner 800 AP from reserve pool
       if (winnerOwner) {
@@ -503,6 +506,8 @@ export default function GumbuoFightersArena() {
       const result: FightResult = {
         winner,
         loser,
+        winnerOwner: winnerOwner || '',
+        loserOwner: loserOwner || '',
         timestamp: Date.now(),
       };
 
@@ -745,6 +750,11 @@ export default function GumbuoFightersArena() {
                   />
                 </div>
                 <p className="text-blue-400 font-bold text-2xl mb-2">{fighter1.name}</p>
+                {fighter1Owner && (
+                  <p className="text-blue-300 text-xs font-mono mb-2 opacity-75">
+                    {fighter1Owner.slice(0, 6)}...{fighter1Owner.slice(-4)}
+                  </p>
+                )}
                 {address && fighter1Owner?.toLowerCase() === address.toLowerCase() ? (
                   <button
                     onClick={async () => {
@@ -925,6 +935,11 @@ export default function GumbuoFightersArena() {
                   />
                 </div>
                 <p className="text-red-400 font-bold text-2xl mb-2">{fighter2.name}</p>
+                {fighter2Owner && (
+                  <p className="text-red-300 text-xs font-mono mb-2 opacity-75">
+                    {fighter2Owner.slice(0, 6)}...{fighter2Owner.slice(-4)}
+                  </p>
+                )}
                 {address && fighter2Owner?.toLowerCase() === address.toLowerCase() ? (
                   <button
                     onClick={async () => {
@@ -1071,7 +1086,12 @@ export default function GumbuoFightersArena() {
                   className="max-w-[192px] max-h-[192px] w-auto h-auto object-contain rounded-lg border-4 border-blue-400 animate-bounce shadow-2xl shadow-blue-400/50"
                 />
               </div>
-              <p className="text-blue-400 font-bold text-3xl mb-4 font-alien">{fighter1.name}</p>
+              <p className="text-blue-400 font-bold text-3xl mb-2 font-alien">{fighter1.name}</p>
+              {fighter1Owner && (
+                <p className="text-blue-300 text-sm font-mono mb-4 opacity-75">
+                  {fighter1Owner.slice(0, 6)}...{fighter1Owner.slice(-4)}
+                </p>
+              )}
 
               {/* Health Bar */}
               <div className="w-full mb-3">
@@ -1102,7 +1122,12 @@ export default function GumbuoFightersArena() {
                   className="max-w-[192px] max-h-[192px] w-auto h-auto object-contain rounded-lg border-4 border-red-400 animate-bounce shadow-2xl shadow-red-400/50"
                 />
               </div>
-              <p className="text-red-400 font-bold text-3xl mb-4 font-alien">{fighter2.name}</p>
+              <p className="text-red-400 font-bold text-3xl mb-2 font-alien">{fighter2.name}</p>
+              {fighter2Owner && (
+                <p className="text-red-300 text-sm font-mono mb-4 opacity-75">
+                  {fighter2Owner.slice(0, 6)}...{fighter2Owner.slice(-4)}
+                </p>
+              )}
 
               {/* Health Bar */}
               <div className="w-full mb-3">
@@ -1164,7 +1189,7 @@ export default function GumbuoFightersArena() {
             <span className="text-cyan-400">📜 Fight History 📜</span>
           </h3>
           <div className="max-h-96 overflow-y-auto space-y-3">
-            {(showAllHistory ? fightLog : fightLog.slice(0, 10)).map((fight, index) => (
+            {(showAllHistory ? fightLog : fightLog.slice(0, 3)).map((fight, index) => (
               <div
                 key={`${fight.timestamp}-${index}`}
                 className="bg-black/40 rounded-lg p-4 flex items-center justify-between space-x-4 hover:bg-black/60 transition-all"
@@ -1181,6 +1206,9 @@ export default function GumbuoFightersArena() {
                   <div className="text-left">
                     <p className="text-green-400 font-bold text-sm">👑 {fight.winner.name}</p>
                     <p className="text-green-300 text-xs">WINNER</p>
+                    <p className="text-green-400 text-xs font-mono opacity-75">
+                      {fight.winnerOwner ? `${fight.winnerOwner.slice(0, 6)}...${fight.winnerOwner.slice(-4)}` : 'Unknown'}
+                    </p>
                   </div>
                 </div>
 
@@ -1192,6 +1220,9 @@ export default function GumbuoFightersArena() {
                   <div className="text-right">
                     <p className="text-red-400 font-bold text-sm">{fight.loser.name}</p>
                     <p className="text-red-300 text-xs">DEFEATED</p>
+                    <p className="text-red-400 text-xs font-mono opacity-75">
+                      {fight.loserOwner ? `${fight.loserOwner.slice(0, 6)}...${fight.loserOwner.slice(-4)}` : 'Unknown'}
+                    </p>
                   </div>
                   <div className="w-12 h-12 flex-shrink-0">
                     <img
@@ -1211,9 +1242,9 @@ export default function GumbuoFightersArena() {
           </div>
           <div className="flex flex-col items-center mt-4 space-y-2">
             <p className="text-cyan-400 text-xs text-center opacity-75">
-              Showing {showAllHistory ? fightLog.length : Math.min(10, fightLog.length)} of {fightLog.length} {fightLog.length === 1 ? 'fight' : 'fights'}
+              Showing {showAllHistory ? fightLog.length : Math.min(3, fightLog.length)} of {fightLog.length} {fightLog.length === 1 ? 'fight' : 'fights'}
             </p>
-            {fightLog.length > 10 && (
+            {fightLog.length > 3 && (
               <button
                 onClick={() => setShowAllHistory(!showAllHistory)}
                 onMouseEnter={() => playSound('hover')}
