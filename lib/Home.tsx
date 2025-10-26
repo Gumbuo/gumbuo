@@ -4,7 +4,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const AlienDripStation = dynamic(() => import("../app/components/AlienDripStation"), { ssr: false });
-const AlienLeaderboard = dynamic(() => import("../app/components/AlienLeaderboard"), { ssr: false });
 const AlienMarketAndArena = dynamic(() => import("../app/components/AlienMarketAndArena"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../app/components/GumbuoBoss"), { ssr: false });
 const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
@@ -79,21 +78,6 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Airdrop Leaderboard Registration Button */}
-            <button
-              onClick={() => {
-                const leaderboardSection = document.querySelector('#leaderboard-section');
-                if (leaderboardSection) {
-                  leaderboardSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-              }}
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 px-36 py-18 rounded-3xl text-black font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-yellow-400/80 flex items-center gap-8 mt-12 animate-pulse"
-              style={{fontSize: '6rem'}}
-            >
-              <img src="/baob.png" alt="Baob" style={{width: '80px', height: '80px', objectFit: 'cover'}} className="animate-bounce" />
-              <span>Register For Airdrop</span>
-              <img src="/baob.png" alt="Baob" style={{width: '80px', height: '80px', objectFit: 'cover'}} className="animate-bounce" />
-            </button>
           </div>
         </div>
 
@@ -112,11 +96,6 @@ export default function Home() {
         {/* Drip Station */}
         <div className="flex flex-col items-center space-y-24 mt-24">
           <AlienDripStation />
-        </div>
-
-        {/* Alien Leaderboard */}
-        <div id="leaderboard-section" className="flex justify-center mt-32">
-          <AlienLeaderboard />
         </div>
 
         {/* Alien Market & Arena (Combined) */}
