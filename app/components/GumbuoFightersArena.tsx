@@ -62,6 +62,8 @@ export default function GumbuoFightersArena() {
           console.log("Cleared:", key);
         }
       });
+      // Clear backend arena state
+      fetch('/api/arena', { method: 'DELETE' }).catch(e => console.error('Failed to clear arena:', e));
       // Version is set in AlienMarketplace, but check here too
       localStorage.setItem(versionKey, CURRENT_VERSION);
     }
@@ -86,24 +88,32 @@ export default function GumbuoFightersArena() {
     setUserBalance(getUserBalance(address));
   }, [address, getUserBalance]);
 
-  // Load arena state from localStorage on mount
+  // Load arena state from API on mount
   useEffect(() => {
-    const savedArena = localStorage.getItem('arenaState');
-    if (savedArena) {
+    const fetchArenaState = async () => {
       try {
-        const arenaState = JSON.parse(savedArena);
-        if (arenaState.fighter1) setFighter1(arenaState.fighter1);
-        if (arenaState.fighter2) setFighter2(arenaState.fighter2);
-        if (arenaState.fighter1Owner) setFighter1Owner(arenaState.fighter1Owner);
-        if (arenaState.fighter2Owner) setFighter2Owner(arenaState.fighter2Owner);
-        if (arenaState.fighter1Paid) setFighter1Paid(arenaState.fighter1Paid);
-        if (arenaState.fighter2Paid) setFighter2Paid(arenaState.fighter2Paid);
+        const response = await fetch('/api/arena');
+        const data = await response.json();
+        if (data.success && data.arenaState) {
+          const arena = data.arenaState;
+          setFighter1(arena.fighter1 || null);
+          setFighter2(arena.fighter2 || null);
+          setFighter1Owner(arena.fighter1Owner || null);
+          setFighter2Owner(arena.fighter2Owner || null);
+          setFighter1Paid(arena.fighter1Paid || false);
+          setFighter2Paid(arena.fighter2Paid || false);
+        }
       } catch (e) {
         console.error('Failed to load arena state:', e);
       }
-    }
+    };
 
-    // Load fight log from localStorage
+    fetchArenaState();
+
+    // Poll for arena updates every 3 seconds
+    const pollInterval = setInterval(fetchArenaState, 3000);
+
+    // Load fight log from localStorage (local history only)
     const savedLog = localStorage.getItem('fightLog');
     if (savedLog) {
       try {
@@ -112,6 +122,8 @@ export default function GumbuoFightersArena() {
         console.error('Failed to load fight log:', e);
       }
     }
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   // Check for pending fight results when user connects
@@ -142,17 +154,31 @@ export default function GumbuoFightersArena() {
     }
   }, [address]);
 
-  // Save arena state to localStorage whenever fighters change
+  // Save arena state to API whenever fighters change
   useEffect(() => {
-    const arenaState = {
-      fighter1,
-      fighter2,
-      fighter1Owner,
-      fighter2Owner,
-      fighter1Paid,
-      fighter2Paid,
+    const saveArenaState = async () => {
+      try {
+        await fetch('/api/arena', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fighter1,
+            fighter2,
+            fighter1Owner,
+            fighter2Owner,
+            fighter1Paid,
+            fighter2Paid,
+          }),
+        });
+      } catch (e) {
+        console.error('Failed to save arena state:', e);
+      }
     };
-    localStorage.setItem('arenaState', JSON.stringify(arenaState));
+
+    // Only save if there's actually a change (not initial load)
+    if (fighter1 !== undefined) {
+      saveArenaState();
+    }
   }, [fighter1, fighter2, fighter1Owner, fighter2Owner, fighter1Paid, fighter2Paid]);
 
   // Auto-start fight when both slots filled AND both paid
@@ -435,7 +461,7 @@ export default function GumbuoFightersArena() {
     }, 15000); // 15 second cinematic fight animation
   };
 
-  const resetArena = () => {
+  const resetArena = async () => {
     setFighter1(null);
     setFighter2(null);
     setFighter1Owner(null);
@@ -450,6 +476,15 @@ export default function GumbuoFightersArena() {
     // Clear pending fight from localStorage when user dismisses result
     if (address) {
       localStorage.removeItem(`pendingFight_${address}`);
+    }
+
+    // Clear arena state in backend
+    try {
+      await fetch('/api/arena', {
+        method: 'DELETE',
+      });
+    } catch (e) {
+      console.error('Failed to clear arena state:', e);
     }
   };
 
