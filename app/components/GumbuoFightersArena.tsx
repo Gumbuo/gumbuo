@@ -46,6 +46,7 @@ export default function GumbuoFightersArena() {
   const [fighter2Health, setFighter2Health] = useState(100);
   const [battleMessage, setBattleMessage] = useState("");
   const [showAllHistory, setShowAllHistory] = useState(false);
+  const [arenaLoaded, setArenaLoaded] = useState(false);
 
   // Migration: Clear old localStorage data (v5 - global staking & drip data)
   useEffect(() => {
@@ -122,9 +123,12 @@ export default function GumbuoFightersArena() {
           if (data.fightHistory) {
             setFightLog(data.fightHistory);
           }
+          // Mark arena as loaded to prevent overwriting on mount
+          setArenaLoaded(true);
         }
       } catch (e) {
         console.error('Failed to load arena state:', e);
+        setArenaLoaded(true); // Still mark as loaded to allow future saves
       }
     };
 
@@ -169,6 +173,9 @@ export default function GumbuoFightersArena() {
 
   // Save arena state to API whenever fighters change
   useEffect(() => {
+    // Only save if arena has been loaded first (prevents overwriting on mount)
+    if (!arenaLoaded) return;
+
     const saveArenaState = async () => {
       try {
         await fetch('/api/arena', {
@@ -188,11 +195,8 @@ export default function GumbuoFightersArena() {
       }
     };
 
-    // Only save if there's actually a change (not initial load)
-    if (fighter1 !== undefined) {
-      saveArenaState();
-    }
-  }, [fighter1, fighter2, fighter1Owner, fighter2Owner, fighter1Paid, fighter2Paid]);
+    saveArenaState();
+  }, [fighter1, fighter2, fighter1Owner, fighter2Owner, fighter1Paid, fighter2Paid, arenaLoaded]);
 
   // Auto-start fight when both slots filled AND both paid
   useEffect(() => {
