@@ -28,11 +28,20 @@ interface BossCooldowns {
   ultimateAttackTime: number;
 }
 
+interface StakingData {
+  isStaking: boolean;
+  stakedAmount: number;
+  stakeStartTime: number;
+  lastClaimTime: number;
+}
+
 interface UserGameData {
   ownedAliens: OwnedAlien[];
   attackLevels: AttackLevels;
   bossRewardClaimed: boolean;
   bossCooldowns: BossCooldowns;
+  stakingData: StakingData;
+  lastDripClaim: number;
   lastUpdated: number;
 }
 
@@ -41,6 +50,8 @@ const EMPTY_USER_DATA: UserGameData = {
   attackLevels: { normal: 1, power: 1, ultimate: 1 },
   bossRewardClaimed: false,
   bossCooldowns: { powerAttackTime: 0, ultimateAttackTime: 0 },
+  stakingData: { isStaking: false, stakedAmount: 0, stakeStartTime: 0, lastClaimTime: 0 },
+  lastDripClaim: 0,
   lastUpdated: Date.now(),
 };
 

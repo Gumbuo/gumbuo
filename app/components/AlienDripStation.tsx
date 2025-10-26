@@ -64,7 +64,7 @@ export default function AlienDripStation() {
 
   const gmbAmount = parseFloat(gmbBalance?.formatted || "0");
 
-  // Load staking data from localStorage
+  // Load staking data from backend API
   useEffect(() => {
     // Reset staking state when wallet disconnects
     if (!address) {
@@ -79,37 +79,42 @@ export default function AlienDripStation() {
       return;
     }
 
-    // Reset state before loading new wallet's data
-    setStakingData({
-      isStaking: false,
-      stakedAmount: 0,
-      stakeStartTime: 0,
-      lastClaimTime: 0,
-    });
-    setAccumulatedRewards(0);
-    setTimeStaked("");
+    const fetchStakingData = async () => {
+      try {
+        const response = await fetch(`/api/user-data?wallet=${address}`);
+        const result = await response.json();
 
-    const savedStaking = localStorage.getItem(`staking_${address}`);
-    if (savedStaking) {
-      const data = JSON.parse(savedStaking) as StakingData;
-      setStakingData(data);
+        if (result.success && result.userData) {
+          const data = result.userData.stakingData || {
+            isStaking: false,
+            stakedAmount: 0,
+            stakeStartTime: 0,
+            lastClaimTime: 0,
+          };
+          setStakingData(data);
 
-      // Only check balance drop if GMB amount has actually loaded (> 0)
-      // This prevents false triggers on page load when balance is still loading
-      if (data.isStaking && gmbAmount > 0 && gmbAmount < data.stakedAmount * 0.95) {
-        // Balance dropped more than 5% - they likely sold
-        playSound('error');
-        alert("⚠️ Your GMB balance dropped! Staking rewards have been paused. Your accumulated rewards are still claimable.");
-        setStakingData({
-          ...data,
-          isStaking: false,
-        });
-        localStorage.setItem(`staking_${address}`, JSON.stringify({
-          ...data,
-          isStaking: false,
-        }));
+          // Only check balance drop if GMB amount has actually loaded (> 0)
+          if (data.isStaking && gmbAmount > 0 && gmbAmount < data.stakedAmount * 0.95) {
+            // Balance dropped more than 5% - pause staking
+            playSound('error');
+            alert("⚠️ Your GMB balance dropped! Staking rewards have been paused. Your accumulated rewards are still claimable.");
+            const pausedData = { ...data, isStaking: false };
+            setStakingData(pausedData);
+
+            // Save to backend
+            await fetch('/api/user-data', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ wallet: address, stakingData: pausedData }),
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load staking data:', error);
       }
-    }
+    };
+
+    fetchStakingData();
   }, [address, gmbAmount]);
 
   // Calculate staking rewards dynamically based on GMB amount
@@ -198,22 +203,28 @@ export default function AlienDripStation() {
     };
 
     setStakingData(newStakingData);
-    localStorage.setItem(`staking_${address}`, JSON.stringify(newStakingData));
+
+    // Save to backend API
+    fetch('/api/user-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet: address, stakingData: newStakingData }),
+    }).catch(error => console.error('Failed to save staking data:', error));
+
     playSound('success');
     alert(`✅ Staking started! You're now earning ${currentStakingRewards?.apPerDay.toFixed(2) || 0} AP per day!`);
   };
 
   // Stop staking
-  const handleStopStaking = () => {
+  const handleStopStaking = async () => {
     if (!address) {
       playSound('error');
       alert("Please connect your wallet first!");
       return;
     }
 
-    // SECURITY: Verify staking data belongs to current wallet
-    const savedStaking = localStorage.getItem(`staking_${address}`);
-    if (!savedStaking || !stakingData.isStaking) {
+    // SECURITY: Verify staking data from backend
+    if (!stakingData.isStaking) {
       playSound('error');
       alert("⚠️ No active staking found for this wallet!");
       setStakingData({
@@ -238,13 +249,22 @@ export default function AlienDripStation() {
       return;
     }
 
-    setStakingData({
+    const emptyStakingData = {
       isStaking: false,
       stakedAmount: 0,
       stakeStartTime: 0,
       lastClaimTime: 0,
-    });
-    localStorage.removeItem(`staking_${address}`);
+    };
+
+    setStakingData(emptyStakingData);
+
+    // Save to backend API
+    await fetch('/api/user-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet: address, stakingData: emptyStakingData }),
+    }).catch(error => console.error('Failed to save staking data:', error));
+
     playSound('success');
     alert("Staking stopped! You can still claim your accumulated rewards.");
   };
@@ -257,55 +277,81 @@ export default function AlienDripStation() {
       return;
     }
 
-    // SECURITY: Verify staking data belongs to current wallet
-    const savedStaking = localStorage.getItem(`staking_${address}`);
-    if (!savedStaking || !stakingData.isStaking) {
-      playSound('error');
-      alert("⚠️ No active staking found for this wallet!");
-      setStakingData({
-        isStaking: false,
-        stakedAmount: 0,
-        stakeStartTime: 0,
-        lastClaimTime: 0,
-      });
-      setAccumulatedRewards(0);
-      return;
-    }
+    // SECURITY: Verify staking data from backend
+    try {
+      const response = await fetch(`/api/user-data?wallet=${address}`);
+      const result = await response.json();
 
-    if (accumulatedRewards <= 0) {
-      playSound('error');
-      alert("No rewards to claim yet! Keep staking!");
-      return;
-    }
-
-    playSound('click');
-    setClaimingStake(true);
-
-    setTimeout(async () => {
-      const success = await addPoints(address, accumulatedRewards, 'staking');
-
-      if (success) {
-        playSound('success');
-
-        // Reset last claim time
-        const now = Date.now();
-        const newStakingData = {
-          ...stakingData,
-          lastClaimTime: now,
-        };
-        setStakingData(newStakingData);
-        localStorage.setItem(`staking_${address}`, JSON.stringify(newStakingData));
-        setUserPoints(getUserBalance(address));
-        setAccumulatedRewards(0);
-
-        alert(`💰 Claimed ${accumulatedRewards} AP from staking! Counter reset!`);
-      } else {
+      if (!result.success || !result.userData || !result.userData.stakingData?.isStaking) {
         playSound('error');
-        alert("Failed to claim rewards. Please try again.");
+        alert("⚠️ No active staking found for this wallet!");
+        setStakingData({
+          isStaking: false,
+          stakedAmount: 0,
+          stakeStartTime: 0,
+          lastClaimTime: 0,
+        });
+        setAccumulatedRewards(0);
+        return;
       }
 
+      // Use backend data for validation
+      const backendStakingData = result.userData.stakingData;
+
+      // Validate lastClaimTime is not 0 (prevents exploit)
+      if (backendStakingData.lastClaimTime === 0 || backendStakingData.stakeStartTime === 0) {
+        playSound('error');
+        alert("⚠️ Invalid staking data detected!");
+        return;
+      }
+
+      if (accumulatedRewards <= 0) {
+        playSound('error');
+        alert("No rewards to claim yet! Keep staking!");
+        return;
+      }
+
+      playSound('click');
+      setClaimingStake(true);
+
+      setTimeout(async () => {
+        const success = await addPoints(address, accumulatedRewards, 'staking');
+
+        if (success) {
+          playSound('success');
+
+          // Reset last claim time
+          const now = Date.now();
+          const newStakingData = {
+            ...stakingData,
+            lastClaimTime: now,
+          };
+          setStakingData(newStakingData);
+
+          // Save to backend API
+          await fetch('/api/user-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: address, stakingData: newStakingData }),
+          });
+
+          setUserPoints(getUserBalance(address));
+          setAccumulatedRewards(0);
+
+          alert(`💰 Claimed ${accumulatedRewards} AP from staking! Counter reset!`);
+        } else {
+          playSound('error');
+          alert("Failed to claim rewards. Please try again.");
+        }
+
+        setClaimingStake(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Failed to verify staking data:', error);
+      playSound('error');
+      alert("Failed to verify staking data. Please try again.");
       setClaimingStake(false);
-    }, 1500);
+    }
   };
 
   // Calculate time until 8pm EST (daily reset)
@@ -341,37 +387,48 @@ export default function AlienDripStation() {
   useEffect(() => {
     if (!address) return;
 
-    const lastClaimTime = localStorage.getItem(`lastDrip_${address}`);
+    const fetchDripData = async () => {
+      try {
+        const response = await fetch(`/api/user-data?wallet=${address}`);
+        const result = await response.json();
 
-    if (lastClaimTime) {
-      const lastClaim = new Date(parseInt(lastClaimTime));
-      const now = new Date();
-      const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-      const estLastClaim = new Date(lastClaim.toLocaleString("en-US", { timeZone: "America/New_York" }));
-      const lastReset = new Date(estNow);
-      lastReset.setHours(20, 0, 0, 0);
-      if (estNow < lastReset) {
-        lastReset.setDate(lastReset.getDate() - 1);
-      }
+        const lastClaimTime = result.success && result.userData ? result.userData.lastDripClaim : 0;
 
-      if (estLastClaim >= lastReset) {
-        setHasClaimedToday(true);
-        const nextReset = new Date(estNow);
-        nextReset.setHours(20, 0, 0, 0);
-        if (estNow >= nextReset) {
-          nextReset.setDate(nextReset.getDate() + 1);
+        if (lastClaimTime && lastClaimTime > 0) {
+          const lastClaim = new Date(lastClaimTime);
+          const now = new Date();
+          const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+          const estLastClaim = new Date(lastClaim.toLocaleString("en-US", { timeZone: "America/New_York" }));
+          const lastReset = new Date(estNow);
+          lastReset.setHours(20, 0, 0, 0);
+          if (estNow < lastReset) {
+            lastReset.setDate(lastReset.getDate() - 1);
+          }
+
+          if (estLastClaim >= lastReset) {
+            setHasClaimedToday(true);
+            const nextReset = new Date(estNow);
+            nextReset.setHours(20, 0, 0, 0);
+            if (estNow >= nextReset) {
+              nextReset.setDate(nextReset.getDate() + 1);
+            }
+            setNextClaimTime(nextReset.toLocaleString());
+          } else {
+            setHasClaimedToday(false);
+            setNextClaimTime(null);
+          }
+        } else {
+          setHasClaimedToday(false);
+          setNextClaimTime(null);
         }
-        setNextClaimTime(nextReset.toLocaleString());
-      } else {
-        setHasClaimedToday(false);
-        setNextClaimTime(null);
-      }
-    } else {
-      setHasClaimedToday(false);
-      setNextClaimTime(null);
-    }
 
-    setUserPoints(getUserBalance(address));
+        setUserPoints(getUserBalance(address));
+      } catch (error) {
+        console.error('Failed to load drip claim data:', error);
+      }
+    };
+
+    fetchDripData();
   }, [address, getUserBalance]);
 
   // Update countdown every second
@@ -415,7 +472,14 @@ export default function AlienDripStation() {
 
       if (success) {
         playSound('success');
-        localStorage.setItem(`lastDrip_${address}`, Date.now().toString());
+
+        // Save claim time to backend API
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet: address, lastDripClaim: Date.now() }),
+        }).catch(error => console.error('Failed to save drip claim:', error));
+
         setHasClaimedToday(true);
         setUserPoints(getUserBalance(address));
         const now = new Date();

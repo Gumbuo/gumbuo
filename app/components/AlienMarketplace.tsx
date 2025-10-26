@@ -44,9 +44,9 @@ export default function AlienMarketplace() {
     apelian: 0,
   });
 
-  // Migration: Clear old localStorage data (v4 - global user data)
+  // Migration: Clear old localStorage data (v5 - global staking & drip data)
   useEffect(() => {
-    const CURRENT_VERSION = "4";
+    const CURRENT_VERSION = "5";
     const versionKey = "alienData_version";
     const storedVersion = localStorage.getItem(versionKey);
 
@@ -59,7 +59,9 @@ export default function AlienMarketplace() {
           key.startsWith("attackLevels_") ||
           key.startsWith("bossRewardClaimed_") ||
           key.startsWith("powerAttackTime_") ||
-          key.startsWith("ultimateAttackTime_")
+          key.startsWith("ultimateAttackTime_") ||
+          key.startsWith("staking_") ||
+          key.startsWith("lastDrip_")
         ) {
           localStorage.removeItem(key);
           console.log("Cleared:", key);

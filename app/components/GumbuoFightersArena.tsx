@@ -44,9 +44,9 @@ export default function GumbuoFightersArena() {
   const [fighter2Health, setFighter2Health] = useState(100);
   const [battleMessage, setBattleMessage] = useState("");
 
-  // Migration: Clear old localStorage data (v4 - global user data)
+  // Migration: Clear old localStorage data (v5 - global staking & drip data)
   useEffect(() => {
-    const CURRENT_VERSION = "4";
+    const CURRENT_VERSION = "5";
     const versionKey = "alienData_version";
     const storedVersion = localStorage.getItem(versionKey);
 
