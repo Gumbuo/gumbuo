@@ -95,26 +95,14 @@ export default function MothershipPage() {
 
         {/* Coming Soon Chains */}
         <h2 className="text-3xl font-alien text-yellow-400 mb-6 holographic-text animate-pulse">⏳ COMING SOON ⏳</h2>
-        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
           {/* Blast Chain */}
           <div className="group relative bg-gradient-to-br from-yellow-900/20 to-orange-900/20 rounded-2xl p-6 border-2 border-yellow-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
             <div className="relative z-10 text-center">
               <div className="text-4xl mb-3">💥</div>
               <h3 className="text-xl font-alien text-yellow-300 mb-2">BLAST</h3>
-              <p className="text-yellow-200/60 text-xs mb-3">Coming Q1 2025</p>
+              <p className="text-yellow-200/60 text-xs mb-3">EVM • Q1 2025</p>
               <div className="inline-block px-4 py-2 bg-yellow-500/10 rounded-lg border border-yellow-400/30 text-yellow-300 text-xs font-bold">
-                SOON™
-              </div>
-            </div>
-          </div>
-
-          {/* Solana Chain */}
-          <div className="group relative bg-gradient-to-br from-green-900/20 to-teal-900/20 rounded-2xl p-6 border-2 border-green-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
-            <div className="relative z-10 text-center">
-              <div className="text-4xl mb-3">⚡</div>
-              <h3 className="text-xl font-alien text-green-300 mb-2">SOLANA</h3>
-              <p className="text-green-200/60 text-xs mb-3">Coming Q2 2025</p>
-              <div className="inline-block px-4 py-2 bg-green-500/10 rounded-lg border border-green-400/30 text-green-300 text-xs font-bold">
                 SOON™
               </div>
             </div>
@@ -125,7 +113,7 @@ export default function MothershipPage() {
             <div className="relative z-10 text-center">
               <div className="text-4xl mb-3">🔷</div>
               <h3 className="text-xl font-alien text-cyan-300 mb-2">CARDANO</h3>
-              <p className="text-cyan-200/60 text-xs mb-3">Coming Q2 2025</p>
+              <p className="text-cyan-200/60 text-xs mb-3">Non-EVM • Q2 2025</p>
               <div className="inline-block px-4 py-2 bg-cyan-500/10 rounded-lg border border-cyan-400/30 text-cyan-300 text-xs font-bold">
                 SOON™
               </div>
