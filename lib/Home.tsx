@@ -24,15 +24,15 @@ export default function Home() {
       {/* Starfield Parallax Background */}
       <StarfieldBackground />
 
+      {/* Music Player - Top Left */}
+      <div className="fixed top-6 left-6 z-50">
+        <AlienMusicPlayer />
+      </div>
+
       {/* Top Right - Connect Button and HUD */}
       <div className="fixed top-6 right-6 z-50 flex flex-col items-end space-y-4">
         <ConnectButton />
         <AlienHUD />
-      </div>
-
-      {/* Music Player - Top Right below HUD */}
-      <div className="fixed top-[280px] right-6 z-50">
-        <AlienMusicPlayer />
       </div>
 
       {/* Content with proper spacing */}
