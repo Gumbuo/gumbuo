@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const GMB_TOKEN_ADDRESS = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
 
 export function AlienHUD() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chain } = useAccount();
   const { data: ethBalance } = useBalance({ address });
   const { data: gmbBalance } = useBalance({
     address,
@@ -31,6 +31,7 @@ export function AlienHUD() {
       {isConnected ? (
         <>
           <p><strong>Wallet:</strong> {address}</p>
+          <p><strong>Chain:</strong> {chain?.name || 'Unknown'}</p>
           <p><strong>ETH:</strong> {ethBalance?.formatted} {ethBalance?.symbol}</p>
           <p><strong>GMB:</strong> {gmbBalance?.formatted ? `${parseFloat(gmbBalance.formatted).toFixed(2)} ${gmbBalance.symbol}` : 'Loading...'}</p>
           <p><strong>AlienPoints:</strong> <span className="text-2xl font-bold">{alienPoints.toLocaleString()}</span> AP 👽</p>
