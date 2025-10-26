@@ -99,28 +99,6 @@ export default function StarfieldBackground() {
         color: { name: 'red', beam: [255, 50, 50], body: '#ff3333', dark: '#4d1a1a', dome: 'rgba(255, 100, 100, 0.3)' },
         lastLaserTime: 0,
       },
-      {
-        x: Math.random() * canvas!.width,
-        y: Math.random() * canvas!.height,
-        baseSpeed: 2.2,
-        angle: Math.random() * Math.PI * 2,
-        wobbleOffset: Math.PI * 0.5,
-        targetAngle: Math.random() * Math.PI * 2,
-        tilt: 0,
-        color: { name: 'orange', beam: [255, 165, 0], body: '#ff9933', dark: '#4d3d1a', dome: 'rgba(255, 165, 0, 0.3)' },
-        lastLaserTime: 0,
-      },
-      {
-        x: Math.random() * canvas!.width,
-        y: Math.random() * canvas!.height,
-        baseSpeed: 1.7,
-        angle: Math.random() * Math.PI * 2,
-        wobbleOffset: Math.PI * 1.2,
-        targetAngle: Math.random() * Math.PI * 2,
-        tilt: 0,
-        color: { name: 'yellow', beam: [255, 255, 0], body: '#ffff33', dark: '#4d4d1a', dome: 'rgba(255, 255, 150, 0.3)' },
-        lastLaserTime: 0,
-      },
     ];
 
     // Burn marks and laser beams tracking
