@@ -45,7 +45,7 @@ export default function MothershipPage() {
         </p>
 
         {/* Active Chains */}
-        <h2 className="text-3xl font-alien text-cyan-400 mb-6 holographic-text">🚀 LIVE CHAINS 🚀</h2>
+        <h2 className="text-3xl font-alien text-cyan-400 mb-6 holographic-text">GUMBUO'S BLOCKCHAIN PORTAL</h2>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
           {/* Base Chain Card */}
           <Link href="/base">
