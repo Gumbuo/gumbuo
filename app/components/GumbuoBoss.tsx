@@ -805,25 +805,25 @@ export default function GumbuoBoss() {
               <p className="text-gray-400 text-center text-sm">No attacks yet!</p>
             ) : (
               leaderboard.map((entry, index) => (
-                <div key={index} className={`flex items-center justify-between p-3 rounded-xl ${
+                <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${
                   index === 0 ? 'bg-yellow-500/20' :
                   index === 1 ? 'bg-gray-400/20' :
                   index === 2 ? 'bg-orange-500/20' :
                   'bg-black/40'
                 }`}>
-                  <div className="flex items-center space-x-2 min-w-0 flex-shrink">
-                    <span className="text-xl flex-shrink-0">
-                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
-                    </span>
-                    <span className={`text-xs ${address?.toLowerCase() === entry.address.toLowerCase() ? 'text-green-400 font-bold' : 'text-gray-300'} truncate`}>
-                      {entry.address.slice(0, 6)}...{entry.address.slice(-4)}
-                      {address?.toLowerCase() === entry.address.toLowerCase() && ' (You)'}
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-end flex-shrink-0 ml-2">
-                    <div className="text-yellow-400 font-bold text-base whitespace-nowrap">{entry.damage.toLocaleString()} HP</div>
-                    <div className="text-green-400 font-bold text-sm whitespace-nowrap">🎁 {entry.reward.toLocaleString()} AP</div>
-                  </div>
+                  <span className="text-xl flex-shrink-0">
+                    {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                  </span>
+                  <span className={`text-xs ${address?.toLowerCase() === entry.address.toLowerCase() ? 'text-green-400 font-bold' : 'text-gray-300'} flex-shrink-0 min-w-[120px]`}>
+                    {entry.address.slice(0, 6)}...{entry.address.slice(-4)}
+                    {address?.toLowerCase() === entry.address.toLowerCase() && ' (You)'}
+                  </span>
+                  <span className="text-yellow-400 font-bold text-sm whitespace-nowrap flex-shrink-0">
+                    {entry.damage.toLocaleString()} HP
+                  </span>
+                  <span className="text-green-400 font-bold text-sm whitespace-nowrap flex-shrink-0">
+                    🎁 {entry.reward.toLocaleString()} AP
+                  </span>
                 </div>
               ))
             )}
