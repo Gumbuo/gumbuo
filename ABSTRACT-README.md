@@ -2,6 +2,8 @@
 
 This is the **Abstract chain version** of Gumbuo - a fresh deployment optimized for Abstract's fast, low-cost network.
 
+**Status:** Live on Vercel
+
 ## Key Differences from Base Version
 
 ### Chain Configuration
