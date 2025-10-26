@@ -43,6 +43,7 @@ export default function GumbuoFightersArena() {
   const [fighter1Health, setFighter1Health] = useState(100);
   const [fighter2Health, setFighter2Health] = useState(100);
   const [battleMessage, setBattleMessage] = useState("");
+  const [showAllHistory, setShowAllHistory] = useState(false);
 
   // Migration: Clear old localStorage data (v5 - global staking & drip data)
   useEffect(() => {
@@ -1163,7 +1164,7 @@ export default function GumbuoFightersArena() {
             <span className="text-cyan-400">📜 Fight History 📜</span>
           </h3>
           <div className="max-h-96 overflow-y-auto space-y-3">
-            {fightLog.map((fight, index) => (
+            {(showAllHistory ? fightLog : fightLog.slice(0, 10)).map((fight, index) => (
               <div
                 key={`${fight.timestamp}-${index}`}
                 className="bg-black/40 rounded-lg p-4 flex items-center justify-between space-x-4 hover:bg-black/60 transition-all"
@@ -1208,9 +1209,20 @@ export default function GumbuoFightersArena() {
               </div>
             ))}
           </div>
-          <p className="text-cyan-400 text-xs text-center mt-4 opacity-75">
-            {fightLog.length} {fightLog.length === 1 ? 'fight' : 'fights'} recorded
-          </p>
+          <div className="flex flex-col items-center mt-4 space-y-2">
+            <p className="text-cyan-400 text-xs text-center opacity-75">
+              Showing {showAllHistory ? fightLog.length : Math.min(10, fightLog.length)} of {fightLog.length} {fightLog.length === 1 ? 'fight' : 'fights'}
+            </p>
+            {fightLog.length > 10 && (
+              <button
+                onClick={() => setShowAllHistory(!showAllHistory)}
+                onMouseEnter={() => playSound('hover')}
+                className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-lg transition-all duration-200 hover:scale-105"
+              >
+                {showAllHistory ? '▲ Show Less' : '▼ Show More'}
+              </button>
+            )}
+          </div>
         </div>
       )}
 
