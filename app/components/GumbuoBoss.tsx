@@ -82,42 +82,36 @@ export default function GumbuoBoss() {
   const [leaderboard, setLeaderboard] = useState<Array<{address: string, damage: number}>>([]);
   const [attackLevels, setAttackLevels] = useState<AttackLevels>({ normal: 1, power: 1, ultimate: 1 });
 
-  // Load boss state from localStorage
+  // Load boss state from API on mount with polling
   useEffect(() => {
-    const savedState = localStorage.getItem("gumbuoBossState");
-    if (savedState) {
-      const parsed = JSON.parse(savedState);
+    const fetchBossState = async () => {
+      try {
+        const response = await fetch('/api/boss');
+        const data = await response.json();
+        if (data.success) {
+          setBossState(data.bossState);
+          setRecentAttackers(data.recentAttackers || []);
 
-      // Check if boss should respawn
-      if (!parsed.isAlive && parsed.defeatedAt) {
-        const now = Date.now();
-        const timeSinceDefeat = now - parsed.defeatedAt;
-
-        if (timeSinceDefeat >= BOSS_RESPAWN_TIME) {
-          // Respawn boss
-          const newState: BossState = {
-            currentHP: BOSS_MAX_HP,
-            maxHP: BOSS_MAX_HP,
-            defeatedAt: null,
-            totalDamageDealt: {},
-            isAlive: true,
-          };
-          setBossState(newState);
-          localStorage.setItem("gumbuoBossState", JSON.stringify(newState));
-
-          // Reset claimed status for all users
-          if (address) {
-            localStorage.removeItem(`bossRewardClaimed_${address}`);
-            setHasClaimedReward(false);
+          // Check if boss respawned - clear user's claimed status
+          if (data.bossState.isAlive && hasClaimedReward) {
+            if (address) {
+              localStorage.removeItem(`bossRewardClaimed_${address}`);
+              setHasClaimedReward(false);
+            }
           }
-        } else {
-          setBossState(parsed);
         }
-      } else {
-        setBossState(parsed);
+      } catch (error) {
+        console.error('Failed to fetch boss state:', error);
       }
-    }
-  }, []);
+    };
+
+    fetchBossState();
+
+    // Poll for updates every 3 seconds
+    const pollInterval = setInterval(fetchBossState, 3000);
+
+    return () => clearInterval(pollInterval);
+  }, [address, hasClaimedReward]);
 
   // Check if user has claimed reward
   useEffect(() => {
@@ -148,7 +142,7 @@ export default function GumbuoBoss() {
     return () => clearInterval(interval);
   }, [lastAttackTime]);
 
-  // Update respawn timer for defeated boss
+  // Update respawn timer for defeated boss (display only - API handles respawn)
   useEffect(() => {
     if (!bossState.isAlive && bossState.defeatedAt) {
       const updateRespawnTimer = () => {
@@ -161,35 +155,13 @@ export default function GumbuoBoss() {
         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
         setTimeUntilRespawn(`${hours}h ${minutes}m ${seconds}s`);
-
-        // Auto-respawn when timer reaches 0
-        if (timeRemaining === 0) {
-          const newState: BossState = {
-            currentHP: BOSS_MAX_HP,
-            maxHP: BOSS_MAX_HP,
-            defeatedAt: null,
-            totalDamageDealt: {},
-            isAlive: true,
-          };
-          setBossState(newState);
-          localStorage.setItem("gumbuoBossState", JSON.stringify(newState));
-
-          // Reset claimed status
-          if (address) {
-            localStorage.removeItem(`bossRewardClaimed_${address}`);
-            setHasClaimedReward(false);
-          }
-
-          playSound('success');
-          alert("🎉 The Gumbuo Boss has respawned! Time to battle again! 💀");
-        }
       };
 
       updateRespawnTimer();
       const interval = setInterval(updateRespawnTimer, 1000);
       return () => clearInterval(interval);
     }
-  }, [bossState.isAlive, bossState.defeatedAt, address, playSound]);
+  }, [bossState.isAlive, bossState.defeatedAt]);
 
   // Update leaderboard
   useEffect(() => {
@@ -341,7 +313,7 @@ export default function GumbuoBoss() {
     }
 
     // Simulate attack animation delay
-    setTimeout(() => {
+    setTimeout(async () => {
       const attackResult = calculateDamage(selectedAttack);
       setLastDamage(attackResult);
       setBossShaking(false);
@@ -353,37 +325,39 @@ export default function GumbuoBoss() {
         playSound('scan');
       }
 
-      // Update boss HP
-      const newHP = Math.max(0, bossState.currentHP - attackResult.damage);
-      const newDamageDealt = { ...bossState.totalDamageDealt };
-      newDamageDealt[address] = (newDamageDealt[address] || 0) + attackResult.damage;
+      // Send damage to API
+      try {
+        const response = await fetch('/api/boss', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            damage: attackResult.damage,
+            wallet: address,
+            attackType: selectedAttack,
+          }),
+        });
 
-      const newState: BossState = {
-        ...bossState,
-        currentHP: newHP,
-        totalDamageDealt: newDamageDealt,
-        isAlive: newHP > 0,
-        defeatedAt: newHP === 0 ? Date.now() : null,
-      };
+        const data = await response.json();
 
-      setBossState(newState);
-      localStorage.setItem("gumbuoBossState", JSON.stringify(newState));
+        if (data.success) {
+          setBossState(data.bossState);
+          setRecentAttackers(data.recentAttackers || []);
 
-      // Add to recent attackers feed
-      const newAttacker: RecentAttacker = {
-        address,
-        damage: attackResult.damage,
-        timestamp: Date.now(),
-        attackType: selectedAttack,
-      };
-      setRecentAttackers(prev => [newAttacker, ...prev].slice(0, 10));
-
-      // Check if boss was defeated
-      if (newHP === 0) {
-        playSound('success');
-        setTimeout(() => {
-          alert("🎉 THE GUMBUO BOSS HAS BEEN DEFEATED! 💀\n\nRewards are now available to claim! Check your damage contribution to see your share! 🏆");
-        }, 500);
+          // Check if boss was defeated
+          if (!data.bossState.isAlive) {
+            playSound('success');
+            setTimeout(() => {
+              alert("🎉 THE GUMBUO BOSS HAS BEEN DEFEATED! 💀\n\nRewards are now available to claim! Check your damage contribution to see your share! 🏆");
+            }, 500);
+          }
+        } else {
+          playSound('error');
+          alert('Failed to record damage. Please try again.');
+        }
+      } catch (error) {
+        console.error('Failed to update boss:', error);
+        playSound('error');
+        alert('Network error. Please try again.');
       }
 
       setIsAttacking(false);
