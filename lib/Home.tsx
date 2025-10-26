@@ -79,6 +79,22 @@ export default function Home() {
                 <span>Discord</span>
               </a>
             </div>
+
+            {/* Airdrop Leaderboard Registration Button */}
+            <button
+              onClick={() => {
+                const leaderboardSection = document.querySelector('#leaderboard-section');
+                if (leaderboardSection) {
+                  leaderboardSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              }}
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 px-36 py-18 rounded-3xl text-black font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-yellow-400/80 flex items-center gap-8 mt-12 animate-pulse"
+              style={{fontSize: '6rem'}}
+            >
+              <span style={{fontSize: '8rem'}}>🎁</span>
+              <span>Register For Airdrop</span>
+              <span style={{fontSize: '8rem'}}>🎁</span>
+            </button>
           </div>
         </div>
 
@@ -101,7 +117,7 @@ export default function Home() {
         </div>
 
         {/* Alien Leaderboard */}
-        <div className="flex justify-center mt-32">
+        <div id="leaderboard-section" className="flex justify-center mt-32">
           <AlienLeaderboard />
         </div>
 
