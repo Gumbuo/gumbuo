@@ -1,6 +1,9 @@
 "use client";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+
+const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -191,8 +194,13 @@ export default function MothershipPage() {
           </p>
         </div>
 
+        {/* Alien Leaderboard */}
+        <div className="flex justify-center mt-16">
+          <AlienLeaderboard />
+        </div>
+
         {/* Footer */}
-        <div className="mt-12 text-gray-500 text-sm">
+        <div className="mt-12 mb-12 text-gray-500 text-sm">
           <p>Both chains share the same gameplay • Different economies • Your choice</p>
         </div>
       </div>
