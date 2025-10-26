@@ -5,30 +5,30 @@ import type { Metadata } from "next";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Gumbuo - Alien Points Economy",
-  description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
+  title: "Gumbuo Abstract - Alien XP Economy",
+  description: "Join Gumbuo on Abstract! Battle bosses, fight aliens in the arena, and earn Abstract XP on the fastest chain!",
   icons: {
     icon: "/gumbuo.svg",
   },
   openGraph: {
-    title: "Gumbuo - Alien Points Economy",
-    description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
+    title: "Gumbuo Abstract - Alien XP Economy",
+    description: "Join Gumbuo on Abstract! Battle bosses, fight aliens in the arena, and earn Abstract XP on the fastest chain!",
     url: "https://www.gumbuo.io",
-    siteName: "Gumbuo",
+    siteName: "Gumbuo Abstract Edition",
     images: [
       {
         url: "https://www.gumbuo.io/logo.png",
         width: 1024,
         height: 1536,
-        alt: "Gumbuo Logo",
+        alt: "Gumbuo Abstract Logo",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gumbuo - Alien Points Economy",
-    description: "Join the Gumbuo alien community! Spin the wheel, claim from the drip station, and earn Alien Points!",
+    title: "Gumbuo Abstract - Alien XP Economy",
+    description: "Join Gumbuo on Abstract! Battle bosses, fight aliens in the arena, and earn Abstract XP on the fastest chain!",
     images: ["https://www.gumbuo.io/logo.png"],
   },
 };

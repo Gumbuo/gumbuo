@@ -1,0 +1,34 @@
+{
+  "ticketCategories": [
+    {
+      "id": "general",
+      "label": "General Support",
+      "emoji": "❓",
+      "description": "General questions and support"
+    },
+    {
+      "id": "technical",
+      "label": "Technical Issue",
+      "emoji": "🔧",
+      "description": "Bug reports and technical problems"
+    },
+    {
+      "id": "billing",
+      "label": "Billing",
+      "emoji": "💰",
+      "description": "Payment and billing inquiries"
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "emoji": "📋",
+      "description": "Anything else"
+    }
+  ],
+  "ticketPanelEmbed": {
+    "title": "🎫 Support Ticket System",
+    "description": "Need help? Click the button below to create a support ticket!\n\n**How it works:**\n• Click 'Create Ticket'\n• Select your issue category\n• A private channel will be created\n• Our staff will assist you shortly\n\n⏰ Average response time: < 1 hour",
+    "color": "#5865F2",
+    "footer": "Click the button below to get started!"
+  }
+}
