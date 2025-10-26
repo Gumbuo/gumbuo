@@ -162,6 +162,8 @@ export default function AlienMarketplace() {
           purchasedAt: Date.now(),
         };
 
+        let updatedAliens: OwnedAlien[] = [];
+
         // Fetch latest aliens from backend to avoid race condition
         try {
           const response = await fetch(`/api/user-data?wallet=${address}`);
@@ -169,7 +171,7 @@ export default function AlienMarketplace() {
           const currentAliens = data.success && data.userData ? data.userData.ownedAliens || [] : [];
 
           // Add new alien to latest backend data
-          const updatedAliens = [...currentAliens, newAlien];
+          updatedAliens = [...currentAliens, newAlien];
           setOwnedAliens(updatedAliens);
 
           // Save to backend API
