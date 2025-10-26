@@ -2,9 +2,11 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
+const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -29,6 +31,12 @@ export default function MothershipPage() {
           <source src="/alien.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
+      </div>
+
+      {/* Top Right - Connect Button and HUD */}
+      <div className="absolute top-6 right-6 z-20 flex flex-col items-end space-y-4">
+        <ConnectButton />
+        <AlienHUD />
       </div>
 
       {/* Content */}
