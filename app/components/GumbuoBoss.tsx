@@ -522,7 +522,7 @@ export default function GumbuoBoss() {
             <img
               src="/gumbuoboss.png"
               alt="Gumbuo Boss"
-              className={`w-48 h-48 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
+              className={`w-32 h-32 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
                 filter: bossState.isAlive ? 'drop-shadow(0 0 40px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 80px rgba(239, 68, 68, 0.5))' : 'none',
                 animation: bossShaking ? 'shake 0.5s ease-in-out' : 'none',
