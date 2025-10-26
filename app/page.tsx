@@ -53,22 +53,41 @@ export default function MothershipPage() {
           Choose Your Chain • Enter the Alien Economy
         </p>
 
-        {/* Buy Gumbuo Button with Mascots */}
-        <div className="flex flex-col items-center space-y-4 mb-12">
-          <div className="flex items-center justify-center space-x-6">
-            <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
-            <a
-              href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-24 py-8 bg-green-400 text-black font-bold rounded-2xl hover:bg-green-500 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse"
-              style={{fontSize: '4rem'}}
-            >
-              Buy Gumbuo
-            </a>
-            <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+        {/* Buy Gumbuo Buttons with Mascots */}
+        <div className="flex flex-col items-center space-y-6 mb-12">
+          {/* Base Chain Buy Button */}
+          <div className="flex flex-col items-center space-y-2">
+            <div className="flex items-center justify-center space-x-6">
+              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+              <a
+                href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-24 py-8 bg-blue-500 text-white font-bold rounded-2xl hover:bg-blue-600 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse shadow-xl shadow-blue-500/50"
+                style={{fontSize: '4rem'}}
+              >
+                Buy GMB (Base)
+              </a>
+              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+            </div>
+            <p className="text-blue-400 font-bold text-2xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
           </div>
-          <p className="text-green-400 font-bold text-3xl animate-pulse tracking-wider">👆 CLICK HERE 👆</p>
+
+          {/* Abstract Chain Buy Button - Coming Soon */}
+          <div className="flex flex-col items-center space-y-2 opacity-60">
+            <div className="flex items-center justify-center space-x-6">
+              <img src="/nyx.png" alt="Nyx" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover'}} />
+              <button
+                disabled
+                className="inline-block px-24 py-8 bg-purple-500/50 text-white/70 font-bold rounded-2xl cursor-not-allowed tracking-wider"
+                style={{fontSize: '4rem'}}
+              >
+                Buy GMB (Abstract)
+              </button>
+              <img src="/zorb.png" alt="Zorb" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover'}} />
+            </div>
+            <p className="text-purple-400 font-bold text-2xl tracking-wider">⏳ COMING SOON ⏳</p>
+          </div>
 
           {/* Social Links */}
           <div className="flex gap-12 mt-4">
