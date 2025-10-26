@@ -98,7 +98,7 @@ export default function MothershipPage() {
 
         {/* Coming Soon Chains */}
         <h2 className="text-3xl font-alien text-yellow-400 mb-6 holographic-text animate-pulse">⏳ COMING SOON ⏳</h2>
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
+        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mb-16">
           {/* Blast Chain */}
           <div className="group relative bg-gradient-to-br from-yellow-900/20 to-orange-900/20 rounded-2xl p-6 border-2 border-yellow-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
             <div className="relative z-10 text-center">
@@ -118,18 +118,6 @@ export default function MothershipPage() {
               <h3 className="text-xl font-alien text-purple-300 mb-2">POLYGON</h3>
               <p className="text-purple-200/60 text-xs mb-3">EVM L2 • Q1 2025</p>
               <div className="inline-block px-4 py-2 bg-purple-500/10 rounded-lg border border-purple-400/30 text-purple-300 text-xs font-bold">
-                SOON™
-              </div>
-            </div>
-          </div>
-
-          {/* Base L3 (Onchaind) */}
-          <div className="group relative bg-gradient-to-br from-indigo-900/20 to-violet-900/20 rounded-2xl p-6 border-2 border-indigo-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
-            <div className="relative z-10 text-center">
-              <div className="text-4xl mb-3">🎯</div>
-              <h3 className="text-xl font-alien text-indigo-300 mb-2">ONCHAIND</h3>
-              <p className="text-indigo-200/60 text-xs mb-3">EVM L3 • TBA</p>
-              <div className="inline-block px-4 py-2 bg-indigo-500/10 rounded-lg border border-indigo-400/30 text-indigo-300 text-xs font-bold">
                 SOON™
               </div>
             </div>
