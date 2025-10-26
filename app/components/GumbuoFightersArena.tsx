@@ -144,8 +144,11 @@ export default function GumbuoFightersArena() {
           setFightResult(fightData.result);
           setFighting(false);
 
-          // Clear pending fight from localStorage
-          localStorage.removeItem(pendingFightKey);
+          // Auto-clear the result after 5 seconds
+          setTimeout(() => {
+            setFightResult(null);
+            localStorage.removeItem(pendingFightKey);
+          }, 5000);
         }, 3000); // Match the original fight animation duration
       } catch (e) {
         console.error('Failed to load pending fight:', e);
@@ -458,10 +461,16 @@ export default function GumbuoFightersArena() {
 
       setFighting(false);
       setBattleMessage("");
+
+      // Auto-reset arena after 5 seconds to show result
+      // Don't clear pending fights - let users see them when they log back in
+      setTimeout(async () => {
+        await resetArena(false);
+      }, 5000);
     }, 15000); // 15 second cinematic fight animation
   };
 
-  const resetArena = async () => {
+  const resetArena = async (clearPendingFights = true) => {
     setFighter1(null);
     setFighter2(null);
     setFighter1Owner(null);
@@ -473,8 +482,9 @@ export default function GumbuoFightersArena() {
     setFighter2Health(100);
     setBattleMessage("");
 
-    // Clear pending fight from localStorage when user dismisses result
-    if (address) {
+    // Only clear pending fight from localStorage if explicitly requested
+    // (e.g., when user manually dismisses or views the result)
+    if (clearPendingFights && address) {
       localStorage.removeItem(`pendingFight_${address}`);
     }
 
@@ -1062,12 +1072,9 @@ export default function GumbuoFightersArena() {
               <p className="text-gray-400 text-xl">{fightResult.loser.name}</p>
             </div>
           </div>
-          <button
-            onClick={resetArena}
-            className="mt-8 px-12 py-4 bg-green-500 text-black font-bold text-xl rounded-xl hover:bg-green-600 transition-all"
-          >
-            FIGHT AGAIN! ⚔️
-          </button>
+          <p className="mt-8 text-green-400 text-xl font-bold animate-pulse">
+            Arena resetting in 5 seconds... ⚔️
+          </p>
         </div>
       )}
 
