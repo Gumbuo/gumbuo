@@ -485,6 +485,18 @@ export default function GumbuoBoss() {
             left: 200%;
           }
         }
+        @keyframes shake {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          10% { transform: translate(-10px, -5px) rotate(-2deg); }
+          20% { transform: translate(10px, 5px) rotate(2deg); }
+          30% { transform: translate(-10px, 5px) rotate(-2deg); }
+          40% { transform: translate(10px, -5px) rotate(2deg); }
+          50% { transform: translate(-5px, 10px) rotate(-1deg); }
+          60% { transform: translate(5px, -10px) rotate(1deg); }
+          70% { transform: translate(-10px, -5px) rotate(-2deg); }
+          80% { transform: translate(10px, 5px) rotate(2deg); }
+          90% { transform: translate(-5px, -5px) rotate(-1deg); }
+        }
       `}</style>
 
       {/* Title */}
@@ -495,6 +507,16 @@ export default function GumbuoBoss() {
       {/* Boss Status */}
       <div className="w-full bg-black/60 rounded-3xl p-8">
         <div className="space-y-6">
+          {/* Boss Name & Status */}
+          <div className="text-center">
+            <h3 className="text-5xl font-alien mb-2 holographic-text">
+              {bossState.isAlive ? "👹 MEGA GUMBUO 👹" : "💀 DEFEATED 💀"}
+            </h3>
+            <p className="text-2xl text-blue-400 holographic-text">
+              {bossState.isAlive ? "DESTROYER OF WORLDS" : "AWAITING RESPAWN"}
+            </p>
+          </div>
+
           {/* Boss Image */}
           <div className="flex justify-center">
             <img
@@ -507,16 +529,6 @@ export default function GumbuoBoss() {
                 objectFit: 'contain'
               }}
             />
-          </div>
-
-          {/* Boss Name & Status */}
-          <div className="text-center">
-            <h3 className="text-5xl font-alien mb-2 holographic-text">
-              {bossState.isAlive ? "👹 MEGA GUMBUO 👹" : "💀 DEFEATED 💀"}
-            </h3>
-            <p className="text-2xl text-blue-400 holographic-text">
-              {bossState.isAlive ? "DESTROYER OF WORLDS" : "AWAITING RESPAWN"}
-            </p>
           </div>
 
           {/* HP Bar */}
@@ -687,18 +699,18 @@ export default function GumbuoBoss() {
 
           {/* User Stats - Inside Attack Section */}
           {address && (
-            <div className="mt-6">
+            <div className="mt-6 bg-black/40 rounded-xl p-6">
               <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 text-center">
-                  <p className="text-purple-400 text-base">Total Damage Dealt</p>
-                  <p className="text-3xl font-bold text-purple-400 mt-2">{userTotalDamage.toLocaleString()}</p>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <p className="text-purple-400 text-sm font-semibold mb-2">Total Damage Dealt</p>
+                  <p className="text-2xl font-bold text-purple-400">{userTotalDamage.toLocaleString()}</p>
                 </div>
 
-                <div className="p-4 text-center">
-                  <p className="text-purple-400 text-base">Damage Contribution</p>
-                  <p className="text-3xl font-bold text-purple-400 mt-2">
+                <div className="text-center">
+                  <p className="text-purple-400 text-sm font-semibold mb-2">Damage Contribution</p>
+                  <p className="text-2xl font-bold text-purple-400">
                     {bossState.isAlive
                       ? `${((userTotalDamage / (BOSS_MAX_HP - bossState.currentHP)) * 100).toFixed(2)}%`
                       : `${((userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`
@@ -708,9 +720,9 @@ export default function GumbuoBoss() {
               </div>
 
               {!bossState.isAlive && (
-                <div className="mt-4 p-4 text-center">
-                  <p className="text-green-400 text-base">Potential Reward</p>
-                  <p className="text-3xl font-bold text-green-400 mt-2">
+                <div className="mt-4 text-center border-t border-purple-400/30 pt-4">
+                  <p className="text-green-400 text-sm font-semibold mb-2">Potential Reward</p>
+                  <p className="text-2xl font-bold text-green-400">
                     {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} AP
                   </p>
                 </div>
@@ -730,24 +742,24 @@ export default function GumbuoBoss() {
               <p className="text-gray-400 text-center text-sm">No attacks yet!</p>
             ) : (
               leaderboard.map((entry, index) => (
-                <div key={index} className={`flex justify-between items-center p-3 rounded-xl ${
+                <div key={index} className={`flex items-center justify-between p-3 rounded-xl ${
                   index === 0 ? 'bg-yellow-500/20' :
                   index === 1 ? 'bg-gray-400/20' :
                   index === 2 ? 'bg-orange-500/20' :
                   'bg-black/40'
                 }`}>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">
+                  <div className="flex items-center space-x-2 min-w-0 flex-shrink">
+                    <span className="text-xl flex-shrink-0">
                       {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                     </span>
-                    <span className={`text-sm ${address?.toLowerCase() === entry.address.toLowerCase() ? 'text-green-400 font-bold' : 'text-gray-300'}`}>
+                    <span className={`text-xs ${address?.toLowerCase() === entry.address.toLowerCase() ? 'text-green-400 font-bold' : 'text-gray-300'} truncate`}>
                       {entry.address.slice(0, 6)}...{entry.address.slice(-4)}
                       {address?.toLowerCase() === entry.address.toLowerCase() && ' (You)'}
                     </span>
                   </div>
-                  <div className="text-right">
-                    <div className="text-yellow-400 font-bold text-sm">{entry.damage.toLocaleString()} HP</div>
-                    <div className="text-green-400 font-bold text-xs">🎁 {entry.reward.toLocaleString()} AP</div>
+                  <div className="flex flex-col items-end flex-shrink-0 ml-2">
+                    <div className="text-yellow-400 font-bold text-base whitespace-nowrap">{entry.damage.toLocaleString()} HP</div>
+                    <div className="text-green-400 font-bold text-sm whitespace-nowrap">🎁 {entry.reward.toLocaleString()} AP</div>
                   </div>
                 </div>
               ))
@@ -763,29 +775,27 @@ export default function GumbuoBoss() {
               <p className="text-gray-400 text-center text-sm">Waiting for attacks...</p>
             ) : (
               recentAttackers.map((attacker, index) => (
-                <div key={index} className={`p-3 rounded-xl ${
+                <div key={index} className={`p-3 rounded-xl flex items-center justify-between ${
                   attacker.attackType === 'ultimate' ? 'bg-yellow-500/20' :
                   attacker.attackType === 'power' ? 'bg-purple-500/20' :
                   'bg-blue-500/20'
                 } animate-pulse`} style={{animationDuration: '2s'}}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">
-                        {attacker.attackType === 'ultimate' ? '⚡' :
-                         attacker.attackType === 'power' ? '💪' : '👊'}
-                      </span>
-                      <span className="text-xs text-gray-300">
-                        {attacker.address.slice(0, 6)}...{attacker.address.slice(-4)}
-                      </span>
-                    </div>
-                    <span className={`font-bold text-sm ${
-                      attacker.attackType === 'ultimate' ? 'text-yellow-400' :
-                      attacker.attackType === 'power' ? 'text-purple-400' :
-                      'text-cyan-400'
-                    }`}>
-                      -{attacker.damage.toLocaleString()} HP
+                  <div className="flex items-center space-x-2 min-w-0 flex-shrink">
+                    <span className="text-xl flex-shrink-0">
+                      {attacker.attackType === 'ultimate' ? '⚡' :
+                       attacker.attackType === 'power' ? '💪' : '👊'}
+                    </span>
+                    <span className="text-xs text-gray-300 truncate">
+                      {attacker.address.slice(0, 6)}...{attacker.address.slice(-4)}
                     </span>
                   </div>
+                  <span className={`font-bold text-base whitespace-nowrap ml-2 flex-shrink-0 ${
+                    attacker.attackType === 'ultimate' ? 'text-yellow-400' :
+                    attacker.attackType === 'power' ? 'text-purple-400' :
+                    'text-cyan-400'
+                  }`}>
+                    -{attacker.damage.toLocaleString()} HP
+                  </span>
                 </div>
               ))
             )}
