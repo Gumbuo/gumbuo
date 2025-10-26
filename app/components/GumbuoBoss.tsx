@@ -493,8 +493,8 @@ export default function GumbuoBoss() {
           {/* Boss Image */}
           <div className="flex justify-center">
             <img
-              src="/mega-gumbuo.png"
-              alt="Mega Gumbuo Spaceship"
+              src="/gumbuoboss.png"
+              alt="Gumbuo Boss"
               className={`w-96 h-96 ${bossShaking ? 'animate-bounce' : ''} ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
                 filter: bossState.isAlive ? 'drop-shadow(0 0 40px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 80px rgba(239, 68, 68, 0.5))' : 'none',
