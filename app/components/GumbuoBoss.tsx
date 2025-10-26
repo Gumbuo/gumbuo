@@ -702,31 +702,41 @@ export default function GumbuoBoss() {
             <div className="mt-6 bg-black/40 rounded-xl p-6">
               <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center">
-                  <p className="text-purple-400 text-sm font-semibold mb-2">Total Damage Dealt</p>
-                  <p className="text-2xl font-bold text-purple-400">{userTotalDamage.toLocaleString()}</p>
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <div className="flex-1 text-center bg-purple-500/20 rounded-lg p-4">
+                  <p className="text-purple-400 text-sm font-semibold mb-2">💥 Total Damage</p>
+                  <p className="text-2xl font-bold text-purple-400">{userTotalDamage.toLocaleString()} HP</p>
                 </div>
 
-                <div className="text-center">
-                  <p className="text-purple-400 text-sm font-semibold mb-2">Damage Contribution</p>
-                  <p className="text-2xl font-bold text-purple-400">
-                    {bossState.isAlive
-                      ? `${((userTotalDamage / (BOSS_MAX_HP - bossState.currentHP)) * 100).toFixed(2)}%`
-                      : `${((userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`
-                    }
+                <div className="flex items-center justify-center px-3">
+                  <span className="text-3xl">→</span>
+                </div>
+
+                <div className="flex-1 text-center bg-green-500/20 rounded-lg p-4">
+                  <p className="text-green-400 text-sm font-semibold mb-2">🎁 {bossState.isAlive ? 'Current' : 'Final'} Reward</p>
+                  <p className="text-2xl font-bold text-green-400">
+                    {(() => {
+                      const totalDamage = bossState.isAlive
+                        ? (BOSS_MAX_HP - bossState.currentHP)
+                        : Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0);
+                      const reward = totalDamage > 0
+                        ? Math.floor(REWARD_POOL_SIZE * (userTotalDamage / totalDamage))
+                        : 0;
+                      return reward.toLocaleString();
+                    })()} AP
                   </p>
                 </div>
               </div>
 
-              {!bossState.isAlive && (
-                <div className="mt-4 text-center border-t border-purple-400/30 pt-4">
-                  <p className="text-green-400 text-sm font-semibold mb-2">Potential Reward</p>
-                  <p className="text-2xl font-bold text-green-400">
-                    {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} AP
-                  </p>
-                </div>
-              )}
+              <div className="text-center bg-black/40 rounded-lg p-3">
+                <p className="text-purple-400 text-sm font-semibold mb-1">📊 Damage Contribution</p>
+                <p className="text-xl font-bold text-purple-400">
+                  {bossState.isAlive
+                    ? `${((userTotalDamage / (BOSS_MAX_HP - bossState.currentHP || 1)) * 100).toFixed(2)}%`
+                    : `${((userTotalDamage / (Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0) || 1)) * 100).toFixed(2)}%`
+                  }
+                </p>
+              </div>
             </div>
           )}
         </div>
