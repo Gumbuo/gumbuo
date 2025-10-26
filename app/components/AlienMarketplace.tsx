@@ -23,9 +23,9 @@ interface OwnedAlien {
 
 // Alien pics for Gumbuo Fighters - Nyx, Zorb, Baob, and Apelian
 const ALIEN_PICS: AlienPic[] = [
-  { id: "nyx", name: "Nyx the Void Walker", price: 100, image: "/nyx.png", description: "Master of shadows and the void, Nyx walks between dimensions" },
-  { id: "zorb", name: "Zorb the Cosmic Orb", price: 100, image: "/zorb.png", description: "Ancient cosmic entity with infinite wisdom and power" },
-  { id: "baob", name: "Baob the Eternal Guardian", price: 100, image: "/baob.png", description: "Wise protector of the ancient realms, Baob defends cosmic balance" },
+  { id: "nyx", name: "Nyx", price: 100, image: "/nyx.png", description: "Master of shadows and the void, Nyx walks between dimensions" },
+  { id: "zorb", name: "Zorb", price: 100, image: "/zorb.png", description: "Ancient cosmic entity with infinite wisdom and power" },
+  { id: "baob", name: "Baob", price: 100, image: "/baob.png", description: "Wise protector of the ancient realms, Baob defends cosmic balance" },
   { id: "apelian", name: "Apelian", price: 100, image: "/apelian.jpg", description: "Fierce warrior from the primal cosmos, Apelian brings raw strength and cunning" },
 ];
 
@@ -37,6 +37,28 @@ export default function AlienMarketplace() {
   const [userPoints, setUserPoints] = useState(0);
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [ownedAliens, setOwnedAliens] = useState<OwnedAlien[]>([]);
+  const [totalSales, setTotalSales] = useState<Record<string, number>>({
+    nyx: 0,
+    zorb: 0,
+    baob: 0,
+    apelian: 0,
+  });
+
+  // Fetch total sales on mount
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        const response = await fetch('/api/alien-sales');
+        const data = await response.json();
+        if (data.success) {
+          setTotalSales(data.sales);
+        }
+      } catch (error) {
+        console.error("Error fetching sales:", error);
+      }
+    };
+    fetchSales();
+  }, []);
 
   useEffect(() => {
     if (!address) {
@@ -110,6 +132,21 @@ export default function AlienMarketplace() {
         // Update user balance
         setUserPoints(getUserBalance(address));
 
+        // Increment global sales counter
+        try {
+          const salesResponse = await fetch('/api/alien-sales', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ alienId: pic.id }),
+          });
+          const salesData = await salesResponse.json();
+          if (salesData.success) {
+            setTotalSales(salesData.sales);
+          }
+        } catch (error) {
+          console.error("Error updating sales counter:", error);
+        }
+
         const alienCount = updatedAliens.filter(a => a.picId === pic.id).length;
         alert(`🎉 Successfully purchased ${pic.name}! 👽\n\nYou now own ${alienCount} ${pic.name}${alienCount > 1 ? 's' : ''}!\nYour new balance: ${getUserBalance(address).toLocaleString()} AP`);
       } else {
@@ -147,7 +184,12 @@ export default function AlienMarketplace() {
               key={pic.id}
               className="flex flex-col items-center"
             >
-              {/* Name above */}
+              {/* Sales Counter above name */}
+              <div className="text-sm text-green-400 mb-1">
+                <span className="font-bold">{totalSales[pic.id] || 0}</span> sold
+              </div>
+
+              {/* Name */}
               <h3 className="text-xl font-bold text-orange-400 mb-3 font-alien">{pic.name}</h3>
 
               {/* Image */}
