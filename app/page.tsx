@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
+const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -94,6 +95,11 @@ export default function MothershipPage() {
               </div>
             </div>
           </Link>
+        </div>
+
+        {/* Alien Drip Station */}
+        <div className="flex justify-center mt-16">
+          <AlienDripStation />
         </div>
 
         {/* Alien Leaderboard */}
