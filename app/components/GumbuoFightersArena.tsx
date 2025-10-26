@@ -44,6 +44,29 @@ export default function GumbuoFightersArena() {
   const [fighter2Health, setFighter2Health] = useState(100);
   const [battleMessage, setBattleMessage] = useState("");
 
+  // Migration: Clear old alien and arena data (v2 - fresh start)
+  useEffect(() => {
+    const CURRENT_VERSION = "2";
+    const versionKey = "alienData_version";
+    const storedVersion = localStorage.getItem(versionKey);
+
+    if (storedVersion !== CURRENT_VERSION) {
+      console.log("Migrating arena data to version", CURRENT_VERSION);
+      // Clear arena state and fight log
+      localStorage.removeItem('arenaState');
+      localStorage.removeItem('fightLog');
+      // Clear all pending fights
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("pendingFight_")) {
+          localStorage.removeItem(key);
+          console.log("Cleared:", key);
+        }
+      });
+      // Version is set in AlienMarketplace, but check here too
+      localStorage.setItem(versionKey, CURRENT_VERSION);
+    }
+  }, []);
+
   useEffect(() => {
     if (!address) {
       setOwnedAliens([]);

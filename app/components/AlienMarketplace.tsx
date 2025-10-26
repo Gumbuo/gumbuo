@@ -44,6 +44,26 @@ export default function AlienMarketplace() {
     apelian: 0,
   });
 
+  // Migration: Clear old alien data (v2 - fresh start)
+  useEffect(() => {
+    const CURRENT_VERSION = "2";
+    const versionKey = "alienData_version";
+    const storedVersion = localStorage.getItem(versionKey);
+
+    if (storedVersion !== CURRENT_VERSION) {
+      console.log("Migrating alien data to version", CURRENT_VERSION);
+      // Clear all old alien-related data
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("ownedAliens_")) {
+          localStorage.removeItem(key);
+          console.log("Cleared:", key);
+        }
+      });
+      // Set new version
+      localStorage.setItem(versionKey, CURRENT_VERSION);
+    }
+  }, []);
+
   // Fetch total sales on mount
   useEffect(() => {
     const fetchSales = async () => {

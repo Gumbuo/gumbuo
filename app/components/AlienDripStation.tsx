@@ -73,8 +73,9 @@ export default function AlienDripStation() {
       const data = JSON.parse(savedStaking) as StakingData;
       setStakingData(data);
 
-      // Check if balance dropped significantly (they sold)
-      if (data.isStaking && gmbAmount < data.stakedAmount * 0.95) {
+      // Only check balance drop if GMB amount has actually loaded (> 0)
+      // This prevents false triggers on page load when balance is still loading
+      if (data.isStaking && gmbAmount > 0 && gmbAmount < data.stakedAmount * 0.95) {
         // Balance dropped more than 5% - they likely sold
         playSound('error');
         alert("⚠️ Your GMB balance dropped! Staking rewards have been paused. Your accumulated rewards are still claimable.");
