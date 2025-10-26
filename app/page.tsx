@@ -95,14 +95,62 @@ export default function MothershipPage() {
 
         {/* Coming Soon Chains */}
         <h2 className="text-3xl font-alien text-yellow-400 mb-6 holographic-text animate-pulse">⏳ COMING SOON ⏳</h2>
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
+        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
           {/* Blast Chain */}
           <div className="group relative bg-gradient-to-br from-yellow-900/20 to-orange-900/20 rounded-2xl p-6 border-2 border-yellow-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
             <div className="relative z-10 text-center">
               <div className="text-4xl mb-3">💥</div>
               <h3 className="text-xl font-alien text-yellow-300 mb-2">BLAST</h3>
-              <p className="text-yellow-200/60 text-xs mb-3">EVM • Q1 2025</p>
+              <p className="text-yellow-200/60 text-xs mb-3">EVM L2 • Q1 2025</p>
               <div className="inline-block px-4 py-2 bg-yellow-500/10 rounded-lg border border-yellow-400/30 text-yellow-300 text-xs font-bold">
+                SOON™
+              </div>
+            </div>
+          </div>
+
+          {/* Polygon Chain */}
+          <div className="group relative bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-6 border-2 border-purple-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
+            <div className="relative z-10 text-center">
+              <div className="text-4xl mb-3">🟣</div>
+              <h3 className="text-xl font-alien text-purple-300 mb-2">POLYGON</h3>
+              <p className="text-purple-200/60 text-xs mb-3">EVM L2 • Q1 2025</p>
+              <div className="inline-block px-4 py-2 bg-purple-500/10 rounded-lg border border-purple-400/30 text-purple-300 text-xs font-bold">
+                SOON™
+              </div>
+            </div>
+          </div>
+
+          {/* Ethereum Chain */}
+          <div className="group relative bg-gradient-to-br from-blue-900/20 to-indigo-900/20 rounded-2xl p-6 border-2 border-blue-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
+            <div className="relative z-10 text-center">
+              <div className="text-4xl mb-3">💎</div>
+              <h3 className="text-xl font-alien text-blue-300 mb-2">ETHEREUM</h3>
+              <p className="text-blue-200/60 text-xs mb-3">EVM L1 • Q2 2025</p>
+              <div className="inline-block px-4 py-2 bg-blue-500/10 rounded-lg border border-blue-400/30 text-blue-300 text-xs font-bold">
+                SOON™
+              </div>
+            </div>
+          </div>
+
+          {/* Arbitrum Chain */}
+          <div className="group relative bg-gradient-to-br from-cyan-900/20 to-blue-900/20 rounded-2xl p-6 border-2 border-cyan-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
+            <div className="relative z-10 text-center">
+              <div className="text-4xl mb-3">🔵</div>
+              <h3 className="text-xl font-alien text-cyan-300 mb-2">ARBITRUM</h3>
+              <p className="text-cyan-200/60 text-xs mb-3">EVM L2 • Q2 2025</p>
+              <div className="inline-block px-4 py-2 bg-cyan-500/10 rounded-lg border border-cyan-400/30 text-cyan-300 text-xs font-bold">
+                SOON™
+              </div>
+            </div>
+          </div>
+
+          {/* Linea Chain */}
+          <div className="group relative bg-gradient-to-br from-emerald-900/20 to-green-900/20 rounded-2xl p-6 border-2 border-emerald-500/30 opacity-70 hover:opacity-100 transition-all duration-300">
+            <div className="relative z-10 text-center">
+              <div className="text-4xl mb-3">🟢</div>
+              <h3 className="text-xl font-alien text-emerald-300 mb-2">LINEA</h3>
+              <p className="text-emerald-200/60 text-xs mb-3">EVM L2 • Q2 2025</p>
+              <div className="inline-block px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-400/30 text-emerald-300 text-xs font-bold">
                 SOON™
               </div>
             </div>
@@ -125,7 +173,7 @@ export default function MothershipPage() {
             <div className="relative z-10 text-center">
               <div className="text-4xl mb-3">🎯</div>
               <h3 className="text-xl font-alien text-indigo-300 mb-2">ONCHAIND</h3>
-              <p className="text-indigo-200/60 text-xs mb-3">Base L3 • TBA</p>
+              <p className="text-indigo-200/60 text-xs mb-3">EVM L3 • TBA</p>
               <div className="inline-block px-4 py-2 bg-indigo-500/10 rounded-lg border border-indigo-400/30 text-indigo-300 text-xs font-bold">
                 SOON™
               </div>
