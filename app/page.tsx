@@ -53,6 +53,48 @@ export default function MothershipPage() {
           Choose Your Chain • Enter the Alien Economy
         </p>
 
+        {/* Buy Gumbuo Button with Mascots */}
+        <div className="flex flex-col items-center space-y-4 mb-12">
+          <div className="flex items-center justify-center space-x-6">
+            <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+            <a
+              href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-24 py-8 bg-green-400 text-black font-bold rounded-2xl hover:bg-green-500 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse"
+              style={{fontSize: '4rem'}}
+            >
+              Buy Gumbuo
+            </a>
+            <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+          </div>
+          <p className="text-green-400 font-bold text-3xl animate-pulse tracking-wider">👆 CLICK HERE 👆</p>
+
+          {/* Social Links */}
+          <div className="flex gap-12 mt-4">
+            <a
+              href="https://x.com/gumbuogw3"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-500/80 hover:bg-blue-600 px-36 py-18 rounded-3xl text-white font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-blue-400/80 flex items-center gap-8"
+              style={{fontSize: '6rem'}}
+            >
+              <span style={{fontSize: '8rem'}}>𝕏</span>
+              <span>Twitter</span>
+            </a>
+            <a
+              href="https://discord.gg/NptkDYn8fm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-purple-500/80 hover:bg-purple-600 px-36 py-18 rounded-3xl text-white font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-purple-400/80 flex items-center gap-8"
+              style={{fontSize: '6rem'}}
+            >
+              <span style={{fontSize: '8rem'}}>💬</span>
+              <span>Discord</span>
+            </a>
+          </div>
+        </div>
+
         {/* Active Chains */}
         <h2 className="text-3xl font-alien text-cyan-400 mb-6 holographic-text">GUMBUO'S BLOCKCHAIN PORTAL</h2>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
