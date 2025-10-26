@@ -17,16 +17,16 @@ const DRIP_TIERS = [
   { minGMB: 0, maxGMB: 999, points: 50, name: "Beginner", color: "#7F8C8D" },
 ];
 
-// Staking tiers (continuous rewards per hour)
-const STAKING_TIERS = [
-  { minGMB: 1000000, maxGMB: Infinity, apPerHour: 100, name: "LEGENDARY WHALE", color: "#FFD700" },
-  { minGMB: 500000, maxGMB: 999999, apPerHour: 50, name: "Epic Staker", color: "#FF6B6B" },
-  { minGMB: 100000, maxGMB: 499999, apPerHour: 20, name: "Rare Staker", color: "#9B59B6" },
-  { minGMB: 50000, maxGMB: 99999, apPerHour: 10, name: "Uncommon Staker", color: "#3498DB" },
-  { minGMB: 10000, maxGMB: 49999, apPerHour: 5, name: "Common Staker", color: "#00ff99" },
-  { minGMB: 1000, maxGMB: 9999, apPerHour: 2, name: "Starter Staker", color: "#95A5A6" },
-  { minGMB: 100, maxGMB: 999, apPerHour: 1, name: "Beginner Staker", color: "#7F8C8D" },
-];
+// Staking formula: 100 AP per day for every 1M GMB held
+// Example: 5M GMB = 500 AP/day = ~20.83 AP/hour
+const AP_PER_DAY_PER_MILLION = 100;
+const AP_PER_HOUR_PER_MILLION = AP_PER_DAY_PER_MILLION / 24;
+
+// Calculate AP per hour based on GMB amount
+const calculateAPPerHour = (gmbAmount: number): number => {
+  const millions = gmbAmount / 1_000_000;
+  return millions * AP_PER_HOUR_PER_MILLION;
+};
 
 interface StakingData {
   isStaking: boolean;
@@ -90,21 +90,27 @@ export default function AlienDripStation() {
     }
   }, [address, gmbAmount]);
 
-  // Calculate staking tier
-  const getStakingTier = (amount: number) => {
-    for (const tier of STAKING_TIERS) {
-      if (amount >= tier.minGMB && amount <= tier.maxGMB) {
-        return tier;
-      }
-    }
-    return null;
+  // Calculate staking rewards dynamically based on GMB amount
+  const getStakingRewards = (amount: number) => {
+    if (amount < 100) return null; // Minimum 100 GMB to stake
+
+    const apPerHour = calculateAPPerHour(amount);
+    const apPerDay = apPerHour * 24;
+    const millions = amount / 1_000_000;
+
+    return {
+      apPerHour,
+      apPerDay,
+      millions,
+      amount
+    };
   };
 
-  const currentStakingTier = getStakingTier(stakingData.isStaking ? stakingData.stakedAmount : gmbAmount);
+  const currentStakingRewards = getStakingRewards(stakingData.isStaking ? stakingData.stakedAmount : gmbAmount);
 
   // Calculate accumulated rewards in real-time
   useEffect(() => {
-    if (!stakingData.isStaking || !currentStakingTier) {
+    if (!stakingData.isStaking || !currentStakingRewards) {
       setAccumulatedRewards(0);
       return;
     }
@@ -113,7 +119,7 @@ export default function AlienDripStation() {
       const now = Date.now();
       const timeElapsed = now - stakingData.lastClaimTime;
       const hoursElapsed = timeElapsed / (1000 * 60 * 60);
-      const rewards = Math.floor(hoursElapsed * currentStakingTier.apPerHour);
+      const rewards = Math.floor(hoursElapsed * currentStakingRewards.apPerHour);
       setAccumulatedRewards(rewards);
 
       // Update time staked display
@@ -130,7 +136,7 @@ export default function AlienDripStation() {
     const interval = setInterval(updateRewards, 1000);
 
     return () => clearInterval(interval);
-  }, [stakingData, currentStakingTier]);
+  }, [stakingData, currentStakingRewards]);
 
   // Start staking
   const handleStartStaking = () => {
@@ -151,7 +157,7 @@ export default function AlienDripStation() {
       `You are about to stake ${gmbAmount.toFixed(2)} GMB tokens.\n\n` +
       `✅ NO LOCK: You can sell your tokens at any time\n` +
       `⚠️ WARNING: If your balance drops more than 5%, staking rewards will pause\n` +
-      `💰 You'll earn ${currentStakingTier?.apPerHour || 0} AP per hour\n` +
+      `💰 You'll earn ${currentStakingRewards?.apPerDay.toFixed(2) || 0} AP per day (${currentStakingRewards?.apPerHour.toFixed(2) || 0} AP/hr)\n` +
       `🎯 Claim rewards anytime to reset the counter\n\n` +
       `Do you agree to these terms?`
     );
@@ -172,7 +178,7 @@ export default function AlienDripStation() {
     setStakingData(newStakingData);
     localStorage.setItem(`staking_${address}`, JSON.stringify(newStakingData));
     playSound('success');
-    alert(`✅ Staking started! You're now earning ${currentStakingTier?.apPerHour || 0} AP per hour!`);
+    alert(`✅ Staking started! You're now earning ${currentStakingRewards?.apPerDay.toFixed(2) || 0} AP per day!`);
   };
 
   // Stop staking
@@ -398,34 +404,33 @@ export default function AlienDripStation() {
       {/* User Status */}
       {isConnected && address ? (
         <div className="w-full space-y-6">
-          {/* ==================== STAKING SECTION ==================== */}
-          <div className="glass-panel rounded-2xl p-6 bg-purple-500/10">
-            <h3 className="text-3xl font-bold text-purple-400 text-center mb-4 holographic-text">
-              🔒 GMB STAKING 🔒
+          {/* ==================== UNIFIED REWARDS SECTION ==================== */}
+          <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-purple-500/10 via-green-500/10 to-purple-500/10">
+            <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
+              <span className="text-purple-400">🔒</span> GMB REWARDS <span className="text-green-400">💧</span>
             </h3>
 
-            <div className="space-y-4">
-              {/* GMB Balance */}
-              <div className="glass-panel rounded-xl p-4">
-                <p className="text-white text-center mb-2">
-                  Your GMB Balance: <span className="font-bold text-2xl">{gmbAmount.toFixed(2)}</span>
-                </p>
-                {currentStakingTier && (
-                  <div className="text-center">
-                    <p className="text-sm opacity-75 mb-1">Staking Tier:</p>
-                    <p className="text-2xl font-bold tracking-wider" style={{color: currentStakingTier.color}}>
-                      {currentStakingTier.name}
-                    </p>
-                    <p className="text-3xl font-bold text-purple-400 mt-2">
-                      ⏱️ {currentStakingTier.apPerHour} AP / Hour
-                    </p>
-                  </div>
-                )}
+            <div className="space-y-6">
+              {/* Shared: GMB Balance & Points */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="glass-panel rounded-xl p-4 text-center">
+                  <p className="text-gray-400 text-sm mb-1">Your GMB Balance</p>
+                  <p className="text-white font-bold text-3xl">{gmbAmount.toFixed(2)}</p>
+                </div>
+                <div className="glass-panel rounded-xl p-4 text-center">
+                  <p className="text-gray-400 text-sm mb-1">Your Alien Points</p>
+                  <p className="text-green-400 font-bold text-3xl">{userPoints.toLocaleString()}</p>
+                </div>
               </div>
 
-              {/* Staking Status */}
-              {stakingData.isStaking ? (
-                <>
+              {/* Two Column Layout: Staking & Daily Claim */}
+              <div className="grid grid-cols-2 gap-6">
+                {/* LEFT: CONTINUOUS STAKING */}
+                <div className="space-y-4">
+                  <h4 className="text-2xl font-bold text-purple-400 text-center">🔒 Continuous Staking</h4>
+
+                  {stakingData.isStaking ? (
+                    <>
                   <div className="glass-panel rounded-xl p-4 bg-green-500/10">
                     <p className="text-green-400 font-bold text-center text-xl mb-2">✅ STAKING ACTIVE</p>
                     <p className="text-center text-white">
@@ -443,7 +448,7 @@ export default function AlienDripStation() {
                       {accumulatedRewards.toLocaleString()} AP
                     </p>
                     <p className="text-center text-yellow-400 text-sm mt-2">
-                      Earning {currentStakingTier?.apPerHour || 0} AP/hour
+                      Earning {currentStakingRewards?.apPerDay.toFixed(2) || 0} AP/day ({currentStakingRewards?.apPerHour.toFixed(2) || 0} AP/hr)
                     </p>
                   </div>
 
@@ -499,73 +504,38 @@ export default function AlienDripStation() {
                   </button>
                 </>
               )}
-
-              {/* Staking Tiers */}
-              <div className="glass-panel rounded-xl p-4">
-                <p className="text-purple-400 font-bold text-center mb-3 font-iceland text-2xl">💎 Staking Tiers 💎</p>
-                <div className="space-y-2 text-sm">
-                  {STAKING_TIERS.map((tier, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex justify-between items-center p-2 rounded ${
-                        currentStakingTier?.name === tier.name ? 'bg-purple-400 bg-opacity-20' : ''
-                      }`}
-                    >
-                      <span style={{color: tier.color}} className="font-bold">{tier.name}</span>
-                      <span className="text-gray-400">{tier.minGMB.toLocaleString()} - {tier.maxGMB === Infinity ? '∞' : tier.maxGMB.toLocaleString()} GMB</span>
-                      <span className="text-purple-400 font-bold">{tier.apPerHour} AP/hr</span>
-                    </div>
-                  ))}
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* ==================== DAILY CLAIM SECTION ==================== */}
-          <div className="glass-panel rounded-2xl p-6 bg-green-500/10">
-            <h3 className="text-3xl font-bold text-green-400 text-center mb-4 holographic-text">
-              💧 DAILY CLAIM 💧
-            </h3>
+                {/* RIGHT: DAILY CLAIM */}
+                <div className="space-y-4">
+                  <h4 className="text-2xl font-bold text-green-400 text-center">💧 Daily Claim</h4>
 
-            <div className="space-y-4">
-              {/* GMB Balance & Tier */}
-              <div className="glass-panel rounded-xl p-4">
-                <p className="text-white text-center mb-2">
-                  Your GMB Balance: <span className="font-bold text-2xl">{gmbAmount.toFixed(2)}</span>
-                </p>
-                {currentTier ? (
-                  <div className="text-center">
-                    <p className="text-sm opacity-75 mb-1">Daily Claim Tier:</p>
+                  {/* Current Tier Display */}
+                  {currentTier ? (
+                    <div className="glass-panel rounded-xl p-4 text-center">
+                      <p className="text-sm opacity-75 mb-1">Your Tier:</p>
                     <p className="text-2xl font-bold tracking-wider" style={{color: currentTier.color}}>
                       {currentTier.name}
                     </p>
-                    <p className="text-3xl font-bold text-green-400 mt-2">
+                    <p className="text-2xl font-bold text-green-400 mt-2">
                       💧 {currentTier.points} AP / Day
                     </p>
-                  </div>
-                ) : (
-                  <p className="text-red-400 text-center">⚠️ Unable to determine tier</p>
-                )}
-              </div>
+                    </div>
+                  ) : (
+                    <p className="text-red-400 text-center">⚠️ Unable to determine tier</p>
+                  )}
 
-              {/* User Points Balance */}
-              <div className="glass-panel rounded-xl p-4 text-center">
-                <p className="text-green-400 text-lg">
-                  👽 Your Alien Points: <span className="font-bold text-3xl">{userPoints.toLocaleString()}</span>
-                </p>
-              </div>
+                  {/* Claim Status */}
+                  {hasClaimedToday && nextClaimTime && (
+                    <div className="glass-panel rounded-xl p-4 text-center">
+                      <p className="text-yellow-400 font-bold text-sm">✅ Already claimed today!</p>
+                      <p className="text-yellow-400 text-xs mt-1">Next claim in:</p>
+                      <p className="text-lg text-yellow-300 font-bold mt-1">⏰ {timeUntilReset}</p>
+                    </div>
+                  )}
 
-              {/* Claim Status */}
-              {hasClaimedToday && nextClaimTime && (
-                <div className="glass-panel rounded-xl p-4 text-center">
-                  <p className="text-yellow-400 font-bold">✅ Already claimed today!</p>
-                  <p className="text-yellow-400 text-sm mt-1">Next claim available in:</p>
-                  <p className="text-xl text-yellow-300 font-bold mt-1">⏰ {timeUntilReset}</p>
-                </div>
-              )}
-
-              {/* Claim Button */}
-              <button
+                  {/* Claim Button */}
+                  <button
                 onClick={handleClaim}
                 onMouseEnter={() => !hasClaimedToday && !claiming && currentTier && playSound('hover')}
                 disabled={hasClaimedToday || claiming || !currentTier}
@@ -581,24 +551,53 @@ export default function AlienDripStation() {
                 <span className="relative z-10">
                   {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
                 </span>
-              </button>
+                  </button>
+                </div>
+              </div>
 
-              {/* Daily Tier Chart */}
-              <div className="glass-panel rounded-xl p-4">
-                <p className="text-green-400 font-bold text-center mb-3 font-iceland text-2xl circuit-text">💎 Daily Claim Tiers 💎</p>
-                <div className="space-y-2 text-sm">
-                  {DRIP_TIERS.map((tier, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex justify-between items-center p-2 rounded ${
-                        currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20' : ''
-                      }`}
-                    >
-                      <span style={{color: tier.color}} className="font-bold">{tier.name}</span>
-                      <span className="text-gray-400">{tier.minGMB.toLocaleString()} - {tier.maxGMB === Infinity ? '∞' : tier.maxGMB.toLocaleString()} GMB</span>
-                      <span className="text-green-400 font-bold">{tier.points} AP</span>
+              {/* Combined Rewards Info Section */}
+              <div className="glass-panel rounded-xl p-6">
+                <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 REWARDS INFO 💎</p>
+
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Staking Formula */}
+                  <div className="space-y-3">
+                    <p className="text-purple-400 font-bold text-center text-lg">🔒 Staking Formula</p>
+                    <div className="bg-purple-400 bg-opacity-20 p-3 rounded-lg text-center">
+                      <p className="text-yellow-400 font-bold">100 AP/day per 1M GMB</p>
+                      <p className="text-gray-400 text-xs mt-1">Scales with holdings</p>
                     </div>
-                  ))}
+                    <div className="space-y-1 text-xs text-gray-300 text-center">
+                      <p>📊 1M GMB = 100 AP/day</p>
+                      <p>📊 5M GMB = 500 AP/day</p>
+                      <p>📊 10M GMB = 1,000 AP/day</p>
+                    </div>
+                    {currentStakingRewards && (
+                      <div className="bg-green-400 bg-opacity-20 p-2 rounded-lg border border-green-400 text-center">
+                        <p className="text-green-400 font-bold text-xs">Your Rate:</p>
+                        <p className="text-white text-lg font-bold">{currentStakingRewards.apPerDay.toFixed(2)} AP/day</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Daily Claim Tiers */}
+                  <div className="space-y-3">
+                    <p className="text-green-400 font-bold text-center text-lg">💧 Daily Claim Tiers</p>
+                    <div className="space-y-1 text-xs">
+                      {DRIP_TIERS.map((tier, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex justify-between items-center p-1.5 rounded ${
+                            currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20' : ''
+                          }`}
+                        >
+                          <span style={{color: tier.color}} className="font-bold text-xs">{tier.name}</span>
+                          <span className="text-gray-400 text-xs">{tier.minGMB >= 1000 ? `${(tier.minGMB/1000).toFixed(0)}K` : tier.minGMB} - {tier.maxGMB === Infinity ? '∞' : tier.maxGMB >= 1000 ? `${(tier.maxGMB/1000).toFixed(0)}K` : tier.maxGMB}</span>
+                          <span className="text-green-400 font-bold text-xs">{tier.points} AP</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

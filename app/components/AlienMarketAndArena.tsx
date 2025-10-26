@@ -76,22 +76,10 @@ export default function AlienMarketAndArena() {
         {/* Marketplace Section */}
         <AlienMarketplace />
 
-        {/* Metal Divider with Bolts */}
-        <div className="w-full relative my-8">
-          <div className="h-2 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-800 border-y border-gray-500"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-around">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={`bolt-${i}`}
-                className="w-3 h-3 rounded-full bg-gray-700"
-                style={{ boxShadow: 'inset 1px 1px 2px rgba(0,0,0,0.8)' }}
-              />
-            ))}
-          </div>
-        </div>
-
         {/* Arena Section */}
-        <GumbuoFightersArena />
+        <div className="mt-12">
+          <GumbuoFightersArena />
+        </div>
       </div>
     </div>
   );

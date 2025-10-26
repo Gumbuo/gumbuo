@@ -130,8 +130,8 @@ export default function AlienMarketplace() {
       <div className="w-full text-orange-400 text-sm text-center max-w-2xl bg-black/60 p-4 rounded-xl">
         <p className="font-bold mb-2 text-lg">ℹ️ Marketplace Info</p>
         <p className="opacity-75">
-          Use your Alien Points to purchase exclusive Gumbuo Fighters alien pics!
-          Each purchase is permanent and unique to your wallet. More pics coming soon! 🚀
+          Use your Alien Points to purchase Gumbuo Fighters aliens!
+          Each purchase is permanent and unique to your wallet. More fighters coming soon! 🚀
         </p>
       </div>
 

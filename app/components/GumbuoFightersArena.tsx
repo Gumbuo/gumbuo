@@ -197,8 +197,8 @@ export default function GumbuoFightersArena() {
       `Entry Fee: ${ENTRY_FEE.toLocaleString()} AP\n\n` +
       `⚠️ WARNING:\n` +
       `• This alien will be PERMANENTLY BURNED after the fight!\n` +
-      `• Winner gets 800 AP (net +300 AP profit)\n` +
-      `• Loser loses alien + 500 AP entry fee\n\n` +
+      `• Winner gets 160 AP (net +60 AP profit)\n` +
+      `• Loser loses alien + 100 AP entry fee\n\n` +
       `Your balance: ${balance.toLocaleString()} AP\n` +
       `After entry: ${(balance - ENTRY_FEE).toLocaleString()} AP\n\n` +
       `Do you want to enter ${draggedAlien.name} into the arena?`
@@ -248,8 +248,8 @@ export default function GumbuoFightersArena() {
       `Entry Fee: ${ENTRY_FEE.toLocaleString()} AP\n\n` +
       `⚠️ WARNING:\n` +
       `• This alien will be PERMANENTLY BURNED after the fight!\n` +
-      `• Winner gets 800 AP (net +300 AP profit)\n` +
-      `• Loser loses alien + 500 AP entry fee\n\n` +
+      `• Winner gets 160 AP (net +60 AP profit)\n` +
+      `• Loser loses alien + 100 AP entry fee\n\n` +
       `Your balance: ${balance.toLocaleString()} AP\n` +
       `After entry: ${(balance - ENTRY_FEE).toLocaleString()} AP\n\n` +
       `Do you want to enter ${draggedAlien.name} into the arena?`
@@ -612,7 +612,7 @@ export default function GumbuoFightersArena() {
                     disabled={fighting}
                     className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                   >
-                    Remove {fighter1Paid ? '(Refund 500 AP)' : ''}
+                    Remove {fighter1Paid ? '(Refund 100 AP)' : ''}
                   </button>
                 ) : (
                   <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
@@ -792,7 +792,7 @@ export default function GumbuoFightersArena() {
                     disabled={fighting}
                     className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                   >
-                    Remove {fighter2Paid ? '(Refund 500 AP)' : ''}
+                    Remove {fighter2Paid ? '(Refund 100 AP)' : ''}
                   </button>
                 ) : (
                   <div className="mt-2 px-4 py-1 bg-gray-600 text-gray-300 rounded text-sm">
@@ -1072,7 +1072,7 @@ export default function GumbuoFightersArena() {
       )}
 
       {/* GMB Arena Coming Soon */}
-      <div className="w-full glass-panel rounded-xl p-6 text-center shadow-lg shadow-yellow-500/50 z-10">
+      <div className="w-full bg-black/40 backdrop-blur-lg rounded-xl p-6 text-center shadow-lg shadow-yellow-500/50 z-10">
         <p className="text-yellow-400 text-2xl font-bold mb-3 font-alien holographic-text">🚧 GMB ARENA COMING SOON! 🚧</p>
         <p className="text-yellow-300 text-base font-electro">
           Same mechanics with GMB tokens (500 GMB entry, 800 GMB prize).
@@ -1081,23 +1081,21 @@ export default function GumbuoFightersArena() {
       </div>
 
       {/* Info */}
-      <div className="w-full text-red-400 text-sm text-center max-w-2xl glass-panel p-6 rounded-xl z-10">
-        <p className="font-bold mb-3 text-xl font-iceland">ℹ️ Arena Rules</p>
+      <div className="w-full text-red-400 text-sm text-center max-w-2xl bg-black/40 backdrop-blur-lg p-6 rounded-xl z-10">
         <div className="opacity-75 space-y-2 text-center">
           <p>🎮 <strong>How to Play:</strong> Drag aliens from your collection to the fighter slots</p>
           <p>💰 <strong>Entry Fee:</strong> Each player pays 100 AP to enter the arena</p>
           <p>⚔️ <strong>Fight:</strong> When both slots filled and paid, fight starts automatically (random winner)</p>
-          <p>🔥 <strong>BURN MECHANIC:</strong> Both aliens are permanently destroyed after the fight!</p>
         </div>
       </div>
 
       {/* Burn Warning */}
-      <div className="w-full text-red-400 text-lg text-center glass-panel p-4 rounded-xl z-10 animate-pulse shadow-lg shadow-red-500/50">
+      <div className="w-full text-red-400 text-lg text-center bg-black/40 backdrop-blur-lg p-4 rounded-xl z-10 animate-pulse shadow-lg shadow-red-500/50">
         <p className="font-bold font-alien holographic-text text-2xl">🔥 WARNING: Both aliens are permanently burned after the fight! 🔥</p>
       </div>
 
       {/* Burn Pool Display */}
-      <div className="w-full glass-panel rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
+      <div className="w-full bg-black/40 backdrop-blur-lg rounded-xl p-6 text-center shadow-2xl shadow-purple-500/50 z-10">
         <p className="text-purple-400 text-2xl font-bold mb-3 font-alien holographic-text">🔥 Burn Pool: {pool.marketplacePool.toLocaleString()} AP 🔥</p>
         <p className="text-purple-300 text-base font-electro">
           Arena fees accumulate here for future airdrops & leaderboard rewards!

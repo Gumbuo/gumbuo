@@ -178,24 +178,24 @@ export default function AlienWheel() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible rounded-3xl">
+    <div className="flex flex-col items-center space-y-4 p-6 holographic-panel max-w-4xl relative overflow-visible rounded-3xl">
       {/* Corner glow accents */}
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
       <div className="corner-glow corner-glow-bl"></div>
       <div className="corner-glow corner-glow-br"></div>
 
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center space-x-3 alien-glyph-text relative z-10" style={{fontSize: '4rem'}}>
-        <img src="/nyx.png" alt="Nyx" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center space-x-2 alien-glyph-text relative z-10" style={{fontSize: '2.5rem'}}>
+        <img src="/nyx.png" alt="Nyx" style={{width: '48px', height: '48px', objectFit: 'cover'}} className="animate-bounce" />
         <span className="animate-glow text-blue-400">🎰 Daily Alien Wheel 🎰</span>
-        <img src="/zorb.png" alt="Zorb" style={{width: '64px', height: '64px', objectFit: 'cover'}} className="animate-bounce" />
+        <img src="/zorb.png" alt="Zorb" style={{width: '48px', height: '48px', objectFit: 'cover'}} className="animate-bounce" />
       </h2>
 
       {/* User Balance */}
       {isConnected && address && (
-        <div className="w-full glass-panel rounded-xl p-4 text-center shadow-lg shadow-blue-400/30 z-10">
-          <p className="text-blue-400 text-xl font-electro">
-            👽 Your Alien Points: <span className="font-bold text-3xl font-alien holographic-text">{userPoints.toLocaleString()}</span>
+        <div className="w-full glass-panel rounded-xl p-3 text-center shadow-lg shadow-blue-400/30 z-10">
+          <p className="text-blue-400 text-base font-electro">
+            👽 Your Alien Points: <span className="font-bold text-2xl font-alien holographic-text">{userPoints.toLocaleString()}</span>
           </p>
         </div>
       )}
@@ -273,8 +273,8 @@ export default function AlienWheel() {
                 : "hover:scale-105 hover-float"
             }`}
             style={{
-              width: '500px',
-              height: '320px',
+              width: '300px',
+              height: '200px',
               background: 'transparent',
             }}
           >
@@ -286,11 +286,11 @@ export default function AlienWheel() {
                   : "bg-gradient-to-b from-cyan-400 via-green-400 to-cyan-500"
               } shadow-2xl`}
               style={{
-                width: '500px',
-                height: '150px',
+                width: '300px',
+                height: '90px',
                 boxShadow: hasSpunToday || mustSpin
                   ? 'none'
-                  : '0 0 60px rgba(74, 222, 128, 0.8), 0 0 120px rgba(74, 222, 128, 0.6), inset 0 -30px 60px rgba(0, 255, 153, 0.4)'
+                  : '0 0 40px rgba(74, 222, 128, 0.8), 0 0 80px rgba(74, 222, 128, 0.6), inset 0 -20px 40px rgba(0, 255, 153, 0.4)'
               }}
             >
               {/* Shimmer effect on saucer */}
@@ -305,24 +305,24 @@ export default function AlienWheel() {
                 hasSpunToday || mustSpin ? "bg-gray-500" : "bg-gradient-to-b from-cyan-300 via-cyan-400 to-transparent"
               } opacity-80`}
               style={{
-                top: '20px',
-                width: '200px',
-                height: '120px',
-                borderTopLeftRadius: '200px',
-                borderTopRightRadius: '200px',
+                top: '15px',
+                width: '120px',
+                height: '70px',
+                borderTopLeftRadius: '120px',
+                borderTopRightRadius: '120px',
               }}
             ></div>
 
             {/* UFO Windows around the dome */}
-            <div className="absolute left-1/2 -translate-x-1/2 flex space-x-6" style={{ top: '80px' }}>
-              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`}></div>
-              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.2s'}}></div>
-              <div className={`w-10 h-10 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.4s'}}></div>
+            <div className="absolute left-1/2 -translate-x-1/2 flex space-x-4" style={{ top: '50px' }}>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`}></div>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.2s'}}></div>
+              <div className={`w-6 h-6 rounded-full ${hasSpunToday || mustSpin ? "bg-gray-400" : "bg-yellow-300 animate-pulse shadow-lg shadow-yellow-400/50"}`} style={{animationDelay: '0.4s'}}></div>
             </div>
 
             {/* Center Text - No UFO Emoji */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
-              <div className={`text-3xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-green-400 drop-shadow-[0_0_10px_rgba(74,222,128,0.8)]"}`}>
+              <div className={`text-xl font-bold font-alien ${hasSpunToday || mustSpin ? "text-gray-300" : "text-green-400 drop-shadow-[0_0_10px_rgba(74,222,128,0.8)]"}`}>
                 {hasSpunToday ? "Tomorrow!" : mustSpin ? "Spinning..." : "SPIN WHEEL"}
               </div>
             </div>
@@ -332,9 +332,9 @@ export default function AlienWheel() {
               <div
                 className="absolute left-1/2 -translate-x-1/2 bg-gradient-to-b from-cyan-400/60 via-green-400/40 to-transparent blur-md animate-pulse"
                 style={{
-                  top: '170px',
-                  width: '200px',
-                  height: '150px',
+                  top: '105px',
+                  width: '120px',
+                  height: '90px',
                   clipPath: 'polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)',
                 }}
               ></div>
@@ -343,8 +343,8 @@ export default function AlienWheel() {
             {/* Side lights on the saucer */}
             {!hasSpunToday && !mustSpin && (
               <>
-                <div className="absolute top-1/2 left-8 w-5 h-5 rounded-full bg-red-400 animate-pulse shadow-lg shadow-red-400/50"></div>
-                <div className="absolute top-1/2 right-8 w-5 h-5 rounded-full bg-red-400 animate-pulse shadow-lg shadow-red-400/50" style={{animationDelay: '0.3s'}}></div>
+                <div className="absolute top-1/2 left-5 w-4 h-4 rounded-full bg-red-400 animate-pulse shadow-lg shadow-red-400/50"></div>
+                <div className="absolute top-1/2 right-5 w-4 h-4 rounded-full bg-red-400 animate-pulse shadow-lg shadow-red-400/50" style={{animationDelay: '0.3s'}}></div>
               </>
             )}
           </button>
@@ -358,15 +358,15 @@ export default function AlienWheel() {
       <div className="w-full glass-panel rounded-xl p-6 shadow-lg shadow-blue-400/20 z-10">
         <p className="font-bold text-xl mb-4 text-blue-400 text-center font-iceland circuit-text">🎰 Prize Probabilities 🎰</p>
         <div className="grid grid-cols-2 gap-3 text-base">
-          <span className="text-blue-300">50 pts: Common</span>
-          <span className="text-blue-300">75 pts: Common</span>
-          <span className="text-blue-300">100 pts: Common</span>
-          <span className="text-purple-300">150 pts: Uncommon</span>
-          <span className="text-purple-300">200 pts: Uncommon</span>
-          <span className="text-pink-300">250 pts: Rare</span>
-          <span className="text-pink-400">300 pts: Very Rare</span>
-          <span className="text-orange-400">400 pts: Epic</span>
-          <span className="col-span-2 text-yellow-400 font-bold text-lg text-center animate-pulse">500 pts: LEGENDARY! 🌟</span>
+          <span className="text-blue-300">1000 pts: Common</span>
+          <span className="text-blue-300">1500 pts: Common</span>
+          <span className="text-blue-300">2000 pts: Common</span>
+          <span className="text-purple-300">3000 pts: Uncommon</span>
+          <span className="text-purple-300">4000 pts: Uncommon</span>
+          <span className="text-pink-300">5000 pts: Rare</span>
+          <span className="text-pink-400">6000 pts: Very Rare</span>
+          <span className="text-orange-400">8000 pts: Epic</span>
+          <span className="col-span-2 text-yellow-400 font-bold text-lg text-center animate-pulse">10000 pts: LEGENDARY! 🌟</span>
         </div>
       </div>
     </div>
