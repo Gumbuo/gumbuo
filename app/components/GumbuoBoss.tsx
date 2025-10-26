@@ -9,7 +9,7 @@ const BOSS_MAX_HP = 1_000_000;
 const MIN_DAMAGE = 1_000;
 const MAX_DAMAGE = 10_000;
 const ATTACK_COOLDOWN = 5000; // 5 seconds
-const REWARD_POOL_SIZE = 100_000; // GMB tokens in pool
+const REWARD_POOL_SIZE = 5_000_000; // Alien Points in pool
 const BOSS_RESPAWN_TIME = 3600000; // 1 hour in milliseconds
 
 // Attack Level System
@@ -79,7 +79,7 @@ export default function GumbuoBoss() {
   const [powerCooldown, setPowerCooldown] = useState(0);
   const [ultimateCooldown, setUltimateCooldown] = useState(0);
   const [bossShaking, setBossShaking] = useState(false);
-  const [leaderboard, setLeaderboard] = useState<Array<{address: string, damage: number}>>([]);
+  const [leaderboard, setLeaderboard] = useState<Array<{address: string, damage: number, reward: number}>>([]);
   const [attackLevels, setAttackLevels] = useState<AttackLevels>({ normal: 1, power: 1, ultimate: 1 });
 
   // Load boss state from API on mount with polling
@@ -163,10 +163,16 @@ export default function GumbuoBoss() {
     }
   }, [bossState.isAlive, bossState.defeatedAt]);
 
-  // Update leaderboard
+  // Update leaderboard with reward calculations
   useEffect(() => {
+    const totalDamageAllUsers = Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0);
+
     const sorted = Object.entries(bossState.totalDamageDealt)
-      .map(([address, damage]) => ({ address, damage }))
+      .map(([address, damage]) => {
+        const damagePercentage = totalDamageAllUsers > 0 ? damage / totalDamageAllUsers : 0;
+        const reward = Math.floor(REWARD_POOL_SIZE * damagePercentage);
+        return { address, damage, reward };
+      })
       .sort((a, b) => b.damage - a.damage)
       .slice(0, 10);
     setLeaderboard(sorted);
@@ -404,7 +410,7 @@ export default function GumbuoBoss() {
       playSound('success');
       localStorage.setItem(`bossRewardClaimed_${address}`, "true");
       setHasClaimedReward(true);
-      alert(`🎉 Claimed ${rewardAmount.toLocaleString()} GMB tokens!\n\nYour damage: ${userDamage.toLocaleString()} (${(damagePercentage * 100).toFixed(2)}% of total)\n\nReward pool share: ${rewardAmount.toLocaleString()} GMB 🏆`);
+      alert(`🎉 Claimed ${rewardAmount.toLocaleString()} Alien Points!\n\nYour damage: ${userDamage.toLocaleString()} (${(damagePercentage * 100).toFixed(2)}% of total)\n\nReward pool share: ${rewardAmount.toLocaleString()} AP 🏆`);
     } else {
       playSound('error');
       alert("Failed to claim reward. Please try again.");
@@ -671,7 +677,7 @@ export default function GumbuoBoss() {
                 <div className="mt-4 p-4 text-center">
                   <p className="text-green-400 text-base">Potential Reward</p>
                   <p className="text-3xl font-bold text-green-400 mt-2">
-                    {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} GMB
+                    {Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} AP
                   </p>
                 </div>
               )}
@@ -684,7 +690,7 @@ export default function GumbuoBoss() {
       <div className="w-full grid grid-cols-2 gap-6">
         {/* Leaderboard */}
         <div className="bg-black/60 rounded-2xl p-6">
-          <h3 className="text-2xl font-alien text-yellow-400 text-center mb-4">🏆 TOP DAMAGE DEALERS 🏆</h3>
+          <h3 className="text-2xl font-alien text-yellow-400 text-center mb-4">🏆 DAMAGE & REWARDS 🏆</h3>
           <div className="space-y-2">
             {leaderboard.length === 0 ? (
               <p className="text-gray-400 text-center text-sm">No attacks yet!</p>
@@ -705,7 +711,10 @@ export default function GumbuoBoss() {
                       {address?.toLowerCase() === entry.address.toLowerCase() && ' (You)'}
                     </span>
                   </div>
-                  <span className="text-yellow-400 font-bold">{entry.damage.toLocaleString()}</span>
+                  <div className="text-right">
+                    <div className="text-yellow-400 font-bold text-sm">{entry.damage.toLocaleString()} HP</div>
+                    <div className="text-green-400 font-bold text-xs">🎁 {entry.reward.toLocaleString()} AP</div>
+                  </div>
                 </div>
               ))
             )}
@@ -775,7 +784,7 @@ export default function GumbuoBoss() {
         <p className="opacity-75 font-electro text-base leading-relaxed">
           Attack the Gumbuo boss and deal massive damage! Each attack has a {ATTACK_COOLDOWN / 1000} second cooldown.
           Damage is randomly calculated between {MIN_DAMAGE.toLocaleString()} - {MAX_DAMAGE.toLocaleString()} HP with a 10% chance for critical hits (2x damage).
-          When defeated, rewards are distributed based on your damage contribution percentage.
+          When defeated, a pool of <span className="text-yellow-400 font-bold">{REWARD_POOL_SIZE.toLocaleString()} Alien Points</span> is distributed to ALL participants based on damage contribution.
           Boss respawns after 1 hour. More damage = bigger rewards! 🎯
         </p>
       </div>
