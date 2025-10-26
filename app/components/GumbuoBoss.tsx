@@ -322,7 +322,6 @@ export default function GumbuoBoss() {
     setTimeout(async () => {
       const attackResult = calculateDamage(selectedAttack);
       setLastDamage(attackResult);
-      setBossShaking(false);
 
       // Play sound based on attack result
       if (attackResult.isCritical) {
@@ -330,6 +329,12 @@ export default function GumbuoBoss() {
       } else {
         playSound('scan');
       }
+
+      // Stop shaking after different durations based on hit type
+      // Critical hits shake longer (1000ms) vs normal hits (500ms)
+      setTimeout(() => {
+        setBossShaking(false);
+      }, attackResult.isCritical ? 1000 : 500);
 
       // Send damage to API
       try {
@@ -495,10 +500,10 @@ export default function GumbuoBoss() {
             <img
               src="/gumbuoboss.png"
               alt="Gumbuo Boss"
-              className={`w-96 h-96 ${bossShaking ? 'animate-bounce' : ''} ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
+              className={`w-64 h-64 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
                 filter: bossState.isAlive ? 'drop-shadow(0 0 40px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 80px rgba(239, 68, 68, 0.5))' : 'none',
-                animation: bossShaking ? 'shake 0.5s' : 'none',
+                animation: bossShaking ? 'shake 0.5s ease-in-out' : 'none',
                 objectFit: 'contain'
               }}
             />
