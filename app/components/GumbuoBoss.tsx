@@ -95,7 +95,13 @@ export default function GumbuoBoss() {
           // Check if boss respawned - clear user's claimed status
           if (data.bossState.isAlive && hasClaimedReward) {
             if (address) {
-              localStorage.removeItem(`bossRewardClaimed_${address}`);
+              // Reset reward claimed status in backend API
+              fetch('/api/user-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ wallet: address, bossRewardClaimed: false }),
+              }).catch(error => console.error('Failed to reset reward claimed status:', error));
+
               setHasClaimedReward(false);
             }
           }
@@ -113,11 +119,24 @@ export default function GumbuoBoss() {
     return () => clearInterval(pollInterval);
   }, [address, hasClaimedReward]);
 
-  // Check if user has claimed reward
+  // Load user data from backend API (attack levels, reward claimed, cooldowns)
   useEffect(() => {
     if (!address) return;
-    const claimed = localStorage.getItem(`bossRewardClaimed_${address}`);
-    setHasClaimedReward(claimed === "true");
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`/api/user-data?wallet=${address}`);
+        const data = await response.json();
+        if (data.success && data.userData) {
+          setAttackLevels(data.userData.attackLevels || { normal: 1, power: 1, ultimate: 1 });
+          setHasClaimedReward(data.userData.bossRewardClaimed || false);
+        }
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+
+    fetchUserData();
   }, [address, bossState.isAlive]);
 
   // Update user's total damage
@@ -178,36 +197,37 @@ export default function GumbuoBoss() {
     setLeaderboard(sorted);
   }, [bossState.totalDamageDealt]);
 
-  // Update power/ultimate cooldowns
+  // Update power/ultimate cooldowns (from backend API)
   useEffect(() => {
-    const updateSpecialCooldowns = () => {
-      const savedPower = localStorage.getItem('powerAttackTime');
-      const savedUltimate = localStorage.getItem('ultimateAttackTime');
+    if (!address) return;
 
-      if (savedPower) {
-        const remaining = Math.max(0, 30000 - (Date.now() - parseInt(savedPower)));
-        setPowerCooldown(remaining);
-      }
+    const updateSpecialCooldowns = async () => {
+      try {
+        const response = await fetch(`/api/user-data?wallet=${address}`);
+        const data = await response.json();
+        if (data.success && data.userData && data.userData.bossCooldowns) {
+          const { powerAttackTime, ultimateAttackTime } = data.userData.bossCooldowns;
 
-      if (savedUltimate) {
-        const remaining = Math.max(0, 60000 - (Date.now() - parseInt(savedUltimate)));
-        setUltimateCooldown(remaining);
+          if (powerAttackTime) {
+            const remaining = Math.max(0, 30000 - (Date.now() - powerAttackTime));
+            setPowerCooldown(remaining);
+          }
+
+          if (ultimateAttackTime) {
+            const remaining = Math.max(0, 60000 - (Date.now() - ultimateAttackTime));
+            setUltimateCooldown(remaining);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load cooldowns:', error);
       }
     };
 
     updateSpecialCooldowns();
-    const interval = setInterval(updateSpecialCooldowns, 100);
+    const interval = setInterval(updateSpecialCooldowns, 3000); // Poll every 3 seconds
     return () => clearInterval(interval);
-  }, []);
-
-  // Load attack levels from localStorage
-  useEffect(() => {
-    if (!address) return;
-    const savedLevels = localStorage.getItem(`attackLevels_${address}`);
-    if (savedLevels) {
-      setAttackLevels(JSON.parse(savedLevels));
-    }
   }, [address]);
+
 
   const calculateDamage = (attackType: 'normal' | 'power' | 'ultimate'): AttackResult => {
     let baseDamage = Math.floor(Math.random() * (MAX_DAMAGE - MIN_DAMAGE + 1)) + MIN_DAMAGE;
@@ -310,12 +330,24 @@ export default function GumbuoBoss() {
     setLastAttackTime(Date.now());
     setBossShaking(true);
 
-    // Set special attack cooldowns
-    if (selectedAttack === 'power') {
-      localStorage.setItem('powerAttackTime', Date.now().toString());
-    }
-    if (selectedAttack === 'ultimate') {
-      localStorage.setItem('ultimateAttackTime', Date.now().toString());
+    // Set special attack cooldowns (save to backend API)
+    if (selectedAttack === 'power' || selectedAttack === 'ultimate') {
+      fetch(`/api/user-data?wallet=${address}`)
+        .then(res => res.json())
+        .then(data => {
+          const currentCooldowns = data.userData?.bossCooldowns || { powerAttackTime: 0, ultimateAttackTime: 0 };
+          const updatedCooldowns = {
+            ...currentCooldowns,
+            [selectedAttack === 'power' ? 'powerAttackTime' : 'ultimateAttackTime']: Date.now(),
+          };
+
+          return fetch('/api/user-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: address, bossCooldowns: updatedCooldowns }),
+          });
+        })
+        .catch(error => console.error('Failed to save cooldown:', error));
     }
 
     // Simulate attack animation delay
@@ -413,7 +445,18 @@ export default function GumbuoBoss() {
 
     if (success) {
       playSound('success');
-      localStorage.setItem(`bossRewardClaimed_${address}`, "true");
+
+      // Save reward claimed status to backend API
+      try {
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet: address, bossRewardClaimed: true }),
+        });
+      } catch (error) {
+        console.error('Failed to save reward claimed status:', error);
+      }
+
       setHasClaimedReward(true);
       alert(`🎉 Claimed ${rewardAmount.toLocaleString()} Alien Points!\n\nYour damage: ${userDamage.toLocaleString()} (${(damagePercentage * 100).toFixed(2)}% of total)\n\nReward pool share: ${rewardAmount.toLocaleString()} AP 🏆`);
     } else {
@@ -452,7 +495,17 @@ export default function GumbuoBoss() {
     if (success) {
       const newLevels = { ...attackLevels, [attackType]: currentLevel + 1 };
       setAttackLevels(newLevels);
-      localStorage.setItem(`attackLevels_${address}`, JSON.stringify(newLevels));
+
+      // Save attack levels to backend API
+      try {
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet: address, attackLevels: newLevels }),
+        });
+      } catch (error) {
+        console.error('Failed to save attack levels:', error);
+      }
 
       playSound('success');
       alert(`✨ Attack upgraded to Level ${currentLevel + 1}! ✨\n\nDamage multiplier increased!`);

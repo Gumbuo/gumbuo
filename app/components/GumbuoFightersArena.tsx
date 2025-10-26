@@ -44,15 +44,15 @@ export default function GumbuoFightersArena() {
   const [fighter2Health, setFighter2Health] = useState(100);
   const [battleMessage, setBattleMessage] = useState("");
 
-  // Migration: Clear old alien and arena data (v2 - fresh start)
+  // Migration: Clear old localStorage data (v4 - global user data)
   useEffect(() => {
-    const CURRENT_VERSION = "2";
+    const CURRENT_VERSION = "4";
     const versionKey = "alienData_version";
     const storedVersion = localStorage.getItem(versionKey);
 
     if (storedVersion !== CURRENT_VERSION) {
       console.log("Migrating arena data to version", CURRENT_VERSION);
-      // Clear arena state and fight log
+      // Clear arena state and old local fight log (now stored globally in backend)
       localStorage.removeItem('arenaState');
       localStorage.removeItem('fightLog');
       // Clear all pending fights
@@ -76,32 +76,49 @@ export default function GumbuoFightersArena() {
       return;
     }
 
-    // Load user's owned aliens
-    const owned = localStorage.getItem(`ownedAliens_${address}`);
-    if (owned) {
-      setOwnedAliens(JSON.parse(owned));
-    } else {
-      setOwnedAliens([]); // Clear aliens if new wallet has none
-    }
+    // Load user's owned aliens from backend API
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`/api/user-data?wallet=${address}`);
+        const data = await response.json();
+        if (data.success && data.userData) {
+          setOwnedAliens(data.userData.ownedAliens || []);
+        } else {
+          setOwnedAliens([]);
+        }
+      } catch (error) {
+        console.error('Failed to load owned aliens:', error);
+        setOwnedAliens([]);
+      }
+    };
+
+    fetchUserData();
 
     // Update user balance
     setUserBalance(getUserBalance(address));
   }, [address, getUserBalance]);
 
-  // Load arena state from API on mount
+  // Load arena state and fight history from API on mount
   useEffect(() => {
     const fetchArenaState = async () => {
       try {
         const response = await fetch('/api/arena');
         const data = await response.json();
-        if (data.success && data.arenaState) {
-          const arena = data.arenaState;
-          setFighter1(arena.fighter1 || null);
-          setFighter2(arena.fighter2 || null);
-          setFighter1Owner(arena.fighter1Owner || null);
-          setFighter2Owner(arena.fighter2Owner || null);
-          setFighter1Paid(arena.fighter1Paid || false);
-          setFighter2Paid(arena.fighter2Paid || false);
+        if (data.success) {
+          // Update arena state
+          if (data.arenaState) {
+            const arena = data.arenaState;
+            setFighter1(arena.fighter1 || null);
+            setFighter2(arena.fighter2 || null);
+            setFighter1Owner(arena.fighter1Owner || null);
+            setFighter2Owner(arena.fighter2Owner || null);
+            setFighter1Paid(arena.fighter1Paid || false);
+            setFighter2Paid(arena.fighter2Paid || false);
+          }
+          // Update fight history from backend (global)
+          if (data.fightHistory) {
+            setFightLog(data.fightHistory);
+          }
         }
       } catch (e) {
         console.error('Failed to load arena state:', e);
@@ -112,16 +129,6 @@ export default function GumbuoFightersArena() {
 
     // Poll for arena updates every 3 seconds
     const pollInterval = setInterval(fetchArenaState, 3000);
-
-    // Load fight log from localStorage (local history only)
-    const savedLog = localStorage.getItem('fightLog');
-    if (savedLog) {
-      try {
-        setFightLog(JSON.parse(savedLog));
-      } catch (e) {
-        console.error('Failed to load fight log:', e);
-      }
-    }
 
     return () => clearInterval(pollInterval);
   }, []);
@@ -406,28 +413,50 @@ export default function GumbuoFightersArena() {
         console.error("Error adding to burn pool:", error);
       }
 
-      // Burn both aliens from their respective owners
+      // Burn both aliens from their respective owners (backend API)
       if (fighter1Owner) {
-        const owned1 = localStorage.getItem(`ownedAliens_${fighter1Owner}`);
-        if (owned1) {
-          const aliens1 = JSON.parse(owned1);
-          const updated1 = aliens1.filter((a: OwnedAlien) => a.id !== fighter1.id);
-          localStorage.setItem(`ownedAliens_${fighter1Owner}`, JSON.stringify(updated1));
-          if (fighter1Owner.toLowerCase() === address.toLowerCase()) {
-            setOwnedAliens(updated1);
+        try {
+          const response = await fetch(`/api/user-data?wallet=${fighter1Owner}`);
+          const data = await response.json();
+          if (data.success && data.userData) {
+            const aliens1 = data.userData.ownedAliens || [];
+            const updated1 = aliens1.filter((a: OwnedAlien) => a.id !== fighter1.id);
+
+            await fetch('/api/user-data', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ wallet: fighter1Owner, ownedAliens: updated1 }),
+            });
+
+            if (fighter1Owner.toLowerCase() === address.toLowerCase()) {
+              setOwnedAliens(updated1);
+            }
           }
+        } catch (error) {
+          console.error('Failed to burn fighter1:', error);
         }
       }
 
       if (fighter2Owner) {
-        const owned2 = localStorage.getItem(`ownedAliens_${fighter2Owner}`);
-        if (owned2) {
-          const aliens2 = JSON.parse(owned2);
-          const updated2 = aliens2.filter((a: OwnedAlien) => a.id !== fighter2.id);
-          localStorage.setItem(`ownedAliens_${fighter2Owner}`, JSON.stringify(updated2));
-          if (fighter2Owner.toLowerCase() === address.toLowerCase()) {
-            setOwnedAliens(updated2);
+        try {
+          const response = await fetch(`/api/user-data?wallet=${fighter2Owner}`);
+          const data = await response.json();
+          if (data.success && data.userData) {
+            const aliens2 = data.userData.ownedAliens || [];
+            const updated2 = aliens2.filter((a: OwnedAlien) => a.id !== fighter2.id);
+
+            await fetch('/api/user-data', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ wallet: fighter2Owner, ownedAliens: updated2 }),
+            });
+
+            if (fighter2Owner.toLowerCase() === address.toLowerCase()) {
+              setOwnedAliens(updated2);
+            }
           }
+        } catch (error) {
+          console.error('Failed to burn fighter2:', error);
         }
       }
 
@@ -445,10 +474,23 @@ export default function GumbuoFightersArena() {
       // Victory sound
       playSound('success');
 
-      // Add to fight log
-      const updatedLog = [result, ...fightLog].slice(0, 50); // Keep last 50 fights
-      setFightLog(updatedLog);
-      localStorage.setItem('fightLog', JSON.stringify(updatedLog));
+      // Save fight result to backend (global fight history)
+      try {
+        const historyResponse = await fetch('/api/arena', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(result),
+        });
+        const historyData = await historyResponse.json();
+        if (historyData.success && historyData.fightHistory) {
+          setFightLog(historyData.fightHistory);
+        }
+      } catch (e) {
+        console.error('Failed to save fight result:', e);
+        // Fallback: add to local state if API fails
+        const updatedLog = [result, ...fightLog].slice(0, 50);
+        setFightLog(updatedLog);
+      }
 
       // Save pending fight result for both participants so they can see it if they log out/in
       const fightData = { result, timestamp: Date.now() };

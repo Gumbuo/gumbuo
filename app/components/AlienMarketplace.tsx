@@ -44,17 +44,23 @@ export default function AlienMarketplace() {
     apelian: 0,
   });
 
-  // Migration: Clear old alien data (v2 - fresh start)
+  // Migration: Clear old localStorage data (v4 - global user data)
   useEffect(() => {
-    const CURRENT_VERSION = "2";
+    const CURRENT_VERSION = "4";
     const versionKey = "alienData_version";
     const storedVersion = localStorage.getItem(versionKey);
 
     if (storedVersion !== CURRENT_VERSION) {
-      console.log("Migrating alien data to version", CURRENT_VERSION);
-      // Clear all old alien-related data
+      console.log("Migrating to version", CURRENT_VERSION, "- Moving all game data to global backend storage");
+      // Clear all old localStorage game data
       Object.keys(localStorage).forEach(key => {
-        if (key.startsWith("ownedAliens_")) {
+        if (
+          key.startsWith("ownedAliens_") ||
+          key.startsWith("attackLevels_") ||
+          key.startsWith("bossRewardClaimed_") ||
+          key.startsWith("powerAttackTime_") ||
+          key.startsWith("ultimateAttackTime_")
+        ) {
           localStorage.removeItem(key);
           console.log("Cleared:", key);
         }
@@ -87,13 +93,23 @@ export default function AlienMarketplace() {
       return;
     }
 
-    // Load user's owned aliens from localStorage
-    const owned = localStorage.getItem(`ownedAliens_${address}`);
-    if (owned) {
-      setOwnedAliens(JSON.parse(owned));
-    } else {
-      setOwnedAliens([]); // Clear aliens if new wallet has none
-    }
+    // Load user's owned aliens from backend API
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`/api/user-data?wallet=${address}`);
+        const data = await response.json();
+        if (data.success && data.userData) {
+          setOwnedAliens(data.userData.ownedAliens || []);
+        } else {
+          setOwnedAliens([]);
+        }
+      } catch (error) {
+        console.error('Failed to load owned aliens:', error);
+        setOwnedAliens([]);
+      }
+    };
+
+    fetchUserData();
 
     // Update user balance
     setUserPoints(getUserBalance(address));
@@ -147,7 +163,17 @@ export default function AlienMarketplace() {
         // Add to owned aliens
         const updatedAliens = [...ownedAliens, newAlien];
         setOwnedAliens(updatedAliens);
-        localStorage.setItem(`ownedAliens_${address}`, JSON.stringify(updatedAliens));
+
+        // Save to backend API
+        try {
+          await fetch('/api/user-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: address, ownedAliens: updatedAliens }),
+          });
+        } catch (error) {
+          console.error('Failed to save owned aliens:', error);
+        }
 
         // Update user balance
         setUserPoints(getUserBalance(address));
