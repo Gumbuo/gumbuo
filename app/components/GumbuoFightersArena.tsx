@@ -199,6 +199,13 @@ export default function GumbuoFightersArena() {
     setIsDraggingOverSlot1(false);
     if (!draggedAlien || !address || draggedAlien.id === fighter2?.id) return;
 
+    // Prevent same wallet from filling both slots
+    if (fighter2Owner && fighter2Owner.toLowerCase() === address.toLowerCase()) {
+      alert("⚠️ You cannot fight yourself! Wait for another player to join.");
+      setDraggedAlien(null);
+      return;
+    }
+
     // Check balance
     const balance = getUserBalance(address);
     if (balance < ENTRY_FEE) {
@@ -242,6 +249,13 @@ export default function GumbuoFightersArena() {
     e.preventDefault();
     setIsDraggingOverSlot2(false);
     if (!draggedAlien || !address || draggedAlien.id === fighter1?.id) return;
+
+    // Prevent same wallet from filling both slots
+    if (fighter1Owner && fighter1Owner.toLowerCase() === address.toLowerCase()) {
+      alert("⚠️ You cannot fight yourself! Wait for another player to join.");
+      setDraggedAlien(null);
+      return;
+    }
 
     // Check balance
     const balance = getUserBalance(address);
