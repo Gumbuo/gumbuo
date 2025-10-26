@@ -66,7 +66,28 @@ export default function AlienDripStation() {
 
   // Load staking data from localStorage
   useEffect(() => {
-    if (!address) return;
+    // Reset staking state when wallet disconnects
+    if (!address) {
+      setStakingData({
+        isStaking: false,
+        stakedAmount: 0,
+        stakeStartTime: 0,
+        lastClaimTime: 0,
+      });
+      setAccumulatedRewards(0);
+      setTimeStaked("");
+      return;
+    }
+
+    // Reset state before loading new wallet's data
+    setStakingData({
+      isStaking: false,
+      stakedAmount: 0,
+      stakeStartTime: 0,
+      lastClaimTime: 0,
+    });
+    setAccumulatedRewards(0);
+    setTimeStaked("");
 
     const savedStaking = localStorage.getItem(`staking_${address}`);
     if (savedStaking) {
@@ -184,7 +205,25 @@ export default function AlienDripStation() {
 
   // Stop staking
   const handleStopStaking = () => {
-    if (!stakingData.isStaking) return;
+    if (!address) {
+      playSound('error');
+      alert("Please connect your wallet first!");
+      return;
+    }
+
+    // SECURITY: Verify staking data belongs to current wallet
+    const savedStaking = localStorage.getItem(`staking_${address}`);
+    if (!savedStaking || !stakingData.isStaking) {
+      playSound('error');
+      alert("⚠️ No active staking found for this wallet!");
+      setStakingData({
+        isStaking: false,
+        stakedAmount: 0,
+        stakeStartTime: 0,
+        lastClaimTime: 0,
+      });
+      return;
+    }
 
     const confirmed = window.confirm(
       `⚠️ STOP STAKING? ⚠️\n\n` +
@@ -215,6 +254,21 @@ export default function AlienDripStation() {
     if (!isConnected || !address) {
       playSound('error');
       alert("Please connect your wallet first!");
+      return;
+    }
+
+    // SECURITY: Verify staking data belongs to current wallet
+    const savedStaking = localStorage.getItem(`staking_${address}`);
+    if (!savedStaking || !stakingData.isStaking) {
+      playSound('error');
+      alert("⚠️ No active staking found for this wallet!");
+      setStakingData({
+        isStaking: false,
+        stakedAmount: 0,
+        stakeStartTime: 0,
+        lastClaimTime: 0,
+      });
+      setAccumulatedRewards(0);
       return;
     }
 
