@@ -24,19 +24,19 @@ export default function Home() {
       {/* Starfield Parallax Background */}
       <StarfieldBackground />
 
+      {/* Top Right - Connect Button and HUD */}
+      <div className="fixed top-6 right-6 z-50 flex flex-col items-end space-y-4">
+        <ConnectButton />
+        <AlienHUD />
+      </div>
+
+      {/* Music Player - Top Right below HUD */}
+      <div className="fixed top-[280px] right-6 z-50">
+        <AlienMusicPlayer />
+      </div>
+
       {/* Content with proper spacing */}
       <div className="relative z-10 p-6">
-        {/* Right side layout */}
-        <div className="flex flex-col items-end space-y-6">
-          {/* Connect Button on top right */}
-          <ConnectButton />
-
-          {/* AlienHUD below it */}
-          <AlienHUD />
-
-          {/* Music Player on right side */}
-          <AlienMusicPlayer />
-        </div>
 
         {/* Alien Market & Arena (Combined) */}
         <div className="flex justify-center mt-32">

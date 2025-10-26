@@ -18,9 +18,9 @@ export default function MothershipPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen bg-black relative overflow-y-auto">
       {/* Animated Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="fixed inset-0 z-0">
         <video
           autoPlay
           loop
