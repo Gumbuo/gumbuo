@@ -800,7 +800,7 @@ export default function GumbuoBoss() {
         {/* Leaderboard */}
         <div className="bg-black/60 rounded-2xl p-6">
           <h3 className="text-2xl font-alien text-yellow-400 text-center mb-4">🏆 DAMAGE & REWARDS 🏆</h3>
-          <div className="space-y-2">
+          <div className="flex flex-col items-center space-y-2">
             {leaderboard.length === 0 ? (
               <p className="text-gray-400 text-center text-sm">No attacks yet!</p>
             ) : (
@@ -833,26 +833,24 @@ export default function GumbuoBoss() {
         {/* Recent Attackers */}
         <div className="bg-black/60 rounded-2xl p-6">
           <h3 className="text-2xl font-alien text-cyan-400 text-center mb-4">📡 LIVE ATTACKS 📡</h3>
-          <div className="space-y-2 max-h-80 overflow-y-auto">
+          <div className="flex flex-col items-center space-y-2 max-h-80 overflow-y-auto">
             {recentAttackers.length === 0 ? (
               <p className="text-gray-400 text-center text-sm">Waiting for attacks...</p>
             ) : (
               recentAttackers.map((attacker, index) => (
-                <div key={index} className={`p-3 rounded-xl flex items-center justify-between ${
+                <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${
                   attacker.attackType === 'ultimate' ? 'bg-yellow-500/20' :
                   attacker.attackType === 'power' ? 'bg-purple-500/20' :
                   'bg-blue-500/20'
                 } animate-pulse`} style={{animationDuration: '2s'}}>
-                  <div className="flex items-center space-x-2 min-w-0 flex-shrink">
-                    <span className="text-xl flex-shrink-0">
-                      {attacker.attackType === 'ultimate' ? '⚡' :
-                       attacker.attackType === 'power' ? '💪' : '👊'}
-                    </span>
-                    <span className="text-xs text-gray-300 truncate">
-                      {attacker.address.slice(0, 6)}...{attacker.address.slice(-4)}
-                    </span>
-                  </div>
-                  <span className={`font-bold text-base whitespace-nowrap ml-2 flex-shrink-0 ${
+                  <span className="text-xl flex-shrink-0">
+                    {attacker.attackType === 'ultimate' ? '⚡' :
+                     attacker.attackType === 'power' ? '💪' : '👊'}
+                  </span>
+                  <span className="text-xs text-gray-300 flex-shrink-0 min-w-[120px]">
+                    {attacker.address.slice(0, 6)}...{attacker.address.slice(-4)}
+                  </span>
+                  <span className={`font-bold text-sm whitespace-nowrap flex-shrink-0 ${
                     attacker.attackType === 'ultimate' ? 'text-yellow-400' :
                     attacker.attackType === 'power' ? 'text-purple-400' :
                     'text-cyan-400'
