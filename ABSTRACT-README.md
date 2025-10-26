@@ -1,4 +1,4 @@
-# Gumbuo Abstract Edition 🛸
+     # Gumbuo Abstract Edition 🛸
 
 This is the **Abstract chain version** of Gumbuo - a fresh deployment optimized for Abstract's fast, low-cost network.
 
