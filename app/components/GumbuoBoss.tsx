@@ -470,6 +470,18 @@ export default function GumbuoBoss() {
 
   return (
     <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl border border-red-400/30">
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes shine {
+          0% {
+            left: -100%;
+          }
+          100% {
+            left: 200%;
+          }
+        }
+      `}</style>
+
       {/* Title */}
       <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '4rem'}}>
         <span className="text-red-400">💀 GUMBUO BOSS BATTLE ⚔️</span>
@@ -481,12 +493,13 @@ export default function GumbuoBoss() {
           {/* Boss Image */}
           <div className="flex justify-center">
             <img
-              src="/gumbuo.svg"
-              alt="Gumbuo"
-              className={`w-64 h-64 ${bossShaking ? 'animate-bounce' : ''} ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
+              src="/mega-gumbuo.png"
+              alt="Mega Gumbuo Spaceship"
+              className={`w-96 h-96 ${bossShaking ? 'animate-bounce' : ''} ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
-                filter: bossState.isAlive ? 'drop-shadow(0 0 30px rgba(59, 130, 246, 0.8))' : 'none',
-                animation: bossShaking ? 'shake 0.5s' : 'none'
+                filter: bossState.isAlive ? 'drop-shadow(0 0 40px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 80px rgba(239, 68, 68, 0.5))' : 'none',
+                animation: bossShaking ? 'shake 0.5s' : 'none',
+                objectFit: 'contain'
               }}
             />
           </div>
@@ -512,11 +525,27 @@ export default function GumbuoBoss() {
               </p>
             </div>
 
-            <div className="w-full bg-gray-900 rounded-full h-6">
+            <div className="w-full bg-gray-900 rounded-full h-8 border-2 border-gray-700 overflow-hidden shadow-2xl relative">
               <div
-                className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-500`}
-                style={{width: `${getHPPercentage()}%`}}
-              ></div>
+                className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden`}
+                style={{
+                  width: `${getHPPercentage()}%`,
+                  boxShadow: bossState.isAlive ? '0 0 20px currentColor, inset 0 0 20px rgba(255,255,255,0.3)' : 'none',
+                  animation: bossShaking ? 'pulse 0.5s ease-in-out' : 'none'
+                }}
+              >
+                {/* Animated shine effect */}
+                {bossState.isAlive && (
+                  <div
+                    className="absolute inset-y-0 w-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                    style={{
+                      animation: 'shine 3s infinite linear',
+                      transform: 'skewX(-20deg)',
+                      width: '100%'
+                    }}
+                  ></div>
+                )}
+              </div>
             </div>
           </div>
 
