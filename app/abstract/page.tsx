@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import AbstractBridge from "../components/AbstractBridge";
 import AbstractSwap from "../components/AbstractSwap";
 import AlienBadgeMinter from "../components/AlienBadgeMinter";
@@ -10,6 +11,8 @@ import AlienBackground from "../components/AlienBackground";
 import FloatingGumbuo from "../components/FloatingGumbuo";
 import GumbuoCard from "../components/GumbuoCard";
 import AlienButton from "../components/AlienButton";
+
+const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 
 const Home = dynamic(() => import("@lib/Home"), { ssr: false });
 
@@ -34,6 +37,23 @@ export default function AbstractPage() {
 
       {/* Floating Gumbuo Mascot */}
       <FloatingGumbuo position="right" />
+
+      {/* Top Right - Connect Button and HUD */}
+      <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
+        {/* Wallet Connect Button with Alien Styling */}
+        <div className="holographic-panel glass-panel p-4 rounded-xl">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
+          <div className="relative z-10">
+            <ConnectButton />
+          </div>
+        </div>
+
+        {/* Alien HUD */}
+        <AlienHUD />
+      </div>
 
       {/* Hero Section */}
       <div className="relative pt-24 pb-12 px-4">
