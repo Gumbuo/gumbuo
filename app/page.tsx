@@ -65,60 +65,68 @@ export default function MothershipPage() {
         <div className="flex flex-col items-center space-y-6 mb-12">
           {/* Base Chain Buy Button */}
           <div className="flex flex-col items-center space-y-2">
-            <div className="flex items-center justify-center space-x-6">
-              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+            <div className="flex items-center justify-center space-x-4">
+              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
               <a
                 href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block px-24 py-8 bg-blue-500 text-white font-bold rounded-2xl hover:bg-blue-600 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse shadow-xl shadow-blue-500/50"
-                style={{fontSize: '4rem'}}
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                className="inline-block px-12 py-4 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-blue-500/50"
+                style={{fontSize: '2rem'}}
               >
                 Buy GMB (Base)
               </a>
-              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
             </div>
-            <p className="text-blue-400 font-bold text-2xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
+            <p className="text-blue-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
           </div>
 
           {/* Abstract Chain Buy Button */}
           <div className="flex flex-col items-center space-y-2">
-            <div className="flex items-center justify-center space-x-6">
-              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+            <div className="flex items-center justify-center space-x-4">
+              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
               <a
                 href="https://thirdweb.com/abstract/0x1660AA473D936029C7659e7d047F05EcF28D40c9"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block px-24 py-8 bg-purple-500 text-white font-bold rounded-2xl hover:bg-purple-600 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse shadow-xl shadow-purple-500/50"
-                style={{fontSize: '4rem'}}
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                className="inline-block px-12 py-4 bg-purple-500 text-white font-bold rounded-xl hover:bg-purple-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-purple-500/50"
+                style={{fontSize: '2rem'}}
               >
                 Buy GMB (Abstract)
               </a>
-              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
             </div>
-            <p className="text-purple-400 font-bold text-2xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
+            <p className="text-purple-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
           </div>
 
           {/* Social Links */}
-          <div className="flex gap-12 mt-4">
+          <div className="flex gap-6 mt-4">
             <a
               href="https://x.com/gumbuogw3"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-blue-500/80 hover:bg-blue-600 px-36 py-18 rounded-3xl text-white font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-blue-400/80 flex items-center gap-8"
-              style={{fontSize: '6rem'}}
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="bg-blue-500/80 hover:bg-blue-600 px-12 py-4 rounded-xl text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-blue-400/80 flex items-center gap-3"
+              style={{fontSize: '2rem'}}
             >
-              <span style={{fontSize: '8rem'}}>𝕏</span>
+              <span style={{fontSize: '2.5rem'}}>𝕏</span>
               <span>Twitter</span>
             </a>
             <a
               href="https://discord.gg/NptkDYn8fm"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-purple-500/80 hover:bg-purple-600 px-36 py-18 rounded-3xl text-white font-bold transition-all hover:scale-110 shadow-2xl hover:shadow-purple-400/80 flex items-center gap-8"
-              style={{fontSize: '6rem'}}
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="bg-purple-500/80 hover:bg-purple-600 px-12 py-4 rounded-xl text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-purple-400/80 flex items-center gap-3"
+              style={{fontSize: '2rem'}}
             >
-              <span style={{fontSize: '8rem'}}>💬</span>
+              <span style={{fontSize: '2.5rem'}}>💬</span>
               <span>Discord</span>
             </a>
           </div>
@@ -141,12 +149,9 @@ export default function MothershipPage() {
                 <div className="text-6xl mb-4">⛓️</div>
                 <h2 className="text-4xl font-alien text-blue-300 mb-4 holographic-text">BASE CHAIN</h2>
 
-                <div className="space-y-2 text-left mb-6">
-                  <p className="text-blue-200 text-sm">✅ GMB Token Economy</p>
-                  <p className="text-blue-200 text-sm">✅ Staking & Rewards</p>
-                  <p className="text-blue-200 text-sm">✅ Boss Battles</p>
-                  <p className="text-blue-200 text-sm">✅ Arena Fights</p>
-                  <p className="text-blue-200 text-sm">✅ Alien Marketplace</p>
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
                 <div className="inline-block px-6 py-3 bg-blue-500/20 rounded-xl border-2 border-blue-400 text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all">
@@ -170,12 +175,9 @@ export default function MothershipPage() {
                 <div className="text-6xl mb-4">⚡</div>
                 <h2 className="text-4xl font-alien text-purple-300 mb-4 holographic-text">ABSTRACT CHAIN</h2>
 
-                <div className="space-y-2 text-left mb-6">
-                  <p className="text-purple-200 text-sm">✅ Pure XP Economy</p>
-                  <p className="text-purple-200 text-sm">✅ Lightning Fast</p>
-                  <p className="text-purple-200 text-sm">✅ Ultra Low Fees</p>
-                  <p className="text-purple-200 text-sm">✅ Boss Battles</p>
-                  <p className="text-purple-200 text-sm">✅ Arena Fights</p>
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
                 <div className="inline-block px-6 py-3 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all">
@@ -186,8 +188,26 @@ export default function MothershipPage() {
           </Link>
         </div>
 
+        {/* Abstract XP Rewards Banner */}
+        <div className="flex justify-center mt-16 mb-8 px-6">
+          <div className="max-w-4xl w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 rounded-2xl p-6 backdrop-blur-sm animate-pulse">
+            <div className="flex flex-col items-center text-center">
+              <h3 className="text-3xl font-alien text-purple-300 mb-2 holographic-text">⚡ EARN ABSTRACT XP ⚡</h3>
+              <p className="text-purple-200 text-lg mb-4">
+                Play on Gumbuo's Abstract chain and earn <span className="text-yellow-300 font-bold">Abstract XP</span> toward the upcoming airdrop!
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 text-sm">
+                <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Battle Bosses</span>
+                <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Arena Fights</span>
+                <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Stake GMB</span>
+                <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Trade NFTs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Alien Drip Station */}
-        <div className="flex justify-center mt-16">
+        <div className="flex justify-center mt-8">
           <AlienDripStation />
         </div>
 
