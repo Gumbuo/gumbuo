@@ -679,15 +679,10 @@ export default function AlienDripStation() {
                 className={`w-full px-12 py-4 text-2xl font-bold tracking-wider transition-all duration-200 relative overflow-hidden ${
                   hasClaimedToday || claiming || !currentTier
                     ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-                    : "holographic-button organic-button text-white hover:scale-105 hover:shadow-2xl hover:shadow-purple-400/80 animate-pulse-glow hover-ripple hover-morph"
+                    : "alien-button alien-button-gold alien-button-glow text-black hover:scale-105"
                 }`}
               >
-                {!hasClaimedToday && !claiming && currentTier && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-                )}
-                <span className="relative z-10">
-                  {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
-                </span>
+                {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
                   </button>
                 </div>
               </div>

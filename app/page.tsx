@@ -50,16 +50,13 @@ export default function MothershipPage() {
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center">
         {/* Title */}
-        <h1 className="font-alien text-8xl mb-4 holographic-text tracking-wider animate-pulse" style={{
+        <h1 className="font-alien mb-4 holographic-text tracking-wider animate-pulse text-cyan-400" style={{
+          fontSize: '4rem',
           textShadow: '0 0 30px #00ff99, 0 0 60px #00ff99, 0 0 90px #00ff99',
           animation: 'pulse 3s ease-in-out infinite'
         }}>
           🛸 GUMBUO MOTHERSHIP 🛸
         </h1>
-
-        <p className="text-2xl text-cyan-400 mb-16 font-electro opacity-90">
-          Choose Your Chain • Enter the Alien Economy
-        </p>
 
         {/* Buy Gumbuo Buttons with Mascots */}
         <div className="flex flex-col items-center space-y-6 mb-12">
@@ -133,7 +130,10 @@ export default function MothershipPage() {
         </div>
 
         {/* Active Chains */}
-        <h2 className="text-3xl font-alien text-cyan-400 mb-6 holographic-text">GUMBUO'S BLOCKCHAIN PORTAL</h2>
+        <div className="mb-6">
+          <h2 className="font-alien text-cyan-400 holographic-text" style={{fontSize: '3rem'}}>GUMBUO'S BLOCKCHAIN PORTAL</h2>
+          <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">Choose Your Chain • portal to pvp and boss battles</p>
+        </div>
         <div className="flex flex-wrap justify-center gap-6 mb-16">
           {/* Base Chain Card */}
           <Link href="/base">
@@ -192,10 +192,8 @@ export default function MothershipPage() {
         <div className="flex justify-center mt-16 mb-8 px-6">
           <div className="max-w-4xl w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 rounded-2xl p-6 backdrop-blur-sm animate-pulse">
             <div className="flex flex-col items-center text-center">
-              <h3 className="text-3xl font-alien text-purple-300 mb-2 holographic-text">⚡ EARN ABSTRACT XP ⚡</h3>
-              <p className="text-purple-200 text-lg mb-4">
-                Play on Gumbuo's Abstract chain and earn <span className="text-yellow-300 font-bold">Abstract XP</span> toward the upcoming airdrop!
-              </p>
+              <h3 className="text-3xl font-alien text-purple-300 holographic-text">⚡ EARN ABSTRACT XP ⚡</h3>
+              <p className="text-yellow-400 text-sm font-bold mb-4">Coming Soon</p>
               <div className="flex flex-wrap justify-center gap-3 text-sm">
                 <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Battle Bosses</span>
                 <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Arena Fights</span>
