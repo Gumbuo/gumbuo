@@ -24,8 +24,8 @@ export default function Home() {
       {/* Starfield Parallax Background */}
       <StarfieldBackground />
 
-      {/* Music Player - Top Left */}
-      <div className="fixed top-6 left-6 z-50">
+      {/* Music Player - Middle Left */}
+      <div className="fixed top-1/2 left-6 -translate-y-1/2 z-50">
         <AlienMusicPlayer />
       </div>
 

@@ -7,6 +7,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
+const AlienMusicPlayer = dynamic(() => import("./components/AlienMusicPlayer"), { ssr: false });
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -31,6 +32,11 @@ export default function MothershipPage() {
           <source src="/alien.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
+      </div>
+
+      {/* Music Player - Middle Left */}
+      <div className="fixed top-1/2 left-6 -translate-y-1/2 z-50">
+        <AlienMusicPlayer />
       </div>
 
       {/* Top Right - Connect Button and HUD */}
