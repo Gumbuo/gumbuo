@@ -8,7 +8,11 @@ const GumbuoBoss = dynamic(() => import("../app/components/GumbuoBoss"), { ssr: 
 const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
 const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
 
-export default function Home() {
+interface HomeProps {
+  chainType?: "base" | "abstract";
+}
+
+export default function Home({ chainType }: HomeProps = {}) {
   return (
     <main className="min-h-screen bg-black overflow-y-auto">
       {/* Video Background */}
@@ -37,6 +41,32 @@ export default function Home() {
 
       {/* Content with proper spacing */}
       <div className="relative z-10 p-6">
+
+        {/* Abstract XP Rewards Banner - Only show on Abstract chain */}
+        {chainType === "abstract" && (
+          <div className="flex justify-center mt-20 mb-8">
+            <div className="max-w-4xl w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 border-4 border-purple-400 rounded-2xl p-6 backdrop-blur-sm animate-pulse">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h3 className="text-3xl font-alien text-purple-300 mb-2 holographic-text">⚡ EARN ABSTRACT XP ⚡</h3>
+                  <p className="text-purple-200 text-lg mb-2">
+                    Every action on Gumbuo's Abstract chain earns you <span className="text-yellow-300 font-bold">Abstract XP</span> toward the upcoming airdrop!
+                  </p>
+                  <div className="flex flex-wrap gap-3 text-sm">
+                    <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Battle Bosses</span>
+                    <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Arena Fights</span>
+                    <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Stake GMB</span>
+                    <span className="bg-purple-500/30 px-3 py-1 rounded-lg border border-purple-400">✅ Trade NFTs</span>
+                  </div>
+                </div>
+                <div className="ml-6 text-center">
+                  <div className="text-6xl mb-2">🎁</div>
+                  <p className="text-purple-300 text-sm font-bold">Airdrop<br/>Coming Soon</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Alien Market & Arena (Combined) */}
         <div className="flex justify-center mt-32">

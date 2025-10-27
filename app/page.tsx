@@ -3,6 +3,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useCosmicSound } from "./hooks/useCosmicSound";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
@@ -11,6 +12,7 @@ const AlienMusicPlayer = dynamic(() => import("./components/AlienMusicPlayer"), 
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
+  const { playSound } = useCosmicSound();
 
   useEffect(() => {
     setMounted(true);
@@ -127,7 +129,12 @@ export default function MothershipPage() {
         <div className="flex flex-wrap justify-center gap-6 mb-16">
           {/* Base Chain Card */}
           <Link href="/base">
-            <div className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50" style={{width: '400px', maxWidth: '400px'}}>
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50"
+              style={{width: '400px', maxWidth: '400px'}}
+            >
               <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
@@ -151,7 +158,12 @@ export default function MothershipPage() {
 
           {/* Abstract Chain Card */}
           <Link href="/abstract">
-            <div className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50" style={{width: '400px', maxWidth: '400px'}}>
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
+              style={{width: '400px', maxWidth: '400px'}}
+            >
               <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
