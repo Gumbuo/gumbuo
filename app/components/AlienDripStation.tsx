@@ -4,7 +4,8 @@ import { useAccount, useBalance } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
-const GMB_TOKEN_ADDRESS = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
+const GMB_TOKEN_ADDRESS_BASE = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
+const GMB_TOKEN_ADDRESS_ABSTRACT = "0x1660AA473D936029C7659e7d047F05EcF28D40c9";
 
 // Drip tiers based on GMB holdings (daily claim)
 const DRIP_TIERS = [
@@ -37,10 +38,27 @@ interface StakingData {
 
 export default function AlienDripStation() {
   const { address, isConnected } = useAccount();
-  const { data: gmbBalance } = useBalance({
+
+  // Fetch GMB from Base chain
+  const { data: gmbBalanceBase } = useBalance({
     address,
-    token: GMB_TOKEN_ADDRESS as `0x${string}`
+    chainId: 8453, // Base chain ID
+    token: GMB_TOKEN_ADDRESS_BASE as `0x${string}`
   });
+
+  // Fetch GMB from Abstract chain
+  const { data: gmbBalanceAbstract } = useBalance({
+    address,
+    chainId: 2741, // Abstract chain ID
+    token: GMB_TOKEN_ADDRESS_ABSTRACT as `0x${string}`
+  });
+
+  // Calculate total GMB across both chains
+  const gmbBalance = {
+    ...gmbBalanceBase,
+    formatted: ((parseFloat(gmbBalanceBase?.formatted || '0') + parseFloat(gmbBalanceAbstract?.formatted || '0'))).toString(),
+    value: (BigInt(gmbBalanceBase?.value || 0) + BigInt(gmbBalanceAbstract?.value || 0))
+  };
   const { getUserBalance, addPoints } = useAlienPoints();
   const { playSound } = useCosmicSound();
 

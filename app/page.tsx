@@ -79,20 +79,22 @@ export default function MothershipPage() {
             <p className="text-blue-400 font-bold text-2xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
           </div>
 
-          {/* Abstract Chain Buy Button - Coming Soon */}
-          <div className="flex flex-col items-center space-y-2 opacity-60">
+          {/* Abstract Chain Buy Button */}
+          <div className="flex flex-col items-center space-y-2">
             <div className="flex items-center justify-center space-x-6">
-              <img src="/nyx.png" alt="Nyx" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover'}} />
-              <button
-                disabled
-                className="inline-block px-24 py-8 bg-purple-500/50 text-white/70 font-bold rounded-2xl cursor-not-allowed tracking-wider"
+              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+              <a
+                href="https://thirdweb.com/abstract/0x1660AA473D936029C7659e7d047F05EcF28D40c9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-24 py-8 bg-purple-500 text-white font-bold rounded-2xl hover:bg-purple-600 transition-all duration-200 tracking-wider hover-ripple hover-float hover-cosmic-pulse shadow-xl shadow-purple-500/50"
                 style={{fontSize: '4rem'}}
               >
                 Buy GMB (Abstract)
-              </button>
-              <img src="/zorb.png" alt="Zorb" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover'}} />
+              </a>
+              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '80px', height: '80px', maxWidth: '80px', maxHeight: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
             </div>
-            <p className="text-purple-400 font-bold text-2xl tracking-wider">⏳ COMING SOON ⏳</p>
+            <p className="text-purple-400 font-bold text-2xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
           </div>
 
           {/* Social Links */}
@@ -122,10 +124,10 @@ export default function MothershipPage() {
 
         {/* Active Chains */}
         <h2 className="text-3xl font-alien text-cyan-400 mb-6 holographic-text">GUMBUO'S BLOCKCHAIN PORTAL</h2>
-        <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-16">
+        <div className="flex flex-wrap justify-center gap-6 mb-16">
           {/* Base Chain Card */}
           <Link href="/base">
-            <div className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-8 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50">
+            <div className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50" style={{width: '400px', maxWidth: '400px'}}>
               <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
@@ -149,7 +151,7 @@ export default function MothershipPage() {
 
           {/* Abstract Chain Card */}
           <Link href="/abstract">
-            <div className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-8 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50">
+            <div className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50" style={{width: '400px', maxWidth: '400px'}}>
               <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">

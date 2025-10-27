@@ -4,7 +4,8 @@ import { useAlienPoints } from "../app/context/AlienPointsEconomy";
 import { useEffect, useState } from "react";
 import { base } from "wagmi/chains";
 
-const GMB_TOKEN_ADDRESS = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
+const GMB_TOKEN_ADDRESS_BASE = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
+const GMB_TOKEN_ADDRESS_ABSTRACT = "0x1660AA473D936029C7659e7d047F05EcF28D40c9";
 const ABSTRACT_CHAIN_ID = 2741;
 
 export function AlienHUD() {
@@ -26,14 +27,14 @@ export function AlienHUD() {
   const { data: gmbBalanceBase } = useBalance({
     address,
     chainId: base.id,
-    token: GMB_TOKEN_ADDRESS as `0x${string}`
+    token: GMB_TOKEN_ADDRESS_BASE as `0x${string}`
   });
 
-  // Fetch GMB balance from Abstract chain (when token exists)
+  // Fetch GMB balance from Abstract chain
   const { data: gmbBalanceAbstract } = useBalance({
     address,
     chainId: ABSTRACT_CHAIN_ID,
-    token: GMB_TOKEN_ADDRESS as `0x${string}` // Will use same address when deployed
+    token: GMB_TOKEN_ADDRESS_ABSTRACT as `0x${string}`
   });
 
   const { getUserBalance } = useAlienPoints();
