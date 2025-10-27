@@ -2,18 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Alien Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Audiowide&family=Share+Tech+Mono&family=Iceland&family=Electrolize&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body, #__next {
+html, body {
   height: 100%;
   width: 100%;
-  overflow: hidden;
-  position: relative;
   background-color: black;
+}
+
+#__next {
+  min-height: 100%;
+  width: 100%;
+  background-color: black;
+}
+
+/* Gumbuo Alien Theme */
+:root {
+  --alien-primary: #00ff99;
+  --alien-secondary: #00ffff;
+  --alien-accent: #ff00ff;
+  --alien-dark: #0a0a0f;
+  --alien-glow: rgba(0, 255, 153, 0.5);
+  --alien-purple: #8e44ad;
+  --alien-pink: #ff00ff;
+  --alien-blue: #00d4ff;
+  --alien-yellow: #ffff00;
 }
 
 /* Wheel Spin Button Animations */
@@ -53,6 +73,17 @@ html, body, #__next {
   }
 }
 
+@keyframes drip {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200px);
+    opacity: 0;
+  }
+}
+
 @keyframes wheel-glow {
   0%, 100% {
     filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
@@ -85,4 +116,515 @@ html, body, #__next {
 .animate-spin-slow {
   animation: spin 20s linear infinite;
 }
+
+.animate-drip {
+  animation: drip 3s ease-in infinite;
+}
+
+/* ============================================ */
+/* GUMBUO ALIEN UI SYSTEM */
+/* ============================================ */
+
+/* Advanced Holographic Effects */
+@keyframes holographic-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: hue-rotate(20deg);
+  }
+}
+
+@keyframes alien-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--alien-glow),
+                0 0 40px var(--alien-glow),
+                inset 0 0 20px var(--alien-glow);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--alien-glow),
+                0 0 60px var(--alien-glow),
+                0 0 80px var(--alien-glow),
+                inset 0 0 30px var(--alien-glow);
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.95; }
+  75% { opacity: 0.98; }
+}
+
+@keyframes alien-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(3deg);
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes data-stream {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes portal-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes alien-shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes electric-border {
+  0%, 100% {
+    border-color: var(--alien-primary);
+    box-shadow: 0 0 10px var(--alien-primary);
+  }
+  25% {
+    border-color: var(--alien-secondary);
+    box-shadow: 0 0 10px var(--alien-secondary);
+  }
+  50% {
+    border-color: var(--alien-accent);
+    box-shadow: 0 0 10px var(--alien-accent);
+  }
+  75% {
+    border-color: var(--alien-blue);
+    box-shadow: 0 0 10px var(--alien-blue);
+  }
+}
+
+/* Holographic Panel Base */
+.holographic-panel {
+  background: linear-gradient(135deg,
+    rgba(0, 255, 153, 0.05) 0%,
+    rgba(0, 212, 255, 0.05) 50%,
+    rgba(138, 43, 226, 0.05) 100%);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(0, 255, 153, 0.3);
+  position: relative;
+  overflow: hidden;
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.holographic-panel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(0, 255, 153, 0.1) 50%,
+    transparent 70%
+  );
+  animation: holographic-shift 8s ease infinite;
+  pointer-events: none;
+}
+
+/* Glass Panel Effect */
+.glass-panel {
+  background: rgba(10, 10, 15, 0.7);
+  backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(0, 255, 153, 0.2);
+}
+
+/* Corner Glows */
+.corner-glow {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.corner-glow-tl {
+  top: -2px;
+  left: -2px;
+  background: radial-gradient(circle at top left, var(--alien-primary) 0%, transparent 70%);
+  animation: neon-flicker 3s ease-in-out infinite;
+}
+
+.corner-glow-tr {
+  top: -2px;
+  right: -2px;
+  background: radial-gradient(circle at top right, var(--alien-secondary) 0%, transparent 70%);
+  animation: neon-flicker 3.5s ease-in-out infinite;
+}
+
+.corner-glow-bl {
+  bottom: -2px;
+  left: -2px;
+  background: radial-gradient(circle at bottom left, var(--alien-accent) 0%, transparent 70%);
+  animation: neon-flicker 4s ease-in-out infinite;
+}
+
+.corner-glow-br {
+  bottom: -2px;
+  right: -2px;
+  background: radial-gradient(circle at bottom right, var(--alien-blue) 0%, transparent 70%);
+  animation: neon-flicker 4.5s ease-in-out infinite;
+}
+
+/* Holographic Text */
+.holographic-text {
+  background: linear-gradient(90deg,
+    var(--alien-primary) 0%,
+    var(--alien-secondary) 25%,
+    var(--alien-accent) 50%,
+    var(--alien-blue) 75%,
+    var(--alien-primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: alien-shimmer 3s linear infinite;
+  filter: drop-shadow(0 0 10px var(--alien-glow));
+}
+
+/* Alien Code Text Effect */
+.alien-code {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--alien-primary);
+  text-shadow:
+    0 0 5px var(--alien-primary),
+    0 0 10px var(--alien-primary),
+    0 0 15px var(--alien-glow);
+  animation: neon-flicker 2s ease-in-out infinite;
+}
+
+/* Scan Line Effect */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--alien-primary),
+    transparent
+  );
+  animation: scan-line 4s linear infinite;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Data Stream Background */
+.data-stream {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.data-stream::before,
+.data-stream::after {
+  content: '01010101010101010101';
+  position: absolute;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--alien-primary);
+  opacity: 0.1;
+  white-space: nowrap;
+  animation: data-stream 10s linear infinite;
+}
+
+.data-stream::before {
+  left: 10%;
+  animation-delay: -2s;
+}
+
+.data-stream::after {
+  left: 80%;
+  animation-delay: -5s;
+}
+
+/* Alien Button Styles */
+.alien-button {
+  background: linear-gradient(135deg,
+    rgba(0, 255, 153, 0.2),
+    rgba(0, 212, 255, 0.2)
+  );
+  border: 2px solid var(--alien-primary);
+  color: var(--alien-primary);
+  font-family: 'Electrolize', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 12px 32px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 0 20px rgba(0, 255, 153, 0.3),
+    inset 0 0 20px rgba(0, 255, 153, 0.1);
+}
+
+.alien-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(0, 255, 153, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.alien-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.alien-button:hover {
+  border-color: var(--alien-secondary);
+  box-shadow:
+    0 0 30px rgba(0, 255, 153, 0.6),
+    0 0 50px rgba(0, 212, 255, 0.4),
+    inset 0 0 30px rgba(0, 255, 153, 0.2);
+  transform: translateY(-2px);
+}
+
+.alien-button:active {
+  transform: translateY(0);
+}
+
+/* Portal Effect */
+.portal-effect {
+  position: relative;
+  border-radius: 50%;
+}
+
+.portal-effect::before,
+.portal-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: portal-spin 4s linear infinite;
+}
+
+.portal-effect::before {
+  border-color: var(--alien-primary) transparent var(--alien-primary) transparent;
+}
+
+.portal-effect::after {
+  border-color: transparent var(--alien-secondary) transparent var(--alien-secondary);
+  animation-direction: reverse;
+  animation-duration: 3s;
+}
+
+/* Floating Animation */
+.alien-float {
+  animation: alien-float 6s ease-in-out infinite;
+}
+
+/* Electric Border Animation */
+.electric-border {
+  animation: electric-border 3s linear infinite;
+}
+
+/* Drop Shadow Glow */
+.drop-shadow-glow {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* Alien Grid Background */
+.alien-grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 153, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 153, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: alien-pulse 4s ease-in-out infinite;
+}
+
+/* Glitch Effect */
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+.glitch-effect {
+  animation: glitch 0.3s ease-in-out infinite;
+}
+
+/* Hover Scale Effect */
+.hover-scale-102 {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale-102:hover {
+  transform: scale(1.02);
+}
+
+/* Animated Gradient Background */
+.animated-gradient-bg {
+  background: linear-gradient(
+    -45deg,
+    #0a0a0f,
+    #1a0a1f,
+    #0a1a1f,
+    #0f0a1a
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Cyber Lines */
+.cyber-lines {
+  position: relative;
+}
+
+.cyber-lines::before,
+.cyber-lines::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--alien-primary),
+    transparent
+  );
+  animation: scan-line 3s linear infinite;
+}
+
+.cyber-lines::before {
+  top: 0;
+  left: 0;
+}
+
+.cyber-lines::after {
+  bottom: 0;
+  right: 0;
+  animation-delay: -1.5s;
+}
+
+/* Status Indicator */
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--alien-primary);
+  box-shadow: 0 0 10px var(--alien-primary),
+              0 0 20px var(--alien-primary);
+  animation: alien-pulse 2s ease-in-out infinite;
+}
+
+/* Loading Spinner */
+@keyframes alien-spin {
+  0% {
+    transform: rotate(0deg);
+    border-top-color: var(--alien-primary);
+  }
+  25% {
+    border-top-color: var(--alien-secondary);
+  }
+  50% {
+    border-top-color: var(--alien-accent);
+  }
+  75% {
+    border-top-color: var(--alien-blue);
+  }
+  100% {
+    transform: rotate(360deg);
+    border-top-color: var(--alien-primary);
+  }
+}
+
+.alien-spinner {
+  border: 4px solid rgba(0, 255, 153, 0.2);
+  border-top: 4px solid var(--alien-primary);
+  border-radius: 50%;
+  animation: alien-spin 1s linear infinite;
+}
+
 

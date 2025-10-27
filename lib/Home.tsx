@@ -34,8 +34,19 @@ export default function Home({ chainType }: HomeProps = {}) {
       </div>
 
       {/* Top Right - Connect Button and HUD */}
-      <div className="fixed top-6 right-6 z-50 flex flex-col items-end space-y-4">
-        <ConnectButton />
+      <div className="fixed top-6 right-6 z-50 flex flex-col items-end space-y-4 pointer-events-auto">
+        {/* Wallet Connect Button with Alien Styling */}
+        <div className="holographic-panel glass-panel p-4 rounded-xl">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
+          <div className="relative z-10">
+            <ConnectButton />
+          </div>
+        </div>
+
+        {/* Alien HUD */}
         <AlienHUD />
       </div>
 
