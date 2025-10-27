@@ -122,7 +122,8 @@ export default function MothershipPage() {
 
         {/* Active Chains */}
         <h2 className="text-3xl font-alien text-cyan-400 mb-6 holographic-text">GUMBUO'S BLOCKCHAIN PORTAL</h2>
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+        <div className="flex justify-center gap-8 mb-16">
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl">
           {/* Base Chain Card */}
           <Link href="/base">
             <div className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-8 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50">
@@ -170,6 +171,7 @@ export default function MothershipPage() {
               </div>
             </div>
           </Link>
+          </div>
         </div>
 
         {/* Alien Drip Station */}
