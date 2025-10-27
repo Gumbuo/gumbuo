@@ -8,13 +8,13 @@ const GMB_TOKEN_ADDRESS = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
 
 // Drip tiers based on GMB holdings (daily claim)
 const DRIP_TIERS = [
-  { minGMB: 1000000, maxGMB: Infinity, points: 5000, name: "LEGENDARY WHALE", color: "#FFD700" },
-  { minGMB: 500000, maxGMB: 999999, points: 2500, name: "Epic Holder", color: "#FF6B6B" },
-  { minGMB: 100000, maxGMB: 499999, points: 1000, name: "Rare Collector", color: "#9B59B6" },
-  { minGMB: 50000, maxGMB: 99999, points: 500, name: "Uncommon Stacker", color: "#3498DB" },
-  { minGMB: 10000, maxGMB: 49999, points: 250, name: "Common Holder", color: "#00ff99" },
-  { minGMB: 1000, maxGMB: 9999, points: 100, name: "Starter", color: "#95A5A6" },
-  { minGMB: 0, maxGMB: 999, points: 50, name: "Beginner", color: "#7F8C8D" },
+  { minGMB: 1000000, maxGMB: Infinity, points: 50000, name: "LEGENDARY WHALE", color: "#FFD700" },
+  { minGMB: 500000, maxGMB: 999999, points: 25000, name: "Epic Holder", color: "#FF6B6B" },
+  { minGMB: 100000, maxGMB: 499999, points: 15000, name: "Rare Collector", color: "#9B59B6" },
+  { minGMB: 50000, maxGMB: 99999, points: 10000, name: "Uncommon Stacker", color: "#3498DB" },
+  { minGMB: 10000, maxGMB: 49999, points: 7500, name: "Common Holder", color: "#00ff99" },
+  { minGMB: 1000, maxGMB: 9999, points: 6000, name: "Starter", color: "#95A5A6" },
+  { minGMB: 0, maxGMB: 999, points: 5000, name: "Beginner", color: "#7F8C8D" },
 ];
 
 // Staking formula: 100 AP per day for every 1M GMB held
