@@ -575,7 +575,7 @@ export default function GumbuoBoss() {
             <img
               src="/gumbuoboss.png"
               alt="Gumbuo Boss"
-              className={`w-32 h-32 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
+              className={`w-24 h-24 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
                 filter: bossState.isAlive ? 'drop-shadow(0 0 40px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 80px rgba(239, 68, 68, 0.5))' : 'none',
                 animation: bossShaking ? 'shake 0.5s ease-in-out' : 'none',
@@ -643,52 +643,64 @@ export default function GumbuoBoss() {
 
       {/* Attack Type Selector */}
       {bossState.isAlive && isConnected && (
-        <div className="w-full bg-black/60 rounded-2xl p-6">
-          <h3 className="text-2xl font-alien text-orange-400 text-center mb-6 holographic-text">⚔️ SELECT ATTACK TYPE ⚔️</h3>
+        <div className="w-full bg-black/60 rounded-2xl p-6 space-y-6">
+          <h3 className="text-3xl font-alien text-orange-400 text-center holographic-text">⚔️ CHOOSE YOUR ATTACK ⚔️</h3>
 
-          {/* Attack Button - Centered */}
-          <div className="flex justify-center mb-6">
-            <button
-              onClick={handleAttack}
-              onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
-              disabled={isAttacking || !canAttack}
-              className={`px-48 py-16 text-8xl font-bold tracking-wider ${
-                isAttacking || !canAttack
-                  ? "alien-button-disabled"
-                  : "alien-button alien-button-danger alien-button-glow alien-button-organic"
+          {/* Attack Selection Cards */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Normal Attack */}
+            <div
+              onClick={() => setSelectedAttack('normal')}
+              onMouseEnter={() => playSound('hover')}
+              className={`flex flex-col p-6 rounded-xl cursor-pointer transition-all duration-300 ${
+                selectedAttack === 'normal'
+                  ? 'bg-gradient-to-br from-blue-600 to-blue-800 border-4 border-blue-400 shadow-lg shadow-blue-500/50 scale-105'
+                  : 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 hover:border-blue-500 hover:scale-102'
               }`}
             >
-              <span className="relative z-10">
-                {!isConnected
-                  ? "CONNECT WALLET"
-                  : isAttacking
-                  ? "⚔️ ATTACKING... ⚔️"
-                  : !canAttack
-                  ? `COOLDOWN: ${(cooldownRemaining / 1000).toFixed(1)}s`
-                  : "⚔️ ATTACK BOSS ⚔️"}
-              </span>
-            </button>
-          </div>
+              <div className="text-center mb-4">
+                <div className="text-5xl mb-2">👊</div>
+                <h4 className="text-2xl font-bold text-white mb-2">Normal Attack</h4>
 
-          <div className="grid grid-cols-3 gap-4">
-            {/* Normal Attack */}
-            <div className="flex flex-col space-y-2">
-              <button
-                onClick={() => setSelectedAttack('normal')}
-                className={`px-4 py-3 font-bold text-base alien-button alien-button-secondary relative z-10 ${
-                  selectedAttack === 'normal' ? 'alien-button-glow' : ''
-                }`}
-              >
-                <p className="text-sm mb-1">👊 Normal Attack</p>
-                <p className="text-xs text-black font-bold">
-                  {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP - Lvl {attackLevels.normal}/5
-                </p>
-              </button>
+                {/* Cost Badge */}
+                <div className="flex justify-center mb-3">
+                  <span className="px-3 py-1 bg-black/40 rounded-full font-bold text-yellow-400 text-sm">
+                    {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP
+                  </span>
+                </div>
+
+                {/* Glass Tube Level Indicator */}
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-sm text-green-400 font-bold">Level {attackLevels.normal}/5</div>
+                  <div className="relative w-20 h-32 bg-black/60 rounded-lg border-2 border-cyan-400/50 shadow-lg shadow-cyan-400/30 overflow-hidden">
+                    {/* Glass shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                    {/* Alien liquid fill */}
+                    <div
+                      className="absolute bottom-0 w-full bg-gradient-to-t from-green-500 to-green-300 transition-all duration-500"
+                      style={{
+                        height: `${(attackLevels.normal / MAX_ATTACK_LEVEL) * 100}%`,
+                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.5)'
+                      }}
+                    >
+                      {/* Bubbles effect */}
+                      <div className="absolute inset-0 opacity-40">
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '20%', bottom: '10%' }}></div>
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '50%', bottom: '30%', animationDelay: '0.3s' }}></div>
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '70%', bottom: '20%', animationDelay: '0.6s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               {attackLevels.normal < MAX_ATTACK_LEVEL && (
                 <button
-                  onClick={() => handleUpgradeAttack('normal')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpgradeAttack('normal');
+                  }}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-4 py-2 text-sm font-bold alien-button alien-button-primary"
+                  className="w-full px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all"
                 >
                   ⬆️ Upgrade ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
                 </button>
@@ -696,26 +708,66 @@ export default function GumbuoBoss() {
             </div>
 
             {/* Power Attack */}
-            <div className="flex flex-col space-y-2">
-              <button
-                onClick={() => setSelectedAttack('power')}
-                disabled={powerCooldown > 0}
-                className={`px-4 py-3 font-bold text-base relative z-10 ${
-                  powerCooldown > 0
-                    ? 'alien-button-disabled'
-                    : 'alien-button alien-button-purple'
-                } ${selectedAttack === 'power' && powerCooldown === 0 ? 'alien-button-glow' : ''}`}
-              >
-                <p className="text-sm mb-1">💪 Power Attack</p>
-                <p className={`text-xs font-bold ${powerCooldown > 0 ? 'text-gray-400' : 'text-white'}`}>
-                  {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP - Lvl {attackLevels.power}/5
-                </p>
-              </button>
-              {attackLevels.power < MAX_ATTACK_LEVEL && (
+            <div
+              onClick={() => powerCooldown === 0 && setSelectedAttack('power')}
+              onMouseEnter={() => powerCooldown === 0 && playSound('hover')}
+              className={`flex flex-col p-6 rounded-xl transition-all duration-300 ${
+                powerCooldown > 0
+                  ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 opacity-50 cursor-not-allowed'
+                  : selectedAttack === 'power'
+                  ? 'bg-gradient-to-br from-purple-600 to-purple-800 border-4 border-purple-400 shadow-lg shadow-purple-500/50 scale-105 cursor-pointer'
+                  : 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 hover:border-purple-500 hover:scale-102 cursor-pointer'
+              }`}
+            >
+              <div className="text-center mb-4">
+                <div className="text-5xl mb-2">💪</div>
+                <h4 className="text-2xl font-bold text-white mb-2">Power Attack</h4>
+
+                {/* Cost Badge */}
+                <div className="flex justify-center mb-3">
+                  <span className="px-3 py-1 bg-black/40 rounded-full font-bold text-yellow-400 text-sm">
+                    {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP
+                  </span>
+                </div>
+
+                {/* Glass Tube Level Indicator */}
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-sm text-green-400 font-bold">Level {attackLevels.power}/5</div>
+                  <div className="relative w-20 h-32 bg-black/60 rounded-lg border-2 border-cyan-400/50 shadow-lg shadow-cyan-400/30 overflow-hidden">
+                    {/* Glass shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                    {/* Alien liquid fill */}
+                    <div
+                      className="absolute bottom-0 w-full bg-gradient-to-t from-green-500 to-green-300 transition-all duration-500"
+                      style={{
+                        height: `${(attackLevels.power / MAX_ATTACK_LEVEL) * 100}%`,
+                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.5)'
+                      }}
+                    >
+                      {/* Bubbles effect */}
+                      <div className="absolute inset-0 opacity-40">
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '20%', bottom: '10%' }}></div>
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '50%', bottom: '30%', animationDelay: '0.3s' }}></div>
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '70%', bottom: '20%', animationDelay: '0.6s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {powerCooldown > 0 && (
+                  <p className="mt-3 text-red-400 font-bold text-sm">
+                    Cooldown: {(powerCooldown / 1000).toFixed(0)}s
+                  </p>
+                )}
+              </div>
+              {attackLevels.power < MAX_ATTACK_LEVEL && powerCooldown === 0 && (
                 <button
-                  onClick={() => handleUpgradeAttack('power')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpgradeAttack('power');
+                  }}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-4 py-2 text-sm font-bold alien-button alien-button-primary"
+                  className="w-full px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all"
                 >
                   ⬆️ Upgrade ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
                 </button>
@@ -723,31 +775,93 @@ export default function GumbuoBoss() {
             </div>
 
             {/* Cosmic Attack */}
-            <div className="flex flex-col space-y-2">
-              <button
-                onClick={() => setSelectedAttack('ultimate')}
-                disabled={ultimateCooldown > 0}
-                className={`px-4 py-3 font-bold text-base relative z-10 ${
-                  ultimateCooldown > 0
-                    ? 'alien-button-disabled'
-                    : 'alien-button alien-button-gold'
-                } ${selectedAttack === 'ultimate' && ultimateCooldown === 0 ? 'alien-button-glow' : ''}`}
-              >
-                <p className="text-sm mb-1">⚡ Cosmic Attack</p>
-                <p className={`text-xs font-bold ${ultimateCooldown > 0 ? 'text-gray-400' : 'text-black'}`}>
-                  {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP - Lvl {attackLevels.ultimate}/5
-                </p>
-              </button>
-              {attackLevels.ultimate < MAX_ATTACK_LEVEL && (
+            <div
+              onClick={() => ultimateCooldown === 0 && setSelectedAttack('ultimate')}
+              onMouseEnter={() => ultimateCooldown === 0 && playSound('hover')}
+              className={`flex flex-col p-6 rounded-xl transition-all duration-300 ${
+                ultimateCooldown > 0
+                  ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 opacity-50 cursor-not-allowed'
+                  : selectedAttack === 'ultimate'
+                  ? 'bg-gradient-to-br from-yellow-600 to-yellow-800 border-4 border-yellow-400 shadow-lg shadow-yellow-500/50 scale-105 cursor-pointer'
+                  : 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 hover:border-yellow-500 hover:scale-102 cursor-pointer'
+              }`}
+            >
+              <div className="text-center mb-4">
+                <div className="text-5xl mb-2">⚡</div>
+                <h4 className="text-2xl font-bold text-white mb-2">Cosmic Attack</h4>
+
+                {/* Cost Badge */}
+                <div className="flex justify-center mb-3">
+                  <span className="px-3 py-1 bg-black/40 rounded-full font-bold text-yellow-400 text-sm">
+                    {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP
+                  </span>
+                </div>
+
+                {/* Glass Tube Level Indicator */}
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-sm text-green-400 font-bold">Level {attackLevels.ultimate}/5</div>
+                  <div className="relative w-20 h-32 bg-black/60 rounded-lg border-2 border-cyan-400/50 shadow-lg shadow-cyan-400/30 overflow-hidden">
+                    {/* Glass shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                    {/* Alien liquid fill */}
+                    <div
+                      className="absolute bottom-0 w-full bg-gradient-to-t from-green-500 to-green-300 transition-all duration-500"
+                      style={{
+                        height: `${(attackLevels.ultimate / MAX_ATTACK_LEVEL) * 100}%`,
+                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.5)'
+                      }}
+                    >
+                      {/* Bubbles effect */}
+                      <div className="absolute inset-0 opacity-40">
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '20%', bottom: '10%' }}></div>
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '50%', bottom: '30%', animationDelay: '0.3s' }}></div>
+                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '70%', bottom: '20%', animationDelay: '0.6s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {ultimateCooldown > 0 && (
+                  <p className="mt-3 text-red-400 font-bold text-sm">
+                    Cooldown: {(ultimateCooldown / 1000).toFixed(0)}s
+                  </p>
+                )}
+              </div>
+              {attackLevels.ultimate < MAX_ATTACK_LEVEL && ultimateCooldown === 0 && (
                 <button
-                  onClick={() => handleUpgradeAttack('ultimate')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpgradeAttack('ultimate');
+                  }}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-4 py-2 text-sm font-bold alien-button alien-button-primary"
+                  className="w-full px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all"
                 >
                   ⬆️ Upgrade ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
                 </button>
               )}
             </div>
+          </div>
+
+          {/* Main Attack Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleAttack}
+              onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
+              disabled={isAttacking || !canAttack}
+              className={`px-16 py-6 text-4xl font-bold tracking-wider rounded-2xl transition-all duration-300 ${
+                isAttacking || !canAttack
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-red-600 to-orange-600 text-white hover:from-red-500 hover:to-orange-500 shadow-lg shadow-red-500/50 hover:scale-105"
+              }`}
+            >
+              {!isConnected
+                ? "CONNECT WALLET"
+                : isAttacking
+                ? "⚔️ ATTACKING... ⚔️"
+                : !canAttack
+                ? `COOLDOWN: ${(cooldownRemaining / 1000).toFixed(1)}s`
+                : "⚔️ LAUNCH ATTACK ⚔️"}
+            </button>
           </div>
 
           {/* User Stats - Inside Attack Section */}

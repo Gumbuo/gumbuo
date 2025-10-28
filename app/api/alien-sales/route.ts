@@ -14,17 +14,31 @@ interface AlienSales {
   zorb: number;
   baob: number;
   apelian: number;
+  j3d1: number;
+  zit: number;
+  comingsoon: number;
 }
 
 // GET /api/alien-sales - Fetch sales counts
 export async function GET() {
   try {
-    const sales = await redis.get<AlienSales>(SALES_KEY) || {
-      nyx: 0,
-      zorb: 0,
-      baob: 0,
-      apelian: 0,
+    const storedSales = await redis.get<Partial<AlienSales>>(SALES_KEY);
+
+    // Merge with defaults to ensure all aliens have a count
+    const sales: AlienSales = {
+      nyx: storedSales?.nyx || 0,
+      zorb: storedSales?.zorb || 0,
+      baob: storedSales?.baob || 0,
+      apelian: storedSales?.apelian || 0,
+      j3d1: storedSales?.j3d1 || 0,
+      zit: storedSales?.zit || 0,
+      comingsoon: storedSales?.comingsoon || 0,
     };
+
+    // Update Redis with complete data if any fields were missing
+    if (!storedSales || Object.keys(storedSales).length < 7) {
+      await redis.set(SALES_KEY, sales);
+    }
 
     return NextResponse.json({
       success: true,
@@ -44,7 +58,7 @@ export async function POST(request: NextRequest) {
   try {
     const { alienId } = await request.json();
 
-    if (!alienId || !["nyx", "zorb", "baob", "apelian"].includes(alienId)) {
+    if (!alienId || !["nyx", "zorb", "baob", "apelian", "j3d1", "zit", "comingsoon"].includes(alienId)) {
       return NextResponse.json(
         { success: false, error: "Invalid alien ID" },
         { status: 400 }
@@ -52,11 +66,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch current sales
-    const sales = await redis.get<AlienSales>(SALES_KEY) || {
-      nyx: 0,
-      zorb: 0,
-      baob: 0,
-      apelian: 0,
+    const storedSales = await redis.get<Partial<AlienSales>>(SALES_KEY);
+
+    // Merge with defaults to ensure all aliens have a count
+    const sales: AlienSales = {
+      nyx: storedSales?.nyx || 0,
+      zorb: storedSales?.zorb || 0,
+      baob: storedSales?.baob || 0,
+      apelian: storedSales?.apelian || 0,
+      j3d1: storedSales?.j3d1 || 0,
+      zit: storedSales?.zit || 0,
+      comingsoon: storedSales?.comingsoon || 0,
     };
 
     // Increment the count

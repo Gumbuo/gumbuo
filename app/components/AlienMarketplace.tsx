@@ -21,12 +21,15 @@ interface OwnedAlien {
   purchasedAt: number;
 }
 
-// Alien pics for Gumbuo Fighters - Nyx, Zorb, Baob, and Apelian
+// Alien pics for Gumbuo Fighters - Nyx, Zorb, Baob, Apelian, J3D1, and Zit
 const ALIEN_PICS: AlienPic[] = [
   { id: "nyx", name: "Nyx", price: 100, image: "/nyx.png", description: "Master of shadows and the void, Nyx walks between dimensions" },
   { id: "zorb", name: "Zorb", price: 100, image: "/zorb.png", description: "Ancient cosmic entity with infinite wisdom and power" },
   { id: "baob", name: "Baob", price: 100, image: "/baob.png", description: "Wise protector of the ancient realms, Baob defends cosmic balance" },
   { id: "apelian", name: "Apelian", price: 100, image: "/apelian.jpg", description: "Fierce warrior from the primal cosmos, Apelian brings raw strength and cunning" },
+  { id: "j3d1", name: "J3D1", price: 100, image: "/j3d1.jpg", description: "Legendary mech warrior from distant galaxies, J3D1 combines advanced technology with unmatched combat prowess" },
+  { id: "zit", name: "Zit", price: 100, image: "/zit.png", description: "Chaotic trickster from the cosmic void, Zit strikes with unpredictable fury" },
+  { id: "comingsoon", name: "Coming Soon", price: 999999, image: "/alien.mp4", description: "A new warrior is arriving soon from the depths of space..." },
 ];
 
 export default function AlienMarketplace() {
@@ -42,6 +45,9 @@ export default function AlienMarketplace() {
     zorb: 0,
     baob: 0,
     apelian: 0,
+    j3d1: 0,
+    zit: 0,
+    comingsoon: 0,
   });
 
   // Migration: Clear old localStorage data (v5 - global staking & drip data)
@@ -220,16 +226,14 @@ export default function AlienMarketplace() {
   return (
     <div className="flex flex-col items-center space-y-6 w-full">
       {/* Info Section */}
-      <div className="w-full text-orange-400 text-sm text-center max-w-2xl bg-black/60 p-4 rounded-xl">
-        <p className="font-bold mb-2 text-lg">ℹ️ Marketplace Info</p>
-        <p className="opacity-75">
+      <div className="w-full text-orange-400 text-center">
+        <p className="font-bold text-lg">
           Use your Alien Points to purchase Gumbuo Fighters aliens!
-          Each purchase is permanent and unique to your wallet. More fighters coming soon! 🚀
         </p>
       </div>
 
       {/* Alien Pics - Side by Side */}
-      <div className="w-full flex justify-center gap-8">
+      <div className="w-full flex justify-center gap-12">
         {ALIEN_PICS.map((pic) => {
           const ownedCount = ownedAliens.filter(a => a.picId === pic.id).length;
           const isPurchasing = purchasing === pic.id;
@@ -252,8 +256,8 @@ export default function AlienMarketplace() {
                 <img
                   src={pic.image}
                   alt={pic.name}
-                  className="max-w-[128px] max-h-[128px] w-auto h-auto object-contain"
-                  style={{ width: '128px', height: '128px', objectFit: 'contain' }}
+                  className="w-[128px] h-[128px] object-cover rounded-lg"
+                  style={{ width: '128px', height: '128px', objectFit: 'cover' }}
                 />
                 {ownedCount > 0 && (
                   <div className="absolute -top-2 -right-2 bg-orange-400 text-black font-bold px-2 py-1 rounded-full text-sm">

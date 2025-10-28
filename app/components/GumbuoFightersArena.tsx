@@ -595,7 +595,7 @@ export default function GumbuoFightersArena() {
         </h3>
         <p className="text-center mb-4">
           <span className="holographic-text font-alien font-bold tracking-wider animate-pulse" style={{fontSize: '2rem'}}>
-            ⬇️ Drag and drop your aliens into the arena below to fight ⬇️
+            ⬇️ Drag and drop your aliens and fight! ⬇️
           </span>
         </p>
         <div className="flex flex-wrap justify-center gap-4 max-h-96 overflow-y-auto p-4 bg-black/40 rounded-xl">
