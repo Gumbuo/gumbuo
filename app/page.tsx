@@ -37,13 +37,10 @@ export default function MothershipPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
       </div>
 
-      {/* Music Player - Middle Left */}
-      <div className="fixed top-1/2 left-6 -translate-y-1/2 z-50">
+      {/* Music Player - Top Left */}
+      <div className="fixed top-6 left-6 z-50">
         <AlienMusicPlayer />
       </div>
-
-      {/* Floating Gumbuo Helper */}
-      <FloatingGumbuo position="right" />
 
       {/* Top Right - Connect Button and HUD */}
       <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
@@ -78,14 +75,24 @@ export default function MothershipPage() {
           <h2 className="font-alien text-cyan-400 holographic-text" style={{fontSize: '3rem'}}>BLOCKCHAIN PORTAL</h2>
           <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">Choose Your Chain • portal to pvp and boss battles</p>
         </div>
-        <div className="flex flex-wrap justify-center gap-6 mb-16">
+
+        {/* Column Headers */}
+        <div className="grid grid-cols-2 gap-6 mb-4 max-w-4xl mx-auto">
+          <div className="text-center">
+            <h3 className="text-2xl font-alien text-cyan-400 holographic-text">MAINNET</h3>
+          </div>
+          <div className="text-center">
+            <h3 className="text-2xl font-alien text-cyan-400 holographic-text">TESTNET</h3>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6 mb-16 max-w-4xl mx-auto">
           {/* Base Chain Card */}
-          <Link href="/base">
+          <Link href="/base" className="block">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50"
-              style={{width: '400px', maxWidth: '400px'}}
+              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
             >
               <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
 
@@ -105,13 +112,37 @@ export default function MothershipPage() {
             </div>
           </Link>
 
-          {/* Abstract Chain Card */}
-          <Link href="/abstract">
+          {/* Base Sepolia Card */}
+          <Link href="/base-sepolia" className="block">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
-              style={{width: '400px', maxWidth: '400px'}}
+              className="group relative bg-gradient-to-br from-yellow-900/40 to-orange-900/40 rounded-3xl p-6 border-4 border-yellow-500/50 hover:border-yellow-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🧪</div>
+                <h2 className="text-4xl font-alien text-cyan-300 mb-4 holographic-text">BASE SEPOLIA</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 text-cyan-300 font-bold group-hover:bg-cyan-500/30 transition-all">
+                  ENTER TESTNET →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Abstract Chain Card */}
+          <Link href="/abstract" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-3xl p-6 border-4 border-cyan-500/50 hover:border-cyan-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
             >
               <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
 
@@ -126,6 +157,231 @@ export default function MothershipPage() {
 
                 <div className="inline-block px-6 py-3 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all">
                   ENTER ABSTRACT →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Abstract Testnet Card */}
+          <Link href="/abstract-testnet" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🧪</div>
+                <h2 className="text-4xl font-alien text-yellow-300 mb-4 holographic-text">ABSTRACT TESTNET</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-yellow-500/20 rounded-xl border-2 border-yellow-400 text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all">
+                  ENTER TESTNET →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Blast Card */}
+          <Link href="/blast" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-yellow-900/40 to-red-900/40 rounded-3xl p-6 border-4 border-yellow-500/50 hover:border-yellow-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">💥</div>
+                <h2 className="text-4xl font-alien text-yellow-300 mb-4 holographic-text">BLAST CHAIN</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-yellow-500/20 rounded-xl border-2 border-yellow-400 text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all">
+                  ENTER BLAST →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Blast Sepolia Card */}
+          <Link href="/blast-sepolia" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-orange-900/40 to-red-900/40 rounded-3xl p-6 border-4 border-orange-500/50 hover:border-orange-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🧪</div>
+                <h2 className="text-4xl font-alien text-orange-300 mb-4 holographic-text">BLAST SEPOLIA</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-orange-500/20 rounded-xl border-2 border-orange-400 text-orange-300 font-bold group-hover:bg-orange-500/30 transition-all">
+                  ENTER TESTNET →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Arbitrum Card */}
+          <Link href="/arbitrum" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🔷</div>
+                <h2 className="text-4xl font-alien text-blue-300 mb-4 holographic-text">ARBITRUM</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-blue-500/20 rounded-xl border-2 border-blue-400 text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all">
+                  ENTER ARBITRUM →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Arbitrum Sepolia Card */}
+          <Link href="/arbitrum-sepolia" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-cyan-900/40 to-teal-900/40 rounded-3xl p-6 border-4 border-cyan-500/50 hover:border-cyan-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🧪</div>
+                <h2 className="text-4xl font-alien text-cyan-300 mb-4 holographic-text">ARBITRUM SEPOLIA</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 text-cyan-300 font-bold group-hover:bg-cyan-500/30 transition-all">
+                  ENTER TESTNET →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Polygon Card */}
+          <Link href="/polygon" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-purple-900/40 to-indigo-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🟣</div>
+                <h2 className="text-4xl font-alien text-purple-300 mb-4 holographic-text">POLYGON</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all">
+                  ENTER POLYGON →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Polygon Amoy Card */}
+          <Link href="/polygon-amoy" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-indigo-900/40 to-violet-900/40 rounded-3xl p-6 border-4 border-indigo-500/50 hover:border-indigo-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🧪</div>
+                <h2 className="text-4xl font-alien text-indigo-300 mb-4 holographic-text">POLYGON AMOY</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-indigo-500/20 rounded-xl border-2 border-indigo-400 text-indigo-300 font-bold group-hover:bg-indigo-500/30 transition-all">
+                  ENTER TESTNET →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Avalanche Card */}
+          <Link href="/avalanche" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-red-900/40 to-rose-900/40 rounded-3xl p-6 border-4 border-red-500/50 hover:border-red-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-red-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-red-500/0 group-hover:bg-red-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🔺</div>
+                <h2 className="text-4xl font-alien text-red-300 mb-4 holographic-text">AVALANCHE</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-red-500/20 rounded-xl border-2 border-red-400 text-red-300 font-bold group-hover:bg-red-500/30 transition-all">
+                  ENTER AVALANCHE →
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Avalanche Fuji Card */}
+          <Link href="/avalanche-fuji" className="block">
+            <div
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
+              className="group relative bg-gradient-to-br from-rose-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-rose-500/50 hover:border-rose-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-rose-500/50 w-full"
+            >
+              <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/10 rounded-3xl transition-all duration-300"></div>
+
+              <div className="relative z-10">
+                <div className="text-6xl mb-4">🧪</div>
+                <h2 className="text-4xl font-alien text-rose-300 mb-4 holographic-text">AVALANCHE FUJI</h2>
+
+                <div className="flex justify-center items-center gap-4 mb-6">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                </div>
+
+                <div className="inline-block px-6 py-3 bg-rose-500/20 rounded-xl border-2 border-rose-400 text-rose-300 font-bold group-hover:bg-rose-500/30 transition-all">
+                  ENTER TESTNET →
                 </div>
               </div>
             </div>

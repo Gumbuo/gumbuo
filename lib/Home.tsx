@@ -9,10 +9,10 @@ const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlaye
 const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
 
 interface HomeProps {
-  chainType?: "base" | "abstract";
+  chainType?: string;
 }
 
-export default function Home({ chainType }: HomeProps = {}) {
+export default function Home({ chainType = "base" }: HomeProps) {
   return (
     <main className="min-h-screen bg-black overflow-y-auto">
       {/* Video Background */}
