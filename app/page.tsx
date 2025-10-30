@@ -56,12 +56,14 @@ export default function MothershipPage() {
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center">
         {/* Title */}
-        <h1 className="font-alien mb-4 holographic-text tracking-wider animate-pulse text-cyan-400" style={{
+        <h1 className="font-alien mb-4 holographic-text tracking-wider animate-pulse text-cyan-400 flex items-center justify-center gap-4" style={{
           fontSize: '4rem',
           textShadow: '0 0 30px #00ff99, 0 0 60px #00ff99, 0 0 90px #00ff99',
           animation: 'pulse 3s ease-in-out infinite'
         }}>
-          🛸 GUMBUO MOTHERSHIP 🛸
+          <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '80px', height: '80px', objectFit: 'cover', animationDuration: '2s'}} />
+          GUMBUO'S MOTHERSHIP
+          <img src="/j3d1.png" alt="J3D1" className="animate-bounce" style={{width: '80px', height: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
         </h1>
 
         {/* Active Chains */}
