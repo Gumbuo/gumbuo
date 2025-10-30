@@ -515,7 +515,7 @@ export default function MothershipPage() {
           {/* Safety Message */}
           <div className="mt-6 max-w-3xl mx-auto bg-yellow-900/40 border-2 border-yellow-400/50 rounded-xl p-6 backdrop-blur-sm">
             <p className="text-yellow-300 font-bold text-center text-lg leading-relaxed">
-              🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">Alien</span> on Discord or Twitter.
+              🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">AlienOG</span> on Discord or Twitter.
               <br />
               <span className="text-red-400 text-xl">⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
               <br />
