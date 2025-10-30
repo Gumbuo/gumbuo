@@ -527,7 +527,7 @@ export default function GumbuoBoss() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl border border-red-400/30">
+    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl">
       {/* CSS Animations */}
       <style jsx>{`
         @keyframes shine {
@@ -575,11 +575,12 @@ export default function GumbuoBoss() {
             <img
               src="/gumbuoboss.png"
               alt="Gumbuo Boss"
-              className={`w-24 h-24 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
+              className={`w-48 h-48 ${!bossState.isAlive ? 'opacity-30 grayscale' : ''} transition-all duration-300`}
               style={{
                 filter: bossState.isAlive ? 'drop-shadow(0 0 40px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 80px rgba(239, 68, 68, 0.5))' : 'none',
                 animation: bossShaking ? 'shake 0.5s ease-in-out' : 'none',
-                objectFit: 'contain'
+                objectFit: 'contain',
+                maxHeight: '200px'
               }}
             />
           </div>
@@ -646,200 +647,122 @@ export default function GumbuoBoss() {
         <div className="w-full bg-black/60 rounded-2xl p-6 space-y-6">
           <h3 className="text-3xl font-alien text-orange-400 text-center holographic-text">⚔️ CHOOSE YOUR ATTACK ⚔️</h3>
 
-          {/* Attack Selection Cards */}
-          <div className="grid grid-cols-3 gap-6">
-            {/* Normal Attack */}
-            <div
+          {/* Attack Selection Buttons */}
+          <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* Normal Attack Button */}
+            <button
               onClick={() => setSelectedAttack('normal')}
               onMouseEnter={() => playSound('hover')}
-              className={`flex flex-col p-6 rounded-xl cursor-pointer transition-all duration-300 ${
+              className={`p-8 rounded-2xl transition-all duration-300 ${
                 selectedAttack === 'normal'
-                  ? 'bg-gradient-to-br from-blue-600 to-blue-800 border-4 border-blue-400 shadow-lg shadow-blue-500/50 scale-105'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 hover:border-blue-500 hover:scale-102'
+                  ? 'bg-gradient-to-br from-cyan-500 to-cyan-700 shadow-2xl shadow-cyan-500/60 scale-105'
+                  : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-cyan-600/50 hover:to-cyan-800/50 hover:scale-102'
               }`}
             >
-              <div className="text-center mb-4">
-                <div className="text-5xl mb-2">👊</div>
-                <h4 className="text-2xl font-bold text-white mb-2">Normal Attack</h4>
+              <div className="text-6xl mb-3">👊</div>
+              <div className="text-white font-bold text-2xl mb-2">NORMAL</div>
+              <div className="text-yellow-300 text-lg font-bold mb-1">{ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP</div>
+              <div className="text-green-400 text-sm">Level {attackLevels.normal}</div>
+            </button>
 
-                {/* Cost Badge */}
-                <div className="flex justify-center mb-3">
-                  <span className="px-3 py-1 bg-black/40 rounded-full font-bold text-yellow-400 text-sm">
-                    {ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP
-                  </span>
-                </div>
-
-                {/* Glass Tube Level Indicator */}
-                <div className="flex flex-col items-center gap-2">
-                  <div className="text-sm text-green-400 font-bold">Level {attackLevels.normal}/5</div>
-                  <div className="relative w-20 h-32 bg-black/60 rounded-lg border-2 border-cyan-400/50 shadow-lg shadow-cyan-400/30 overflow-hidden">
-                    {/* Glass shine effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                    {/* Alien liquid fill */}
-                    <div
-                      className="absolute bottom-0 w-full bg-gradient-to-t from-green-500 to-green-300 transition-all duration-500"
-                      style={{
-                        height: `${(attackLevels.normal / MAX_ATTACK_LEVEL) * 100}%`,
-                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.5)'
-                      }}
-                    >
-                      {/* Bubbles effect */}
-                      <div className="absolute inset-0 opacity-40">
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '20%', bottom: '10%' }}></div>
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '50%', bottom: '30%', animationDelay: '0.3s' }}></div>
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '70%', bottom: '20%', animationDelay: '0.6s' }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {attackLevels.normal < MAX_ATTACK_LEVEL && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUpgradeAttack('normal');
-                  }}
-                  onMouseEnter={() => playSound('hover')}
-                  className="w-full px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all"
-                >
-                  ⬆️ Upgrade ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
-                </button>
-              )}
-            </div>
-
-            {/* Power Attack */}
-            <div
+            {/* Power Attack Button */}
+            <button
               onClick={() => powerCooldown === 0 && setSelectedAttack('power')}
               onMouseEnter={() => powerCooldown === 0 && playSound('hover')}
-              className={`flex flex-col p-6 rounded-xl transition-all duration-300 ${
+              disabled={powerCooldown > 0}
+              className={`p-8 rounded-2xl transition-all duration-300 ${
                 powerCooldown > 0
-                  ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 opacity-50 cursor-not-allowed'
+                  ? 'bg-gray-800 opacity-50 cursor-not-allowed'
                   : selectedAttack === 'power'
-                  ? 'bg-gradient-to-br from-purple-600 to-purple-800 border-4 border-purple-400 shadow-lg shadow-purple-500/50 scale-105 cursor-pointer'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 hover:border-purple-500 hover:scale-102 cursor-pointer'
+                  ? 'bg-gradient-to-br from-purple-500 to-purple-700 shadow-2xl shadow-purple-500/60 scale-105'
+                  : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-purple-600/50 hover:to-purple-800/50 hover:scale-102'
               }`}
             >
-              <div className="text-center mb-4">
-                <div className="text-5xl mb-2">💪</div>
-                <h4 className="text-2xl font-bold text-white mb-2">Power Attack</h4>
-
-                {/* Cost Badge */}
-                <div className="flex justify-center mb-3">
-                  <span className="px-3 py-1 bg-black/40 rounded-full font-bold text-yellow-400 text-sm">
-                    {ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP
-                  </span>
+              <div className="text-6xl mb-3">💪</div>
+              <div className="text-white font-bold text-2xl mb-2">POWER</div>
+              <div className="text-yellow-300 text-lg font-bold mb-1">{ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP</div>
+              <div className="text-green-400 text-sm">Level {attackLevels.power}</div>
+              {powerCooldown > 0 && (
+                <div className="text-red-400 font-bold text-sm mt-2">
+                  CD: {(powerCooldown / 1000).toFixed(0)}s
                 </div>
-
-                {/* Glass Tube Level Indicator */}
-                <div className="flex flex-col items-center gap-2">
-                  <div className="text-sm text-green-400 font-bold">Level {attackLevels.power}/5</div>
-                  <div className="relative w-20 h-32 bg-black/60 rounded-lg border-2 border-cyan-400/50 shadow-lg shadow-cyan-400/30 overflow-hidden">
-                    {/* Glass shine effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                    {/* Alien liquid fill */}
-                    <div
-                      className="absolute bottom-0 w-full bg-gradient-to-t from-green-500 to-green-300 transition-all duration-500"
-                      style={{
-                        height: `${(attackLevels.power / MAX_ATTACK_LEVEL) * 100}%`,
-                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.5)'
-                      }}
-                    >
-                      {/* Bubbles effect */}
-                      <div className="absolute inset-0 opacity-40">
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '20%', bottom: '10%' }}></div>
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '50%', bottom: '30%', animationDelay: '0.3s' }}></div>
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '70%', bottom: '20%', animationDelay: '0.6s' }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {powerCooldown > 0 && (
-                  <p className="mt-3 text-red-400 font-bold text-sm">
-                    Cooldown: {(powerCooldown / 1000).toFixed(0)}s
-                  </p>
-                )}
-              </div>
-              {attackLevels.power < MAX_ATTACK_LEVEL && powerCooldown === 0 && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUpgradeAttack('power');
-                  }}
-                  onMouseEnter={() => playSound('hover')}
-                  className="w-full px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all"
-                >
-                  ⬆️ Upgrade ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
-                </button>
               )}
-            </div>
+            </button>
 
-            {/* Cosmic Attack */}
-            <div
+            {/* Cosmic Attack Button */}
+            <button
               onClick={() => ultimateCooldown === 0 && setSelectedAttack('ultimate')}
               onMouseEnter={() => ultimateCooldown === 0 && playSound('hover')}
-              className={`flex flex-col p-6 rounded-xl transition-all duration-300 ${
+              disabled={ultimateCooldown > 0}
+              className={`p-8 rounded-2xl transition-all duration-300 ${
                 ultimateCooldown > 0
-                  ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 opacity-50 cursor-not-allowed'
+                  ? 'bg-gray-800 opacity-50 cursor-not-allowed'
                   : selectedAttack === 'ultimate'
-                  ? 'bg-gradient-to-br from-yellow-600 to-yellow-800 border-4 border-yellow-400 shadow-lg shadow-yellow-500/50 scale-105 cursor-pointer'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 hover:border-yellow-500 hover:scale-102 cursor-pointer'
+                  ? 'bg-gradient-to-br from-yellow-500 to-orange-600 shadow-2xl shadow-yellow-500/60 scale-105'
+                  : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-yellow-600/50 hover:to-orange-700/50 hover:scale-102'
               }`}
             >
-              <div className="text-center mb-4">
-                <div className="text-5xl mb-2">⚡</div>
-                <h4 className="text-2xl font-bold text-white mb-2">Cosmic Attack</h4>
-
-                {/* Cost Badge */}
-                <div className="flex justify-center mb-3">
-                  <span className="px-3 py-1 bg-black/40 rounded-full font-bold text-yellow-400 text-sm">
-                    {ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP
-                  </span>
+              <div className="text-6xl mb-3">⚡</div>
+              <div className="text-white font-bold text-2xl mb-2">COSMIC</div>
+              <div className="text-yellow-300 text-lg font-bold mb-1">{ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP</div>
+              <div className="text-green-400 text-sm">Level {attackLevels.ultimate}</div>
+              {ultimateCooldown > 0 && (
+                <div className="text-red-400 font-bold text-sm mt-2">
+                  CD: {(ultimateCooldown / 1000).toFixed(0)}s
                 </div>
-
-                {/* Glass Tube Level Indicator */}
-                <div className="flex flex-col items-center gap-2">
-                  <div className="text-sm text-green-400 font-bold">Level {attackLevels.ultimate}/5</div>
-                  <div className="relative w-20 h-32 bg-black/60 rounded-lg border-2 border-cyan-400/50 shadow-lg shadow-cyan-400/30 overflow-hidden">
-                    {/* Glass shine effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                    {/* Alien liquid fill */}
-                    <div
-                      className="absolute bottom-0 w-full bg-gradient-to-t from-green-500 to-green-300 transition-all duration-500"
-                      style={{
-                        height: `${(attackLevels.ultimate / MAX_ATTACK_LEVEL) * 100}%`,
-                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.5)'
-                      }}
-                    >
-                      {/* Bubbles effect */}
-                      <div className="absolute inset-0 opacity-40">
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '20%', bottom: '10%' }}></div>
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '50%', bottom: '30%', animationDelay: '0.3s' }}></div>
-                        <div className="absolute w-2 h-2 bg-white rounded-full animate-pulse" style={{ left: '70%', bottom: '20%', animationDelay: '0.6s' }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {ultimateCooldown > 0 && (
-                  <p className="mt-3 text-red-400 font-bold text-sm">
-                    Cooldown: {(ultimateCooldown / 1000).toFixed(0)}s
-                  </p>
-                )}
-              </div>
-              {attackLevels.ultimate < MAX_ATTACK_LEVEL && ultimateCooldown === 0 && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUpgradeAttack('ultimate');
-                  }}
-                  onMouseEnter={() => playSound('hover')}
-                  className="w-full px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all"
-                >
-                  ⬆️ Upgrade ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
-                </button>
               )}
-            </div>
+            </button>
+          </div>
+
+          {/* Upgrade Buttons Row */}
+          <div className="grid grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {/* Normal Upgrade */}
+            {attackLevels.normal < MAX_ATTACK_LEVEL && (
+              <button
+                onClick={() => handleUpgradeAttack('normal')}
+                onMouseEnter={() => playSound('hover')}
+                className="px-4 py-2 text-sm font-bold bg-cyan-600/80 hover:bg-cyan-600 text-white rounded-lg transition-all shadow-lg shadow-cyan-500/30"
+              >
+                ⬆️ Upgrade Normal ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
+              </button>
+            )}
+            {attackLevels.normal >= MAX_ATTACK_LEVEL && (
+              <div className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 rounded-lg text-center">
+                ✅ Max Level
+              </div>
+            )}
+
+            {/* Power Upgrade */}
+            {attackLevels.power < MAX_ATTACK_LEVEL && (
+              <button
+                onClick={() => handleUpgradeAttack('power')}
+                onMouseEnter={() => playSound('hover')}
+                className="px-4 py-2 text-sm font-bold bg-purple-600/80 hover:bg-purple-600 text-white rounded-lg transition-all shadow-lg shadow-purple-500/30"
+              >
+                ⬆️ Upgrade Power ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
+              </button>
+            )}
+            {attackLevels.power >= MAX_ATTACK_LEVEL && (
+              <div className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 rounded-lg text-center">
+                ✅ Max Level
+              </div>
+            )}
+
+            {/* Cosmic Upgrade */}
+            {attackLevels.ultimate < MAX_ATTACK_LEVEL && (
+              <button
+                onClick={() => handleUpgradeAttack('ultimate')}
+                onMouseEnter={() => playSound('hover')}
+                className="px-4 py-2 text-sm font-bold bg-yellow-600/80 hover:bg-yellow-600 text-white rounded-lg transition-all shadow-lg shadow-yellow-500/30"
+              >
+                ⬆️ Upgrade Cosmic ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
+              </button>
+            )}
+            {attackLevels.ultimate >= MAX_ATTACK_LEVEL && (
+              <div className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 rounded-lg text-center">
+                ✅ Max Level
+              </div>
+            )}
           </div>
 
           {/* Main Attack Button */}

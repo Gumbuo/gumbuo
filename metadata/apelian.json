@@ -1,0 +1,23 @@
+{
+  "name": "Apelian",
+  "description": "Primal warrior from the jungle moon of Apeiron, fierce and untamed.",
+  "image": "ipfs://bafybeid7kru6e3jrwnbcxslwz73co37zp6fwhbn5qdp6n3rbgzfr2j42jy/apelian.png",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Jungle Warrior"
+    },
+    {
+      "trait_type": "Type",
+      "value": "apelian"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Earth"
+    }
+  ]
+}

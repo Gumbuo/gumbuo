@@ -1,0 +1,23 @@
+{
+  "name": "Baob",
+  "description": "Ancient tree-like alien with roots that span galaxies and wisdom beyond time.",
+  "image": "ipfs://bafybeid7kru6e3jrwnbcxslwz73co37zp6fwhbn5qdp6n3rbgzfr2j42jy/baob.png",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Cosmic Tree"
+    },
+    {
+      "trait_type": "Type",
+      "value": "baob"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Nature"
+    }
+  ]
+}

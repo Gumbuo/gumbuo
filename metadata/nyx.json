@@ -1,0 +1,23 @@
+{
+  "name": "Nyx",
+  "description": "Master of shadows and the void, Nyx walks between dimensions with ancient power.",
+  "image": "ipfs://bafybeid7kru6e3jrwnbcxslwz73co37zp6fwhbn5qdp6n3rbgzfr2j42jy/nyx.png",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Shadow Walker"
+    },
+    {
+      "trait_type": "Type",
+      "value": "nyx"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Darkness"
+    }
+  ]
+}

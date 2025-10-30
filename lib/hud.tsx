@@ -2,7 +2,7 @@
 import { useAccount, useBalance } from "wagmi";
 import { useAlienPoints } from "../app/context/AlienPointsEconomy";
 import { useEffect, useState } from "react";
-import { base, baseSepolia, blast, blastSepolia, arbitrum, arbitrumSepolia, polygon, polygonAmoy, avalanche, avalancheFuji } from "wagmi/chains";
+import { base, blast, arbitrum } from "wagmi/chains";
 
 const GMB_TOKEN_ADDRESS_BASE = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
 const GMB_TOKEN_ADDRESS_ABSTRACT = "0x1660AA473D936029C7659e7d047F05EcF28D40c9";
@@ -33,47 +33,6 @@ export function AlienHUD() {
   const { data: ethBalanceArbitrum } = useBalance({
     address,
     chainId: arbitrum.id
-  });
-
-  const { data: ethBalancePolygon } = useBalance({
-    address,
-    chainId: polygon.id
-  });
-
-  const { data: ethBalanceAvalanche } = useBalance({
-    address,
-    chainId: avalanche.id
-  });
-
-  // Testnet ETH balances
-  const { data: ethBalanceBaseSepolia } = useBalance({
-    address,
-    chainId: baseSepolia.id
-  });
-
-  const { data: ethBalanceAbstractTestnet } = useBalance({
-    address,
-    chainId: ABSTRACT_TESTNET_CHAIN_ID
-  });
-
-  const { data: ethBalanceBlastSepolia } = useBalance({
-    address,
-    chainId: blastSepolia.id
-  });
-
-  const { data: ethBalanceArbitrumSepolia } = useBalance({
-    address,
-    chainId: arbitrumSepolia.id
-  });
-
-  const { data: ethBalancePolygonAmoy } = useBalance({
-    address,
-    chainId: polygonAmoy.id
-  });
-
-  const { data: ethBalanceAvalancheFuji } = useBalance({
-    address,
-    chainId: avalancheFuji.id
   });
 
   const { data: gmbBalanceBase } = useBalance({
@@ -165,36 +124,6 @@ export function AlienHUD() {
                 </p>
                 <p className="text-orange-400 alien-code">
                   <strong>Arbitrum:</strong> {ethBalanceArbitrum?.formatted ? parseFloat(ethBalanceArbitrum.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-pink-400 alien-code">
-                  <strong>Polygon:</strong> {ethBalancePolygon?.formatted ? parseFloat(ethBalancePolygon.formatted).toFixed(4) : '0.0000'} MATIC
-                </p>
-                <p className="text-red-400 alien-code">
-                  <strong>Avalanche:</strong> {ethBalanceAvalanche?.formatted ? parseFloat(ethBalanceAvalanche.formatted).toFixed(4) : '0.0000'} AVAX
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">🧪 TESTNET BALANCES:</p>
-              <div className="ml-3 space-y-1">
-                <p className="text-blue-400 alien-code">
-                  <strong>Base Sepolia:</strong> {ethBalanceBaseSepolia?.formatted ? parseFloat(ethBalanceBaseSepolia.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-purple-400 alien-code">
-                  <strong>Abstract Testnet:</strong> {ethBalanceAbstractTestnet?.formatted ? parseFloat(ethBalanceAbstractTestnet.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-yellow-400 alien-code">
-                  <strong>Blast Sepolia:</strong> {ethBalanceBlastSepolia?.formatted ? parseFloat(ethBalanceBlastSepolia.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-orange-400 alien-code">
-                  <strong>Arbitrum Sepolia:</strong> {ethBalanceArbitrumSepolia?.formatted ? parseFloat(ethBalanceArbitrumSepolia.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-pink-400 alien-code">
-                  <strong>Polygon Amoy:</strong> {ethBalancePolygonAmoy?.formatted ? parseFloat(ethBalancePolygonAmoy.formatted).toFixed(4) : '0.0000'} MATIC
-                </p>
-                <p className="text-red-400 alien-code">
-                  <strong>Avalanche Fuji:</strong> {ethBalanceAvalancheFuji?.formatted ? parseFloat(ethBalanceAvalancheFuji.formatted).toFixed(4) : '0.0000'} AVAX
                 </p>
               </div>
             </div>

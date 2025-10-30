@@ -1,0 +1,23 @@
+{
+  "name": "Zorb",
+  "description": "A mysterious energy being from the Zorbian nebula, pulsating with cosmic power.",
+  "image": "ipfs://bafybeid7kru6e3jrwnbcxslwz73co37zp6fwhbn5qdp6n3rbgzfr2j42jy/zorb.png",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Energy Being"
+    },
+    {
+      "trait_type": "Type",
+      "value": "zorb"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Energy"
+    }
+  ]
+}

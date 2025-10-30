@@ -1,0 +1,23 @@
+{
+  "name": "Zit",
+  "description": "Tiny but mighty, Zit proves size doesn't matter in the cosmic arena.",
+  "image": "ipfs://bafybeid7kru6e3jrwnbcxslwz73co37zp6fwhbn5qdp6n3rbgzfr2j42jy/zit.png",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Micro Alien"
+    },
+    {
+      "trait_type": "Type",
+      "value": "zit"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Chaos"
+    }
+  ]
+}

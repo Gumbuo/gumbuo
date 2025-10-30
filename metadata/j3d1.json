@@ -1,0 +1,23 @@
+{
+  "name": "J3D1",
+  "description": "Cybernetic warrior from the machine world, cold precision meets alien technology.",
+  "image": "ipfs://bafybeid7kru6e3jrwnbcxslwz73co37zp6fwhbn5qdp6n3rbgzfr2j42jy/j3d1.jpg",
+  "attributes": [
+    {
+      "trait_type": "Species",
+      "value": "Cyborg"
+    },
+    {
+      "trait_type": "Type",
+      "value": "j3d1"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Tech"
+    }
+  ]
+}

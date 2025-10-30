@@ -6,7 +6,7 @@ const GumbuoFightersArena = dynamic(() => import("./GumbuoFightersArena"), { ssr
 
 export default function AlienMarketAndArena() {
   return (
-    <div className="flex flex-col items-center space-y-12 p-8 max-w-[95%] rounded-2xl border-4 border-gray-700 relative overflow-hidden" style={{
+    <div className="flex flex-col items-center space-y-12 p-8 max-w-[95%] rounded-2xl relative overflow-hidden" style={{
       background: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)',
       boxShadow: 'inset 0 0 80px rgba(0,255,200,0.1), 0 0 40px rgba(0,0,0,0.8)'
     }}>
