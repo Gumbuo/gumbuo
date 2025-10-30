@@ -33,17 +33,8 @@ export default function AbstractPage() {
       {/* Alien Background Effects */}
       <AlienBackground />
 
-      {/* Alien Vibes - Top Left */}
-      <div className="fixed top-6 left-6 z-50">
-        <div className="holographic-panel glass-panel p-4 rounded-xl">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <div className="relative z-10 flex items-center gap-3">
-            <span className="text-4xl animate-pulse">👽</span>
-            <span className="text-2xl font-alien text-cyan-400 holographic-text">ALIEN VIBES</span>
-          </div>
-        </div>
-      </div>
+      {/* Floating Gumbuo Mascot */}
+      <FloatingGumbuo position="right" />
 
       {/* Top Right - Connect Button and HUD */}
       <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">

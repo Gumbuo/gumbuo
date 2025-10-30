@@ -105,7 +105,7 @@ export default function AbstractXPDashboard() {
   };
 
   return (
-    <div className="holographic-panel glass-panel p-8 rounded-2xl max-w-4xl mx-auto">
+    <div className="holographic-panel glass-panel p-8 rounded-2xl max-w-3xl mx-auto">
       {/* Corner glows */}
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>

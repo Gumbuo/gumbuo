@@ -3,6 +3,9 @@ import "./alien-animations.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import dynamic from "next/dynamic";
+
+const GlobalMusicPlayer = dynamic(() => import("./components/GlobalMusicPlayer"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Gumbuo - Alien Points Economy",
@@ -43,6 +46,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="min-h-screen bg-black">
         <Providers>
+          <GlobalMusicPlayer />
           {children}
         </Providers>
       </body>

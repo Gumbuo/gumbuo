@@ -5,7 +5,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const AlienMarketAndArena = dynamic(() => import("../app/components/AlienMarketAndArena"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../app/components/GumbuoBoss"), { ssr: false });
-const AlienMusicPlayer = dynamic(() => import("../app/components/AlienMusicPlayer"), { ssr: false });
 const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
 
 interface HomeProps {
@@ -27,11 +26,6 @@ export default function Home({ chainType = "base" }: HomeProps) {
 
       {/* Starfield Parallax Background */}
       <StarfieldBackground />
-
-      {/* Music Player - Middle Left */}
-      <div className="fixed top-1/2 left-6 -translate-y-1/2 z-50">
-        <AlienMusicPlayer />
-      </div>
 
       {/* Top Right - Connect Button and HUD */}
       <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">

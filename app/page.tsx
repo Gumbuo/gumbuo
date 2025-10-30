@@ -8,7 +8,6 @@ import { useCosmicSound } from "./hooks/useCosmicSound";
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
-const AlienMusicPlayer = dynamic(() => import("./components/AlienMusicPlayer"), { ssr: false });
 const FloatingGumbuo = dynamic(() => import("./components/FloatingGumbuo"), { ssr: false });
 
 export default function MothershipPage() {
@@ -35,11 +34,6 @@ export default function MothershipPage() {
           <source src="/alien.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
-      </div>
-
-      {/* Music Player - Top Left */}
-      <div className="fixed top-6 left-6 z-50">
-        <AlienMusicPlayer />
       </div>
 
       {/* Top Right - Connect Button and HUD */}
@@ -77,310 +71,359 @@ export default function MothershipPage() {
         </div>
 
         {/* Column Headers */}
-        <div className="grid grid-cols-2 gap-6 mb-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-6 mb-4 max-w-4xl mx-auto">
           <div className="text-center">
             <h3 className="text-2xl font-alien text-cyan-400 holographic-text">MAINNET</h3>
+          </div>
+          <div className="text-center">
+            <h3 className="text-2xl font-alien text-cyan-400 holographic-text">PORTAL</h3>
           </div>
           <div className="text-center">
             <h3 className="text-2xl font-alien text-cyan-400 holographic-text">TESTNET</h3>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 mb-16 max-w-4xl mx-auto">
+        {/* Base Chain Row */}
+        <div className="flex items-center justify-center gap-1 mb-8 max-w-5xl mx-auto px-4">
           {/* Base Chain Card */}
-          <Link href="/base" className="block">
+          <Link href="/base" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
+              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50"
             >
               <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">⛓️</div>
-                <h2 className="text-4xl font-alien text-blue-300 mb-4 holographic-text">BASE CHAIN</h2>
+                <div className="text-5xl mb-3">⛓️</div>
+                <h2 className="text-3xl font-alien text-blue-300 mb-3 holographic-text">BASE CHAIN</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-blue-500/20 rounded-xl border-2 border-blue-400 text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-blue-500/20 rounded-xl border-2 border-blue-400 text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all text-sm">
                   ENTER BASE →
                 </div>
               </div>
             </div>
           </Link>
 
+          {/* Blue Portal */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <img src="/blueportal.png" alt="Portal" className="w-[150px] h-auto animate-pulse" style={{animationDuration: '3s'}} />
+          </div>
+
           {/* Base Sepolia Card */}
-          <Link href="/base-sepolia" className="block">
+          <Link href="/base-sepolia" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-yellow-900/40 to-orange-900/40 rounded-3xl p-6 border-4 border-yellow-500/50 hover:border-yellow-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
+              className="group relative bg-gradient-to-br from-yellow-900/40 to-orange-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50"
             >
               <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🧪</div>
-                <h2 className="text-4xl font-alien text-cyan-300 mb-4 holographic-text">BASE SEPOLIA</h2>
+                <div className="text-5xl mb-3">🧪</div>
+                <h2 className="text-3xl font-alien text-cyan-300 mb-3 holographic-text">BASE SEPOLIA</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 text-cyan-300 font-bold group-hover:bg-cyan-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 text-cyan-300 font-bold group-hover:bg-cyan-500/30 transition-all text-sm">
                   ENTER TESTNET →
                 </div>
               </div>
             </div>
           </Link>
+        </div>
 
+        {/* Abstract Chain Row */}
+        <div className="flex items-center justify-center gap-1 mb-8 max-w-5xl mx-auto px-4">
           {/* Abstract Chain Card */}
-          <Link href="/abstract" className="block">
+          <Link href="/abstract" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-3xl p-6 border-4 border-cyan-500/50 hover:border-cyan-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
+              className="group relative bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
             >
               <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">⚡</div>
-                <h2 className="text-4xl font-alien text-purple-300 mb-4 holographic-text">ABSTRACT CHAIN</h2>
+                <div className="text-5xl mb-3">⚡</div>
+                <h2 className="text-3xl font-alien text-purple-300 mb-3 holographic-text">ABSTRACT CHAIN</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all text-sm">
                   ENTER ABSTRACT →
                 </div>
               </div>
             </div>
           </Link>
 
+          {/* Green Portal */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <img src="/greenportal.png" alt="Portal" className="w-[150px] h-auto animate-pulse" style={{animationDuration: '3s'}} />
+          </div>
+
           {/* Abstract Testnet Card */}
-          <Link href="/abstract-testnet" className="block">
+          <Link href="/abstract-testnet" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 w-full"
+              className="group relative bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 w-full"
             >
               <div className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🧪</div>
-                <h2 className="text-4xl font-alien text-yellow-300 mb-4 holographic-text">ABSTRACT TESTNET</h2>
+                <div className="text-5xl mb-3">🧪</div>
+                <h2 className="text-3xl font-alien text-yellow-300 mb-3 holographic-text">ABSTRACT TESTNET</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-yellow-500/20 rounded-xl border-2 border-yellow-400 text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-yellow-500/20 rounded-xl border-2 border-yellow-400 text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all text-sm">
                   ENTER TESTNET →
                 </div>
               </div>
             </div>
           </Link>
+        </div>
 
+        {/* Blast Chain Row */}
+        <div className="flex items-center justify-center gap-1 mb-8 max-w-5xl mx-auto px-4">
           {/* Blast Card */}
-          <Link href="/blast" className="block">
+          <Link href="/blast" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-yellow-900/40 to-red-900/40 rounded-3xl p-6 border-4 border-yellow-500/50 hover:border-yellow-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
+              className="group relative bg-gradient-to-br from-yellow-900/40 to-red-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
             >
               <div className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">💥</div>
-                <h2 className="text-4xl font-alien text-yellow-300 mb-4 holographic-text">BLAST CHAIN</h2>
+                <div className="text-5xl mb-3">💥</div>
+                <h2 className="text-3xl font-alien text-yellow-300 mb-3 holographic-text">BLAST CHAIN</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-yellow-500/20 rounded-xl border-2 border-yellow-400 text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-yellow-500/20 rounded-xl border-2 border-yellow-400 text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all text-sm">
                   ENTER BLAST →
                 </div>
               </div>
             </div>
           </Link>
 
+          {/* Grey Portal */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <img src="/greyportal.png" alt="Portal" className="w-[150px] h-auto animate-pulse" style={{animationDuration: '3s'}} />
+          </div>
+
           {/* Blast Sepolia Card */}
-          <Link href="/blast-sepolia" className="block">
+          <Link href="/blast-sepolia" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-orange-900/40 to-red-900/40 rounded-3xl p-6 border-4 border-orange-500/50 hover:border-orange-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 w-full"
+              className="group relative bg-gradient-to-br from-orange-900/40 to-red-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 w-full"
             >
               <div className="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🧪</div>
-                <h2 className="text-4xl font-alien text-orange-300 mb-4 holographic-text">BLAST SEPOLIA</h2>
+                <div className="text-5xl mb-3">🧪</div>
+                <h2 className="text-3xl font-alien text-orange-300 mb-3 holographic-text">BLAST SEPOLIA</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-orange-500/20 rounded-xl border-2 border-orange-400 text-orange-300 font-bold group-hover:bg-orange-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-orange-500/20 rounded-xl border-2 border-orange-400 text-orange-300 font-bold group-hover:bg-orange-500/30 transition-all text-sm">
                   ENTER TESTNET →
                 </div>
               </div>
             </div>
           </Link>
+        </div>
 
+        {/* Arbitrum Chain Row */}
+        <div className="flex items-center justify-center gap-1 mb-8 max-w-5xl mx-auto px-4">
           {/* Arbitrum Card */}
-          <Link href="/arbitrum" className="block">
+          <Link href="/arbitrum" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-3xl p-6 border-4 border-blue-500/50 hover:border-blue-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
+              className="group relative bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
             >
               <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🔷</div>
-                <h2 className="text-4xl font-alien text-blue-300 mb-4 holographic-text">ARBITRUM</h2>
+                <div className="text-5xl mb-3">🔷</div>
+                <h2 className="text-3xl font-alien text-blue-300 mb-3 holographic-text">ARBITRUM</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-blue-500/20 rounded-xl border-2 border-blue-400 text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-blue-500/20 rounded-xl border-2 border-blue-400 text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all text-sm">
                   ENTER ARBITRUM →
                 </div>
               </div>
             </div>
           </Link>
 
+          {/* Blue Portal */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <img src="/blueportal.png" alt="Portal" className="w-[150px] h-auto animate-pulse" style={{animationDuration: '3s'}} />
+          </div>
+
           {/* Arbitrum Sepolia Card */}
-          <Link href="/arbitrum-sepolia" className="block">
+          <Link href="/arbitrum-sepolia" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-cyan-900/40 to-teal-900/40 rounded-3xl p-6 border-4 border-cyan-500/50 hover:border-cyan-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
+              className="group relative bg-gradient-to-br from-cyan-900/40 to-teal-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
             >
               <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🧪</div>
-                <h2 className="text-4xl font-alien text-cyan-300 mb-4 holographic-text">ARBITRUM SEPOLIA</h2>
+                <div className="text-5xl mb-3">🧪</div>
+                <h2 className="text-3xl font-alien text-cyan-300 mb-3 holographic-text">ARBITRUM SEPOLIA</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 text-cyan-300 font-bold group-hover:bg-cyan-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 text-cyan-300 font-bold group-hover:bg-cyan-500/30 transition-all text-sm">
                   ENTER TESTNET →
                 </div>
               </div>
             </div>
           </Link>
+        </div>
 
+        {/* Polygon Chain Row */}
+        <div className="flex items-center justify-center gap-1 mb-8 max-w-5xl mx-auto px-4">
           {/* Polygon Card */}
-          <Link href="/polygon" className="block">
+          <Link href="/polygon" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-purple-900/40 to-indigo-900/40 rounded-3xl p-6 border-4 border-purple-500/50 hover:border-purple-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 w-full"
+              className="group relative bg-gradient-to-br from-purple-900/40 to-indigo-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 w-full"
             >
               <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🟣</div>
-                <h2 className="text-4xl font-alien text-purple-300 mb-4 holographic-text">POLYGON</h2>
+                <div className="text-5xl mb-3">🟣</div>
+                <h2 className="text-3xl font-alien text-purple-300 mb-3 holographic-text">POLYGON</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-purple-500/20 rounded-xl border-2 border-purple-400 text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all text-sm">
                   ENTER POLYGON →
                 </div>
               </div>
             </div>
           </Link>
 
+          {/* Purple Portal */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <img src="/purpleportal.png" alt="Portal" className="w-[150px] h-auto animate-pulse" style={{animationDuration: '3s'}} />
+          </div>
+
           {/* Polygon Amoy Card */}
-          <Link href="/polygon-amoy" className="block">
+          <Link href="/polygon-amoy" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-indigo-900/40 to-violet-900/40 rounded-3xl p-6 border-4 border-indigo-500/50 hover:border-indigo-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/50 w-full"
+              className="group relative bg-gradient-to-br from-indigo-900/40 to-violet-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/50 w-full"
             >
               <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🧪</div>
-                <h2 className="text-4xl font-alien text-indigo-300 mb-4 holographic-text">POLYGON AMOY</h2>
+                <div className="text-5xl mb-3">🧪</div>
+                <h2 className="text-3xl font-alien text-indigo-300 mb-3 holographic-text">POLYGON AMOY</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-indigo-500/20 rounded-xl border-2 border-indigo-400 text-indigo-300 font-bold group-hover:bg-indigo-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-indigo-500/20 rounded-xl border-2 border-indigo-400 text-indigo-300 font-bold group-hover:bg-indigo-500/30 transition-all text-sm">
                   ENTER TESTNET →
                 </div>
               </div>
             </div>
           </Link>
+        </div>
 
+        {/* Avalanche Chain Row */}
+        <div className="flex items-center justify-center gap-1 mb-16 max-w-5xl mx-auto px-4">
           {/* Avalanche Card */}
-          <Link href="/avalanche" className="block">
+          <Link href="/avalanche" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-red-900/40 to-rose-900/40 rounded-3xl p-6 border-4 border-red-500/50 hover:border-red-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-red-500/50 w-full"
+              className="group relative bg-gradient-to-br from-red-900/40 to-rose-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-red-500/50 w-full"
             >
               <div className="absolute inset-0 bg-red-500/0 group-hover:bg-red-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🔺</div>
-                <h2 className="text-4xl font-alien text-red-300 mb-4 holographic-text">AVALANCHE</h2>
+                <div className="text-5xl mb-3">🔺</div>
+                <h2 className="text-3xl font-alien text-red-300 mb-3 holographic-text">AVALANCHE</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-red-500/20 rounded-xl border-2 border-red-400 text-red-300 font-bold group-hover:bg-red-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-red-500/20 rounded-xl border-2 border-red-400 text-red-300 font-bold group-hover:bg-red-500/30 transition-all text-sm">
                   ENTER AVALANCHE →
                 </div>
               </div>
             </div>
           </Link>
 
+          {/* Red Portal */}
+          <div className="flex items-center justify-center flex-shrink-0">
+            <img src="/redportal.png" alt="Portal" className="w-[150px] h-auto animate-pulse" style={{animationDuration: '3s'}} />
+          </div>
+
           {/* Avalanche Fuji Card */}
-          <Link href="/avalanche-fuji" className="block">
+          <Link href="/avalanche-fuji" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-rose-900/40 to-pink-900/40 rounded-3xl p-6 border-4 border-rose-500/50 hover:border-rose-400 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-rose-500/50 w-full"
+              className="group relative bg-gradient-to-br from-rose-900/40 to-pink-900/40 rounded-3xl p-4 border-0 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-rose-500/50 w-full"
             >
               <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/10 rounded-3xl transition-all duration-300"></div>
 
               <div className="relative z-10">
-                <div className="text-6xl mb-4">🧪</div>
-                <h2 className="text-4xl font-alien text-rose-300 mb-4 holographic-text">AVALANCHE FUJI</h2>
+                <div className="text-5xl mb-3">🧪</div>
+                <h2 className="text-3xl font-alien text-rose-300 mb-3 holographic-text">AVALANCHE FUJI</h2>
 
-                <div className="flex justify-center items-center gap-4 mb-6">
-                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '70px', height: '70px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <div className="flex justify-center items-center gap-3 mb-4">
+                  <img src="/j3d1.jpg" alt="J3D1" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                  <img src="/zit.png" alt="Zit" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
                 </div>
 
-                <div className="inline-block px-6 py-3 bg-rose-500/20 rounded-xl border-2 border-rose-400 text-rose-300 font-bold group-hover:bg-rose-500/30 transition-all">
+                <div className="inline-block px-5 py-2 bg-rose-500/20 rounded-xl border-2 border-rose-400 text-rose-300 font-bold group-hover:bg-rose-500/30 transition-all text-sm">
                   ENTER TESTNET →
                 </div>
               </div>
@@ -388,14 +431,6 @@ export default function MothershipPage() {
           </Link>
         </div>
 
-        {/* Abstract XP Rewards Banner */}
-        <div className="flex justify-center mt-16 mb-8 px-6">
-          <div className="max-w-4xl w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 rounded-2xl p-6 backdrop-blur-sm animate-pulse">
-            <div className="flex flex-col items-center text-center">
-              <h3 className="text-3xl font-alien text-purple-300 holographic-text">⚡ EARN ABSTRACT XP ⚡</h3>
-            </div>
-          </div>
-        </div>
 
         {/* Alien Drip Station */}
         <div className="flex justify-center mt-8">
