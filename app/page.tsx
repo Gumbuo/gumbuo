@@ -73,7 +73,7 @@ export default function MothershipPage() {
             BLOCKCHAIN PORTAL
             <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
           </h2>
-          <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">Choose Your Chain • portal to pvp and boss battles</p>
+          <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">choose your crypto dimension • portal to pvp and boss battles</p>
         </div>
 
         {/* Column Headers */}
