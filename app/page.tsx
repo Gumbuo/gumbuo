@@ -464,8 +464,8 @@ export default function MothershipPage() {
             <p className="text-blue-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
           </div>
 
-          {/* Abstract Chain Buy Button */}
-          <div className="flex flex-col items-center space-y-2">
+          {/* Abstract Chain Buy Button - HIDDEN (keep for later) */}
+          <div className="hidden flex flex-col items-center space-y-2">
             <div className="flex items-center justify-center space-x-4">
               <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
               <a
@@ -510,6 +510,17 @@ export default function MothershipPage() {
               <span style={{fontSize: '2.5rem'}}>💬</span>
               <span>Discord</span>
             </a>
+          </div>
+
+          {/* Safety Message */}
+          <div className="mt-6 max-w-3xl mx-auto bg-yellow-900/40 border-2 border-yellow-400/50 rounded-xl p-6 backdrop-blur-sm">
+            <p className="text-yellow-300 font-bold text-center text-lg leading-relaxed">
+              🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">Alien</span> on Discord or Twitter.
+              <br />
+              <span className="text-red-400 text-xl">⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
+              <br />
+              <span className="text-yellow-200">You must trigger support for a response. BE SAFE!</span>
+            </p>
           </div>
         </div>
 
