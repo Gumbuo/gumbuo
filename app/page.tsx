@@ -439,7 +439,10 @@ export default function MothershipPage() {
 
 
         {/* Alien Drip Station */}
-        <div className="flex justify-center mt-8">
+        <div className="flex flex-col items-center mt-8">
+          <h2 className="font-alien text-cyan-400 holographic-text mb-6 text-center" style={{fontSize: '3rem'}}>
+            CLAIM ALL DRIPS HERE<br />FREE AND EARNED
+          </h2>
           <AlienDripStation />
         </div>
 
