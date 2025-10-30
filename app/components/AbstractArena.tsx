@@ -497,7 +497,7 @@ export default function AbstractArena() {
               ) : (
                 <div className="mt-4 text-center">
                   <button
-                    onClick={handleEnterArena}
+                    onClick={() => handleEnterArena()}
                     disabled={isEntering || nftBalance === 0}
                     className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-xl rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   >
