@@ -1,0 +1,13 @@
+# Hardhat files
+hardhat.config.js
+contracts/
+scripts/
+artifacts/
+cache/
+
+# Test files
+test/
+
+# Local env files
+.env.local
+.env.*.local
