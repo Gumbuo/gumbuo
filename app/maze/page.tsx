@@ -69,41 +69,67 @@ export default function MazePage() {
         </div>
 
         {/* Instructions */}
-        <div className="mt-12 max-w-4xl mx-auto bg-cyan-900/20 border-2 border-cyan-400/50 rounded-2xl p-8 holographic-panel">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-
-          <h2 className="relative z-10 font-alien text-3xl text-cyan-400 holographic-text mb-6 text-center">
+        <div style={{
+          marginTop: '48px',
+          maxWidth: '64rem',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          background: 'rgba(0, 255, 153, 0.05)',
+          border: '2px solid #00ff9944',
+          borderRadius: '8px',
+          padding: '32px'
+        }}>
+          <h2 style={{
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: '1.875rem',
+            color: '#00ff99',
+            marginBottom: '24px',
+            textAlign: 'center',
+            fontWeight: 'bold'
+          }}>
             HOW TO PLAY
           </h2>
 
-          <div className="relative z-10 grid md:grid-cols-2 gap-6 text-cyan-300">
-            <div className="bg-black/40 rounded-xl p-6 border border-cyan-500/30">
-              <h3 className="font-alien text-xl text-cyan-400 mb-3">🎮 CONTROLS</h3>
-              <ul className="space-y-2 text-sm">
-                <li>• <span className="text-green-400 font-bold">W or ↑</span> - Move Up</li>
-                <li>• <span className="text-green-400 font-bold">S or ↓</span> - Move Down</li>
-                <li>• <span className="text-green-400 font-bold">A or ←</span> - Move Left</li>
-                <li>• <span className="text-green-400 font-bold">D or →</span> - Move Right</li>
-                <li>• <span className="text-purple-400 font-bold">Click</span> - Collect adjacent items</li>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', color: '#22d3ee' }}>
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: '8px',
+              padding: '24px',
+              border: '2px solid rgba(34, 211, 238, 0.3)'
+            }}>
+              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#22d3ee', marginBottom: '12px' }}>🎮 CONTROLS</h3>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
+                <li>• <span style={{ color: '#4ade80', fontWeight: 'bold' }}>W or ↑</span> - Move Up</li>
+                <li>• <span style={{ color: '#4ade80', fontWeight: 'bold' }}>S or ↓</span> - Move Down</li>
+                <li>• <span style={{ color: '#4ade80', fontWeight: 'bold' }}>A or ←</span> - Move Left</li>
+                <li>• <span style={{ color: '#4ade80', fontWeight: 'bold' }}>D or →</span> - Move Right</li>
+                <li>• <span style={{ color: '#a855f7', fontWeight: 'bold' }}>Click</span> - Collect adjacent items</li>
               </ul>
             </div>
 
-            <div className="bg-black/40 rounded-xl p-6 border border-purple-500/30">
-              <h3 className="font-alien text-xl text-purple-400 mb-3">💎 COLLECTIBLES</h3>
-              <ul className="space-y-2 text-sm">
-                <li>• <span className="text-2xl">💎</span> <span className="text-blue-400 font-bold">Coins</span> - Worth 10 points each</li>
-                <li>• <span className="text-2xl">⚡</span> <span className="text-yellow-400 font-bold">Power-ups</span> - Worth 25 points each</li>
-                <li>• <span className="text-2xl">❓</span> <span className="text-green-400 font-bold">Mystery Boxes</span> - Worth 50 points each</li>
-                <li>• <span className="text-2xl">🌀</span> <span className="text-purple-400 font-bold">Exit Portal</span> - Complete the maze!</li>
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: '8px',
+              padding: '24px',
+              border: '2px solid rgba(168, 85, 247, 0.3)'
+            }}>
+              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#a855f7', marginBottom: '12px' }}>💎 COLLECTIBLES</h3>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
+                <li>• <span style={{ fontSize: '1.5rem' }}>💎</span> <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>Coins</span> - Worth 10 points each</li>
+                <li>• <span style={{ fontSize: '1.5rem' }}>⚡</span> <span style={{ color: '#facc15', fontWeight: 'bold' }}>Power-ups</span> - Worth 25 points each</li>
+                <li>• <span style={{ fontSize: '1.5rem' }}>❓</span> <span style={{ color: '#4ade80', fontWeight: 'bold' }}>Mystery Boxes</span> - Worth 50 points each</li>
+                <li>• <span style={{ fontSize: '1.5rem' }}>🌀</span> <span style={{ color: '#a855f7', fontWeight: 'bold' }}>Exit Portal</span> - Complete the maze!</li>
               </ul>
             </div>
 
-            <div className="bg-black/40 rounded-xl p-6 border border-green-500/30">
-              <h3 className="font-alien text-xl text-green-400 mb-3">🏆 SCORING</h3>
-              <ul className="space-y-2 text-sm">
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: '8px',
+              padding: '24px',
+              border: '2px solid rgba(34, 197, 94, 0.3)'
+            }}>
+              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#4ade80', marginBottom: '12px' }}>🏆 SCORING</h3>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
                 <li>• Collect items to increase your score</li>
                 <li>• Finish faster for TIME BONUS (up to +300 points!)</li>
                 <li>• All points convert to Alien Points when you win</li>
@@ -111,9 +137,14 @@ export default function MazePage() {
               </ul>
             </div>
 
-            <div className="bg-black/40 rounded-xl p-6 border border-yellow-500/30">
-              <h3 className="font-alien text-xl text-yellow-400 mb-3">💡 TIPS</h3>
-              <ul className="space-y-2 text-sm">
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: '8px',
+              padding: '24px',
+              border: '2px solid rgba(234, 179, 8, 0.3)'
+            }}>
+              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#facc15', marginBottom: '12px' }}>💡 TIPS</h3>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
                 <li>• Explore every path to find all collectibles</li>
                 <li>• Click on nearby items for quick collection</li>
                 <li>• Dark walls are impassable</li>
@@ -122,11 +153,18 @@ export default function MazePage() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-6 bg-green-900/40 border-2 border-green-400 rounded-xl p-4 text-center">
-            <p className="text-green-300 font-bold text-lg">
+          <div style={{
+            marginTop: '24px',
+            background: 'rgba(34, 197, 94, 0.2)',
+            border: '2px solid #4ade80',
+            borderRadius: '8px',
+            padding: '16px',
+            textAlign: 'center'
+          }}>
+            <p style={{ color: '#86efac', fontWeight: 'bold', fontSize: '1.125rem' }}>
               🎯 Complete the maze to earn Alien Points! 🎯
             </p>
-            <p className="text-green-400 text-sm mt-2">
+            <p style={{ color: '#4ade80', fontSize: '0.875rem', marginTop: '8px' }}>
               Your score + time bonus = Total Alien Points earned
             </p>
           </div>

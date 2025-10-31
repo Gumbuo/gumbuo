@@ -527,7 +527,17 @@ export default function GumbuoBoss() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl">
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '24px',
+      padding: '32px',
+      background: 'rgba(0, 0, 0, 0.4)',
+      maxWidth: '1152px',
+      borderRadius: '8px',
+      border: '2px solid #00ff9944'
+    }}>
       {/* CSS Animations */}
       <style jsx>{`
         @keyframes shine {
@@ -558,7 +568,13 @@ export default function GumbuoBoss() {
       </h2>
 
       {/* Boss Status */}
-      <div className="w-full bg-black/60 rounded-3xl p-8">
+      <div style={{
+        width: '100%',
+        background: 'rgba(0, 0, 0, 0.6)',
+        borderRadius: '8px',
+        border: '2px solid #00ff9944',
+        padding: '32px'
+      }}>
         <div className="space-y-6">
           {/* Boss Name & Status */}
           <div className="text-center">
@@ -622,7 +638,13 @@ export default function GumbuoBoss() {
 
           {/* Respawn Timer */}
           {!bossState.isAlive && (
-            <div className="bg-black/60 rounded-xl p-4 text-center">
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.6)',
+              borderRadius: '8px',
+              border: '2px solid #00ff9944',
+              padding: '16px',
+              textAlign: 'center'
+            }}>
               <p className="text-yellow-400 text-lg font-bold">⏰ Respawns in:</p>
               <p className="text-2xl text-yellow-300 font-bold mt-2">{timeUntilRespawn}</p>
             </div>
@@ -630,7 +652,13 @@ export default function GumbuoBoss() {
 
           {/* Last Attack Result */}
           {lastDamage && bossState.isAlive && (
-            <div className={`bg-black/60 rounded-xl p-4 text-center`}>
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.6)',
+              borderRadius: '8px',
+              border: '2px solid #00ff9944',
+              padding: '16px',
+              textAlign: 'center'
+            }}>
               <p className={`text-2xl font-bold ${lastDamage.isCritical ? 'text-yellow-400' : 'text-orange-400'}`}>
                 {lastDamage.isCritical ? '⚡ CRITICAL HIT! ⚡' : '💥 HIT! 💥'}
               </p>
@@ -644,7 +672,16 @@ export default function GumbuoBoss() {
 
       {/* Attack Type Selector */}
       {bossState.isAlive && isConnected && (
-        <div className="w-full bg-black/60 rounded-2xl p-6 space-y-6">
+        <div style={{
+          width: '100%',
+          background: 'rgba(0, 0, 0, 0.6)',
+          borderRadius: '8px',
+          border: '2px solid #00ff9944',
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px'
+        }}>
           <h3 className="text-3xl font-alien text-orange-400 text-center holographic-text">⚔️ CHOOSE YOUR ATTACK ⚔️</h3>
 
           {/* Attack Selection Buttons */}
@@ -653,7 +690,13 @@ export default function GumbuoBoss() {
             <button
               onClick={() => setSelectedAttack('normal')}
               onMouseEnter={() => playSound('hover')}
-              className={`p-8 rounded-2xl transition-all duration-300 ${
+              style={{
+                padding: '32px',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944',
+                transition: 'all 0.3s ease'
+              }}
+              className={`transition-all duration-300 ${
                 selectedAttack === 'normal'
                   ? 'bg-gradient-to-br from-cyan-500 to-cyan-700 shadow-2xl shadow-cyan-500/60 scale-105'
                   : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-cyan-600/50 hover:to-cyan-800/50 hover:scale-102'
@@ -670,7 +713,13 @@ export default function GumbuoBoss() {
               onClick={() => powerCooldown === 0 && setSelectedAttack('power')}
               onMouseEnter={() => powerCooldown === 0 && playSound('hover')}
               disabled={powerCooldown > 0}
-              className={`p-8 rounded-2xl transition-all duration-300 ${
+              style={{
+                padding: '32px',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944',
+                transition: 'all 0.3s ease'
+              }}
+              className={`transition-all duration-300 ${
                 powerCooldown > 0
                   ? 'bg-gray-800 opacity-50 cursor-not-allowed'
                   : selectedAttack === 'power'
@@ -694,7 +743,13 @@ export default function GumbuoBoss() {
               onClick={() => ultimateCooldown === 0 && setSelectedAttack('ultimate')}
               onMouseEnter={() => ultimateCooldown === 0 && playSound('hover')}
               disabled={ultimateCooldown > 0}
-              className={`p-8 rounded-2xl transition-all duration-300 ${
+              style={{
+                padding: '32px',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944',
+                transition: 'all 0.3s ease'
+              }}
+              className={`transition-all duration-300 ${
                 ultimateCooldown > 0
                   ? 'bg-gray-800 opacity-50 cursor-not-allowed'
                   : selectedAttack === 'ultimate'
@@ -721,13 +776,20 @@ export default function GumbuoBoss() {
               <button
                 onClick={() => handleUpgradeAttack('normal')}
                 onMouseEnter={() => playSound('hover')}
-                className="px-4 py-2 text-sm font-bold bg-cyan-600/80 hover:bg-cyan-600 text-white rounded-lg transition-all shadow-lg shadow-cyan-500/30"
+                style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }}
+                className="px-4 py-2 text-sm font-bold bg-cyan-600/80 hover:bg-cyan-600 text-white transition-all shadow-lg shadow-cyan-500/30"
               >
                 ⬆️ Upgrade Normal ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
               </button>
             )}
             {attackLevels.normal >= MAX_ATTACK_LEVEL && (
-              <div className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 rounded-lg text-center">
+              <div style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
                 ✅ Max Level
               </div>
             )}
@@ -737,13 +799,20 @@ export default function GumbuoBoss() {
               <button
                 onClick={() => handleUpgradeAttack('power')}
                 onMouseEnter={() => playSound('hover')}
-                className="px-4 py-2 text-sm font-bold bg-purple-600/80 hover:bg-purple-600 text-white rounded-lg transition-all shadow-lg shadow-purple-500/30"
+                style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }}
+                className="px-4 py-2 text-sm font-bold bg-purple-600/80 hover:bg-purple-600 text-white transition-all shadow-lg shadow-purple-500/30"
               >
                 ⬆️ Upgrade Power ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
               </button>
             )}
             {attackLevels.power >= MAX_ATTACK_LEVEL && (
-              <div className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 rounded-lg text-center">
+              <div style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
                 ✅ Max Level
               </div>
             )}
@@ -753,13 +822,20 @@ export default function GumbuoBoss() {
               <button
                 onClick={() => handleUpgradeAttack('ultimate')}
                 onMouseEnter={() => playSound('hover')}
-                className="px-4 py-2 text-sm font-bold bg-yellow-600/80 hover:bg-yellow-600 text-white rounded-lg transition-all shadow-lg shadow-yellow-500/30"
+                style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }}
+                className="px-4 py-2 text-sm font-bold bg-yellow-600/80 hover:bg-yellow-600 text-white transition-all shadow-lg shadow-yellow-500/30"
               >
                 ⬆️ Upgrade Cosmic ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
               </button>
             )}
             {attackLevels.ultimate >= MAX_ATTACK_LEVEL && (
-              <div className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 rounded-lg text-center">
+              <div style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
                 ✅ Max Level
               </div>
             )}
@@ -771,7 +847,11 @@ export default function GumbuoBoss() {
               onClick={handleAttack}
               onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
               disabled={isAttacking || !canAttack}
-              className={`px-16 py-6 text-4xl font-bold tracking-wider rounded-2xl transition-all duration-300 ${
+              style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className={`px-16 py-6 text-4xl font-bold tracking-wider transition-all duration-300 ${
                 isAttacking || !canAttack
                   ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-red-600 to-orange-600 text-white hover:from-red-500 hover:to-orange-500 shadow-lg shadow-red-500/50 hover:scale-105"
@@ -789,11 +869,24 @@ export default function GumbuoBoss() {
 
           {/* User Stats - Inside Attack Section */}
           {address && (
-            <div className="mt-6 bg-black/40 rounded-xl p-6">
+            <div style={{
+              marginTop: '24px',
+              background: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: '8px',
+              border: '2px solid #00ff9944',
+              padding: '24px'
+            }}>
               <h3 className="text-2xl font-alien text-purple-400 text-center mb-4">👤 YOUR BATTLE STATS 👤</h3>
 
               <div className="flex items-center justify-between gap-4 mb-4">
-                <div className="flex-1 text-center bg-purple-500/20 rounded-lg p-4">
+                <div style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  background: 'rgba(168, 85, 247, 0.2)',
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944',
+                  padding: '16px'
+                }}>
                   <p className="text-purple-400 text-sm font-semibold mb-2">💥 Total Damage</p>
                   <p className="text-2xl font-bold text-purple-400">{userTotalDamage.toLocaleString()} HP</p>
                 </div>
@@ -802,7 +895,14 @@ export default function GumbuoBoss() {
                   <span className="text-3xl">→</span>
                 </div>
 
-                <div className="flex-1 text-center bg-green-500/20 rounded-lg p-4">
+                <div style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  background: 'rgba(34, 197, 94, 0.2)',
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944',
+                  padding: '16px'
+                }}>
                   <p className="text-green-400 text-sm font-semibold mb-2">🎁 {bossState.isAlive ? 'Current' : 'Final'} Reward</p>
                   <p className="text-2xl font-bold text-green-400">
                     {(() => {
@@ -818,7 +918,13 @@ export default function GumbuoBoss() {
                 </div>
               </div>
 
-              <div className="text-center bg-black/40 rounded-lg p-3">
+              <div style={{
+                textAlign: 'center',
+                background: 'rgba(0, 0, 0, 0.4)',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944',
+                padding: '12px'
+              }}>
                 <p className="text-purple-400 text-sm font-semibold mb-1">📊 Damage Contribution</p>
                 <p className="text-xl font-bold text-purple-400">
                   {bossState.isAlive
@@ -835,14 +941,22 @@ export default function GumbuoBoss() {
       {/* Leaderboard & Recent Attackers */}
       <div className="w-full grid grid-cols-2 gap-6">
         {/* Leaderboard */}
-        <div className="bg-black/60 rounded-2xl p-6">
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.6)',
+          borderRadius: '8px',
+          border: '2px solid #00ff9944',
+          padding: '24px'
+        }}>
           <h3 className="text-2xl font-alien text-yellow-400 text-center mb-4">🏆 DAMAGE & REWARDS 🏆</h3>
           <div className="flex flex-col items-center space-y-2">
             {leaderboard.length === 0 ? (
               <p className="text-gray-400 text-center text-sm">No attacks yet!</p>
             ) : (
               leaderboard.map((entry, index) => (
-                <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${
+                <div key={index} style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className={`flex items-center gap-3 p-3 ${
                   index === 0 ? 'bg-yellow-500/20' :
                   index === 1 ? 'bg-gray-400/20' :
                   index === 2 ? 'bg-orange-500/20' :
@@ -868,18 +982,27 @@ export default function GumbuoBoss() {
         </div>
 
         {/* Recent Attackers */}
-        <div className="bg-black/60 rounded-2xl p-6">
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.6)',
+          borderRadius: '8px',
+          border: '2px solid #00ff9944',
+          padding: '24px'
+        }}>
           <h3 className="text-2xl font-alien text-cyan-400 text-center mb-4">📡 LIVE ATTACKS 📡</h3>
           <div className="flex flex-col items-center space-y-2 max-h-80 overflow-y-auto">
             {recentAttackers.length === 0 ? (
               <p className="text-gray-400 text-center text-sm">Waiting for attacks...</p>
             ) : (
               recentAttackers.map((attacker, index) => (
-                <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${
+                <div key={index} style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944',
+                  animationDuration: '2s'
+                }} className={`flex items-center gap-3 p-3 ${
                   attacker.attackType === 'ultimate' ? 'bg-yellow-500/20' :
                   attacker.attackType === 'power' ? 'bg-purple-500/20' :
                   'bg-blue-500/20'
-                } animate-pulse`} style={{animationDuration: '2s'}}>
+                } animate-pulse`}>
                   <span className="text-xl flex-shrink-0">
                     {attacker.attackType === 'ultimate' ? '⚡' :
                      attacker.attackType === 'power' ? '💪' : '👊'}
@@ -906,6 +1029,10 @@ export default function GumbuoBoss() {
         <button
           onClick={handleClaimReward}
           onMouseEnter={() => playSound('hover')}
+          style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }}
           className="px-16 py-6 text-3xl font-bold tracking-wider alien-button alien-button-primary alien-button-glow alien-button-organic"
         >
           {!isConnected ? "CONNECT WALLET" : "🏆 CLAIM REWARD 🏆"}
@@ -914,14 +1041,29 @@ export default function GumbuoBoss() {
 
       {/* Already Claimed */}
       {!bossState.isAlive && hasClaimedReward && (
-        <div className="bg-black/60 rounded-xl p-6 text-center">
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.6)',
+          borderRadius: '8px',
+          border: '2px solid #00ff9944',
+          padding: '24px',
+          textAlign: 'center'
+        }}>
           <p className="text-green-400 text-xl font-bold">✅ Reward Already Claimed! ✅</p>
           <p className="text-green-400 text-base mt-2">Wait for boss respawn to earn more rewards!</p>
         </div>
       )}
 
       {/* Battle Info */}
-      <div className="w-full text-red-400 text-sm text-center max-w-3xl bg-black/60 p-6 rounded-xl">
+      <div style={{
+        width: '100%',
+        textAlign: 'center',
+        maxWidth: '768px',
+        background: 'rgba(0, 0, 0, 0.6)',
+        borderRadius: '8px',
+        border: '2px solid #00ff9944',
+        padding: '24px',
+        color: '#f87171'
+      }}>
         <p className="font-bold mb-3 text-lg">ℹ️ Battle Info ℹ️</p>
         <p className="opacity-75 font-electro text-base leading-relaxed">
           Attack the Gumbuo boss and deal massive damage! Each attack has a {ATTACK_COOLDOWN / 1000} second cooldown.

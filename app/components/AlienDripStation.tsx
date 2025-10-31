@@ -501,7 +501,10 @@ export default function AlienDripStation() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible rounded-3xl">
+    <div style={{
+      borderRadius: '8px',
+      border: '2px solid #00ff9944'
+    }} className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible">
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
       <div className="corner-glow corner-glow-bl"></div>

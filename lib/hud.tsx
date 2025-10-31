@@ -65,7 +65,10 @@ export function AlienHUD() {
 
   if (!isConnected) {
     return (
-      <div className="holographic-panel glass-panel p-4 rounded-xl shadow-2xl max-w-md relative">
+      <div style={{
+        borderRadius: '8px',
+        border: '2px solid #00ff9944'
+      }} className="holographic-panel glass-panel p-4 shadow-2xl max-w-md relative">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-tr"></div>
         <div className="corner-glow corner-glow-bl"></div>
@@ -83,7 +86,10 @@ export function AlienHUD() {
   }
 
   return (
-    <div className="holographic-panel glass-panel p-4 rounded-xl shadow-2xl max-w-md relative">
+    <div style={{
+      borderRadius: '8px',
+      border: '2px solid #00ff9944'
+    }} className="holographic-panel glass-panel p-4 shadow-2xl max-w-md relative">
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
       <div className="corner-glow corner-glow-bl"></div>

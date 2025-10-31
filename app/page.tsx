@@ -39,7 +39,10 @@ export default function MothershipPage() {
       {/* Top Right - Connect Button and HUD */}
       <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
         {/* Wallet Connect Button with Alien Styling */}
-        <div className="holographic-panel glass-panel p-4 rounded-xl">
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="holographic-panel glass-panel p-4">
           <div className="corner-glow corner-glow-tl"></div>
           <div className="corner-glow corner-glow-tr"></div>
           <div className="corner-glow corner-glow-bl"></div>
@@ -82,9 +85,13 @@ export default function MothershipPage() {
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-3xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
+              style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
             >
-              <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
+              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 transition-all duration-300"></div>
 
               <div className="relative z-10">
                 <div className="text-5xl mb-3">⛓️</div>
@@ -107,7 +114,11 @@ export default function MothershipPage() {
               src="/blueportal.png"
               alt="Portal to Base"
               className="w-[150px] h-auto animate-pulse"
-              style={{animationDuration: '3s'}}
+              style={{
+                animationDuration: '3s',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
             />
@@ -120,9 +131,13 @@ export default function MothershipPage() {
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-3xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
+              style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className="group relative bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
             >
-              <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 rounded-3xl transition-all duration-300"></div>
+              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 transition-all duration-300"></div>
 
               <div className="relative z-10">
                 <div className="text-5xl mb-3">⚡</div>
@@ -145,7 +160,11 @@ export default function MothershipPage() {
               src="/greenportal.png"
               alt="Portal to Abstract"
               className="w-[150px] h-auto animate-pulse"
-              style={{animationDuration: '3s'}}
+              style={{
+                animationDuration: '3s',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
             />
@@ -158,9 +177,13 @@ export default function MothershipPage() {
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-yellow-900/40 to-red-900/40 rounded-3xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
+              style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className="group relative bg-gradient-to-br from-yellow-900/40 to-red-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
             >
-              <div className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 rounded-3xl transition-all duration-300"></div>
+              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 transition-all duration-300"></div>
 
               <div className="relative z-10">
                 <div className="text-5xl mb-3">💥</div>
@@ -183,7 +206,11 @@ export default function MothershipPage() {
               src="/greyportal.png"
               alt="Portal to Blast"
               className="w-[150px] h-auto animate-pulse"
-              style={{animationDuration: '3s'}}
+              style={{
+                animationDuration: '3s',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
             />
@@ -196,9 +223,13 @@ export default function MothershipPage() {
             <div
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-3xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
+              style={{
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className="group relative bg-gradient-to-br from-blue-900/40 to-cyan-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
             >
-              <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 rounded-3xl transition-all duration-300"></div>
+              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 transition-all duration-300"></div>
 
               <div className="relative z-10">
                 <div className="text-5xl mb-3">🔷</div>
@@ -221,7 +252,11 @@ export default function MothershipPage() {
               src="/redportal.png"
               alt="Portal to Arbitrum"
               className="w-[150px] h-auto animate-pulse"
-              style={{animationDuration: '3s'}}
+              style={{
+                animationDuration: '3s',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
             />
@@ -254,8 +289,12 @@ export default function MothershipPage() {
                 rel="noopener noreferrer"
                 onMouseEnter={() => playSound('hover')}
                 onClick={() => playSound('click')}
-                className="inline-block px-12 py-4 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-blue-500/50"
-                style={{fontSize: '2rem'}}
+                style={{
+                  fontSize: '2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }}
+                className="inline-block px-12 py-4 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-blue-500/50"
               >
                 Buy GMB (Base)
               </a>
@@ -292,8 +331,12 @@ export default function MothershipPage() {
               rel="noopener noreferrer"
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="bg-blue-500/80 hover:bg-blue-600 px-12 py-4 rounded-xl text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-blue-400/80 flex items-center gap-3"
-              style={{fontSize: '2rem'}}
+              style={{
+                fontSize: '2rem',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className="bg-blue-500/80 hover:bg-blue-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-blue-400/80 flex items-center gap-3"
             >
               <span style={{fontSize: '2.5rem'}}>𝕏</span>
               <span>Twitter</span>
@@ -304,8 +347,12 @@ export default function MothershipPage() {
               rel="noopener noreferrer"
               onMouseEnter={() => playSound('hover')}
               onClick={() => playSound('click')}
-              className="bg-purple-500/80 hover:bg-purple-600 px-12 py-4 rounded-xl text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-purple-400/80 flex items-center gap-3"
-              style={{fontSize: '2rem'}}
+              style={{
+                fontSize: '2rem',
+                borderRadius: '8px',
+                border: '2px solid #00ff9944'
+              }}
+              className="bg-purple-500/80 hover:bg-purple-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-purple-400/80 flex items-center gap-3"
             >
               <span style={{fontSize: '2.5rem'}}>💬</span>
               <span>Discord</span>
@@ -313,7 +360,10 @@ export default function MothershipPage() {
           </div>
 
           {/* Safety Message */}
-          <div className="mt-6 max-w-3xl mx-auto bg-yellow-900/40 border-2 border-yellow-400/50 rounded-xl p-6 backdrop-blur-sm">
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="mt-6 max-w-3xl mx-auto bg-yellow-900/40 p-6 backdrop-blur-sm">
             <p className="text-yellow-300 font-bold text-center text-lg leading-relaxed">
               🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">AlienOG</span> on Discord or Twitter.
               <br />

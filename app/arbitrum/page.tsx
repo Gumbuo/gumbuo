@@ -1,69 +1,79 @@
 "use client";
-import dynamic from "next/dynamic";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-
-const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
-const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
-const StarfieldBackground = dynamic(() => import("../components/StarfieldBackground"), { ssr: false });
+import { useState } from "react";
 
 export default function ArbitrumPage() {
+  const [selectedGame, setSelectedGame] = useState("invasion");
+
+  const games = {
+    invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
+    duel: { title: "Gumbuo Alien Duel", src: "/gumbuo-alien-duel.html" },
+    dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
+    maze: { title: "Maze Game", src: "/maze" },
+  };
+
   return (
-    <main className="min-h-screen bg-black overflow-y-auto">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="fixed top-0 left-0 w-full h-full object-cover z-0"
-        src="/alien.mp4"
+    <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
+      {/* Game Selector */}
+      <div style={{
+        display: 'flex',
+        gap: '10px',
+        padding: '15px',
+        background: 'linear-gradient(to bottom, #1a1a2e, #0f0f1e)',
+        borderBottom: '2px solid #00ff99',
+        justifyContent: 'center',
+        flexWrap: 'wrap'
+      }}>
+        {Object.entries(games).map(([key, game]) => (
+          <button
+            key={key}
+            onClick={() => setSelectedGame(key)}
+            style={{
+              padding: '12px 24px',
+              background: selectedGame === key
+                ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
+                : 'rgba(0, 255, 153, 0.1)',
+              color: selectedGame === key ? '#000' : '#00ff99',
+              border: `2px solid ${selectedGame === key ? '#00ff99' : '#00ff9944'}`,
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontFamily: 'Orbitron, sans-serif',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              textTransform: 'uppercase',
+              transition: 'all 0.3s ease',
+              boxShadow: selectedGame === key
+                ? '0 0 20px rgba(0, 255, 153, 0.5)'
+                : 'none',
+            }}
+            onMouseEnter={(e) => {
+              if (selectedGame !== key) {
+                e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
+                e.currentTarget.style.borderColor = '#00ff99';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedGame !== key) {
+                e.currentTarget.style.background = 'rgba(0, 255, 153, 0.1)';
+                e.currentTarget.style.borderColor = '#00ff9944';
+              }
+            }}
+          >
+            {game.title}
+          </button>
+        ))}
+      </div>
+
+      {/* Game Display */}
+      <iframe
+        key={selectedGame}
+        src={games[selectedGame as keyof typeof games].src}
+        style={{
+          width: '100%',
+          height: 'calc(100vh - 70px)',
+          border: 'none',
+        }}
+        title={games[selectedGame as keyof typeof games].title}
       />
-
-      {/* Starfield Parallax Background */}
-      <StarfieldBackground />
-
-      {/* Top Right - Connect Button and HUD */}
-      <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
-        {/* Wallet Connect Button with Alien Styling */}
-        <div className="holographic-panel glass-panel p-4 rounded-xl">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <div className="relative z-10">
-            <ConnectButton />
-          </div>
-        </div>
-
-        {/* Alien HUD */}
-        <AlienHUD />
-      </div>
-
-      {/* Content with proper spacing */}
-      <div className="relative z-10 p-6">
-
-        {/* Gumbuo Boss Battle - Centered */}
-        <div className="flex justify-center items-center min-h-[80vh]">
-          <GumbuoBoss />
-        </div>
-
-        {/* FoxHole Productions Credit */}
-        <div className="flex justify-center mt-32 mb-12">
-          <div className="flex items-center space-x-3 bg-black/60 backdrop-blur-sm px-6 py-3 rounded-xl border border-green-400/30 shadow-lg shadow-green-400/20">
-            <div style={{width: '48px', height: '48px', minWidth: '48px', minHeight: '48px', maxWidth: '48px', maxHeight: '48px', overflow: 'hidden'}}>
-              <img
-                src="/foxholeproductions.jpg"
-                alt="FoxHole Productions"
-                className="rounded-lg"
-                style={{width: '48px', height: '48px', objectFit: 'cover', display: 'block'}}
-              />
-            </div>
-            <div className="text-center">
-              <p className="text-green-400 font-bold text-xl font-alien holographic-text">FoxHole Productions</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+    </div>
   );
 }

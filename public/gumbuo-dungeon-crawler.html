@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gumbuo Dungeon Crawler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0000 0%, #330000 50%, #1a0000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            color: #ff6600;
+        }
+
+        #gameContainer {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(255, 102, 0, 0.6);
+        }
+
+        canvas {
+            border: 4px solid #ff6600;
+            background: #000;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 0 50px rgba(255, 102, 0, 0.7);
+        }
+
+        h1 {
+            text-shadow: 0 0 20px #ff6600;
+            margin-bottom: 15px;
+            font-size: 3em;
+        }
+
+        #hud {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .stat-box {
+            background: rgba(255, 102, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #ff6600;
+        }
+
+        .bar {
+            width: 120px;
+            height: 18px;
+            background: #330000;
+            border: 2px solid #ff6600;
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .health-bar { background: linear-gradient(90deg, #ff0000, #ff6600); }
+
+        button {
+            background: linear-gradient(135deg, #ff6600, #ff3300);
+            color: #fff;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 10px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.8);
+        }
+
+        .hidden { display: none; }
+
+        #classSelect, #shop, #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 4px solid #ff6600;
+            padding: 40px;
+            border-radius: 15px;
+            min-width: 500px;
+            z-index: 100;
+        }
+
+        .class-btn, .shop-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 20px;
+            background: rgba(255, 102, 0, 0.3);
+            border: 2px solid #ff6600;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .class-btn:hover, .shop-btn:hover {
+            background: rgba(255, 102, 0, 0.5);
+        }
+
+        #message {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6600;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2em;
+        }
+
+        #controls {
+            margin-top: 15px;
+            font-size: 1em;
+            color: #ffaa66;
+        }
+
+        .loot-quality-common { color: #ffffff; }
+        .loot-quality-rare { color: #0099ff; }
+        .loot-quality-epic { color: #9933ff; }
+        .loot-quality-legendary { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1>⚔️ GUMBUO DUNGEON CRAWLER ⚔️</h1>
+        
+        <div id="hud">
+            <div class="stat-box">
+                <div>Floor: <span id="floor">1</span></div>
+                <div>Class: <span id="class">-</span></div>
+            </div>
+            <div class="stat-box">
+                HP: <div class="bar"><div id="healthBar" class="bar-fill health-bar" style="width: 100%"></div></div>
+            </div>
+            <div class="stat-box">
+                <div>ATK: <span id="attack">10</span></div>
+                <div>DEF: <span id="defense">5</span></div>
+            </div>
+            <div class="stat-box">
+                <div>Gold: <span id="gold">0</span> 💰</div>
+                <div>Kills: <span id="kills">0</span></div>
+            </div>
+        </div>
+
+        <div style="position: relative;">
+            <canvas id="gameCanvas" width="900" height="650"></canvas>
+            
+            <div id="classSelect">
+                <h2 style="color: #ff6600; margin-bottom: 20px;">CHOOSE YOUR CLASS</h2>
+                <button class="class-btn" onclick="selectClass('warrior')">
+                    <strong style="color: #ff0000;">⚔️ WARRIOR</strong><br>
+                    High HP, Strong melee attacks, Tank
+                </button>
+                <button class="class-btn" onclick="selectClass('rogue')">
+                    <strong style="color: #00ff00;">🗡️ ROGUE</strong><br>
+                    Fast movement, High damage, Low HP
+                </button>
+                <button class="class-btn" onclick="selectClass('mage')">
+                    <strong style="color: #0099ff;">🔮 MAGE</strong><br>
+                    Ranged magic attacks, AoE damage
+                </button>
+            </div>
+
+            <div id="shop" class="hidden">
+                <h2 style="color: #ff6600; margin-bottom: 20px;">🏪 SHOP - Floor <span id="shopFloor">1</span></h2>
+                <div id="shopItems"></div>
+                <button onclick="closeShop()">Continue to Next Floor</button>
+            </div>
+
+            <div id="gameOver" class="hidden">
+                <h2 style="color: #ff0000; font-size: 2.5em;">💀 YOU DIED 💀</h2>
+                <p style="font-size: 1.3em; margin: 20px;">Floor Reached: <span id="finalFloor">0</span></p>
+                <p style="font-size: 1.3em; margin: 20px;">Enemies Defeated: <span id="finalKills">0</span></p>
+                <button onclick="location.reload()">New Run</button>
+            </div>
+
+            <div id="message" class="hidden"></div>
+        </div>
+
+        <div id="controls">
+            🎮 WASD: Move | Mouse Click: Attack | Pick up loot automatically | Survive as long as possible!
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const classSelectDiv = document.getElementById('classSelect');
+        const shopDiv = document.getElementById('shop');
+        const gameOverDiv = document.getElementById('gameOver');
+        const messageDiv = document.getElementById('message');
+
+        let gameRunning = false;
+        let animationId;
+        let floor = 1;
+        let kills = 0;
+
+        // Alien images
+        const alienImages = {};
+        const alienImageFiles = ['nyx.png', 'zorb.png', 'apliean.png', 'j3d1.png'];
+        let loadedImageCount = 0;
+
+        function loadAlienImages() {
+            alienImageFiles.forEach(filename => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => { loadedImageCount++; };
+                img.onerror = () => { loadedImageCount++; };
+                img.src = `http://www.gumbuo.io/${filename}`;
+                alienImages[filename] = img;
+            });
+        }
+
+        const classes = {
+            warrior: { health: 150, attack: 15, defense: 10, speed: 2.5, color: '#ff0000', range: 50 },
+            rogue: { health: 80, attack: 25, defense: 3, speed: 4, color: '#00ff00', range: 40 },
+            mage: { health: 100, attack: 20, defense: 5, speed: 3, color: '#0099ff', range: 200 }
+        };
+
+        const player = {
+            x: 450,
+            y: 325,
+            width: 40,
+            height: 40,
+            health: 100,
+            maxHealth: 100,
+            attack: 10,
+            defense: 5,
+            speed: 3,
+            gold: 0,
+            class: null,
+            image: null,
+            attackCooldown: 0,
+            keys: { up: false, down: false, left: false, right: false }
+        };
+
+        let dungeon = {
+            rooms: [],
+            width: 900,
+            height: 650,
+            roomSize: 200
+        };
+
+        let enemies = [];
+        let loot = [];
+        let particles = [];
+        let projectiles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        let attacking = false;
+
+        loadAlienImages();
+
+        function selectClass(className) {
+            const classData = classes[className];
+            player.class = className;
+            player.health = classData.health;
+            player.maxHealth = classData.health;
+            player.attack = classData.attack;
+            player.defense = classData.defense;
+            player.speed = classData.speed;
+            player.color = classData.color;
+            player.range = classData.range;
+            player.image = alienImages[alienImageFiles[0]];
+            
+            document.getElementById('class').textContent = className.toUpperCase();
+            classSelectDiv.classList.add('hidden');
+            
+            generateDungeon();
+            gameRunning = true;
+            gameLoop();
+        }
+
+        function generateDungeon() {
+            enemies = [];
+            loot = [];
+            dungeon.rooms = [];
+
+            // Generate rooms
+            const numRooms = 3 + Math.floor(floor / 2);
+            for (let i = 0; i < numRooms; i++) {
+                dungeon.rooms.push({
+                    x: Math.random() * (dungeon.width - 300) + 50,
+                    y: Math.random() * (dungeon.height - 300) + 50,
+                    width: 150 + Math.random() * 100,
+                    height: 150 + Math.random() * 100
+                });
+            }
+
+            // Spawn enemies
+            const enemyCount = 5 + floor * 3;
+            for (let i = 0; i < enemyCount; i++) {
+                const room = dungeon.rooms[Math.floor(Math.random() * dungeon.rooms.length)];
+                enemies.push({
+                    x: room.x + Math.random() * (room.width - 40),
+                    y: room.y + Math.random() * (room.height - 40),
+                    width: 35,
+                    height: 35,
+                    health: 20 + floor * 10,
+                    maxHealth: 20 + floor * 10,
+                    damage: 5 + floor * 2,
+                    speed: 1 + floor * 0.2,
+                    image: alienImages[alienImageFiles[Math.floor(Math.random() * alienImageFiles.length)]],
+                    aiTimer: 0
+                });
+            }
+
+            // Boss every 5 floors
+            if (floor % 5 === 0) {
+                const room = dungeon.rooms[dungeon.rooms.length - 1];
+                enemies.push({
+                    x: room.x + room.width / 2 - 40,
+                    y: room.y + room.height / 2 - 40,
+                    width: 80,
+                    height: 80,
+                    health: 200 + floor * 50,
+                    maxHealth: 200 + floor * 50,
+                    damage: 15 + floor * 3,
+                    speed: 2,
+                    isBoss: true,
+                    image: alienImages[alienImageFiles[3]]
+                });
+                showMessage('⚠️ BOSS FLOOR! ⚠️');
+            }
+
+            player.x = dungeon.rooms[0].x + 50;
+            player.y = dungeon.rooms[0].y + 50;
+        }
+
+        function createParticles(x, y, color, count = 15) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    life: 30,
+                    color: color,
+                    size: Math.random() * 4 + 2
+                });
+            }
+        }
+
+        function spawnLoot(x, y) {
+            const rand = Math.random();
+            let quality, value, color;
+            
+            if (rand < 0.6) { // Common
+                quality = 'common';
+                value = 10 + Math.floor(Math.random() * 20);
+                color = '#ffffff';
+            } else if (rand < 0.85) { // Rare
+                quality = 'rare';
+                value = 30 + Math.floor(Math.random() * 30);
+                color = '#0099ff';
+            } else if (rand < 0.97) { // Epic
+                quality = 'epic';
+                value = 60 + Math.floor(Math.random() * 40);
+                color = '#9933ff';
+            } else { // Legendary
+                quality = 'legendary';
+                value = 100 + Math.floor(Math.random() * 100);
+                color = '#ffaa00';
+            }
+
+            loot.push({
+                x: x,
+                y: y,
+                width: 25,
+                height: 25,
+                quality: quality,
+                value: value,
+                color: color,
+                type: Math.random() < 0.7 ? 'gold' : 'upgrade'
+            });
+        }
+
+        function showMessage(text) {
+            messageDiv.textContent = text;
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        function drawRoom(room) {
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(room.x, room.y, room.width, room.height);
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(room.x, room.y, room.width, room.height);
+        }
+
+        function drawPlayer() {
+            if (player.image && player.image.complete && player.image.naturalWidth > 0) {
+                ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
+            } else {
+                ctx.fillStyle = player.color;
+                ctx.fillRect(player.x, player.y, player.width, player.height);
+            }
+
+            // Health bar
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(player.x, player.y - 10, player.width, 5);
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(player.x, player.y - 10, player.width * (player.health / player.maxHealth), 5);
+
+            // Attack range indicator
+            if (attacking && player.class === 'mage') {
+                ctx.strokeStyle = player.color + '44';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(player.x + player.width / 2, player.y + player.height / 2, player.range, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function drawEnemy(enemy) {
+            if (enemy.image && enemy.image.complete && enemy.image.naturalWidth > 0) {
+                ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
+            } else {
+                ctx.fillStyle = enemy.isBoss ? '#ff0000' : '#ff00ff';
+                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            }
+
+            // Health bar
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(enemy.x, enemy.y - 10, enemy.width, 5);
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(enemy.x, enemy.y - 10, enemy.width * (enemy.health / enemy.maxHealth), 5);
+
+            if (enemy.isBoss) {
+                ctx.strokeStyle = '#ff0000';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(enemy.x - 2, enemy.y - 2, enemy.width + 4, enemy.height + 4);
+            }
+        }
+
+        function drawLoot(item) {
+            ctx.fillStyle = item.color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = item.color;
+            ctx.fillRect(item.x, item.y, item.width, item.height);
+            ctx.shadowBlur = 0;
+        }
+
+        function drawParticles() {
+            particles.forEach((particle, index) => {
+                ctx.fillStyle = particle.color;
+                ctx.globalAlpha = particle.life / 30;
+                ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
+                
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life--;
+                
+                if (particle.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+            ctx.globalAlpha = 1;
+        }
+
+        function checkCollision(obj1, obj2) {
+            return obj1.x < obj2.x + obj2.width &&
+                   obj1.x + obj1.width > obj2.x &&
+                   obj1.y < obj2.y + obj2.height &&
+                   obj1.y + obj1.height > obj2.y;
+        }
+
+        function updatePlayer() {
+            if (player.keys.left) player.x -= player.speed;
+            if (player.keys.right) player.x += player.speed;
+            if (player.keys.up) player.y -= player.speed;
+            if (player.keys.down) player.y += player.speed;
+
+            player.x = Math.max(0, Math.min(dungeon.width - player.width, player.x));
+            player.y = Math.max(0, Math.min(dungeon.height - player.height, player.y));
+
+            if (player.attackCooldown > 0) player.attackCooldown--;
+
+            // Collect loot
+            loot.forEach((item, index) => {
+                if (checkCollision(player, item)) {
+                    if (item.type === 'gold') {
+                        player.gold += item.value;
+                    } else {
+                        if (Math.random() < 0.5) {
+                            player.attack += 2;
+                            showMessage('+2 Attack!');
+                        } else {
+                            player.maxHealth += 10;
+                            player.health += 10;
+                            showMessage('+10 Max HP!');
+                        }
+                    }
+                    createParticles(item.x, item.y, item.color, 20);
+                    loot.splice(index, 1);
+                    updateHUD();
+                }
+            });
+
+            // Check for floor completion
+            if (enemies.length === 0) {
+                nextFloor();
+            }
+        }
+
+        function updateEnemies() {
+            enemies.forEach((enemy, index) => {
+                enemy.aiTimer++;
+
+                if (enemy.aiTimer > 30) {
+                    const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
+                    
+                    if (dist < 400) {
+                        const dx = player.x - enemy.x;
+                        const dy = player.y - enemy.y;
+                        const angle = Math.atan2(dy, dx);
+                        
+                        enemy.x += Math.cos(angle) * enemy.speed;
+                        enemy.y += Math.sin(angle) * enemy.speed;
+                    }
+                }
+
+                if (checkCollision(player, enemy)) {
+                    const damage = Math.max(1, enemy.damage - player.defense);
+                    player.health -= damage;
+                    createParticles(player.x + 20, player.y + 20, '#ff0000', 10);
+                    
+                    if (player.health <= 0) {
+                        gameOver();
+                    }
+                    updateHUD();
+
+                    // Knockback
+                    const dx = player.x - enemy.x;
+                    const dy = player.y - enemy.y;
+                    const dist = Math.hypot(dx, dy);
+                    player.x += (dx / dist) * 10;
+                    player.y += (dy / dist) * 10;
+                }
+            });
+        }
+
+        function updateProjectiles() {
+            projectiles.forEach((proj, index) => {
+                proj.x += proj.vx;
+                proj.y += proj.vy;
+
+                ctx.fillStyle = player.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = player.color;
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, proj.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                enemies.forEach((enemy, eIndex) => {
+                    if (checkCollision(proj, enemy)) {
+                        enemy.health -= player.attack;
+                        projectiles.splice(index, 1);
+                        createParticles(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, '#ffff00', 15);
+
+                        if (enemy.health <= 0) {
+                            kills++;
+                            createParticles(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, '#ff6600', 30);
+                            spawnLoot(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+                            enemies.splice(eIndex, 1);
+                            updateHUD();
+                        }
+                    }
+                });
+
+                if (proj.x < 0 || proj.x > dungeon.width || proj.y < 0 || proj.y > dungeon.height) {
+                    projectiles.splice(index, 1);
+                }
+            });
+        }
+
+        function attack() {
+            if (player.attackCooldown > 0) return;
+
+            attacking = true;
+            player.attackCooldown = 20;
+
+            if (player.class === 'mage') {
+                // Ranged magic attack
+                const dx = mouseX - (player.x + player.width / 2);
+                const dy = mouseY - (player.y + player.height / 2);
+                const dist = Math.hypot(dx, dy);
+                
+                projectiles.push({
+                    x: player.x + player.width / 2,
+                    y: player.y + player.height / 2,
+                    vx: (dx / dist) * 8,
+                    vy: (dy / dist) * 8,
+                    size: 8,
+                    width: 8,
+                    height: 8
+                });
+            } else {
+                // Melee attack
+                const attackBox = {
+                    x: player.x - player.range / 2,
+                    y: player.y - player.range / 2,
+                    width: player.width + player.range,
+                    height: player.height + player.range
+                };
+
+                enemies.forEach((enemy, index) => {
+                    if (checkCollision(attackBox, enemy)) {
+                        enemy.health -= player.attack;
+                        createParticles(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, player.color, 15);
+
+                        if (enemy.health <= 0) {
+                            kills++;
+                            createParticles(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, '#ff6600', 30);
+                            spawnLoot(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+                            enemies.splice(index, 1);
+                            updateHUD();
+                        }
+                    }
+                });
+            }
+
+            setTimeout(() => { attacking = false; }, 150);
+        }
+
+        function nextFloor() {
+            floor++;
+            showMessage(`Floor ${floor} Complete! Entering shop...`);
+            
+            setTimeout(() => {
+                openShop();
+            }, 2000);
+        }
+
+        function openShop() {
+            gameRunning = false;
+            document.getElementById('shopFloor').textContent = floor;
+            
+            const shopItems = [
+                { name: 'Health Potion', cost: 30, effect: 'heal' },
+                { name: 'Attack Upgrade', cost: 50, effect: 'attack' },
+                { name: 'Defense Upgrade', cost: 50, effect: 'defense' },
+                { name: 'Max Health +20', cost: 70, effect: 'maxhealth' }
+            ];
+
+            const shopItemsDiv = document.getElementById('shopItems');
+            shopItemsDiv.innerHTML = '';
+            
+            shopItems.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'shop-btn';
+                btn.innerHTML = `<strong>${item.name}</strong> - ${item.cost} Gold`;
+                btn.onclick = () => buyItem(item);
+                shopItemsDiv.appendChild(btn);
+            });
+
+            shopDiv.classList.remove('hidden');
+        }
+
+        function buyItem(item) {
+            if (player.gold >= item.cost) {
+                player.gold -= item.cost;
+                
+                if (item.effect === 'heal') {
+                    player.health = player.maxHealth;
+                    showMessage('Health restored!');
+                } else if (item.effect === 'attack') {
+                    player.attack += 5;
+                    showMessage('+5 Attack!');
+                } else if (item.effect === 'defense') {
+                    player.defense += 3;
+                    showMessage('+3 Defense!');
+                } else if (item.effect === 'maxhealth') {
+                    player.maxHealth += 20;
+                    player.health += 20;
+                    showMessage('+20 Max Health!');
+                }
+                
+                updateHUD();
+            } else {
+                showMessage('Not enough gold!');
+            }
+        }
+
+        function closeShop() {
+            shopDiv.classList.add('hidden');
+            generateDungeon();
+            updateHUD();
+            gameRunning = true;
+        }
+
+        function updateHUD() {
+            document.getElementById('healthBar').style.width = (player.health / player.maxHealth * 100) + '%';
+            document.getElementById('floor').textContent = floor;
+            document.getElementById('attack').textContent = player.attack;
+            document.getElementById('defense').textContent = player.defense;
+            document.getElementById('gold').textContent = player.gold;
+            document.getElementById('kills').textContent = kills;
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            dungeon.rooms.forEach(drawRoom);
+            loot.forEach(drawLoot);
+            enemies.forEach(drawEnemy);
+            drawPlayer();
+            drawParticles();
+
+            updatePlayer();
+            updateEnemies();
+            updateProjectiles();
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            document.getElementById('finalFloor').textContent = floor;
+            document.getElementById('finalKills').textContent = kills;
+            gameOverDiv.classList.remove('hidden');
+        }
+
+        // Controls
+        canvas.addEventListener('click', (e) => {
+            if (!gameRunning) return;
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+            attack();
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') player.keys.up = true;
+            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') player.keys.down = true;
+            if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') player.keys.left = true;
+            if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') player.keys.right = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') player.keys.up = false;
+            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') player.keys.down = false;
+            if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') player.keys.left = false;
+            if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') player.keys.right = false;
+        });
+    </script>
+</body>
+</html>

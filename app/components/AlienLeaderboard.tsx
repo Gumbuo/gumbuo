@@ -171,7 +171,10 @@ export default function AlienLeaderboard() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm rounded-3xl max-w-4xl w-full min-h-96">
+      <div style={{
+        borderRadius: '8px',
+        border: '2px solid #00ff9944'
+      }} className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm max-w-4xl w-full min-h-96">
         <div className="text-purple-400 text-xl">Loading Leaderboard...</div>
         <div className="text-purple-400 text-base">Fetching galactic data 🛸</div>
       </div>
@@ -179,13 +182,19 @@ export default function AlienLeaderboard() {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl rounded-3xl border border-purple-400/30">
+    <div style={{
+      borderRadius: '8px',
+      border: '2px solid #00ff9944'
+    }} className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl">
       <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '4rem'}}>
         <span className="text-purple-400">👽 Free GMB Airdrop 🛸</span>
       </h2>
 
       {/* Progress Bar */}
-      <div className="w-full bg-black/60 rounded-xl p-4">
+      <div style={{
+        borderRadius: '8px',
+        border: '2px solid #00ff9944'
+      }} className="w-full bg-black/60 p-4">
         <div className="flex justify-between items-center mb-2">
           <p className="text-purple-400 text-lg">
             📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
@@ -204,7 +213,10 @@ export default function AlienLeaderboard() {
 
       {/* User Status - Only show if registered */}
       {isConnected && address && isRegistered && (
-        <div className="w-full bg-black/60 rounded-xl p-4">
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="w-full bg-black/60 p-4">
           <div className="text-center">
             <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
             <p className="text-purple-400 text-base mt-1">Your Rank: <span className="text-2xl font-bold">#{userRank}</span></p>
@@ -219,7 +231,11 @@ export default function AlienLeaderboard() {
           onClick={handleRegister}
           onMouseEnter={() => leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
           disabled={leaderboard.length >= MAX_FIRST_TIMERS}
-          className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 rounded-xl ${
+          style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }}
+          className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 ${
             leaderboard.length >= MAX_FIRST_TIMERS
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
               : "bg-purple-500 text-white hover:bg-purple-600"
@@ -234,7 +250,10 @@ export default function AlienLeaderboard() {
       )}
 
       {/* Leaderboard Table */}
-      <div className="w-full bg-black/60 rounded-xl overflow-hidden">
+      <div style={{
+        borderRadius: '8px',
+        border: '2px solid #00ff9944'
+      }} className="w-full bg-black/60 overflow-hidden">
         <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-5 gap-2 font-bold text-purple-400">
           <div className="text-center">Rank</div>
           <div className="text-center">Wallet</div>
@@ -290,13 +309,19 @@ export default function AlienLeaderboard() {
       {/* Goal Reached Banner with Rewards */}
       {leaderboard.length >= MAX_FIRST_TIMERS && (
         <div className="w-full space-y-4">
-          <div className="w-full bg-black/60 rounded-xl p-6 text-center animate-pulse">
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="w-full bg-black/60 p-6 text-center animate-pulse">
             <p className="text-yellow-400 text-3xl font-bold">🎉 GOAL REACHED! 🎉</p>
             <p className="text-yellow-400 text-lg mt-2">All 50 spots filled! Check your rewards below! 👽</p>
           </div>
 
           {/* Rewards Section */}
-          <div className="w-full bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-xl p-6 border-2 border-yellow-400/50">
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="w-full bg-gradient-to-br from-purple-900/40 to-pink-900/40 p-6">
             <h3 className="text-yellow-400 text-3xl font-bold text-center mb-2">🎁 LEGENDARY AIRDROP REWARDS 🎁</h3>
             <p className="text-center text-purple-300 text-lg mb-6">Each wallet receives LEGENDARY rank status! 👑</p>
 
@@ -352,7 +377,10 @@ export default function AlienLeaderboard() {
       )}
 
       {/* Info Section */}
-      <div className="w-full text-purple-400 text-xs text-center max-w-2xl bg-black/60 p-4 rounded-xl">
+      <div style={{
+        borderRadius: '8px',
+        border: '2px solid #00ff9944'
+      }} className="w-full text-purple-400 text-xs text-center max-w-2xl bg-black/60 p-4">
         <p className="font-bold mb-2">ℹ️ Leaderboard Info</p>
         <p className="opacity-75">
           The first 50 wallets to register will receive an exclusive GMB token airdrop!
