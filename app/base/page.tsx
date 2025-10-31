@@ -86,13 +86,13 @@ export default function BasePage() {
         ) : (
           <iframe
             key={selectedGame}
-            src={games[selectedGame as keyof typeof games].src}
+            src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : games.maze.src}
             style={{
               width: '100%',
               height: '100%',
               border: 'none',
             }}
-            title={games[selectedGame as keyof typeof games].title}
+            title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : games.maze.title}
           />
         )}
       </div>
