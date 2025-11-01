@@ -203,7 +203,7 @@ export default function MazeLeaderboard() {
                   playSound("click");
                 }}
                 onMouseEnter={() => playSound("hover")}
-                className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-alien rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/50"
+                className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-alien rounded-3xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/50"
               >
                 {showAll ? (
                   <>⬆️ SHOW LESS</>
@@ -224,7 +224,7 @@ export default function MazeLeaderboard() {
             playSound("click");
           }}
           onMouseEnter={() => playSound("hover")}
-          className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-alien text-sm rounded-xl transition-all hover:scale-105"
+          className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-alien text-sm rounded-3xl transition-all hover:scale-105"
         >
           🔄 REFRESH
         </button>

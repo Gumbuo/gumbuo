@@ -18,6 +18,13 @@ interface OnlineUser {
 }
 
 const GlobalChat = () => {
+  // Hide chat if we're in an iframe to prevent duplicates
+  const [isInIframe, setIsInIframe] = useState(false);
+
+  useEffect(() => {
+    setIsInIframe(window.self !== window.top);
+  }, []);
+
   const { address, isConnected } = useAccount();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -264,6 +271,11 @@ const GlobalChat = () => {
         </div>
       </div>
     );
+  }
+
+  // Don't render chat if we're in an iframe (prevents duplicates when loaded in /base)
+  if (isInIframe) {
+    return null;
   }
 
   return (
