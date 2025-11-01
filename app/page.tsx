@@ -482,7 +482,6 @@ export default function MothershipPage() {
           top: 0;
           left: 0;
           animation: spaceFloat 60s linear infinite;
-          overflow: hidden;
         }
 
         @keyframes spaceFloat {
@@ -506,24 +505,25 @@ export default function MothershipPage() {
         .portal-floating {
           position: absolute;
           width: 100px;
-          height: 100px;
-          border-radius: 50%;
+          height: 140px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           cursor: pointer;
-          transition: all 0.3s;
-          animation: portalFloat 4s ease-in-out infinite;
-          border: 3px solid #00ffff;
-          box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
-          overflow: hidden;
-          background: rgba(0, 0, 0, 0.8);
+          transition: transform 0.3s;
+          animation: portalFloat 3s ease-in-out infinite;
         }
 
         @keyframes portalFloat {
-          0%, 100% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-25px) scale(1.08); }
+          0%, 100% {
+            transform: translateY(0px) scale(1);
+            filter: brightness(1);
+          }
+          50% {
+            transform: translateY(-30px) scale(1.05);
+            filter: brightness(1.2);
+          }
         }
 
         .portal-floating:hover {
@@ -535,15 +535,15 @@ export default function MothershipPage() {
         .portal-image {
           width: 100px;
           height: 100px;
-          max-width: 100px;
-          max-height: 100px;
-          object-fit: contain;
+          object-fit: cover;
           border-radius: 50%;
+          border: 3px solid #00ffff;
+          box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+          background: rgba(0, 0, 0, 0.9);
         }
 
         .portal-label {
-          position: absolute;
-          bottom: -28px;
+          margin-top: 8px;
           font-size: 0.75rem;
           font-weight: bold;
           text-transform: uppercase;
@@ -556,28 +556,30 @@ export default function MothershipPage() {
           white-space: nowrap;
           letter-spacing: 1px;
           box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+          display: inline-block;
+          width: auto;
         }
 
         .portal-floating.base {
-          top: 20%;
+          top: 15%;
           left: 20%;
           animation-delay: 0s;
         }
 
         .portal-floating.blast {
-          top: 20%;
+          top: 15%;
           right: 20%;
           animation-delay: 1s;
         }
 
         .portal-floating.abstract {
-          bottom: 20%;
+          bottom: 25%;
           left: 20%;
           animation-delay: 2s;
         }
 
         .portal-floating.arbitrum {
-          bottom: 20%;
+          bottom: 25%;
           right: 20%;
           animation-delay: 1.5s;
         }
