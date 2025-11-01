@@ -498,8 +498,8 @@ export default function MothershipPage() {
         /* Floating Blockchain Portals using PNG images */
         .portal-floating {
           position: absolute;
-          width: 150px;
-          height: 150px;
+          width: 120px;
+          height: 120px;
           border-radius: 50%;
           display: flex;
           flex-direction: column;
@@ -508,7 +508,7 @@ export default function MothershipPage() {
           cursor: pointer;
           transition: all 0.3s;
           animation: portalFloat 4s ease-in-out infinite;
-          border: 4px solid rgba(255, 255, 255, 0.4);
+          border: 3px solid rgba(255, 255, 255, 0.4);
           box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
           overflow: hidden;
         }
@@ -533,39 +533,40 @@ export default function MothershipPage() {
 
         .portal-label {
           position: absolute;
-          bottom: -35px;
-          font-size: 0.9rem;
+          bottom: -30px;
+          font-size: 0.75rem;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
           text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6);
-          background: rgba(0, 0, 0, 0.7);
-          padding: 5px 15px;
+          background: rgba(0, 0, 0, 0.8);
+          padding: 4px 12px;
           border-radius: 5px;
           border: 2px solid #00ffff;
+          white-space: nowrap;
         }
 
         .portal-floating.base {
-          top: 20%;
-          left: 15%;
+          top: 15%;
+          left: 10%;
           animation-delay: 0s;
         }
 
         .portal-floating.blast {
-          top: 25%;
-          right: 20%;
+          top: 15%;
+          right: 10%;
           animation-delay: 1s;
         }
 
         .portal-floating.abstract {
-          bottom: 25%;
-          left: 20%;
+          bottom: 15%;
+          left: 10%;
           animation-delay: 2s;
         }
 
         .portal-floating.arbitrum {
-          bottom: 20%;
-          right: 15%;
+          bottom: 15%;
+          right: 10%;
           animation-delay: 1.5s;
         }
 
@@ -805,8 +806,8 @@ export default function MothershipPage() {
 
         @media (max-width: 768px) {
           .control-btn { font-size: 0.7rem; padding: 10px 15px; }
-          .portal-floating { width: 100px; height: 100px; }
-          .portal-label { font-size: 0.7rem; }
+          .portal-floating { width: 80px; height: 80px; }
+          .portal-label { font-size: 0.6rem; bottom: -25px; padding: 3px 8px; }
         }
       `}</style>
     </>
