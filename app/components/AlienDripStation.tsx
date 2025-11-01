@@ -644,21 +644,39 @@ export default function AlienDripStation() {
               <div className="corner-glow corner-glow-tr"></div>
               <div className="corner-glow corner-glow-bl"></div>
               <div className="corner-glow corner-glow-br"></div>
-              <div className="flex justify-center gap-6 mb-2 relative z-10">
-            {/* Staking Action Button */}
+              <div className="flex justify-center gap-4 mb-6 relative z-10 flex-wrap">
+            {/* Staking Action Buttons */}
             {stakingData.isStaking ? (
-              <div className="flex gap-4">
+              <>
                 <button
                   onClick={handleClaimStakingRewards}
                   onMouseEnter={() => accumulatedRewards > 0 && !claimingStake && playSound('hover')}
                   disabled={accumulatedRewards <= 0 || claimingStake}
-                  className={`px-10 py-5 text-2xl font-bold tracking-wider transition-all duration-300 relative overflow-hidden transform hover:scale-110 shadow-2xl ${
-                    accumulatedRewards <= 0 || claimingStake
-                      ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-                      : "alien-button alien-button-gold alien-button-glow text-black animate-pulse"
-                  }`}
                   style={{
-                    boxShadow: accumulatedRewards > 0 ? '0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4)' : undefined
+                    padding: '12px 24px',
+                    background: accumulatedRewards > 0 && !claimingStake
+                      ? 'linear-gradient(135deg, #FFD700, #FFA500)'
+                      : 'rgba(128, 128, 128, 0.3)',
+                    color: accumulatedRewards > 0 && !claimingStake ? '#000' : '#666',
+                    border: `2px solid ${accumulatedRewards > 0 && !claimingStake ? '#FFD700' : '#666'}`,
+                    borderRadius: '8px',
+                    cursor: accumulatedRewards > 0 && !claimingStake ? 'pointer' : 'not-allowed',
+                    fontFamily: 'Orbitron, sans-serif',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    textTransform: 'uppercase',
+                    transition: 'all 0.3s ease',
+                    boxShadow: accumulatedRewards > 0 && !claimingStake
+                      ? '0 0 20px rgba(255, 215, 0, 0.5)'
+                      : 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (accumulatedRewards > 0 && !claimingStake) {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
                   }}
                 >
                   {claimingStake ? "💰 Claiming..." : accumulatedRewards > 0 ? `CLAIM ${accumulatedRewards} AP! 💰` : "Keep Staking! ⏱️"}
@@ -666,23 +684,60 @@ export default function AlienDripStation() {
                 <button
                   onClick={handleStopStaking}
                   onMouseEnter={() => playSound('hover')}
-                  className="px-8 py-5 text-xl font-bold tracking-wider alien-button alien-button-danger hover:scale-110 transition-all duration-300 shadow-xl"
+                  style={{
+                    padding: '12px 24px',
+                    background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
+                    color: '#fff',
+                    border: '2px solid #ff6b6b',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontFamily: 'Orbitron, sans-serif',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    textTransform: 'uppercase',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 0 20px rgba(255, 107, 107, 0.5)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
                 >
                   STOP STAKING ⛔
                 </button>
-              </div>
+              </>
             ) : (
               <button
                 onClick={handleStartStaking}
                 onMouseEnter={() => gmbAmount >= 100 && playSound('hover')}
                 disabled={gmbAmount < 100}
-                className={`px-12 py-5 text-2xl font-bold tracking-wider transition-all duration-300 relative overflow-hidden transform hover:scale-110 shadow-2xl ${
-                  gmbAmount < 100
-                    ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-                    : "alien-button alien-button-purple alien-button-glow text-white"
-                }`}
                 style={{
-                  boxShadow: gmbAmount >= 100 ? '0 0 30px rgba(138, 43, 226, 0.6), 0 0 60px rgba(138, 43, 226, 0.4)' : undefined
+                  padding: '12px 24px',
+                  background: gmbAmount >= 100
+                    ? 'linear-gradient(135deg, #9B59B6, #8e44ad)'
+                    : 'rgba(128, 128, 128, 0.3)',
+                  color: gmbAmount >= 100 ? '#fff' : '#666',
+                  border: `2px solid ${gmbAmount >= 100 ? '#9B59B6' : '#666'}`,
+                  borderRadius: '8px',
+                  cursor: gmbAmount >= 100 ? 'pointer' : 'not-allowed',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: gmbAmount >= 100
+                    ? '0 0 20px rgba(155, 89, 182, 0.5)'
+                    : 'none',
+                }}
+                onMouseEnter={(e) => {
+                  if (gmbAmount >= 100) {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
                 }}
               >
                 {gmbAmount < 100 ? "Need 100+ GMB to Stake" : "START STAKING 🔒"}
@@ -749,17 +804,27 @@ export default function AlienDripStation() {
                     </p>
                   </div>
 
-                  {/* Real-time Rewards */}
-                  <div className="glass-panel rounded-xl p-6 bg-yellow-500/10 border-2 border-yellow-500/30 relative overflow-hidden">
+                  {/* Real-time Rewards Counter */}
+                  <div style={{
+                    borderRadius: '8px',
+                    border: '2px solid #FFD70088'
+                  }} className="holographic-panel relative p-6 bg-yellow-500/10 overflow-hidden">
+                    <div className="corner-glow corner-glow-tl"></div>
+                    <div className="corner-glow corner-glow-tr"></div>
+                    <div className="corner-glow corner-glow-bl"></div>
+                    <div className="corner-glow corner-glow-br"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-yellow-500/20 to-yellow-500/0 animate-pulse"></div>
-                    <p className="text-yellow-400 text-center text-lg mb-2 relative z-10">💰 Accumulated Rewards</p>
-                    <p className="text-center text-6xl font-bold text-yellow-300 animate-pulse relative z-10" style={{
+                    <p className="text-yellow-400 text-center text-2xl mb-3 relative z-10 font-bold">💰 REAL-TIME REWARDS COUNTER 💰</p>
+                    <p className="text-center text-6xl font-bold text-yellow-300 animate-pulse relative z-10 mb-3" style={{
                       textShadow: '0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.5)'
                     }}>
                       {accumulatedRewards.toLocaleString()} AP
                     </p>
-                    <p className="text-center text-yellow-400 text-sm mt-2 relative z-10">
-                      Earning {currentStakingRewards?.apPerDay.toFixed(2) || 0} AP/day ({currentStakingRewards?.apPerHour.toFixed(2) || 0} AP/hr)
+                    <p className="text-center text-yellow-400 text-lg mt-2 relative z-10 font-bold">
+                      ⚡ Earning {currentStakingRewards?.apPerDay.toFixed(2) || 0} AP/day
+                    </p>
+                    <p className="text-center text-yellow-300 text-sm mt-1 relative z-10">
+                      ({currentStakingRewards?.apPerHour.toFixed(2) || 0} AP/hr)
                     </p>
                   </div>
                 </>
@@ -817,19 +882,37 @@ export default function AlienDripStation() {
           <div className="corner-glow corner-glow-tr"></div>
           <div className="corner-glow corner-glow-bl"></div>
           <div className="corner-glow corner-glow-br"></div>
-          <div className="flex justify-center gap-6 mb-2 relative z-10">
+          <div className="flex justify-center gap-4 mb-6 relative z-10 flex-wrap">
             {/* Daily Claim Button */}
             <button
               onClick={handleClaim}
               onMouseEnter={() => !hasClaimedToday && !claiming && currentTier && playSound('hover')}
               disabled={hasClaimedToday || claiming || !currentTier}
-              className={`px-12 py-5 text-2xl font-bold tracking-wider transition-all duration-300 relative overflow-hidden transform hover:scale-110 shadow-2xl ${
-                hasClaimedToday || claiming || !currentTier
-                  ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-                  : "alien-button alien-button-gold alien-button-glow text-black"
-              }`}
               style={{
-                boxShadow: !hasClaimedToday && currentTier ? '0 0 30px rgba(0, 255, 153, 0.6), 0 0 60px rgba(0, 255, 153, 0.4)' : undefined
+                padding: '12px 24px',
+                background: !hasClaimedToday && !claiming && currentTier
+                  ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
+                  : 'rgba(128, 128, 128, 0.3)',
+                color: !hasClaimedToday && !claiming && currentTier ? '#000' : '#666',
+                border: `2px solid ${!hasClaimedToday && !claiming && currentTier ? '#00ff99' : '#666'}`,
+                borderRadius: '8px',
+                cursor: !hasClaimedToday && !claiming && currentTier ? 'pointer' : 'not-allowed',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                textTransform: 'uppercase',
+                transition: 'all 0.3s ease',
+                boxShadow: !hasClaimedToday && !claiming && currentTier
+                  ? '0 0 20px rgba(0, 255, 153, 0.5)'
+                  : 'none',
+              }}
+              onMouseEnter={(e) => {
+                if (!hasClaimedToday && !claiming && currentTier) {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
