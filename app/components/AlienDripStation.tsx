@@ -522,65 +522,113 @@ export default function AlienDripStation() {
         <span className="animate-glow">💧 Alien Drip Station 💧</span>
       </h2>
 
-      {/* Tab Navigation - Symmetrical Grid */}
-      <div className="grid grid-cols-3 gap-4 relative z-10 w-full">
-        <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
-        }} className="holographic-panel relative">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <button
-            onClick={() => { setActiveTab("staking"); playSound('click'); }}
-            className={`w-full px-8 py-4 text-xl font-bold tracking-wider transition-all duration-300 relative z-10 ${
-              activeTab === "staking"
-                ? "text-purple-400 scale-105"
-                : "text-gray-400 hover:text-white hover:scale-105"
-            }`}
-          >
-            🔒 STAKING
-          </button>
-        </div>
-        <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
-        }} className="holographic-panel relative">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <button
-            onClick={() => { setActiveTab("faucet"); playSound('click'); }}
-            className={`w-full px-8 py-4 text-xl font-bold tracking-wider transition-all duration-300 relative z-10 ${
-              activeTab === "faucet"
-                ? "text-green-400 scale-105"
-                : "text-gray-400 hover:text-white hover:scale-105"
-            }`}
-          >
-            💧 FAUCET/DRIP
-          </button>
-        </div>
-        <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
-        }} className="holographic-panel relative">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <button
-            onClick={() => { setActiveTab("nft"); playSound('click'); }}
-            className={`w-full px-8 py-4 text-xl font-bold tracking-wider transition-all duration-300 relative z-10 ${
-              activeTab === "nft"
-                ? "text-red-400 scale-105"
-                : "text-gray-400 hover:text-white hover:scale-105"
-            }`}
-          >
-            🖼️ NFT STAKING
-          </button>
-        </div>
+      {/* Tab Navigation - Horizontal like portal pages */}
+      <div className="flex justify-center gap-4 relative z-10 w-full flex-wrap">
+        <button
+          onClick={() => { setActiveTab("staking"); playSound('click'); }}
+          style={{
+            padding: '12px 24px',
+            background: activeTab === "staking"
+              ? 'linear-gradient(135deg, #9B59B6, #8e44ad)'
+              : 'rgba(155, 89, 182, 0.1)',
+            color: activeTab === "staking" ? '#fff' : '#9B59B6',
+            border: `2px solid ${activeTab === "staking" ? '#9B59B6' : '#9B59B644'}`,
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontFamily: 'Orbitron, sans-serif',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            textTransform: 'uppercase',
+            transition: 'all 0.3s ease',
+            boxShadow: activeTab === "staking"
+              ? '0 0 20px rgba(155, 89, 182, 0.5)'
+              : 'none',
+          }}
+          onMouseEnter={(e) => {
+            if (activeTab !== "staking") {
+              e.currentTarget.style.background = 'rgba(155, 89, 182, 0.2)';
+              e.currentTarget.style.borderColor = '#9B59B6';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeTab !== "staking") {
+              e.currentTarget.style.background = 'rgba(155, 89, 182, 0.1)';
+              e.currentTarget.style.borderColor = '#9B59B644';
+            }
+          }}
+        >
+          🔒 STAKING
+        </button>
+        <button
+          onClick={() => { setActiveTab("faucet"); playSound('click'); }}
+          style={{
+            padding: '12px 24px',
+            background: activeTab === "faucet"
+              ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
+              : 'rgba(0, 255, 153, 0.1)',
+            color: activeTab === "faucet" ? '#000' : '#00ff99',
+            border: `2px solid ${activeTab === "faucet" ? '#00ff99' : '#00ff9944'}`,
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontFamily: 'Orbitron, sans-serif',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            textTransform: 'uppercase',
+            transition: 'all 0.3s ease',
+            boxShadow: activeTab === "faucet"
+              ? '0 0 20px rgba(0, 255, 153, 0.5)'
+              : 'none',
+          }}
+          onMouseEnter={(e) => {
+            if (activeTab !== "faucet") {
+              e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
+              e.currentTarget.style.borderColor = '#00ff99';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeTab !== "faucet") {
+              e.currentTarget.style.background = 'rgba(0, 255, 153, 0.1)';
+              e.currentTarget.style.borderColor = '#00ff9944';
+            }
+          }}
+        >
+          💧 FAUCET/DRIP
+        </button>
+        <button
+          onClick={() => { setActiveTab("nft"); playSound('click'); }}
+          style={{
+            padding: '12px 24px',
+            background: activeTab === "nft"
+              ? 'linear-gradient(135deg, #ff6b6b, #ee5a52)'
+              : 'rgba(255, 107, 107, 0.1)',
+            color: activeTab === "nft" ? '#fff' : '#ff6b6b',
+            border: `2px solid ${activeTab === "nft" ? '#ff6b6b' : '#ff6b6b44'}`,
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontFamily: 'Orbitron, sans-serif',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            textTransform: 'uppercase',
+            transition: 'all 0.3s ease',
+            boxShadow: activeTab === "nft"
+              ? '0 0 20px rgba(255, 107, 107, 0.5)'
+              : 'none',
+          }}
+          onMouseEnter={(e) => {
+            if (activeTab !== "nft") {
+              e.currentTarget.style.background = 'rgba(255, 107, 107, 0.2)';
+              e.currentTarget.style.borderColor = '#ff6b6b';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeTab !== "nft") {
+              e.currentTarget.style.background = 'rgba(255, 107, 107, 0.1)';
+              e.currentTarget.style.borderColor = '#ff6b6b44';
+            }
+          }}
+        >
+          🖼️ NFT STAKING
+        </button>
       </div>
 
       {/* Tab Content */}

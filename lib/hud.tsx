@@ -63,6 +63,31 @@ export function AlienHUD() {
     }
   }, [address, getUserBalance]);
 
+  // Add token to MetaMask
+  const addTokenToMetaMask = async (tokenAddress: string, symbol: string, decimals: number, chainName: string) => {
+    try {
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        await (window as any).ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: tokenAddress,
+              symbol: symbol,
+              decimals: decimals,
+            },
+          },
+        });
+        alert(`✅ ${symbol} token on ${chainName} added to MetaMask!`);
+      } else {
+        alert('MetaMask is not installed');
+      }
+    } catch (error) {
+      console.error('Error adding token:', error);
+      alert('Failed to add token to MetaMask');
+    }
+  };
+
   if (!isConnected) {
     return (
       <div style={{
@@ -156,6 +181,22 @@ export function AlienHUD() {
                 <span className="text-3xl font-bold holographic-text font-alien">{alienPoints.toLocaleString()}</span>
               </p>
               <p className="text-xs text-gray-500 text-right mt-1">AP 👽</p>
+            </div>
+
+            {/* Add Token Buttons */}
+            <div className="mt-4 pt-3 border-t border-cyan-500/30 flex flex-col items-center space-y-2">
+              <button
+                onClick={() => addTokenToMetaMask(GMB_TOKEN_ADDRESS_BASE, 'GMB', 18, 'Base')}
+                className="w-full px-4 py-2 text-sm font-bold tracking-wider alien-button alien-button-purple text-white rounded-lg transition-all duration-300 hover:scale-105"
+              >
+                + Add GMB (Base)
+              </button>
+              <button
+                onClick={() => addTokenToMetaMask(GMB_TOKEN_ADDRESS_ABSTRACT, 'GMB', 18, 'Abstract')}
+                className="w-full px-4 py-2 text-sm font-bold tracking-wider alien-button alien-button-gold text-black rounded-lg transition-all duration-300 hover:scale-105"
+              >
+                + Add GMB (Abstract)
+              </button>
             </div>
           </div>
         )}
