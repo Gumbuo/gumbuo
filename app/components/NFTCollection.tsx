@@ -180,18 +180,18 @@ export default function NFTCollection({ onSelectNFT }: { onSelectNFT?: (tokenId:
             refetchBalance();
             playSound('click');
           }}
-          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all text-sm"
+          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-3xl transition-all text-sm"
         >
           🔄 Refresh
         </button>
       </div>
 
       {isLoading ? (
-        <div className="bg-black/40 rounded-xl p-8 border-2 border-dashed border-cyan-600 text-center">
+        <div className="bg-black/40 rounded-3xl p-8 border-2 border-dashed border-cyan-600 text-center">
           <p className="text-cyan-400 text-lg animate-pulse">⏳ Loading your fighters...</p>
         </div>
       ) : nfts.length === 0 ? (
-        <div className="bg-black/40 rounded-xl p-8 border-2 border-dashed border-gray-600 text-center">
+        <div className="bg-black/40 rounded-3xl p-8 border-2 border-dashed border-gray-600 text-center">
           <p className="text-gray-400 text-lg">No fighters yet!</p>
           <p className="text-gray-500 text-sm mt-2">Mint some fighters to get started</p>
         </div>
@@ -203,13 +203,13 @@ export default function NFTCollection({ onSelectNFT }: { onSelectNFT?: (tokenId:
               draggable
               onDragStart={(e) => handleDragStart(e, nft.tokenId)}
               onClick={() => handleClick(nft.tokenId)}
-              className={`cursor-grab active:cursor-grabbing p-3 rounded-xl border-2 transition-all hover:scale-105 ${
+              className={`cursor-grab active:cursor-grabbing p-3 rounded-3xl border-2 transition-all hover:scale-105 ${
                 selectedTokenId === nft.tokenId
                   ? 'border-cyan-400 bg-cyan-900/50 shadow-lg shadow-cyan-500/50'
                   : 'border-purple-500/50 bg-black/40 hover:border-purple-400'
               }`}
             >
-              <div className="aspect-square rounded-lg overflow-hidden mb-2 bg-black/30">
+              <div className="aspect-square rounded-3xl overflow-hidden mb-2 bg-black/30">
                 <img
                   src={nft.imageUrl}
                   alt={`${nft.alienType} #${nft.tokenId}`}
@@ -228,7 +228,7 @@ export default function NFTCollection({ onSelectNFT }: { onSelectNFT?: (tokenId:
         </div>
       )}
 
-      <div className="mt-4 p-3 bg-purple-900/20 border border-purple-500/30 rounded-lg text-center">
+      <div className="mt-4 p-3 bg-purple-900/20 border border-purple-500/30 rounded-3xl text-center">
         <p className="text-sm text-purple-300">
           💡 <strong>Tip:</strong> Drag & drop a fighter into the battle arena, or click to select!
         </p>

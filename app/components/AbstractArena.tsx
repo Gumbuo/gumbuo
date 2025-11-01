@@ -326,11 +326,11 @@ export default function AbstractArena() {
 
       {/* Contract Info */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-black/40 p-6 border border-cyan-500/30" style={{ borderRadius: '40px' }}>
+        <div className="bg-black/40 p-6 border border-cyan-500/30 text-center" style={{ borderRadius: '40px' }}>
           <p className="text-cyan-400 font-bold mb-2">🎮 Total Battles</p>
           <p className="text-white text-3xl font-bold">{totalBattles}</p>
         </div>
-        <div className="bg-black/40 p-6 border border-purple-500/30" style={{ borderRadius: '40px' }}>
+        <div className="bg-black/40 p-6 border border-purple-500/30 text-center" style={{ borderRadius: '40px' }}>
           <p className="text-purple-400 font-bold mb-2">👽 Your Fighters</p>
           <p className="text-white text-3xl font-bold">{nftBalance}</p>
           {nftBalance > 0 && (
@@ -349,7 +349,7 @@ export default function AbstractArena() {
             🔄 Refresh
           </button>
         </div>
-        <div className="bg-black/40 p-6 border border-orange-500/30" style={{ borderRadius: '40px' }}>
+        <div className="bg-black/40 p-6 border border-orange-500/30 text-center" style={{ borderRadius: '40px' }}>
           <p className="text-orange-400 font-bold mb-2">⏳ Queue Status</p>
           <p className="text-white text-xl font-bold">
             {hasQueuedFighter ? '🔴 Fighter Waiting' : '🟢 Empty'}
@@ -358,7 +358,7 @@ export default function AbstractArena() {
       </div>
 
       {/* Mint Section */}
-      <div style={{borderRadius: '24px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
+      <div style={{borderRadius: '40px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
@@ -407,7 +407,7 @@ export default function AbstractArena() {
           </div>
 
           {/* Debug Info */}
-          <div className="mt-4 p-4 bg-black/50 rounded text-xs text-gray-400 font-mono">
+          <div className="mt-4 p-4 bg-black/50 rounded-3xl text-xs text-gray-400 font-mono">
             <p>Connected: {isConnected ? '✅' : '❌'}</p>
             <p>Address: {address || 'Not connected'}</p>
             <p>Chain ID (useChainId): {chainId} {chainId === 11124 ? '(Testnet ✅)' : chainId === 2741 ? '(Mainnet ⚠️ WRONG!)' : '(Unknown)'}</p>
@@ -417,12 +417,12 @@ export default function AbstractArena() {
             <p>Minting: {isMinting ? 'Yes' : 'No'}</p>
             <p>Button Disabled: {(isMinting || !isConnected || !isCorrectNetwork) ? 'YES' : 'NO'}</p>
             {chainId === 2741 && (
-              <div className="mt-3 p-2 bg-red-900/50 border border-red-500 rounded">
+              <div className="mt-3 p-2 bg-red-900/50 border border-red-500 rounded-3xl">
                 <p className="text-red-400 font-bold mb-2">⚠️ WRONG NETWORK!</p>
                 <p className="text-white mb-2">You're on Abstract Mainnet but contracts are on Testnet!</p>
                 <button
                   onClick={handleSwitchNetwork}
-                  className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded transition-all"
+                  className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-3xl transition-all"
                 >
                   🔄 Switch to Abstract Testnet
                 </button>
@@ -433,7 +433,7 @@ export default function AbstractArena() {
       </div>
 
       {/* NFT Collection */}
-      <div style={{borderRadius: '24px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
+      <div style={{borderRadius: '40px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
@@ -443,7 +443,7 @@ export default function AbstractArena() {
 
       {/* Arena Queue */}
       <div
-        style={{borderRadius: '24px', border: '2px solid #00ff9944'}}
+        style={{borderRadius: '40px', border: '2px solid #00ff9944'}}
         className="w-full holographic-panel glass-panel p-8"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
