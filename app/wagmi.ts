@@ -61,11 +61,11 @@ export const config = getDefaultConfig({
     arbitrum,
   ],
   transports: {
-    [base.id]: http(),
+    [base.id]: http('https://mainnet.base.org'),
     [abstractMainnet.id]: http('https://api.mainnet.abs.xyz'),
     [abstractTestnet.id]: http('https://api.testnet.abs.xyz'),
-    [blast.id]: http(),
-    [arbitrum.id]: http(),
+    [blast.id]: http('https://rpc.blast.io'),
+    [arbitrum.id]: http('https://arb1.arbitrum.io/rpc'),
   },
   ssr: false,
 });
