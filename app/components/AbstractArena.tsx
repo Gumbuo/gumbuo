@@ -346,9 +346,9 @@ export default function AbstractArena() {
             }}
             style={{
               padding: '8px 16px',
-              background: 'linear-gradient(135deg, #a855f7, #9333ea)',
+              background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
               color: '#fff',
-              border: '2px solid #a855f7',
+              border: '2px solid #3b82f6',
               borderRadius: '8px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
@@ -356,16 +356,16 @@ export default function AbstractArena() {
               fontSize: '12px',
               textTransform: 'uppercase',
               transition: 'all 0.3s ease',
-              boxShadow: '0 0 15px rgba(168, 85, 247, 0.5)',
+              boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)',
               marginTop: '8px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #7e22ce)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(168, 85, 247, 0.7)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.7)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #9333ea)';
-              e.currentTarget.style.boxShadow = '0 0 15px rgba(168, 85, 247, 0.5)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.5)';
             }}
           >
             🔄 Refresh
@@ -426,11 +426,11 @@ export default function AbstractArena() {
                 padding: '16px 32px',
                 background: isMinting || !isConnected || !isCorrectNetwork
                   ? 'rgba(107, 114, 128, 0.5)'
-                  : 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
+                  : 'linear-gradient(135deg, #3b82f6, #2563eb)',
                 color: '#fff',
                 border: isMinting || !isConnected || !isCorrectNetwork
                   ? '2px solid rgba(107, 114, 128, 0.5)'
-                  : '2px solid #06b6d4',
+                  : '2px solid #3b82f6',
                 borderRadius: '8px',
                 cursor: isMinting || !isConnected || !isCorrectNetwork ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
@@ -440,19 +440,19 @@ export default function AbstractArena() {
                 transition: 'all 0.3s ease',
                 boxShadow: isMinting || !isConnected || !isCorrectNetwork
                   ? 'none'
-                  : '0 0 20px rgba(6, 182, 212, 0.5)',
+                  : '0 0 20px rgba(59, 130, 246, 0.5)',
                 opacity: isMinting || !isConnected || !isCorrectNetwork ? 0.5 : 1
               }}
               onMouseEnter={(e) => {
                 if (!isMinting && isConnected && isCorrectNetwork) {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #7c3aed)';
-                  e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.7)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.7)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isMinting && isConnected && isCorrectNetwork) {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #8b5cf6)';
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                 }
               }}
             >
@@ -579,11 +579,11 @@ export default function AbstractArena() {
                       padding: '16px 32px',
                       background: isEntering || nftBalance === 0
                         ? 'rgba(107, 114, 128, 0.5)'
-                        : 'linear-gradient(135deg, #dc2626, #f97316)',
+                        : 'linear-gradient(135deg, #3b82f6, #2563eb)',
                       color: '#fff',
                       border: isEntering || nftBalance === 0
                         ? '2px solid rgba(107, 114, 128, 0.5)'
-                        : '2px solid #dc2626',
+                        : '2px solid #3b82f6',
                       borderRadius: '8px',
                       cursor: isEntering || nftBalance === 0 ? 'not-allowed' : 'pointer',
                       fontFamily: 'Orbitron, sans-serif',
@@ -593,19 +593,19 @@ export default function AbstractArena() {
                       transition: 'all 0.3s ease',
                       boxShadow: isEntering || nftBalance === 0
                         ? 'none'
-                        : '0 0 20px rgba(220, 38, 38, 0.5)',
+                        : '0 0 20px rgba(59, 130, 246, 0.5)',
                       opacity: isEntering || nftBalance === 0 ? 0.5 : 1
                     }}
                     onMouseEnter={(e) => {
                       if (!isEntering && nftBalance > 0) {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #991b1b, #ea580c)';
-                        e.currentTarget.style.boxShadow = '0 0 30px rgba(220, 38, 38, 0.7)';
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                        e.currentTarget.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.7)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isEntering && nftBalance > 0) {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #f97316)';
-                        e.currentTarget.style.boxShadow = '0 0 20px rgba(220, 38, 38, 0.5)';
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                        e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                       }
                     }}
                   >
@@ -633,11 +633,11 @@ export default function AbstractArena() {
                   padding: '16px 32px',
                   background: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
                     ? 'rgba(107, 114, 128, 0.5)'
-                    : 'linear-gradient(135deg, #a855f7, #ec4899)',
+                    : 'linear-gradient(135deg, #3b82f6, #2563eb)',
                   color: '#fff',
                   border: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
                     ? '2px solid rgba(107, 114, 128, 0.5)'
-                    : '2px solid #a855f7',
+                    : '2px solid #3b82f6',
                   borderRadius: '8px',
                   cursor: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null) ? 'not-allowed' : 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
@@ -647,19 +647,19 @@ export default function AbstractArena() {
                   transition: 'all 0.3s ease',
                   boxShadow: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
                     ? 'none'
-                    : '0 0 20px rgba(168, 85, 247, 0.5)',
+                    : '0 0 20px rgba(59, 130, 246, 0.5)',
                   opacity: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null) ? 0.5 : 1
                 }}
                 onMouseEnter={(e) => {
                   if (!isEntering && nftBalance > 0 && isConnected && isCorrectNetwork && selectedNFTTokenId !== null) {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #db2777)';
-                    e.currentTarget.style.boxShadow = '0 0 30px rgba(168, 85, 247, 0.7)';
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                    e.currentTarget.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.7)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isEntering && nftBalance > 0 && isConnected && isCorrectNetwork && selectedNFTTokenId !== null) {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #ec4899)';
-                    e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                    e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                   }
                 }}
               >

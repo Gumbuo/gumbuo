@@ -239,7 +239,7 @@ export default function AbstractActivityFeed() {
                   padding: '12px 24px',
                   background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
                   color: '#fff',
-                  border: '2px solid #06b6d4',
+                  border: '2px solid #3b82f6',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
@@ -247,15 +247,15 @@ export default function AbstractActivityFeed() {
                   fontSize: '14px',
                   textTransform: 'uppercase',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 0 20px rgba(6, 182, 212, 0.5)'
+                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #2563eb)';
-                  e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.7)';
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.7)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #3b82f6)';
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                 }}
               >
                 🔍 View All on Block Explorer

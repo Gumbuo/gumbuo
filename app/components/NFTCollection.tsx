@@ -182,9 +182,9 @@ export default function NFTCollection({ onSelectNFT }: { onSelectNFT?: (tokenId:
           }}
           style={{
             padding: '8px 16px',
-            background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+            background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
             color: '#fff',
-            border: '2px solid #06b6d4',
+            border: '2px solid #3b82f6',
             borderRadius: '8px',
             cursor: 'pointer',
             fontFamily: 'Orbitron, sans-serif',
@@ -192,15 +192,15 @@ export default function NFTCollection({ onSelectNFT }: { onSelectNFT?: (tokenId:
             fontSize: '12px',
             textTransform: 'uppercase',
             transition: 'all 0.3s ease',
-            boxShadow: '0 0 15px rgba(6, 182, 212, 0.5)'
+            boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #0e7490)';
-            e.currentTarget.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.7)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+            e.currentTarget.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.7)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
-            e.currentTarget.style.boxShadow = '0 0 15px rgba(6, 182, 212, 0.5)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+            e.currentTarget.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.5)';
           }}
         >
           🔄 Refresh

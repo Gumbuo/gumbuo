@@ -172,11 +172,11 @@ export default function AlienBadgeMinter() {
                       width: '100%',
                       padding: '12px 24px',
                       background: canMintBadge && !minting
-                        ? `linear-gradient(135deg, ${badge.color.includes('green') ? '#22c55e, #16a34a' : badge.color.includes('blue') ? '#06b6d4, #0891b2' : badge.color.includes('purple') ? '#a855f7, #9333ea' : '#f59e0b, #d97706'})`
+                        ? `linear-gradient(135deg, ${badge.color.includes('green') ? '#3b82f6, #2563eb' : badge.color.includes('blue') ? '#3b82f6, #2563eb' : badge.color.includes('purple') ? '#3b82f6, #2563eb' : '#3b82f6, #2563eb'})`
                         : 'rgba(107, 114, 128, 0.5)',
                       color: '#fff',
                       border: canMintBadge && !minting
-                        ? `2px solid ${badge.color.includes('green') ? '#22c55e' : badge.color.includes('blue') ? '#06b6d4' : badge.color.includes('purple') ? '#a855f7' : '#f59e0b'}`
+                        ? `2px solid ${badge.color.includes('green') ? '#3b82f6' : badge.color.includes('blue') ? '#3b82f6' : badge.color.includes('purple') ? '#3b82f6' : '#3b82f6'}`
                         : '2px solid rgba(107, 114, 128, 0.5)',
                       borderRadius: '8px',
                       cursor: canMintBadge && !minting ? 'pointer' : 'not-allowed',
@@ -186,7 +186,7 @@ export default function AlienBadgeMinter() {
                       textTransform: 'uppercase',
                       transition: 'all 0.3s ease',
                       boxShadow: canMintBadge && !minting
-                        ? `0 0 20px ${badge.color.includes('green') ? 'rgba(34, 197, 94, 0.5)' : badge.color.includes('blue') ? 'rgba(6, 182, 212, 0.5)' : badge.color.includes('purple') ? 'rgba(168, 85, 247, 0.5)' : 'rgba(245, 158, 11, 0.5)'}`
+                        ? `0 0 20px ${badge.color.includes('green') ? 'rgba(59, 130, 246, 0.5)' : badge.color.includes('blue') ? 'rgba(59, 130, 246, 0.5)' : badge.color.includes('purple') ? 'rgba(59, 130, 246, 0.5)' : 'rgba(59, 130, 246, 0.5)'}`
                         : 'none',
                       opacity: canMintBadge && !minting ? 1 : 0.5
                     }}

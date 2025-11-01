@@ -151,9 +151,9 @@ export default function AbstractXPDashboard() {
             style={{
               width: '100%',
               padding: '16px 32px',
-              background: 'linear-gradient(135deg, #a855f7, #ec4899)',
+              background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
               color: '#fff',
-              border: '2px solid #a855f7',
+              border: '2px solid #3b82f6',
               borderRadius: '8px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
@@ -161,15 +161,15 @@ export default function AbstractXPDashboard() {
               fontSize: '16px',
               textTransform: 'uppercase',
               transition: 'all 0.3s ease',
-              boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)'
+              boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #db2777)';
-              e.currentTarget.style.boxShadow = '0 0 30px rgba(168, 85, 247, 0.7)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+              e.currentTarget.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.7)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #ec4899)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
             }}
           >
             🎖️ View Official Abstract XP & Badges

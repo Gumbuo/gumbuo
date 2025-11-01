@@ -695,11 +695,11 @@ export default function GumbuoBoss() {
               style={{
                 padding: '32px',
                 background: selectedAttack === 'normal'
-                  ? 'linear-gradient(135deg, #06b6d4, #0891b2)'
+                  ? 'linear-gradient(135deg, #3b82f6, #2563eb)'
                   : 'rgba(107, 114, 128, 0.5)',
                 color: '#fff',
                 border: selectedAttack === 'normal'
-                  ? '2px solid #06b6d4'
+                  ? '2px solid #3b82f6'
                   : '2px solid rgba(107, 114, 128, 0.5)',
                 borderRadius: '8px',
                 cursor: 'pointer',
@@ -707,15 +707,15 @@ export default function GumbuoBoss() {
                 fontWeight: 'bold',
                 transition: 'all 0.3s ease',
                 boxShadow: selectedAttack === 'normal'
-                  ? '0 0 30px rgba(6, 182, 212, 0.7)'
-                  : '0 0 10px rgba(6, 182, 212, 0.3)',
+                  ? '0 0 30px rgba(59, 130, 246, 0.7)'
+                  : '0 0 10px rgba(59, 130, 246, 0.3)',
                 transform: selectedAttack === 'normal' ? 'scale(1.05)' : 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 if (selectedAttack !== 'normal') {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
-                  e.currentTarget.style.border = '2px solid #06b6d4';
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.border = '2px solid #3b82f6';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                   e.currentTarget.style.transform = 'scale(1.02)';
                 }
               }}
@@ -723,7 +723,7 @@ export default function GumbuoBoss() {
                 if (selectedAttack !== 'normal') {
                   e.currentTarget.style.background = 'rgba(107, 114, 128, 0.5)';
                   e.currentTarget.style.border = '2px solid rgba(107, 114, 128, 0.5)';
-                  e.currentTarget.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
                   e.currentTarget.style.transform = 'scale(1)';
                 }
               }}
@@ -748,13 +748,13 @@ export default function GumbuoBoss() {
                 background: powerCooldown > 0
                   ? 'rgba(107, 114, 128, 0.3)'
                   : selectedAttack === 'power'
-                  ? 'linear-gradient(135deg, #a855f7, #9333ea)'
+                  ? 'linear-gradient(135deg, #3b82f6, #2563eb)'
                   : 'rgba(107, 114, 128, 0.5)',
                 color: '#fff',
                 border: powerCooldown > 0
                   ? '2px solid rgba(107, 114, 128, 0.3)'
                   : selectedAttack === 'power'
-                  ? '2px solid #a855f7'
+                  ? '2px solid #3b82f6'
                   : '2px solid rgba(107, 114, 128, 0.5)',
                 borderRadius: '8px',
                 cursor: powerCooldown > 0 ? 'not-allowed' : 'pointer',
@@ -764,16 +764,16 @@ export default function GumbuoBoss() {
                 boxShadow: powerCooldown > 0
                   ? 'none'
                   : selectedAttack === 'power'
-                  ? '0 0 30px rgba(168, 85, 247, 0.7)'
-                  : '0 0 10px rgba(168, 85, 247, 0.3)',
+                  ? '0 0 30px rgba(59, 130, 246, 0.7)'
+                  : '0 0 10px rgba(59, 130, 246, 0.3)',
                 opacity: powerCooldown > 0 ? 0.5 : 1,
                 transform: selectedAttack === 'power' ? 'scale(1.05)' : 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 if (powerCooldown === 0 && selectedAttack !== 'power') {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #9333ea)';
-                  e.currentTarget.style.border = '2px solid #a855f7';
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.border = '2px solid #3b82f6';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                   e.currentTarget.style.transform = 'scale(1.02)';
                 }
               }}
@@ -781,7 +781,7 @@ export default function GumbuoBoss() {
                 if (powerCooldown === 0 && selectedAttack !== 'power') {
                   e.currentTarget.style.background = 'rgba(107, 114, 128, 0.5)';
                   e.currentTarget.style.border = '2px solid rgba(107, 114, 128, 0.5)';
-                  e.currentTarget.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
                   e.currentTarget.style.transform = 'scale(1)';
                 }
               }}
@@ -811,13 +811,13 @@ export default function GumbuoBoss() {
                 background: ultimateCooldown > 0
                   ? 'rgba(107, 114, 128, 0.3)'
                   : selectedAttack === 'ultimate'
-                  ? 'linear-gradient(135deg, #f59e0b, #d97706)'
+                  ? 'linear-gradient(135deg, #3b82f6, #2563eb)'
                   : 'rgba(107, 114, 128, 0.5)',
                 color: '#fff',
                 border: ultimateCooldown > 0
                   ? '2px solid rgba(107, 114, 128, 0.3)'
                   : selectedAttack === 'ultimate'
-                  ? '2px solid #f59e0b'
+                  ? '2px solid #3b82f6'
                   : '2px solid rgba(107, 114, 128, 0.5)',
                 borderRadius: '8px',
                 cursor: ultimateCooldown > 0 ? 'not-allowed' : 'pointer',
@@ -827,16 +827,16 @@ export default function GumbuoBoss() {
                 boxShadow: ultimateCooldown > 0
                   ? 'none'
                   : selectedAttack === 'ultimate'
-                  ? '0 0 30px rgba(245, 158, 11, 0.7)'
-                  : '0 0 10px rgba(245, 158, 11, 0.3)',
+                  ? '0 0 30px rgba(59, 130, 246, 0.7)'
+                  : '0 0 10px rgba(59, 130, 246, 0.3)',
                 opacity: ultimateCooldown > 0 ? 0.5 : 1,
                 transform: selectedAttack === 'ultimate' ? 'scale(1.05)' : 'scale(1)'
               }}
               onMouseEnter={(e) => {
                 if (ultimateCooldown === 0 && selectedAttack !== 'ultimate') {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-                  e.currentTarget.style.border = '2px solid #f59e0b';
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.border = '2px solid #3b82f6';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
                   e.currentTarget.style.transform = 'scale(1.02)';
                 }
               }}
@@ -844,7 +844,7 @@ export default function GumbuoBoss() {
                 if (ultimateCooldown === 0 && selectedAttack !== 'ultimate') {
                   e.currentTarget.style.background = 'rgba(107, 114, 128, 0.5)';
                   e.currentTarget.style.border = '2px solid rgba(107, 114, 128, 0.5)';
-                  e.currentTarget.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
                   e.currentTarget.style.transform = 'scale(1)';
                 }
               }}
@@ -872,9 +872,9 @@ export default function GumbuoBoss() {
                 }}
                 style={{
                   padding: '8px 16px',
-                  background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
                   color: '#fff',
-                  border: '2px solid #06b6d4',
+                  border: '2px solid #3b82f6',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
@@ -882,15 +882,15 @@ export default function GumbuoBoss() {
                   fontSize: '12px',
                   textTransform: 'uppercase',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 0 15px rgba(6, 182, 212, 0.5)'
+                  boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #0e7490)';
-                  e.currentTarget.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.7)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.7)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
-                  e.currentTarget.style.boxShadow = '0 0 15px rgba(6, 182, 212, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.5)';
                 }}
               >
                 ⬆️ Upgrade Normal ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
@@ -922,9 +922,9 @@ export default function GumbuoBoss() {
                 }}
                 style={{
                   padding: '8px 16px',
-                  background: 'linear-gradient(135deg, #a855f7, #9333ea)',
+                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
                   color: '#fff',
-                  border: '2px solid #a855f7',
+                  border: '2px solid #3b82f6',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
@@ -932,15 +932,15 @@ export default function GumbuoBoss() {
                   fontSize: '12px',
                   textTransform: 'uppercase',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 0 15px rgba(168, 85, 247, 0.5)'
+                  boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #7e22ce)';
-                  e.currentTarget.style.boxShadow = '0 0 25px rgba(168, 85, 247, 0.7)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.7)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #9333ea)';
-                  e.currentTarget.style.boxShadow = '0 0 15px rgba(168, 85, 247, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.5)';
                 }}
               >
                 ⬆️ Upgrade Power ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
@@ -972,9 +972,9 @@ export default function GumbuoBoss() {
                 }}
                 style={{
                   padding: '8px 16px',
-                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
                   color: '#fff',
-                  border: '2px solid #f59e0b',
+                  border: '2px solid #3b82f6',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
@@ -982,15 +982,15 @@ export default function GumbuoBoss() {
                   fontSize: '12px',
                   textTransform: 'uppercase',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)'
+                  boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #d97706, #b45309)';
-                  e.currentTarget.style.boxShadow = '0 0 25px rgba(245, 158, 11, 0.7)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.7)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-                  e.currentTarget.style.boxShadow = '0 0 15px rgba(245, 158, 11, 0.5)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.5)';
                 }}
               >
                 ⬆️ Upgrade Cosmic ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
@@ -1084,7 +1084,7 @@ export default function GumbuoBoss() {
                 <div style={{
                   flex: 1,
                   textAlign: 'center',
-                  background: 'rgba(168, 85, 247, 0.2)',
+                  background: 'rgba(59, 130, 246, 0.2)',
                   borderRadius: '8px',
                   border: '2px solid #00ff9944',
                   padding: '16px'
