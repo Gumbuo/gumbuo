@@ -72,26 +72,31 @@ export default function MothershipPage() {
           {/* Scene 1: Space with Floating Portals (DEFAULT) */}
           <div id="scene-portals" className={`viewport-scene ${activeScene !== 'portals' ? 'hidden' : ''}`}>
             <div className="space-scene" id="space-scene">
-              {/* Floating Blockchain Portals using portal PNG images */}
-              <Link href="/base" className="portal-floating base">
-                <img src="/blueportal.png" alt="Base Chain" className="portal-image" />
-                <div className="portal-label">BASE</div>
-              </Link>
+              {/* Header */}
+              <h1 className="portals-header">Gumbuo's Blockchain Portals</h1>
 
-              <Link href="/abstract" className="portal-floating abstract">
-                <img src="/greenportal.png" alt="Abstract Chain" className="portal-image" />
-                <div className="portal-label">ABSTRACT</div>
-              </Link>
+              {/* Centered Portal Grid */}
+              <div className="portals-grid">
+                <Link href="/base" className="portal-item">
+                  <img src="/blueportal.png" alt="Base Chain" className="portal-image" />
+                  <div className="portal-label">BASE</div>
+                </Link>
 
-              <Link href="/blast" className="portal-floating blast">
-                <img src="/greyportal.png" alt="Blast Chain" className="portal-image" />
-                <div className="portal-label">BLAST</div>
-              </Link>
+                <Link href="/blast" className="portal-item">
+                  <img src="/greyportal.png" alt="Blast Chain" className="portal-image" />
+                  <div className="portal-label">BLAST</div>
+                </Link>
 
-              <Link href="/arbitrum" className="portal-floating arbitrum">
-                <img src="/redportal.png" alt="Arbitrum Chain" className="portal-image" />
-                <div className="portal-label">ARBITRUM</div>
-              </Link>
+                <Link href="/abstract" className="portal-item">
+                  <img src="/greenportal.png" alt="Abstract Chain" className="portal-image" />
+                  <div className="portal-label">ABSTRACT</div>
+                </Link>
+
+                <Link href="/arbitrum" className="portal-item">
+                  <img src="/redportal.png" alt="Arbitrum Chain" className="portal-image" />
+                  <div className="portal-label">ARBITRUM</div>
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -501,34 +506,41 @@ export default function MothershipPage() {
           50% { opacity: 1; }
         }
 
-        /* Floating Blockchain Portals using PNG images */
-        .portal-floating {
-          position: absolute;
-          width: 150px;
-          height: 190px;
+        /* Portals Header */
+        .portals-header {
+          text-align: center;
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: #00ffff;
+          text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6);
+          font-family: 'Orbitron', sans-serif;
+          margin: 30px 0 40px 0;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+
+        /* Centered Portal Grid */
+        .portals-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 60px;
+          max-width: 700px;
+          margin: 0 auto;
+          padding: 20px;
+          place-items: center;
+        }
+
+        .portal-item {
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
           cursor: pointer;
-          animation: portalFloat 3s ease-in-out infinite;
+          transition: transform 0.3s;
         }
 
-        @keyframes portalFloat {
-          0%, 100% {
-            transform: translateY(0px) scale(1);
-            filter: brightness(1);
-          }
-          50% {
-            transform: translateY(-30px) scale(1.05);
-            filter: brightness(1.2);
-          }
-        }
-
-        .portal-floating:hover {
-          transform: scale(1.3) !important;
-          z-index: 10;
-          box-shadow: 0 0 60px rgba(0, 255, 255, 1);
+        .portal-item:hover {
+          transform: scale(1.1);
         }
 
         .portal-image {
@@ -542,69 +554,38 @@ export default function MothershipPage() {
         }
 
         .portal-label {
-          margin-top: 8px;
-          font-size: 0.85rem;
+          margin-top: 12px;
+          font-size: 0.9rem;
           font-weight: bold;
           text-transform: uppercase;
           color: #000;
-          text-shadow: none;
           background: #00ffff;
-          padding: 5px 15px;
+          padding: 6px 18px;
           border-radius: 6px;
-          border: 2px solid #00ffff;
+          border: 2px solid currentColor;
           white-space: nowrap;
-          letter-spacing: 1px;
+          letter-spacing: 1.5px;
           box-shadow: 0 0 25px currentColor;
-          display: inline-block;
-          width: auto;
         }
 
-        .portal-floating.base {
-          top: 15%;
-          left: 20%;
-          animation-delay: 0s;
+        .portal-item:nth-child(1) .portal-label {
+          background: #0099ff;
+          color: #fff;
         }
 
-        .portal-floating.base .portal-label {
-          background: #0099ff !important;
-          border-color: #0099ff !important;
-          color: #fff !important;
+        .portal-item:nth-child(2) .portal-label {
+          background: #888888;
+          color: #fff;
         }
 
-        .portal-floating.blast {
-          top: 15%;
-          right: 20%;
-          animation-delay: 1s;
+        .portal-item:nth-child(3) .portal-label {
+          background: #00ff99;
+          color: #000;
         }
 
-        .portal-floating.blast .portal-label {
-          background: #888888 !important;
-          border-color: #888888 !important;
-          color: #fff !important;
-        }
-
-        .portal-floating.abstract {
-          bottom: 25%;
-          left: 20%;
-          animation-delay: 2s;
-        }
-
-        .portal-floating.abstract .portal-label {
-          background: #00ff99 !important;
-          border-color: #00ff99 !important;
-          color: #000 !important;
-        }
-
-        .portal-floating.arbitrum {
-          bottom: 25%;
-          right: 20%;
-          animation-delay: 1.5s;
-        }
-
-        .portal-floating.arbitrum .portal-label {
-          background: #ff4444 !important;
-          border-color: #ff4444 !important;
-          color: #fff !important;
+        .portal-item:nth-child(4) .portal-label {
+          background: #ff4444;
+          color: #fff;
         }
 
         /* Content Display Scenes */
