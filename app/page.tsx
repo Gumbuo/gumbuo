@@ -450,19 +450,23 @@ export default function MothershipPage() {
           left: 50%;
           transform: translateX(-50%);
           width: 70%;
-          height: 60%;
+          height: 68%;
           background: #000;
           border: 12px solid #7a7a85;
           border-radius: 10px;
           overflow: hidden;
           box-shadow: 0 0 50px rgba(0, 255, 255, 0.4), inset 0 0 50px rgba(0, 0, 0, 0.9), 0 20px 40px rgba(0, 0, 0, 0.8);
+          z-index: 15;
         }
 
         .viewport-scene {
           width: 100%;
           height: 100%;
-          position: relative;
+          position: absolute;
+          top: 0;
+          left: 0;
           transition: opacity 0.5s;
+          overflow: hidden;
         }
 
         .viewport-scene.hidden {
@@ -474,8 +478,11 @@ export default function MothershipPage() {
           width: 100%;
           height: 100%;
           background: radial-gradient(ellipse at center, #0a0a2e 0%, #000000 100%);
-          position: relative;
+          position: absolute;
+          top: 0;
+          left: 0;
           animation: spaceFloat 60s linear infinite;
+          overflow: hidden;
         }
 
         @keyframes spaceFloat {
@@ -498,8 +505,8 @@ export default function MothershipPage() {
         /* Floating Blockchain Portals using PNG images */
         .portal-floating {
           position: absolute;
-          width: 50px;
-          height: 50px;
+          width: 100px;
+          height: 100px;
           border-radius: 50%;
           display: flex;
           flex-direction: column;
@@ -508,14 +515,15 @@ export default function MothershipPage() {
           cursor: pointer;
           transition: all 0.3s;
           animation: portalFloat 4s ease-in-out infinite;
-          border: 2px solid rgba(255, 255, 255, 0.4);
-          box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+          border: 3px solid #00ffff;
+          box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
           overflow: hidden;
+          background: rgba(0, 0, 0, 0.8);
         }
 
         @keyframes portalFloat {
           0%, 100% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-15px) scale(1.1); }
+          50% { transform: translateY(-25px) scale(1.08); }
         }
 
         .portal-floating:hover {
@@ -525,48 +533,52 @@ export default function MothershipPage() {
         }
 
         .portal-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+          width: 100px;
+          height: 100px;
+          max-width: 100px;
+          max-height: 100px;
+          object-fit: contain;
           border-radius: 50%;
         }
 
         .portal-label {
           position: absolute;
-          bottom: -20px;
-          font-size: 0.6rem;
+          bottom: -28px;
+          font-size: 0.75rem;
           font-weight: bold;
           text-transform: uppercase;
-          color: #fff;
-          text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6);
-          background: rgba(0, 0, 0, 0.9);
-          padding: 2px 8px;
-          border-radius: 4px;
+          color: #00ffff;
+          text-shadow: 0 0 15px rgba(0, 255, 255, 1), 0 0 25px rgba(0, 255, 255, 0.8);
+          background: rgba(0, 0, 0, 0.95);
+          padding: 4px 12px;
+          border-radius: 6px;
           border: 2px solid #00ffff;
           white-space: nowrap;
+          letter-spacing: 1px;
+          box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
         }
 
         .portal-floating.base {
-          top: 15%;
-          left: 15%;
+          top: 20%;
+          left: 20%;
           animation-delay: 0s;
         }
 
         .portal-floating.blast {
-          top: 15%;
-          right: 15%;
+          top: 20%;
+          right: 20%;
           animation-delay: 1s;
         }
 
         .portal-floating.abstract {
-          bottom: 15%;
-          left: 15%;
+          bottom: 20%;
+          left: 20%;
           animation-delay: 2s;
         }
 
         .portal-floating.arbitrum {
-          bottom: 15%;
-          right: 15%;
+          bottom: 20%;
+          right: 20%;
           animation-delay: 1.5s;
         }
 
@@ -674,7 +686,7 @@ export default function MothershipPage() {
           border-top: 8px solid #7a7a85;
           border-radius: 20px 20px 0 0;
           box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.6), 0 -20px 50px rgba(0, 0, 0, 0.8);
-          z-index: 10;
+          z-index: 8;
         }
 
         .rivet {
