@@ -223,17 +223,29 @@ export default function AlienDripStation() {
       lastClaimTime: now,
     };
 
-    setStakingData(newStakingData);
+    // Save to backend API first
+    try {
+      const response = await fetch('/api/user-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: address, stakingData: newStakingData }),
+      });
 
-    // Save to backend API
-    fetch('/api/user-data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ wallet: address, stakingData: newStakingData }),
-    }).catch(error => console.error('Failed to save staking data:', error));
+      const result = await response.json();
 
-    playSound('success');
-    alert(`✅ Staking started! You're now earning ${currentStakingRewards?.apPerDay.toFixed(2) || 0} AP per day!`);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save staking data');
+      }
+
+      // Only update local state if save was successful
+      setStakingData(newStakingData);
+      playSound('success');
+      alert(`✅ Staking started! You're now earning ${currentStakingRewards?.apPerDay.toFixed(2) || 0} AP per day!`);
+    } catch (error) {
+      console.error('Failed to save staking data:', error);
+      playSound('error');
+      alert(`❌ Failed to start staking: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
+    }
   };
 
   // Stop staking
@@ -679,7 +691,7 @@ export default function AlienDripStation() {
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
                 >
-                  {claimingStake ? "💰 Claiming..." : accumulatedRewards > 0 ? `CLAIM ${accumulatedRewards} AP! 💰` : "Keep Staking! ⏱️"}
+                  {claimingStake ? "💰 Claiming..." : accumulatedRewards > 0 ? `CLAIM ${accumulatedRewards} AP! 💰` : "CLAIM REWARDS (0 AP)"}
                 </button>
                 <button
                   onClick={handleStopStaking}
@@ -826,6 +838,12 @@ export default function AlienDripStation() {
                     <p className="text-center text-yellow-300 text-sm mt-1 relative z-10">
                       ({currentStakingRewards?.apPerHour.toFixed(2) || 0} AP/hr)
                     </p>
+                    {/* Debug Info */}
+                    <div className="text-xs text-gray-500 mt-3 relative z-10 text-center">
+                      <p>Staking: {stakingData.isStaking ? 'YES' : 'NO'} | Staked: {stakingData.stakedAmount} GMB</p>
+                      <p>Last Claim: {new Date(stakingData.lastClaimTime).toLocaleTimeString()}</p>
+                      <p>Current GMB: {gmbAmount.toFixed(2)} | Rate: {currentStakingRewards?.apPerHour.toFixed(4) || 0} AP/hr</p>
+                    </div>
                   </div>
                 </>
               ) : (
