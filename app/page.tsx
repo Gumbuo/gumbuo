@@ -546,12 +546,12 @@ export default function MothershipPage() {
           font-size: 0.85rem;
           font-weight: bold;
           text-transform: uppercase;
-          color: #00ffff;
-          text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
-          background: rgba(0, 0, 0, 0.8);
+          color: #000;
+          text-shadow: none;
+          background: #00ffff;
           padding: 5px 15px;
           border-radius: 6px;
-          border: 2px solid currentColor;
+          border: 2px solid #00ffff;
           white-space: nowrap;
           letter-spacing: 1px;
           box-shadow: 0 0 25px currentColor;
@@ -566,7 +566,9 @@ export default function MothershipPage() {
         }
 
         .portal-floating.base .portal-label {
-          color: #0099ff !important;
+          background: #0099ff !important;
+          border-color: #0099ff !important;
+          color: #fff !important;
         }
 
         .portal-floating.blast {
@@ -576,7 +578,9 @@ export default function MothershipPage() {
         }
 
         .portal-floating.blast .portal-label {
-          color: #cccccc !important;
+          background: #888888 !important;
+          border-color: #888888 !important;
+          color: #fff !important;
         }
 
         .portal-floating.abstract {
@@ -586,7 +590,9 @@ export default function MothershipPage() {
         }
 
         .portal-floating.abstract .portal-label {
-          color: #00ff99 !important;
+          background: #00ff99 !important;
+          border-color: #00ff99 !important;
+          color: #000 !important;
         }
 
         .portal-floating.arbitrum {
@@ -596,7 +602,9 @@ export default function MothershipPage() {
         }
 
         .portal-floating.arbitrum .portal-label {
-          color: #ff4444 !important;
+          background: #ff4444 !important;
+          border-color: #ff4444 !important;
+          color: #fff !important;
         }
 
         /* Content Display Scenes */
