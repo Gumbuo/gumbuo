@@ -7,7 +7,6 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 export const abstractMainnet = defineChain({
   id: 2741,
   name: 'Abstract',
-  network: 'abstract',
   nativeCurrency: {
     decimals: 18,
     name: 'Ether',
@@ -17,12 +16,9 @@ export const abstractMainnet = defineChain({
     default: {
       http: ['https://api.mainnet.abs.xyz'],
     },
-    public: {
-      http: ['https://api.mainnet.abs.xyz'],
-    },
   },
   blockExplorers: {
-    default: { name: 'Explorer', url: 'https://explorer.abs.xyz' },
+    default: { name: 'Abstract Explorer', url: 'https://explorer.abs.xyz' },
   },
 });
 
@@ -30,7 +26,6 @@ export const abstractMainnet = defineChain({
 export const abstractTestnet = defineChain({
   id: 11124,
   name: 'Abstract Testnet',
-  network: 'abstract-testnet',
   nativeCurrency: {
     decimals: 18,
     name: 'Ether',
@@ -40,12 +35,9 @@ export const abstractTestnet = defineChain({
     default: {
       http: ['https://api.testnet.abs.xyz'],
     },
-    public: {
-      http: ['https://api.testnet.abs.xyz'],
-    },
   },
   blockExplorers: {
-    default: { name: 'Explorer', url: 'https://explorer.testnet.abs.xyz' },
+    default: { name: 'Abstract Testnet Explorer', url: 'https://explorer.testnet.abs.xyz' },
   },
   testnet: true,
 });
