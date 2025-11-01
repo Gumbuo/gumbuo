@@ -4,6 +4,8 @@ import { useAccount, useBalance } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
+type TabType = "staking" | "faucet" | "nft";
+
 const GMB_TOKEN_ADDRESS_BASE = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
 const GMB_TOKEN_ADDRESS_ABSTRACT = "0x1660AA473D936029C7659e7d047F05EcF28D40c9";
 
@@ -38,6 +40,7 @@ interface StakingData {
 
 export default function AlienDripStation() {
   const { address, isConnected } = useAccount();
+  const [activeTab, setActiveTab] = useState<TabType>("staking");
 
   // Fetch GMB from Base chain
   const { data: gmbBalanceBase } = useBalance({
@@ -514,10 +517,52 @@ export default function AlienDripStation() {
       <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0.5s'}}></div>
       <div className="absolute top-0 left-3/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '1s'}}></div>
 
-      {/* Header Section - Buttons replace text when connected */}
+      {/* Header */}
+      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text" style={{fontSize: '4rem'}}>
+        <span className="animate-glow">💧 Alien Drip Station 💧</span>
+      </h2>
+
+      {/* Tab Navigation */}
+      <div className="flex justify-center gap-4 relative z-10 w-full max-w-2xl">
+        <button
+          onClick={() => { setActiveTab("staking"); playSound('click'); }}
+          className={`flex-1 px-8 py-4 text-xl font-bold tracking-wider rounded-xl transition-all duration-300 ${
+            activeTab === "staking"
+              ? "alien-button alien-button-purple text-white scale-105"
+              : "glass-panel text-gray-400 hover:text-white hover:scale-105"
+          }`}
+        >
+          🔒 STAKING
+        </button>
+        <button
+          onClick={() => { setActiveTab("faucet"); playSound('click'); }}
+          className={`flex-1 px-8 py-4 text-xl font-bold tracking-wider rounded-xl transition-all duration-300 ${
+            activeTab === "faucet"
+              ? "alien-button alien-button-gold text-black scale-105"
+              : "glass-panel text-gray-400 hover:text-white hover:scale-105"
+          }`}
+        >
+          💧 FAUCET/DRIP
+        </button>
+        <button
+          onClick={() => { setActiveTab("nft"); playSound('click'); }}
+          className={`flex-1 px-8 py-4 text-xl font-bold tracking-wider rounded-xl transition-all duration-300 ${
+            activeTab === "nft"
+              ? "alien-button alien-button-danger text-white scale-105"
+              : "glass-panel text-gray-400 hover:text-white hover:scale-105"
+          }`}
+        >
+          🖼️ NFT STAKING
+        </button>
+      </div>
+
+      {/* Tab Content */}
       {isConnected && address ? (
         <>
-          <div className="flex justify-center gap-6 mb-2 relative z-10">
+          {/* STAKING TAB */}
+          {activeTab === "staking" && (
+            <div className="w-full space-y-6 relative z-10">
+              <div className="flex justify-center gap-6 mb-2">
             {/* Staking Action Button */}
             {stakingData.isStaking ? (
               <div className="flex gap-4">
@@ -561,52 +606,21 @@ export default function AlienDripStation() {
                 {gmbAmount < 100 ? "Need 100+ GMB to Stake" : "START STAKING 🔒"}
               </button>
             )}
+          </div>
 
-            {/* Daily Claim Button */}
-            <button
-              onClick={handleClaim}
-              onMouseEnter={() => !hasClaimedToday && !claiming && currentTier && playSound('hover')}
-              disabled={hasClaimedToday || claiming || !currentTier}
-              className={`px-12 py-5 text-2xl font-bold tracking-wider transition-all duration-300 relative overflow-hidden transform hover:scale-110 shadow-2xl ${
-                hasClaimedToday || claiming || !currentTier
-                  ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
-                  : "alien-button alien-button-gold alien-button-glow text-black"
-              }`}
-              style={{
-                boxShadow: !hasClaimedToday && currentTier ? '0 0 30px rgba(0, 255, 153, 0.6), 0 0 60px rgba(0, 255, 153, 0.4)' : undefined
-              }}
-            >
-              {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
-            </button>
+          <div className="text-center text-purple-400 relative z-10 mb-4">
+            <p className="text-xl mb-2 font-electro alien-brackets">🔒 Continuous Staking Rewards 🔒</p>
+            <p className="text-sm opacity-75 font-mono alien-code">Stake GMB and earn AP continuously!</p>
           </div>
-          <div className="text-center text-green-400 relative z-10">
-            <p className="text-xl mb-2 font-electro alien-brackets">💧 Daily Claims & Continuous Staking 💧</p>
-            <p className="text-sm opacity-75 font-mono alien-code">Hold GMB for daily claims OR stake for continuous rewards!</p>
-          </div>
-        </>
-      ) : (
-        <>
-          <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text" style={{fontSize: '4rem'}}>
-            <span className="animate-glow">💧 Alien Drip Station 💧</span>
-          </h2>
-          <div className="text-center text-green-400 relative z-10 mb-6">
-            <p className="text-xl mb-2 font-electro alien-brackets">💧 Daily Claims & Continuous Staking 💧</p>
-            <p className="text-sm opacity-75 font-mono alien-code">Hold GMB for daily claims OR stake for continuous rewards!</p>
-          </div>
-        </>
-      )}
 
-      {/* User Status */}
-      {isConnected && address ? (
-        <div className="w-full space-y-6">
-          {/* ==================== UNIFIED REWARDS SECTION ==================== */}
+          {/* STAKING CONTENT */}
           <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-purple-500/10 via-green-500/10 to-purple-500/10">
             <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
-              <span className="text-purple-400">🔒</span> GMB REWARDS <span className="text-green-400">💧</span>
+              <span className="text-purple-400">🔒</span> STAKING REWARDS <span className="text-purple-400">🔒</span>
             </h3>
 
             <div className="space-y-6">
-              {/* Shared: GMB Balance & Points */}
+              {/* GMB Balance & Points */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="glass-panel rounded-xl p-4 text-center">
                   <p className="text-gray-400 text-sm mb-1">Your GMB Balance</p>
@@ -618,10 +632,8 @@ export default function AlienDripStation() {
                 </div>
               </div>
 
-              {/* Two Column Layout: Staking & Daily Claim */}
-              <div className="grid grid-cols-2 gap-6">
-                {/* LEFT: CONTINUOUS STAKING */}
-                <div className="space-y-4">
+              {/* CONTINUOUS STAKING */}
+              <div className="space-y-4">
                   {stakingData.isStaking ? (
                     <>
                   <div className="glass-panel rounded-xl p-4 bg-green-500/10 border-2 border-green-500/30">
@@ -663,47 +675,12 @@ export default function AlienDripStation() {
                   </div>
                 </>
               )}
-                </div>
-
-                {/* RIGHT: DAILY CLAIM */}
-                <div className="space-y-4">
-                  {/* Current Tier Display */}
-                  {currentTier ? (
-                    <div className="glass-panel rounded-xl p-4 text-center border-2 border-green-500/30 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 animate-pulse"></div>
-                      <p className="text-sm opacity-75 mb-1 relative z-10">Your Tier:</p>
-                      <p className="text-2xl font-bold tracking-wider relative z-10 animate-pulse" style={{
-                        color: currentTier.color,
-                        textShadow: `0 0 20px ${currentTier.color}, 0 0 40px ${currentTier.color}`
-                      }}>
-                        {currentTier.name}
-                      </p>
-                      <p className="text-2xl font-bold text-green-400 mt-2 relative z-10">
-                        💧 {currentTier.points} AP / Day
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-red-400 text-center">⚠️ Unable to determine tier</p>
-                  )}
-
-                  {/* Claim Status */}
-                  {hasClaimedToday && nextClaimTime && (
-                    <div className="glass-panel rounded-xl p-4 text-center border-2 border-yellow-500/30">
-                      <p className="text-yellow-400 font-bold text-sm">✅ Already claimed today!</p>
-                      <p className="text-yellow-400 text-xs mt-1">Next claim in:</p>
-                      <p className="text-lg text-yellow-300 font-bold mt-1 animate-pulse">⏰ {timeUntilReset}</p>
-                    </div>
-                  )}
-                </div>
               </div>
 
-              {/* Combined Rewards Info Section */}
+              {/* Staking Formula */}
               <div className="glass-panel rounded-xl p-6">
-                <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 REWARDS INFO 💎</p>
-
-                <div className="grid grid-cols-2 gap-6">
-                  {/* Staking Formula */}
-                  <div className="space-y-3">
+                <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 STAKING INFO 💎</p>
+                <div className="space-y-3">
                     <p className="text-purple-400 font-bold text-center text-lg">🔒 Staking Formula</p>
                     <div className="bg-purple-400 bg-opacity-20 p-3 rounded-lg text-center">
                       <p className="text-yellow-400 font-bold">100 AP/day per 1M GMB</p>
@@ -720,34 +697,155 @@ export default function AlienDripStation() {
                         <p className="text-white text-lg font-bold">{currentStakingRewards.apPerDay.toFixed(2)} AP/day</p>
                       </div>
                     )}
-                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-                  {/* Daily Claim Tiers */}
-                  <div className="space-y-3">
-                    <p className="text-green-400 font-bold text-center text-lg">💧 Daily Claim Tiers</p>
-                    <div className="space-y-1 text-xs">
-                      {DRIP_TIERS.map((tier, idx) => (
-                        <div
-                          key={idx}
-                          className={`flex justify-between items-center p-1.5 rounded ${
-                            currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20' : ''
-                          }`}
-                        >
-                          <span style={{color: tier.color}} className="font-bold text-xs">{tier.name}</span>
-                          <span className="text-gray-400 text-xs">{tier.minGMB >= 1000 ? `${(tier.minGMB/1000).toFixed(0)}K` : tier.minGMB} - {tier.maxGMB === Infinity ? '∞' : tier.maxGMB >= 1000 ? `${(tier.maxGMB/1000).toFixed(0)}K` : tier.maxGMB}</span>
-                          <span className="text-green-400 font-bold text-xs">{tier.points} AP</span>
-                        </div>
-                      ))}
-                    </div>
+      {/* FAUCET/DRIP TAB */}
+      {activeTab === "faucet" && (
+        <div className="w-full space-y-6 relative z-10">
+          <div className="flex justify-center gap-6 mb-2">
+            {/* Daily Claim Button */}
+            <button
+              onClick={handleClaim}
+              onMouseEnter={() => !hasClaimedToday && !claiming && currentTier && playSound('hover')}
+              disabled={hasClaimedToday || claiming || !currentTier}
+              className={`px-12 py-5 text-2xl font-bold tracking-wider transition-all duration-300 relative overflow-hidden transform hover:scale-110 shadow-2xl ${
+                hasClaimedToday || claiming || !currentTier
+                  ? "bg-gray-600 text-gray-400 cursor-not-allowed rounded-xl"
+                  : "alien-button alien-button-gold alien-button-glow text-black"
+              }`}
+              style={{
+                boxShadow: !hasClaimedToday && currentTier ? '0 0 30px rgba(0, 255, 153, 0.6), 0 0 60px rgba(0, 255, 153, 0.4)' : undefined
+              }}
+            >
+              {claiming ? "💧 Claiming..." : hasClaimedToday ? "Already Claimed! ✅" : currentTier ? `CLAIM ${currentTier.points} AP! 💧` : "Unable to determine tier"}
+            </button>
+          </div>
+
+          <div className="text-center text-green-400 relative z-10 mb-4">
+            <p className="text-xl mb-2 font-electro alien-brackets">💧 Daily Faucet Claims 💧</p>
+            <p className="text-sm opacity-75 font-mono alien-code">Claim daily rewards based on your GMB holdings!</p>
+          </div>
+
+          {/* FAUCET CONTENT */}
+          <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-green-500/10 via-yellow-500/10 to-green-500/10">
+            <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
+              <span className="text-green-400">💧</span> DRIP REWARDS <span className="text-green-400">💧</span>
+            </h3>
+
+            <div className="space-y-6">
+              {/* GMB Balance & Points */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="glass-panel rounded-xl p-4 text-center">
+                  <p className="text-gray-400 text-sm mb-1">Your GMB Balance</p>
+                  <p className="text-white font-bold text-3xl">{gmbAmount.toFixed(2)}</p>
+                </div>
+                <div className="glass-panel rounded-xl p-4 text-center">
+                  <p className="text-gray-400 text-sm mb-1">Your Alien Points</p>
+                  <p className="text-green-400 font-bold text-3xl">{userPoints.toLocaleString()}</p>
+                </div>
+              </div>
+
+              {/* DAILY CLAIM */}
+              <div className="space-y-4">
+                {/* Current Tier Display */}
+                {currentTier ? (
+                  <div className="glass-panel rounded-xl p-4 text-center border-2 border-green-500/30 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 animate-pulse"></div>
+                    <p className="text-sm opacity-75 mb-1 relative z-10">Your Tier:</p>
+                    <p className="text-2xl font-bold tracking-wider relative z-10 animate-pulse" style={{
+                      color: currentTier.color,
+                      textShadow: `0 0 20px ${currentTier.color}, 0 0 40px ${currentTier.color}`
+                    }}>
+                      {currentTier.name}
+                    </p>
+                    <p className="text-2xl font-bold text-green-400 mt-2 relative z-10">
+                      💧 {currentTier.points} AP / Day
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-red-400 text-center">⚠️ Unable to determine tier</p>
+                )}
+
+                {/* Claim Status */}
+                {hasClaimedToday && nextClaimTime && (
+                  <div className="glass-panel rounded-xl p-4 text-center border-2 border-yellow-500/30">
+                    <p className="text-yellow-400 font-bold text-sm">✅ Already claimed today!</p>
+                    <p className="text-yellow-400 text-xs mt-1">Next claim in:</p>
+                    <p className="text-lg text-yellow-300 font-bold mt-1 animate-pulse">⏰ {timeUntilReset}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Daily Claim Tiers */}
+              <div className="glass-panel rounded-xl p-6">
+                <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 DRIP TIERS 💎</p>
+                <div className="space-y-3">
+                  <p className="text-green-400 font-bold text-center text-lg">💧 Daily Claim Tiers</p>
+                  <div className="space-y-1 text-xs">
+                    {DRIP_TIERS.map((tier, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex justify-between items-center p-1.5 rounded ${
+                          currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20' : ''
+                        }`}
+                      >
+                        <span style={{color: tier.color}} className="font-bold text-xs">{tier.name}</span>
+                        <span className="text-gray-400 text-xs">{tier.minGMB >= 1000 ? `${(tier.minGMB/1000).toFixed(0)}K` : tier.minGMB} - {tier.maxGMB === Infinity ? '∞' : tier.maxGMB >= 1000 ? `${(tier.maxGMB/1000).toFixed(0)}K` : tier.maxGMB}</span>
+                        <span className="text-green-400 font-bold text-xs">{tier.points} AP</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      ) : (
-        <p className="text-yellow-400 text-center">⚠️ Connect your wallet to use the drip station!</p>
       )}
+
+      {/* NFT STAKING TAB */}
+      {activeTab === "nft" && (
+        <div className="w-full space-y-6 relative z-10">
+          <div className="text-center text-red-400 relative z-10 mb-4">
+            <p className="text-xl mb-2 font-electro alien-brackets">🖼️ NFT Staking Coming Soon 🖼️</p>
+            <p className="text-sm opacity-75 font-mono alien-code">Stake your NFTs and earn exclusive rewards!</p>
+          </div>
+
+          {/* NFT CONTENT */}
+          <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-red-500/10">
+            <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
+              <span className="text-red-400">🖼️</span> NFT STAKING <span className="text-red-400">🖼️</span>
+            </h3>
+
+            <div className="space-y-6 text-center">
+              <p className="text-2xl text-gray-300">🚧 Under Construction 🚧</p>
+              <p className="text-lg text-gray-400">This feature is coming soon! Stay tuned for updates.</p>
+              <div className="grid grid-cols-3 gap-4 mt-8">
+                <div className="glass-panel rounded-xl p-6">
+                  <p className="text-4xl mb-2">🎨</p>
+                  <p className="text-sm text-gray-400">Stake NFTs</p>
+                </div>
+                <div className="glass-panel rounded-xl p-6">
+                  <p className="text-4xl mb-2">💎</p>
+                  <p className="text-sm text-gray-400">Earn Rewards</p>
+                </div>
+                <div className="glass-panel rounded-xl p-6">
+                  <p className="text-4xl mb-2">🏆</p>
+                  <p className="text-sm text-gray-400">Exclusive Benefits</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+    ) : (
+      <p className="text-yellow-400 text-center relative z-10">⚠️ Connect your wallet to use the drip station!</p>
+    )}
     </div>
   );
 }
