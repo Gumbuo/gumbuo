@@ -10,7 +10,7 @@ const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const FloatingGumbuo = dynamic(() => import("./components/FloatingGumbuo"), { ssr: false });
 
-type Tab = "portals" | "drip" | "leaderboard" | "socials" | "support";
+type Tab = "portals" | "drip" | "leaderboard" | "buygmb" | "socials" | "support";
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -27,6 +27,7 @@ export default function MothershipPage() {
     { id: "portals", label: "Portals", emoji: "🌀" },
     { id: "drip", label: "Drip Claim", emoji: "💧" },
     { id: "leaderboard", label: "Leaderboard", emoji: "🏆" },
+    { id: "buygmb", label: "Buy GMB", emoji: "💰" },
     { id: "socials", label: "Socials", emoji: "🌐" },
     { id: "support", label: "Support", emoji: "🔒" },
   ];
@@ -358,52 +359,65 @@ export default function MothershipPage() {
           </div>
         )}
 
+        {/* Buy GMB Tab */}
+        {activeTab === "buygmb" && (
+          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
+            <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
+              BUY GMB TOKEN
+            </h2>
+
+            {/* Base Chain Buy Button */}
+            <div className="flex flex-col items-center space-y-2">
+              <div className="flex items-center justify-center space-x-4">
+                <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
+                <a
+                  href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  style={{
+                    fontSize: '2rem',
+                    borderRadius: '8px',
+                    border: '2px solid #00ff9944'
+                  }}
+                  className="inline-block px-12 py-4 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-blue-500/50"
+                >
+                  Buy GMB (Base)
+                </a>
+                <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+              </div>
+              <p className="text-blue-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
+            </div>
+
+            {/* Abstract Chain Buy Button - HIDDEN (keep for later) */}
+            <div className="hidden flex flex-col items-center space-y-2">
+              <div className="flex items-center justify-center space-x-4">
+                <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
+                <a
+                  href="https://thirdweb.com/abstract/0x1660AA473D936029C7659e7d047F05EcF28D40c9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  className="inline-block px-12 py-4 bg-purple-500 text-white font-bold rounded-xl hover:bg-purple-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-purple-500/50"
+                  style={{fontSize: '2rem'}}
+                >
+                  Buy GMB (Abstract)
+                </a>
+                <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+              </div>
+              <p className="text-purple-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
+            </div>
+          </div>
+        )}
+
         {/* Socials Tab */}
         {activeTab === "socials" && (
           <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
-          {/* Base Chain Buy Button */}
-          <div className="flex flex-col items-center space-y-2">
-            <div className="flex items-center justify-center space-x-4">
-              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
-              <a
-                href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
-                target="_blank"
-                rel="noopener noreferrer"
-                onMouseEnter={() => playSound('hover')}
-                onClick={() => playSound('click')}
-                style={{
-                  fontSize: '2rem',
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
-                }}
-                className="inline-block px-12 py-4 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-blue-500/50"
-              >
-                Buy GMB (Base)
-              </a>
-              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-            </div>
-            <p className="text-blue-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
-          </div>
-
-          {/* Abstract Chain Buy Button - HIDDEN (keep for later) */}
-          <div className="hidden flex flex-col items-center space-y-2">
-            <div className="flex items-center justify-center space-x-4">
-              <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
-              <a
-                href="https://thirdweb.com/abstract/0x1660AA473D936029C7659e7d047F05EcF28D40c9"
-                target="_blank"
-                rel="noopener noreferrer"
-                onMouseEnter={() => playSound('hover')}
-                onClick={() => playSound('click')}
-                className="inline-block px-12 py-4 bg-purple-500 text-white font-bold rounded-xl hover:bg-purple-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-purple-500/50"
-                style={{fontSize: '2rem'}}
-              >
-                Buy GMB (Abstract)
-              </a>
-              <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-            </div>
-            <p className="text-purple-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
-          </div>
+          <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
+            SOCIAL LINKS
+          </h2>
 
           {/* Social Links */}
           <div className="flex gap-6 mt-4">
