@@ -87,7 +87,7 @@ export default function AlienBadgeMinter() {
   const isMinted = (badgeId: number) => mintedBadges.includes(badgeId);
 
   return (
-    <div style={{borderRadius: '8px', border: '2px solid #00ff9944'}} className="holographic-panel glass-panel p-8 max-w-3xl mx-auto">
+    <div style={{borderRadius: '24px', border: '2px solid #00ff9944'}} className="holographic-panel glass-panel p-8 max-w-3xl mx-auto">
       {/* Corner glows */}
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>

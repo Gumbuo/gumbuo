@@ -46,7 +46,7 @@ export default function AbstractPage() {
                 : 'rgba(0, 255, 153, 0.1)',
               color: activeTab === tab.id ? '#000' : '#00ff99',
               border: `2px solid ${activeTab === tab.id ? '#00ff99' : '#00ff9944'}`,
-              borderRadius: '8px',
+              borderRadius: '24px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
               fontWeight: 'bold',
@@ -90,7 +90,7 @@ export default function AbstractPage() {
               padding: '32px',
               background: 'rgba(0, 255, 153, 0.05)',
               border: '2px solid #00ff9944',
-              borderRadius: '8px'
+              borderRadius: '24px'
             }}>
               <h2 style={{
                 fontSize: '1.875rem',
@@ -124,7 +124,7 @@ export default function AbstractPage() {
               padding: '32px',
               background: 'rgba(0, 255, 153, 0.05)',
               border: '2px solid #00ff9944',
-              borderRadius: '8px'
+              borderRadius: '24px'
             }}>
               <h2 style={{
                 fontSize: '1.875rem',
@@ -140,7 +140,7 @@ export default function AbstractPage() {
                   padding: '24px',
                   background: 'rgba(255, 0, 0, 0.1)',
                   border: '2px solid rgba(239, 68, 68, 0.4)',
-                  borderRadius: '8px'
+                  borderRadius: '24px'
                 }}>
                   <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f87171', marginBottom: '12px' }}>
                     👹 Boss Battles
@@ -157,7 +157,7 @@ export default function AbstractPage() {
                     marginTop: '16px',
                     padding: '12px',
                     background: 'rgba(0, 0, 0, 0.4)',
-                    borderRadius: '8px'
+                    borderRadius: '24px'
                   }}>
                     <div style={{ color: '#4ade80', fontWeight: 'bold' }}>🔥 Spam attacks to farm Abstract XP!</div>
                     <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>Every transaction counts toward your airdrop</div>
@@ -168,7 +168,7 @@ export default function AbstractPage() {
                   padding: '24px',
                   background: 'rgba(168, 85, 247, 0.1)',
                   border: '2px solid rgba(168, 85, 247, 0.4)',
-                  borderRadius: '8px'
+                  borderRadius: '24px'
                 }}>
                   <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '12px' }}>
                     ⚔️ ETH Arena - Winner Takes All
@@ -186,7 +186,7 @@ export default function AbstractPage() {
                     marginTop: '16px',
                     padding: '12px',
                     background: 'rgba(0, 0, 0, 0.4)',
-                    borderRadius: '8px'
+                    borderRadius: '24px'
                   }}>
                     <div style={{ color: '#4ade80', fontWeight: 'bold' }}>🏆 High-stakes PvP battles!</div>
                     <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>Real ETH on the line - winner takes all</div>
@@ -199,7 +199,7 @@ export default function AbstractPage() {
                 padding: '16px',
                 background: 'rgba(234, 179, 8, 0.1)',
                 border: '2px solid rgba(234, 179, 8, 0.3)',
-                borderRadius: '8px',
+                borderRadius: '24px',
                 display: 'flex',
                 gap: '12px',
                 alignItems: 'flex-start'
@@ -224,7 +224,7 @@ export default function AbstractPage() {
                     background: 'linear-gradient(135deg, #9333ea, #ec4899)',
                     color: '#fff',
                     border: 'none',
-                    borderRadius: '8px',
+                    borderRadius: '24px',
                     cursor: 'pointer',
                     fontFamily: 'Orbitron, sans-serif',
                     transition: 'all 0.3s ease'
@@ -243,7 +243,7 @@ export default function AbstractPage() {
               padding: '24px',
               background: 'rgba(0, 255, 153, 0.05)',
               border: '2px solid #00ff9944',
-              borderRadius: '8px',
+              borderRadius: '24px',
               marginBottom: '32px',
               textAlign: 'center'
             }}>
@@ -266,7 +266,7 @@ export default function AbstractPage() {
                 padding: '8px 16px',
                 background: 'rgba(34, 197, 94, 0.2)',
                 border: '2px solid rgba(34, 197, 94, 0.3)',
-                borderRadius: '8px'
+                borderRadius: '24px'
               }}>
                 <span style={{
                   width: '12px',
@@ -294,7 +294,7 @@ export default function AbstractPage() {
               width: '100%',
               height: 'calc(100vh - 140px)',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: '24px',
             }}
             title="Maze Game"
           />
