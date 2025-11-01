@@ -358,7 +358,7 @@ export default function AbstractArena() {
       </div>
 
       {/* Mint Section */}
-      <div className="w-full holographic-panel glass-panel p-8 rounded-2xl">
+      <div style={{borderRadius: '8px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
@@ -433,7 +433,7 @@ export default function AbstractArena() {
       </div>
 
       {/* NFT Collection */}
-      <div className="w-full holographic-panel glass-panel p-8 rounded-2xl">
+      <div style={{borderRadius: '8px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
@@ -443,7 +443,8 @@ export default function AbstractArena() {
 
       {/* Arena Queue */}
       <div
-        className="w-full holographic-panel glass-panel p-8 rounded-2xl"
+        style={{borderRadius: '8px', border: '2px solid #00ff9944'}}
+        className="w-full holographic-panel glass-panel p-8"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
