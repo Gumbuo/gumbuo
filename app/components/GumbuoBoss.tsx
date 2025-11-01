@@ -535,7 +535,7 @@ export default function GumbuoBoss() {
       padding: '32px',
       background: 'rgba(0, 0, 0, 0.4)',
       maxWidth: '1152px',
-      borderRadius: '8px',
+      borderRadius: '24px',
       border: '2px solid #00ff9944'
     }}>
       {/* CSS Animations */}
@@ -571,7 +571,7 @@ export default function GumbuoBoss() {
       <div style={{
         width: '100%',
         background: 'rgba(0, 0, 0, 0.6)',
-        borderRadius: '8px',
+        borderRadius: '24px',
         border: '2px solid #00ff9944',
         padding: '32px'
       }}>
@@ -640,7 +640,7 @@ export default function GumbuoBoss() {
           {!bossState.isAlive && (
             <div style={{
               background: 'rgba(0, 0, 0, 0.6)',
-              borderRadius: '8px',
+              borderRadius: '24px',
               border: '2px solid #00ff9944',
               padding: '16px',
               textAlign: 'center'
@@ -654,7 +654,7 @@ export default function GumbuoBoss() {
           {lastDamage && bossState.isAlive && (
             <div style={{
               background: 'rgba(0, 0, 0, 0.6)',
-              borderRadius: '8px',
+              borderRadius: '24px',
               border: '2px solid #00ff9944',
               padding: '16px',
               textAlign: 'center'
@@ -675,7 +675,7 @@ export default function GumbuoBoss() {
         <div style={{
           width: '100%',
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '8px',
+          borderRadius: '24px',
           border: '2px solid #00ff9944',
           padding: '24px',
           display: 'flex',
@@ -692,7 +692,7 @@ export default function GumbuoBoss() {
               onMouseEnter={() => playSound('hover')}
               style={{
                 padding: '32px',
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944',
                 transition: 'all 0.3s ease'
               }}
@@ -715,7 +715,7 @@ export default function GumbuoBoss() {
               disabled={powerCooldown > 0}
               style={{
                 padding: '32px',
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944',
                 transition: 'all 0.3s ease'
               }}
@@ -745,7 +745,7 @@ export default function GumbuoBoss() {
               disabled={ultimateCooldown > 0}
               style={{
                 padding: '32px',
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944',
                 transition: 'all 0.3s ease'
               }}
@@ -777,7 +777,7 @@ export default function GumbuoBoss() {
                 onClick={() => handleUpgradeAttack('normal')}
                 onMouseEnter={() => playSound('hover')}
                 style={{
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944'
                 }}
                 className="px-4 py-2 text-sm font-bold bg-cyan-600/80 hover:bg-cyan-600 text-white transition-all shadow-lg shadow-cyan-500/30"
@@ -787,7 +787,7 @@ export default function GumbuoBoss() {
             )}
             {attackLevels.normal >= MAX_ATTACK_LEVEL && (
               <div style={{
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944'
               }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
                 ✅ Max Level
@@ -800,7 +800,7 @@ export default function GumbuoBoss() {
                 onClick={() => handleUpgradeAttack('power')}
                 onMouseEnter={() => playSound('hover')}
                 style={{
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944'
                 }}
                 className="px-4 py-2 text-sm font-bold bg-purple-600/80 hover:bg-purple-600 text-white transition-all shadow-lg shadow-purple-500/30"
@@ -810,7 +810,7 @@ export default function GumbuoBoss() {
             )}
             {attackLevels.power >= MAX_ATTACK_LEVEL && (
               <div style={{
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944'
               }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
                 ✅ Max Level
@@ -823,7 +823,7 @@ export default function GumbuoBoss() {
                 onClick={() => handleUpgradeAttack('ultimate')}
                 onMouseEnter={() => playSound('hover')}
                 style={{
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944'
                 }}
                 className="px-4 py-2 text-sm font-bold bg-yellow-600/80 hover:bg-yellow-600 text-white transition-all shadow-lg shadow-yellow-500/30"
@@ -833,7 +833,7 @@ export default function GumbuoBoss() {
             )}
             {attackLevels.ultimate >= MAX_ATTACK_LEVEL && (
               <div style={{
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944'
               }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
                 ✅ Max Level
@@ -848,7 +848,7 @@ export default function GumbuoBoss() {
               onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
               disabled={isAttacking || !canAttack}
               style={{
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944'
               }}
               className={`px-16 py-6 text-4xl font-bold tracking-wider transition-all duration-300 ${
@@ -872,7 +872,7 @@ export default function GumbuoBoss() {
             <div style={{
               marginTop: '24px',
               background: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
+              borderRadius: '24px',
               border: '2px solid #00ff9944',
               padding: '24px'
             }}>
@@ -883,7 +883,7 @@ export default function GumbuoBoss() {
                   flex: 1,
                   textAlign: 'center',
                   background: 'rgba(168, 85, 247, 0.2)',
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944',
                   padding: '16px'
                 }}>
@@ -899,7 +899,7 @@ export default function GumbuoBoss() {
                   flex: 1,
                   textAlign: 'center',
                   background: 'rgba(34, 197, 94, 0.2)',
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944',
                   padding: '16px'
                 }}>
@@ -921,7 +921,7 @@ export default function GumbuoBoss() {
               <div style={{
                 textAlign: 'center',
                 background: 'rgba(0, 0, 0, 0.4)',
-                borderRadius: '8px',
+                borderRadius: '24px',
                 border: '2px solid #00ff9944',
                 padding: '12px'
               }}>
@@ -943,7 +943,7 @@ export default function GumbuoBoss() {
         {/* Leaderboard */}
         <div style={{
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '8px',
+          borderRadius: '24px',
           border: '2px solid #00ff9944',
           padding: '24px'
         }}>
@@ -954,7 +954,7 @@ export default function GumbuoBoss() {
             ) : (
               leaderboard.map((entry, index) => (
                 <div key={index} style={{
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944'
                 }} className={`flex items-center gap-3 p-3 ${
                   index === 0 ? 'bg-yellow-500/20' :
@@ -984,7 +984,7 @@ export default function GumbuoBoss() {
         {/* Recent Attackers */}
         <div style={{
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '8px',
+          borderRadius: '24px',
           border: '2px solid #00ff9944',
           padding: '24px'
         }}>
@@ -995,7 +995,7 @@ export default function GumbuoBoss() {
             ) : (
               recentAttackers.map((attacker, index) => (
                 <div key={index} style={{
-                  borderRadius: '8px',
+                  borderRadius: '24px',
                   border: '2px solid #00ff9944',
                   animationDuration: '2s'
                 }} className={`flex items-center gap-3 p-3 ${
@@ -1030,7 +1030,7 @@ export default function GumbuoBoss() {
           onClick={handleClaimReward}
           onMouseEnter={() => playSound('hover')}
           style={{
-            borderRadius: '8px',
+            borderRadius: '24px',
             border: '2px solid #00ff9944'
           }}
           className="px-16 py-6 text-3xl font-bold tracking-wider alien-button alien-button-primary alien-button-glow alien-button-organic"
@@ -1043,7 +1043,7 @@ export default function GumbuoBoss() {
       {!bossState.isAlive && hasClaimedReward && (
         <div style={{
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '8px',
+          borderRadius: '24px',
           border: '2px solid #00ff9944',
           padding: '24px',
           textAlign: 'center'
@@ -1059,7 +1059,7 @@ export default function GumbuoBoss() {
         textAlign: 'center',
         maxWidth: '768px',
         background: 'rgba(0, 0, 0, 0.6)',
-        borderRadius: '8px',
+        borderRadius: '24px',
         border: '2px solid #00ff9944',
         padding: '24px',
         color: '#f87171'
