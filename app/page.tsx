@@ -77,23 +77,79 @@ export default function MothershipPage() {
 
               {/* Centered Portal Grid */}
               <div className="portals-grid">
-                <Link href="/base" className="portal-item">
-                  <img src="/blueportal.png" alt="Base Chain" className="portal-image" />
+                <Link
+                  href="/base"
+                  className="portal-item"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0, 153, 255, 0.2), rgba(0, 119, 204, 0.3))',
+                    padding: '20px',
+                    borderRadius: '20px',
+                    border: '2px solid rgba(0, 153, 255, 0.4)'
+                  }}
+                >
+                  <img
+                    src="/blueportal.png"
+                    alt="Base Chain"
+                    className="portal-image"
+                    style={{borderColor: '#0099ff'}}
+                  />
                   <div className="portal-label">BASE</div>
                 </Link>
 
-                <Link href="/blast" className="portal-item">
-                  <img src="/greyportal.png" alt="Blast Chain" className="portal-image" />
+                <Link
+                  href="/blast"
+                  className="portal-item"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(136, 136, 136, 0.2), rgba(102, 102, 102, 0.3))',
+                    padding: '20px',
+                    borderRadius: '20px',
+                    border: '2px solid rgba(136, 136, 136, 0.4)'
+                  }}
+                >
+                  <img
+                    src="/greyportal.png"
+                    alt="Blast Chain"
+                    className="portal-image"
+                    style={{borderColor: '#888888'}}
+                  />
                   <div className="portal-label">BLAST</div>
                 </Link>
 
-                <Link href="/abstract" className="portal-item">
-                  <img src="/greenportal.png" alt="Abstract Chain" className="portal-image" />
+                <Link
+                  href="/abstract"
+                  className="portal-item"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.2), rgba(0, 204, 122, 0.3))',
+                    padding: '20px',
+                    borderRadius: '20px',
+                    border: '2px solid rgba(0, 255, 153, 0.4)'
+                  }}
+                >
+                  <img
+                    src="/greenportal.png"
+                    alt="Abstract Chain"
+                    className="portal-image"
+                    style={{borderColor: '#00ff99'}}
+                  />
                   <div className="portal-label">ABSTRACT</div>
                 </Link>
 
-                <Link href="/arbitrum" className="portal-item">
-                  <img src="/redportal.png" alt="Arbitrum Chain" className="portal-image" />
+                <Link
+                  href="/arbitrum"
+                  className="portal-item"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(204, 34, 34, 0.3))',
+                    padding: '20px',
+                    borderRadius: '20px',
+                    border: '2px solid rgba(255, 68, 68, 0.4)'
+                  }}
+                >
+                  <img
+                    src="/redportal.png"
+                    alt="Arbitrum Chain"
+                    className="portal-image"
+                    style={{borderColor: '#ff4444'}}
+                  />
                   <div className="portal-label">ARBITRUM</div>
                 </Link>
               </div>
