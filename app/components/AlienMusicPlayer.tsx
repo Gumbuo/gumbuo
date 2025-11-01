@@ -1,8 +1,18 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 
+// Available music tracks
+const TRACKS = [
+  { id: 1, name: "👽 Alien Vibes", file: "/demon.mp3", emoji: "👽" },
+  { id: 2, name: "🌌 Space Odyssey", file: "/ggumbuobeets.mp3", emoji: "🌌" },
+  { id: 3, name: "🛸 UFO Transmission", file: "/success.mp3", emoji: "🛸" },
+  { id: 4, name: "⭐ Cosmic Energy", file: "/arena.mp3", emoji: "⭐" },
+  { id: 5, name: "🎵 Galactic Groove", file: "/home.mp3", emoji: "🎵" },
+];
+
 export default function AlienMusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(TRACKS[0]);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
@@ -14,6 +24,28 @@ export default function AlienMusicPlayer() {
     } else {
       audioRef.current.play();
       setIsPlaying(true);
+    }
+  };
+
+  const handleTrackChange = (trackId: number) => {
+    const track = TRACKS.find(t => t.id === trackId);
+    if (!track || !audioRef.current) return;
+
+    const wasPlaying = isPlaying;
+
+    // Pause current track
+    if (wasPlaying) {
+      audioRef.current.pause();
+    }
+
+    // Change track
+    setSelectedTrack(track);
+    audioRef.current.src = track.file;
+    audioRef.current.load();
+
+    // Resume playing if it was playing before
+    if (wasPlaying) {
+      audioRef.current.play();
     }
   };
 
@@ -31,7 +63,7 @@ export default function AlienMusicPlayer() {
 
   return (
     <div className="relative">
-      <audio ref={audioRef} src="/demon.mp3" loop />
+      <audio ref={audioRef} src={selectedTrack.file} loop />
 
       <div style={{
         borderRadius: '8px',
@@ -71,9 +103,32 @@ export default function AlienMusicPlayer() {
           </button>
         </div>
 
-        {/* Music label */}
-        <div className="text-green-400 text-lg font-bold relative z-10">
-          <p className="animate-glow">👽 ALIEN VIBES 🛸</p>
+        {/* Track Selector Dropdown */}
+        <div className="relative z-10">
+          <select
+            value={selectedTrack.id}
+            onChange={(e) => handleTrackChange(Number(e.target.value))}
+            style={{
+              fontFamily: 'Orbitron, sans-serif',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              color: '#00ff99',
+              border: '2px solid #00ff99',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              outline: 'none',
+              boxShadow: '0 0 15px rgba(0, 255, 153, 0.5)'
+            }}
+            className="hover:bg-black transition-all duration-200"
+          >
+            {TRACKS.map(track => (
+              <option key={track.id} value={track.id}>
+                {track.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
