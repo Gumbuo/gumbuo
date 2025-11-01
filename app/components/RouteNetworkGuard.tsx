@@ -18,6 +18,7 @@ export default function RouteNetworkGuard() {
   const { switchChain } = useSwitchChain();
   const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
     if (!isConnected || !chain || !pathname) {
@@ -28,15 +29,26 @@ export default function RouteNetworkGuard() {
     const routeConfig = ROUTE_CHAIN_MAP[pathname];
     if (routeConfig && chain.id !== routeConfig.chainId) {
       setShowPrompt(true);
-
-      // Auto-prompt wallet to switch networks
-      if (switchChain) {
-        switchChain({ chainId: routeConfig.chainId });
-      }
     } else {
       setShowPrompt(false);
     }
-  }, [chain, isConnected, pathname, switchChain]);
+  }, [chain, isConnected, pathname]);
+
+  const handleSwitchNetwork = async () => {
+    const routeConfig = ROUTE_CHAIN_MAP[pathname];
+    if (!routeConfig || !switchChain) return;
+
+    setIsSwitching(true);
+    try {
+      await switchChain({ chainId: routeConfig.chainId });
+      console.log(`Switched to ${routeConfig.name}`);
+    } catch (error) {
+      console.error('Failed to switch network:', error);
+      alert(`Failed to switch network. Please manually switch to ${routeConfig.name} in your wallet.`);
+    } finally {
+      setIsSwitching(false);
+    }
+  };
 
   if (!showPrompt || !pathname) return null;
 
@@ -100,32 +112,40 @@ export default function RouteNetworkGuard() {
         </div>
 
         <button
-          onClick={() => switchChain && switchChain({ chainId: routeConfig.chainId })}
+          onClick={handleSwitchNetwork}
+          disabled={isSwitching}
           style={{
             padding: '16px 32px',
-            background: 'linear-gradient(135deg, #000, #333)',
+            background: isSwitching
+              ? 'linear-gradient(135deg, #555, #777)'
+              : 'linear-gradient(135deg, #000, #333)',
             color: '#ff8c00',
             border: '3px solid #000',
             borderRadius: '12px',
-            cursor: 'pointer',
+            cursor: isSwitching ? 'not-allowed' : 'pointer',
             fontFamily: 'Orbitron, sans-serif',
             fontWeight: 'bold',
             fontSize: '18px',
             textTransform: 'uppercase',
             transition: 'all 0.3s ease',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
-            width: '100%'
+            width: '100%',
+            opacity: isSwitching ? 0.7 : 1
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, #333, #555)';
-            e.currentTarget.style.transform = 'scale(1.05)';
+            if (!isSwitching) {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #333, #555)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'linear-gradient(135deg, #000, #333)';
-            e.currentTarget.style.transform = 'scale(1)';
+            if (!isSwitching) {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #000, #333)';
+              e.currentTarget.style.transform = 'scale(1)';
+            }
           }}
         >
-          🔄 Switch to {routeConfig.name}
+          {isSwitching ? '⏳ Switching...' : `🔄 Switch to ${routeConfig.name}`}
         </button>
       </div>
 
