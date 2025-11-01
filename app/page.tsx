@@ -329,7 +329,7 @@ export default function MothershipPage() {
           <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
 
           {/* Gauge above Portal buttons */}
-          <div className="tachometer" style={{position: 'absolute', top: '20%', right: '15%', transform: 'translateX(50%)'}}>
+          <div className="tachometer" style={{position: 'absolute', top: '25%', right: '50%', transform: 'translateX(50%)'}}>
             <svg width="70" height="70" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
               <circle cx="50" cy="50" r="30" fill="none" stroke="#333" strokeWidth="1"/>
@@ -377,7 +377,7 @@ export default function MothershipPage() {
           <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
 
           {/* Gauge above Leaderboard buttons */}
-          <div className="tachometer" style={{position: 'absolute', top: '20%', left: '15%', transform: 'translateX(-50%)'}}>
+          <div className="tachometer" style={{position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)'}}>
             <svg width="70" height="70" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
               <circle cx="50" cy="50" r="30" fill="none" stroke="#333" strokeWidth="1"/>
