@@ -130,7 +130,7 @@ export default function AlienBadgeMinter() {
             return (
               <div
                 key={badge.id}
-                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                className={`p-6 rounded-lg border-2 transition-all duration-300 ${
                   isMintedBadge
                     ? "bg-green-900/30 border-green-500"
                     : isLocked

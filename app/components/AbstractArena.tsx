@@ -271,7 +271,7 @@ export default function AbstractArena() {
 
       {/* Network Warning */}
       {!isOnAbstract && (
-        <div className="w-full p-6 bg-red-900/30 border border-red-500 rounded-xl text-center">
+        <div className="w-full p-6 bg-red-900/30 border border-red-500 rounded-lg text-center">
           <p className="text-red-400 font-bold text-xl mb-4">⚠️ Wrong Network</p>
           <p className="text-gray-300 mb-4">
             Please switch to an Abstract network. Use the network switcher in your wallet (top right) to select Abstract or Abstract Testnet.
@@ -281,7 +281,7 @@ export default function AbstractArena() {
 
       {/* Testnet Warning for Mainnet Users */}
       {isOnAbstract && !isCorrectNetwork && (
-        <div className="w-full p-6 bg-yellow-900/30 border border-yellow-500 rounded-xl text-center">
+        <div className="w-full p-6 bg-yellow-900/30 border border-yellow-500 rounded-lg text-center">
           <p className="text-yellow-400 font-bold text-xl mb-4">⚠️ Arena on Testnet Only</p>
           <p className="text-gray-300 mb-4">
             You're on Abstract Mainnet, but the arena contracts are deployed on Abstract Testnet. Switch to testnet to play!
@@ -326,11 +326,11 @@ export default function AbstractArena() {
 
       {/* Contract Info */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-black/40 p-4 rounded-xl border border-cyan-500/30">
+        <div className="bg-black/40 p-4 rounded-lg border border-cyan-500/30">
           <p className="text-cyan-400 font-bold mb-2">🎮 Total Battles</p>
           <p className="text-white text-3xl font-bold">{totalBattles}</p>
         </div>
-        <div className="bg-black/40 p-4 rounded-xl border border-purple-500/30">
+        <div className="bg-black/40 p-4 rounded-lg border border-purple-500/30">
           <p className="text-purple-400 font-bold mb-2">👽 Your Fighters</p>
           <p className="text-white text-3xl font-bold">{nftBalance}</p>
           {nftBalance > 0 && (
@@ -349,7 +349,7 @@ export default function AbstractArena() {
             🔄 Refresh
           </button>
         </div>
-        <div className="bg-black/40 p-4 rounded-xl border border-orange-500/30">
+        <div className="bg-black/40 p-4 rounded-lg border border-orange-500/30">
           <p className="text-orange-400 font-bold mb-2">⏳ Queue Status</p>
           <p className="text-white text-xl font-bold">
             {hasQueuedFighter ? '🔴 Fighter Waiting' : '🟢 Empty'}
@@ -372,7 +372,7 @@ export default function AbstractArena() {
               <button
                 key={alienType}
                 onClick={() => setSelectedAlienType(alienType)}
-                className={`p-2 rounded-xl border-2 transition-all ${
+                className={`p-2 rounded-lg border-2 transition-all ${
                   selectedAlienType === alienType
                     ? 'border-cyan-400 bg-cyan-900/50 scale-105 shadow-lg shadow-cyan-500/50'
                     : 'border-gray-600 bg-black/40 hover:border-gray-400'
@@ -400,7 +400,7 @@ export default function AbstractArena() {
                 handleMint();
               }}
               disabled={isMinting || !isConnected || !isCorrectNetwork}
-              className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-xl rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/50"
+              className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-xl rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/50"
             >
               {isMinting ? '⏳ Minting...' : `🎲 Mint ${selectedAlienType.toUpperCase()} (${MINT_FEE} ETH)`}
             </button>
@@ -465,7 +465,7 @@ export default function AbstractArena() {
           )}
 
           {hasQueuedFighter && queuedFighter ? (
-            <div className={`bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-6 border-4 ${
+            <div className={`bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-lg p-6 border-4 ${
               isDragOver ? 'border-cyan-400 shadow-lg shadow-cyan-500/50' : 'border-purple-400'
             }`}>
               <p className="text-purple-400 font-bold text-xl mb-4 text-center">
@@ -500,7 +500,7 @@ export default function AbstractArena() {
                   <button
                     onClick={() => handleEnterArena()}
                     disabled={isEntering || nftBalance === 0}
-                    className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-xl rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-xl rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   >
                     {isEntering ? '⏳ Entering...' : `⚔️ Join Battle (${ENTRY_FEE} ETH)`}
                   </button>
@@ -508,7 +508,7 @@ export default function AbstractArena() {
               )}
             </div>
           ) : (
-            <div className={`bg-black/40 rounded-xl p-8 border-4 border-dashed ${
+            <div className={`bg-black/40 rounded-lg p-8 border-4 border-dashed ${
               isDragOver ? 'border-cyan-400 bg-cyan-900/20' : 'border-gray-600'
             } text-center transition-all`}>
               <p className="text-gray-400 text-xl mb-6">
@@ -522,7 +522,7 @@ export default function AbstractArena() {
               <button
                 onClick={() => handleEnterArena()}
                 disabled={isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xl rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/50"
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xl rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/50"
               >
                 {isEntering ? '⏳ Entering...' : nftBalance === 0 ? '❌ Mint a fighter first' : selectedNFTTokenId === null ? '⚠️ Select a fighter' : `⚔️ Enter Arena (${ENTRY_FEE} ETH)`}
               </button>
@@ -532,7 +532,7 @@ export default function AbstractArena() {
       </div>
 
       {/* How It Works */}
-      <div className="w-full bg-black/40 p-6 rounded-xl border border-cyan-500/30">
+      <div className="w-full bg-black/40 p-6 rounded-lg border border-cyan-500/30">
         <h3 className="text-2xl font-bold text-cyan-400 mb-4 text-center">📖 How It Works</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
@@ -563,7 +563,7 @@ export default function AbstractArena() {
       </div>
 
       {/* Contract Addresses */}
-      <div className="w-full bg-black/40 p-4 rounded-xl border border-gray-600 text-center">
+      <div className="w-full bg-black/40 p-4 rounded-lg border border-gray-600 text-center">
         <p className="text-gray-400 text-xs mb-2">Smart Contract Addresses</p>
         <div className="space-y-1">
           <p className="text-cyan-400 text-xs font-mono">NFT: {NFT_CONTRACT}</p>
