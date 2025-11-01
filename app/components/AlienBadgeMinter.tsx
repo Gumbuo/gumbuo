@@ -168,12 +168,28 @@ export default function AlienBadgeMinter() {
                   <button
                     onClick={() => handleMint(badge.id)}
                     disabled={!canMintBadge || minting}
-                    className={`w-full font-bold py-3 px-6 transition-all duration-300 transform hover:scale-105 shadow-lg ${
-                      canMintBadge
-                        ? `bg-gradient-to-r ${badge.color} hover:shadow-lg text-white`
-                        : "bg-gray-700 text-gray-400 cursor-not-allowed opacity-50"
-                    }`}
-                    style={{ borderRadius: '24px', border: canMintBadge ? '2px solid rgba(255, 255, 255, 0.3)' : '2px solid rgba(107, 114, 128, 0.5)' }}
+                    style={{
+                      width: '100%',
+                      padding: '12px 24px',
+                      background: canMintBadge && !minting
+                        ? `linear-gradient(135deg, ${badge.color.includes('green') ? '#22c55e, #16a34a' : badge.color.includes('blue') ? '#06b6d4, #0891b2' : badge.color.includes('purple') ? '#a855f7, #9333ea' : '#f59e0b, #d97706'})`
+                        : 'rgba(107, 114, 128, 0.5)',
+                      color: '#fff',
+                      border: canMintBadge && !minting
+                        ? `2px solid ${badge.color.includes('green') ? '#22c55e' : badge.color.includes('blue') ? '#06b6d4' : badge.color.includes('purple') ? '#a855f7' : '#f59e0b'}`
+                        : '2px solid rgba(107, 114, 128, 0.5)',
+                      borderRadius: '24px',
+                      cursor: canMintBadge && !minting ? 'pointer' : 'not-allowed',
+                      fontFamily: 'Orbitron, sans-serif',
+                      fontWeight: 'bold',
+                      fontSize: '14px',
+                      textTransform: 'uppercase',
+                      transition: 'all 0.3s ease',
+                      boxShadow: canMintBadge && !minting
+                        ? `0 0 20px ${badge.color.includes('green') ? 'rgba(34, 197, 94, 0.5)' : badge.color.includes('blue') ? 'rgba(6, 182, 212, 0.5)' : badge.color.includes('purple') ? 'rgba(168, 85, 247, 0.5)' : 'rgba(245, 158, 11, 0.5)'}`
+                        : 'none',
+                      opacity: canMintBadge && !minting ? 1 : 0.5
+                    }}
                   >
                     {minting && selectedBadge === badge.id
                       ? "Minting... 🌌"

@@ -234,8 +234,29 @@ export default function AbstractActivityFeed() {
                 onClick={() =>
                   window.open(`https://explorer.abs.xyz/address/${address}`, "_blank")
                 }
-                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 px-6 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
-                style={{ borderRadius: '24px', border: '2px solid rgba(0, 255, 255, 0.5)' }}
+                style={{
+                  width: '100%',
+                  padding: '12px 24px',
+                  background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+                  color: '#fff',
+                  border: '2px solid #06b6d4',
+                  borderRadius: '24px',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 0 20px rgba(6, 182, 212, 0.5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #2563eb)';
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.7)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #3b82f6)';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.5)';
+                }}
               >
                 🔍 View All on Block Explorer
               </button>

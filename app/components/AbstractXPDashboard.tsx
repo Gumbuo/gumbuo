@@ -148,8 +148,29 @@ export default function AbstractXPDashboard() {
         <div className="mb-6">
           <button
             onClick={openAbstractPortal}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
-            style={{ borderRadius: '24px', border: '2px solid rgba(236, 72, 153, 0.5)' }}
+            style={{
+              width: '100%',
+              padding: '16px 32px',
+              background: 'linear-gradient(135deg, #a855f7, #ec4899)',
+              color: '#fff',
+              border: '2px solid #a855f7',
+              borderRadius: '24px',
+              cursor: 'pointer',
+              fontFamily: 'Orbitron, sans-serif',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              textTransform: 'uppercase',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #db2777)';
+              e.currentTarget.style.boxShadow = '0 0 30px rgba(168, 85, 247, 0.7)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #ec4899)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+            }}
           >
             🎖️ View Official Abstract XP & Badges
           </button>
