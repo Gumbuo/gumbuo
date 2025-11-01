@@ -10,7 +10,7 @@ const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const FloatingGumbuo = dynamic(() => import("./components/FloatingGumbuo"), { ssr: false });
 
-type Tab = "portals" | "drip" | "leaderboard" | "socials";
+type Tab = "portals" | "drip" | "leaderboard" | "socials" | "support";
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -28,6 +28,7 @@ export default function MothershipPage() {
     { id: "drip", label: "Drip Claim", emoji: "💧" },
     { id: "leaderboard", label: "Leaderboard", emoji: "🏆" },
     { id: "socials", label: "Socials", emoji: "🌐" },
+    { id: "support", label: "Support", emoji: "🔒" },
   ];
 
   return (
@@ -453,6 +454,65 @@ export default function MothershipPage() {
               <span className="text-yellow-200">You must trigger support for a response. BE SAFE!</span>
             </p>
           </div>
+          </div>
+        )}
+
+        {/* Support Tab */}
+        {activeTab === "support" && (
+          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
+            <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
+              SUPPORT & SAFETY
+            </h2>
+
+            {/* Safety Message */}
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #00ff9944'
+            }} className="max-w-3xl mx-auto bg-yellow-900/40 p-6 backdrop-blur-sm">
+              <p className="text-yellow-300 font-bold text-center text-lg leading-relaxed">
+                🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">AlienOG</span> on Discord or Twitter.
+                <br />
+                <span className="text-red-400 text-xl">⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
+                <br />
+                <span className="text-yellow-200">You must trigger support for a response. BE SAFE!</span>
+              </p>
+            </div>
+
+            {/* Contact Links */}
+            <div className="flex gap-6 mt-4">
+              <a
+                href="https://x.com/gumbuogw3"
+                target="_blank"
+                rel="noopener noreferrer"
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                style={{
+                  fontSize: '2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }}
+                className="bg-blue-500/80 hover:bg-blue-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-blue-400/80 flex items-center gap-3"
+              >
+                <span style={{fontSize: '2.5rem'}}>𝕏</span>
+                <span>Twitter Support</span>
+              </a>
+              <a
+                href="https://discord.gg/NptkDYn8fm"
+                target="_blank"
+                rel="noopener noreferrer"
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                style={{
+                  fontSize: '2rem',
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }}
+                className="bg-purple-500/80 hover:bg-purple-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-purple-400/80 flex items-center gap-3"
+              >
+                <span style={{fontSize: '2.5rem'}}>💬</span>
+                <span>Discord Support</span>
+              </a>
+            </div>
           </div>
         )}
       </div>
