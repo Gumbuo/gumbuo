@@ -345,14 +345,6 @@ export default function MothershipPage() {
               <span className="btn-icon">💧</span> DRIP
               <span className="btn-status"></span>
             </button>
-            <button
-              className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
-              onClick={() => showScene('leaderboard')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              <span className="btn-icon">🏆</span> LEADERBOARD
-              <span className="btn-status"></span>
-            </button>
           </div>
         </div>
 
@@ -369,19 +361,11 @@ export default function MothershipPage() {
 
           <div style={{position: 'absolute', top: '50%', left: '12%', width: '75%', transform: 'translateY(-50%)'}}>
             <button
-              className={`control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
-              onClick={() => showScene('shopify')}
+              className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
+              onClick={() => showScene('leaderboard')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🛒</span> SHOP
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'socials' ? 'active' : ''}`}
-              onClick={() => showScene('socials')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              <span className="btn-icon">🌐</span> SOCIALS
+              <span className="btn-icon">🏆</span> LEADERBOARD
               <span className="btn-status"></span>
             </button>
             <button
@@ -426,6 +410,22 @@ export default function MothershipPage() {
               onMouseEnter={() => playSound('hover')}
             >
               <span className="btn-icon">💰</span> BUY GMB
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
+              onClick={() => showScene('shopify')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🛒</span> SHOP
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'socials' ? 'active' : ''}`}
+              onClick={() => showScene('socials')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🌐</span> SOCIALS
               <span className="btn-status"></span>
             </button>
           </div>
