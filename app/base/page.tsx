@@ -78,8 +78,11 @@ export default function BasePage() {
             height: '100%',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
-            background: '#000'
+            alignItems: 'flex-start',
+            background: '#000',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            padding: '20px 0'
           }}>
             {games.boss.component}
           </div>
