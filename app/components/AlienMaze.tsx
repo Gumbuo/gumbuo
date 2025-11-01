@@ -678,7 +678,7 @@ export default function AlienMaze() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 bg-black/80 rounded-3xl border-2 border-cyan-400 holographic-panel">
+    <div className="flex flex-col items-center justify-center p-4 bg-black/80 border-2 border-cyan-400 holographic-panel" style={{ borderRadius: '40px' }}>
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
       <div className="corner-glow corner-glow-bl"></div>

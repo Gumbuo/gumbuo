@@ -90,7 +90,7 @@ export default function MazeLeaderboard() {
   }
 
   return (
-    <div className="w-full max-w-6xl bg-black/80 border-2 border-cyan-400 rounded-3xl p-8 holographic-panel">
+    <div className="w-full max-w-6xl bg-black/80 border-2 border-cyan-400 p-8 holographic-panel" style={{ borderRadius: '40px' }}>
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
       <div className="corner-glow corner-glow-bl"></div>
