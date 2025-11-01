@@ -84,14 +84,18 @@ export default function MothershipPage() {
                     background: 'linear-gradient(135deg, rgba(0, 153, 255, 0.2), rgba(0, 119, 204, 0.3))',
                     padding: '20px',
                     borderRadius: '20px',
-                    border: '2px solid rgba(0, 153, 255, 0.4)'
+                    border: '3px solid #00d4ff',
+                    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6), inset 0 0 15px rgba(0, 212, 255, 0.2)'
                   }}
                 >
                   <img
                     src="/blueportal.png"
                     alt="Base Chain"
                     className="portal-image"
-                    style={{borderColor: '#0099ff'}}
+                    style={{
+                      borderColor: '#00d4ff',
+                      boxShadow: '0 0 25px rgba(0, 212, 255, 0.8)'
+                    }}
                   />
                   <div className="portal-label">BASE</div>
                 </Link>
@@ -103,14 +107,18 @@ export default function MothershipPage() {
                     background: 'linear-gradient(135deg, rgba(136, 136, 136, 0.2), rgba(102, 102, 102, 0.3))',
                     padding: '20px',
                     borderRadius: '20px',
-                    border: '2px solid rgba(136, 136, 136, 0.4)'
+                    border: '3px solid #e0e0e0',
+                    boxShadow: '0 0 20px rgba(224, 224, 224, 0.6), inset 0 0 15px rgba(224, 224, 224, 0.2)'
                   }}
                 >
                   <img
                     src="/greyportal.png"
                     alt="Blast Chain"
                     className="portal-image"
-                    style={{borderColor: '#888888'}}
+                    style={{
+                      borderColor: '#e0e0e0',
+                      boxShadow: '0 0 25px rgba(224, 224, 224, 0.8)'
+                    }}
                   />
                   <div className="portal-label">BLAST</div>
                 </Link>
@@ -122,14 +130,18 @@ export default function MothershipPage() {
                     background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.2), rgba(0, 204, 122, 0.3))',
                     padding: '20px',
                     borderRadius: '20px',
-                    border: '2px solid rgba(0, 255, 153, 0.4)'
+                    border: '3px solid #00ff99',
+                    boxShadow: '0 0 20px rgba(0, 255, 153, 0.6), inset 0 0 15px rgba(0, 255, 153, 0.2)'
                   }}
                 >
                   <img
                     src="/greenportal.png"
                     alt="Abstract Chain"
                     className="portal-image"
-                    style={{borderColor: '#00ff99'}}
+                    style={{
+                      borderColor: '#00ff99',
+                      boxShadow: '0 0 25px rgba(0, 255, 153, 0.8)'
+                    }}
                   />
                   <div className="portal-label">ABSTRACT</div>
                 </Link>
@@ -141,14 +153,18 @@ export default function MothershipPage() {
                     background: 'linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(204, 34, 34, 0.3))',
                     padding: '20px',
                     borderRadius: '20px',
-                    border: '2px solid rgba(255, 68, 68, 0.4)'
+                    border: '3px solid #ff3366',
+                    boxShadow: '0 0 20px rgba(255, 51, 102, 0.6), inset 0 0 15px rgba(255, 51, 102, 0.2)'
                   }}
                 >
                   <img
                     src="/redportal.png"
                     alt="Arbitrum Chain"
                     className="portal-image"
-                    style={{borderColor: '#ff4444'}}
+                    style={{
+                      borderColor: '#ff3366',
+                      boxShadow: '0 0 25px rgba(255, 51, 102, 0.8)'
+                    }}
                   />
                   <div className="portal-label">ARBITRUM</div>
                 </Link>
