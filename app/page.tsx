@@ -366,73 +366,187 @@ export default function MothershipPage() {
             </svg>
           </div>
 
+          {/* MOTHERSHIP CONTROL PANEL */}
           <div style={{
             position: 'absolute',
-            bottom: '15%',
+            bottom: '8%',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: '90%',
-            display: 'flex',
-            gap: '15px',
-            justifyContent: 'center',
-            flexWrap: 'wrap'
+            width: '95%',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '12px',
+            padding: '0 20px'
           }}>
+            {/* Row 1 */}
             <button
               className={`control-btn ${activeScene === 'portals' ? 'active' : ''}`}
               onClick={() => showScene('portals')}
               onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'portals'
+                  ? 'linear-gradient(135deg, #00ffff, #00cccc)'
+                  : 'linear-gradient(135deg, #00cccc, #008b8b)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.5)',
+                border: '3px solid #00ffff',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'portals'
+                  ? '0 0 25px rgba(0, 255, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
             >
-              PORTALS
+              🌀 PORTALS
               <span className="btn-status"></span>
             </button>
             <button
               className={`control-btn ${activeScene === 'drip' ? 'active' : ''}`}
               onClick={() => showScene('drip')}
               onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'drip'
+                  ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
+                  : 'linear-gradient(135deg, #00cc7a, #008855)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(0, 255, 153, 0.8), 0 0 20px rgba(0, 255, 153, 0.5)',
+                border: '3px solid #00ff99',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'drip'
+                  ? '0 0 25px rgba(0, 255, 153, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
             >
-              ALIEN DRIP
+              💧 ALIEN DRIP
               <span className="btn-status"></span>
             </button>
             <button
               className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
               onClick={() => showScene('leaderboard')}
               onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'leaderboard'
+                  ? 'linear-gradient(135deg, #ffd700, #ffb700)'
+                  : 'linear-gradient(135deg, #ffb700, #cc9200)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5)',
+                border: '3px solid #ffd700',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'leaderboard'
+                  ? '0 0 25px rgba(255, 215, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
             >
-              LEADERBOARD
+              🏆 LEADERBOARD
               <span className="btn-status"></span>
             </button>
-            <button
-              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
-              onClick={() => showScene('support')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              SUPPORT
-              <span className="btn-status"></span>
-            </button>
+
+            {/* Row 2 */}
             <button
               className={`control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
               onClick={() => showScene('buygmb')}
               onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'buygmb'
+                  ? 'linear-gradient(135deg, #0099ff, #0077cc)'
+                  : 'linear-gradient(135deg, #0077cc, #005599)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
+                border: '3px solid #0099ff',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'buygmb'
+                  ? '0 0 25px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
             >
-              BUY GMB
+              💰 BUY GMB
               <span className="btn-status"></span>
             </button>
             <button
               className={`control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
               onClick={() => showScene('shopify')}
               onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'shopify'
+                  ? 'linear-gradient(135deg, #a855f7, #8b5cf6)'
+                  : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.5)',
+                border: '3px solid #a855f7',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'shopify'
+                  ? '0 0 25px rgba(168, 85, 247, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
             >
-              ALIEN GEAR
+              🛒 ALIEN GEAR
               <span className="btn-status"></span>
             </button>
             <button
               className={`control-btn ${activeScene === 'socials' ? 'active' : ''}`}
               onClick={() => showScene('socials')}
               onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'socials'
+                  ? 'linear-gradient(135deg, #ff1493, #dc143c)'
+                  : 'linear-gradient(135deg, #dc143c, #c71585)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(255, 20, 147, 0.8), 0 0 20px rgba(255, 20, 147, 0.5)',
+                border: '3px solid #ff1493',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'socials'
+                  ? '0 0 25px rgba(255, 20, 147, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
             >
-              SOCIALS
+              🌐 SOCIALS
               <span className="btn-status"></span>
             </button>
+
+            {/* Row 3 - Centered Support Button */}
+            <div style={{gridColumn: '1 / -1', display: 'flex', justifyContent: 'center'}}>
+              <button
+                className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
+                onClick={() => showScene('support')}
+                onMouseEnter={() => playSound('hover')}
+                style={{
+                  background: activeScene === 'support'
+                    ? 'linear-gradient(135deg, #ff8c00, #ff6500)'
+                    : 'linear-gradient(135deg, #ff6500, #cc5200)',
+                  color: '#000',
+                  textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
+                  border: '3px solid #ff8c00',
+                  borderRadius: '8px',
+                  padding: '14px 32px',
+                  fontSize: '0.85rem',
+                  fontWeight: 'bold',
+                  width: 'auto',
+                  boxShadow: activeScene === 'support'
+                    ? '0 0 25px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                    : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                }}
+              >
+                🔒 SUPPORT
+                <span className="btn-status"></span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
