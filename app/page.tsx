@@ -8,571 +8,807 @@ import { useCosmicSound } from "./hooks/useCosmicSound";
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
-const FloatingGumbuo = dynamic(() => import("./components/FloatingGumbuo"), { ssr: false });
 
-type Tab = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
+type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<Tab>("portals");
+  const [activeScene, setActiveScene] = useState<Scene>("portals");
   const { playSound } = useCosmicSound();
 
   useEffect(() => {
     setMounted(true);
+    createStars();
   }, []);
+
+  const createStars = () => {
+    const space = document.getElementById('space-scene');
+    if (!space) return;
+
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement('div');
+      star.className = 'space-star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.width = Math.random() * 3 + 1 + 'px';
+      star.style.height = star.style.width;
+      star.style.animationDelay = Math.random() * 3 + 's';
+      space.appendChild(star);
+    }
+  };
+
+  const showScene = (scene: Scene) => {
+    playSound('click');
+    setActiveScene(scene);
+  };
 
   if (!mounted) return null;
 
-  const tabs = [
-    { id: "portals", label: "Portals", emoji: "🌀" },
-    { id: "drip", label: "Drip Claim", emoji: "💧" },
-    { id: "leaderboard", label: "Leaderboard", emoji: "🏆" },
-    { id: "buygmb", label: "Buy GMB", emoji: "💰" },
-    { id: "shopify", label: "Shop", emoji: "🛒" },
-    { id: "socials", label: "Socials", emoji: "🌐" },
-    { id: "support", label: "Support", emoji: "🔒" },
-  ];
-
   return (
-    <div className="min-h-screen bg-black relative overflow-y-auto">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover opacity-40"
-        >
-          <source src="/alien.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
-      </div>
-
-      {/* Top Right - Connect Button and HUD */}
-      <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
-        {/* Wallet Connect Button with Alien Styling */}
-        <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
-        }} className="holographic-panel glass-panel p-4">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <div className="relative z-10">
-            <ConnectButton />
+    <>
+      <div className="cockpit">
+        {/* Top Right - Connect Button and HUD */}
+        <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 100}} className="flex flex-col items-end space-y-4">
+          {/* Wallet Connect Button with Alien Styling */}
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="holographic-panel glass-panel p-4">
+            <div className="corner-glow corner-glow-tl"></div>
+            <div className="corner-glow corner-glow-tr"></div>
+            <div className="corner-glow corner-glow-bl"></div>
+            <div className="corner-glow corner-glow-br"></div>
+            <div className="relative z-10">
+              <ConnectButton />
+            </div>
           </div>
+
+          {/* Alien HUD */}
+          <AlienHUD />
         </div>
 
-        {/* Alien HUD */}
-        <AlienHUD />
-      </div>
+        {/* Central Viewport Window */}
+        <div className="main-viewport">
+          {/* Scene 1: Space with Floating Portals (DEFAULT) */}
+          <div id="scene-portals" className={`viewport-scene ${activeScene !== 'portals' ? 'hidden' : ''}`}>
+            <div className="space-scene" id="space-scene">
+              {/* Floating Blockchain Portals using PNG images */}
+              <Link href="/base" className="portal-floating base">
+                <img src="/nyx.png" alt="Base Chain" className="portal-image" />
+                <div className="portal-label">BASE</div>
+              </Link>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center">
-        {/* Title */}
-        <h1 className="font-alien mb-4 holographic-text tracking-wider animate-pulse text-cyan-400 flex items-center justify-center gap-4" style={{
-          fontSize: '4rem',
-          textShadow: '0 0 30px #00ff99, 0 0 60px #00ff99, 0 0 90px #00ff99',
-          animation: 'pulse 3s ease-in-out infinite'
-        }}>
-          <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '80px', height: '80px', objectFit: 'cover', animationDuration: '2s'}} />
-          GUMBUO'S MOTHERSHIP
-          <img src="/j3d1.png" alt="J3D1" className="animate-bounce" style={{width: '80px', height: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-        </h1>
+              <Link href="/abstract" className="portal-floating abstract">
+                <img src="/zorb.png" alt="Abstract Chain" className="portal-image" />
+                <div className="portal-label">ABSTRACT</div>
+              </Link>
 
-        {/* Tab Selector */}
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          padding: '15px',
-          background: 'linear-gradient(to bottom, #1a1a2e, #0f0f1e)',
-          borderBottom: '2px solid #00ff99',
-          borderRadius: '8px 8px 0 0',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          marginBottom: '20px'
-        }}>
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                playSound('click');
-                setActiveTab(tab.id as Tab);
-              }}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                padding: '12px 24px',
-                background: activeTab === tab.id
-                  ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
-                  : 'rgba(0, 255, 153, 0.1)',
-                color: activeTab === tab.id ? '#000' : '#00ff99',
-                border: `2px solid ${activeTab === tab.id ? '#00ff99' : '#00ff9944'}`,
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontFamily: 'Orbitron, sans-serif',
-                fontWeight: 'bold',
-                fontSize: '14px',
-                textTransform: 'uppercase',
-                transition: 'all 0.3s ease',
-                boxShadow: activeTab === tab.id
-                  ? '0 0 20px rgba(0, 255, 153, 0.5)'
-                  : 'none',
-              }}
-            >
-              <span style={{ marginRight: '8px' }}>{tab.emoji}</span>
-              {tab.label}
-            </button>
-          ))}
-        </div>
+              <Link href="/blast" className="portal-floating blast">
+                <img src="/j3d1.jpg" alt="Blast Chain" className="portal-image" />
+                <div className="portal-label">BLAST</div>
+              </Link>
 
-        {/* Portals Tab */}
-        {activeTab === "portals" && (
-          <>
-            {/* Active Chains Header */}
-            <div className="mb-6 text-center">
-              <h2 className="font-alien text-cyan-400 holographic-text flex items-center justify-center gap-4" style={{fontSize: '3rem'}}>
-                <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
-                BLOCKCHAIN PORTAL
-                <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-              </h2>
-              <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">choose your crypto dimension • portal to pvp and boss battles</p>
+              <Link href="/arbitrum" className="portal-floating arbitrum">
+                <img src="/apliean.png" alt="Arbitrum Chain" className="portal-image" />
+                <div className="portal-label">ARBITRUM</div>
+              </Link>
             </div>
-
-            {/* Base Chain Row */}
-            <div className="flex items-center justify-center gap-6 mb-8 max-w-5xl mx-auto px-4">
-          <Link href="/base" className="block flex-shrink-0 w-[280px]">
-            <div
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              style={{
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-purple-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
-            >
-              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 transition-all duration-300"></div>
-
-              <div className="relative z-10">
-                <div className="text-5xl mb-3">⛓️</div>
-                <h2 className="text-3xl font-alien text-blue-300 mb-3 holographic-text">BASE CHAIN</h2>
-
-                <div className="flex justify-center items-center gap-3 mb-4">
-                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-                </div>
-
-                <div className="inline-block px-5 py-2 bg-blue-500/20 rounded-xl text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all text-sm">
-                  ENTER BASE →
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/base" className="flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300">
-            <img
-              src="/blueportal.png"
-              alt="Portal to Base"
-              className="w-[150px] h-auto animate-pulse"
-              style={{
-                animationDuration: '3s',
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-            />
-          </Link>
-        </div>
-
-        {/* Abstract Chain Row */}
-        <div className="flex items-center justify-center gap-6 mb-8 max-w-5xl mx-auto px-4">
-          <Link href="/abstract" className="block flex-shrink-0 w-[280px]">
-            <div
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              style={{
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              className="group relative bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50 w-full"
-            >
-              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/10 transition-all duration-300"></div>
-
-              <div className="relative z-10">
-                <div className="text-5xl mb-3">⚡</div>
-                <h2 className="text-3xl font-alien text-purple-300 mb-3 holographic-text">ABSTRACT CHAIN</h2>
-
-                <div className="flex justify-center items-center gap-3 mb-4">
-                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-                </div>
-
-                <div className="inline-block px-5 py-2 bg-purple-500/20 rounded-xl text-purple-300 font-bold group-hover:bg-purple-500/30 transition-all text-sm">
-                  ENTER ABSTRACT →
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/abstract" className="flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300">
-            <img
-              src="/greenportal.png"
-              alt="Portal to Abstract"
-              className="w-[150px] h-auto animate-pulse"
-              style={{
-                animationDuration: '3s',
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-            />
-          </Link>
-        </div>
-
-        {/* Blast Chain Row */}
-        <div className="flex items-center justify-center gap-6 mb-8 max-w-5xl mx-auto px-4">
-          <Link href="/blast" className="block flex-shrink-0 w-[280px]">
-            <div
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              style={{
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              className="group relative bg-gradient-to-br from-yellow-900/40 to-red-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/50 w-full"
-            >
-              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-yellow-500/0 group-hover:bg-yellow-500/10 transition-all duration-300"></div>
-
-              <div className="relative z-10">
-                <div className="text-5xl mb-3">💥</div>
-                <h2 className="text-3xl font-alien text-yellow-300 mb-3 holographic-text">BLAST CHAIN</h2>
-
-                <div className="flex justify-center items-center gap-3 mb-4">
-                  <img src="/apelian.png" alt="Apelian" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/baob.png" alt="Baob" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-                </div>
-
-                <div className="inline-block px-5 py-2 bg-yellow-500/20 rounded-xl text-yellow-300 font-bold group-hover:bg-yellow-500/30 transition-all text-sm">
-                  ENTER BLAST →
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/blast" className="flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300">
-            <img
-              src="/greyportal.png"
-              alt="Portal to Blast"
-              className="w-[150px] h-auto animate-pulse"
-              style={{
-                animationDuration: '3s',
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-            />
-          </Link>
-        </div>
-
-        {/* Arbitrum Chain Row */}
-        <div className="flex items-center justify-center gap-6 mb-8 max-w-5xl mx-auto px-4">
-          <Link href="/arbitrum" className="block flex-shrink-0 w-[280px]">
-            <div
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              style={{
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              className="group relative bg-gradient-to-br from-blue-900/40 to-cyan-900/40 p-4 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 w-full"
-            >
-              <div style={{borderRadius: '8px'}} className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 transition-all duration-300"></div>
-
-              <div className="relative z-10">
-                <div className="text-5xl mb-3">🔷</div>
-                <h2 className="text-3xl font-alien text-blue-300 mb-3 holographic-text">ARBITRUM</h2>
-
-                <div className="flex justify-center items-center gap-3 mb-4">
-                  <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
-                  <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-                </div>
-
-                <div className="inline-block px-5 py-2 bg-blue-500/20 rounded-xl text-blue-300 font-bold group-hover:bg-blue-500/30 transition-all text-sm">
-                  ENTER ARBITRUM →
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/arbitrum" className="flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300">
-            <img
-              src="/redportal.png"
-              alt="Portal to Arbitrum"
-              className="w-[150px] h-auto animate-pulse"
-              style={{
-                animationDuration: '3s',
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-            />
-          </Link>
-            </div>
-
-            {/* FoxHole Productions Credit */}
-            <div className="flex justify-center mt-16 mb-8">
-              <div className="flex items-center space-x-3 bg-black/60 backdrop-blur-sm px-6 py-3 rounded-xl border border-green-400/30 shadow-lg shadow-green-400/20">
-                <div style={{width: '48px', height: '48px', minWidth: '48px', minHeight: '48px', maxWidth: '48px', maxHeight: '48px', overflow: 'hidden'}}>
-                  <img
-                    src="/foxholeproductions.jpg"
-                    alt="FoxHole Productions"
-                    className="rounded-lg"
-                    style={{width: '48px', height: '48px', objectFit: 'cover', display: 'block'}}
-                  />
-                </div>
-                <div className="text-center">
-                  <p className="text-green-400 font-bold text-xl font-alien holographic-text">FoxHole Productions</p>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Drip Claim Tab */}
-        {activeTab === "drip" && (
-          <div className="flex flex-col items-center mt-8">
-            <h2 className="font-alien text-cyan-400 holographic-text mb-6 text-center" style={{fontSize: '3rem'}}>
-              CLAIM ALL DRIPS HERE<br />FREE AND EARNED
-            </h2>
-            <AlienDripStation />
           </div>
-        )}
 
-        {/* Leaderboard Tab */}
-        {activeTab === "leaderboard" && (
-          <div className="flex justify-center mt-8">
-            <AlienLeaderboard />
+          {/* Scene 2: Drip Claim */}
+          <div id="scene-drip" className={`viewport-scene ${activeScene !== 'drip' ? 'hidden' : ''}`}>
+            <div className="content-scene">
+              <h2 className="scene-title">💧 Drip Station 💧</h2>
+              <div className="scene-subtitle">Claim all drips here - free and earned</div>
+              <AlienDripStation />
+            </div>
           </div>
-        )}
 
-        {/* Buy GMB Tab */}
-        {activeTab === "buygmb" && (
-          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
-            <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
-              BUY GMB TOKEN
-            </h2>
+          {/* Scene 3: Leaderboard */}
+          <div id="scene-leaderboard" className={`viewport-scene ${activeScene !== 'leaderboard' ? 'hidden' : ''}`}>
+            <div className="content-scene">
+              <h2 className="scene-title">🏆 First Timer Leaderboard 🏆</h2>
+              <AlienLeaderboard />
+            </div>
+          </div>
 
-            {/* Base Chain Buy Button */}
-            <div className="flex flex-col items-center space-y-2">
-              <div className="flex items-center justify-center space-x-4">
-                <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
+          {/* Scene 4: Buy GMB */}
+          <div id="scene-buygmb" className={`viewport-scene ${activeScene !== 'buygmb' ? 'hidden' : ''}`}>
+            <div className="content-scene" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+              <h2 className="scene-title">💰 Buy GMB Token 💰</h2>
+
+              <div style={{display: 'flex', alignItems: 'center', gap: '20px', marginTop: '40px'}}>
+                <img src="/nyx.png" alt="Nyx" style={{width: '60px', height: '60px', animation: 'portalFloat 2s ease-in-out infinite'}} />
                 <a
                   href="https://thirdweb.com/base/0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0"
                   target="_blank"
                   rel="noopener noreferrer"
                   onMouseEnter={() => playSound('hover')}
                   onClick={() => playSound('click')}
-                  style={{
-                    fontSize: '2rem',
-                    borderRadius: '8px',
-                    border: '2px solid #00ff9944'
-                  }}
-                  className="inline-block px-12 py-4 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-blue-500/50"
+                  className="portal-action-btn"
+                  style={{fontSize: '1.5rem'}}
                 >
-                  Buy GMB (Base)
+                  Buy GMB on Base
                 </a>
-                <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+                <img src="/zorb.png" alt="Zorb" style={{width: '60px', height: '60px', animation: 'portalFloat 2s ease-in-out infinite', animationDelay: '0.5s'}} />
               </div>
-              <p className="text-blue-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
-            </div>
-
-            {/* Abstract Chain Buy Button - HIDDEN (keep for later) */}
-            <div className="hidden flex flex-col items-center space-y-2">
-              <div className="flex items-center justify-center space-x-4">
-                <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s'}} />
-                <a
-                  href="https://thirdweb.com/abstract/0x1660AA473D936029C7659e7d047F05EcF28D40c9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onMouseEnter={() => playSound('hover')}
-                  onClick={() => playSound('click')}
-                  className="inline-block px-12 py-4 bg-purple-500 text-white font-bold rounded-xl hover:bg-purple-600 transition-all duration-200 tracking-wider hover:scale-105 shadow-lg shadow-purple-500/50"
-                  style={{fontSize: '2rem'}}
-                >
-                  Buy GMB (Abstract)
-                </a>
-                <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-              </div>
-              <p className="text-purple-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
+              <p style={{color: '#00ffff', fontSize: '1.2rem', marginTop: '20px', fontWeight: 'bold', animation: 'pulse 2s ease-in-out infinite'}}>
+                👆 LIVE NOW 👆
+              </p>
             </div>
           </div>
-        )}
 
-        {/* Shopify Tab */}
-        {activeTab === "shopify" && (
-          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
-            <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
-              ALIEN GEAR SHOP
-            </h2>
+          {/* Scene 5: Shopify */}
+          <div id="scene-shopify" className={`viewport-scene ${activeScene !== 'shopify' ? 'hidden' : ''}`}>
+            <div className="content-scene" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '60px'}}>
+              <h2 className="scene-title">🛒 Alien Gear Shop 🛒</h2>
 
-            {/* Coming Soon Message */}
-            <div style={{
-              borderRadius: '8px',
-              border: '2px solid #00ff9944',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.2))'
-            }} className="max-w-3xl mx-auto p-8 backdrop-blur-sm">
-              <div className="text-center space-y-4">
-                <div className="text-6xl animate-bounce" style={{animationDuration: '2s'}}>
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.3))',
+                border: '3px solid rgba(139, 92, 246, 0.5)',
+                borderRadius: '20px',
+                padding: '50px',
+                textAlign: 'center',
+                maxWidth: '600px'
+              }}>
+                <div style={{fontSize: '5rem', marginBottom: '20px', animation: 'portalFloat 2s ease-in-out infinite'}}>
                   👽🛒👕
                 </div>
-                <h3 className="text-yellow-400 text-4xl font-bold font-alien animate-pulse">
+                <h3 style={{
+                  color: '#ffff00',
+                  fontSize: '3rem',
+                  fontWeight: 'bold',
+                  marginBottom: '30px',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                  textShadow: '0 0 20px rgba(255, 255, 0, 0.8)'
+                }}>
                   COMING SOON!
                 </h3>
-                <div className="space-y-3 text-purple-300 text-xl">
-                  <p className="font-bold">🎁 Win Exclusive Alien Gear!</p>
-                  <p className="text-lg">Get Shopify discount codes</p>
-                  <p className="text-2xl font-bold text-green-400">Pay Shipping & Handling ONLY!</p>
-                </div>
-                <div className="mt-6 pt-6 border-t border-purple-500/30">
-                  <p className="text-cyan-400 text-base opacity-90">
+                <div style={{fontSize: '1.3rem', color: '#e0b3ff', lineHeight: '2'}}>
+                  <p style={{fontWeight: 'bold', marginBottom: '10px'}}>🎁 Win Exclusive Alien Gear!</p>
+                  <p>Get Shopify discount codes</p>
+                  <p style={{fontSize: '1.5rem', fontWeight: 'bold', color: '#00ff00', marginTop: '15px'}}>
+                    Pay Shipping & Handling ONLY!
+                  </p>
+                  <p style={{marginTop: '30px', color: '#00ffff', fontSize: '1.1rem'}}>
                     Stay tuned for merch drops, giveaways, and exclusive alien apparel! 🚀
                   </p>
                 </div>
               </div>
             </div>
           </div>
-        )}
 
-        {/* Socials Tab */}
-        {activeTab === "socials" && (
-          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
-          <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
-            SOCIAL LINKS
-          </h2>
+          {/* Scene 6: Socials */}
+          <div id="scene-socials" className={`viewport-scene ${activeScene !== 'socials' ? 'hidden' : ''}`}>
+            <div className="content-scene" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+              <h2 className="scene-title">🌐 Social Links 🌐</h2>
 
-          {/* Social Links */}
-          <div className="flex gap-6 mt-4">
-            <a
-              href="https://x.com/gumbuogw3"
-              target="_blank"
-              rel="noopener noreferrer"
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              style={{
-                fontSize: '2rem',
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              className="bg-blue-500/80 hover:bg-blue-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-blue-400/80 flex items-center gap-3"
-            >
-              <span style={{fontSize: '2.5rem'}}>𝕏</span>
-              <span>Twitter</span>
-            </a>
-            <a
-              href="https://discord.gg/NptkDYn8fm"
-              target="_blank"
-              rel="noopener noreferrer"
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              style={{
-                fontSize: '2rem',
-                borderRadius: '8px',
-                border: '2px solid #00ff9944'
-              }}
-              className="bg-purple-500/80 hover:bg-purple-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-purple-400/80 flex items-center gap-3"
-            >
-              <span style={{fontSize: '2.5rem'}}>💬</span>
-              <span>Discord</span>
-            </a>
+              <div style={{display: 'flex', gap: '30px', marginTop: '40px'}}>
+                <a
+                  href="https://x.com/gumbuogw3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  className="portal-action-btn"
+                  style={{fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '10px'}}
+                >
+                  <span style={{fontSize: '2rem'}}>𝕏</span> Twitter
+                </a>
+                <a
+                  href="https://discord.gg/NptkDYn8fm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  className="portal-action-btn"
+                  style={{fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '10px'}}
+                >
+                  <span style={{fontSize: '2rem'}}>💬</span> Discord
+                </a>
+              </div>
+
+              <div style={{
+                marginTop: '50px',
+                background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 140, 0, 0.3))',
+                border: '3px solid rgba(255, 165, 0, 0.5)',
+                borderRadius: '15px',
+                padding: '30px',
+                maxWidth: '600px',
+                textAlign: 'center'
+              }}>
+                <p style={{color: '#ffeb3b', fontSize: '1.1rem', lineHeight: '1.8', fontWeight: 'bold'}}>
+                  🔒 FOR SUPPORT: PM FoxHole or AlienOG on Discord or Twitter.
+                  <br />
+                  <span style={{color: '#ff5555', fontSize: '1.3rem'}}>⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
+                  <br />
+                  You must trigger support for a response. BE SAFE!
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Safety Message */}
+          {/* Scene 7: Support */}
+          <div id="scene-support" className={`viewport-scene ${activeScene !== 'support' ? 'hidden' : ''}`}>
+            <div className="content-scene" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+              <h2 className="scene-title">🔒 Support & Safety 🔒</h2>
+
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 140, 0, 0.3))',
+                border: '3px solid rgba(255, 165, 0, 0.5)',
+                borderRadius: '15px',
+                padding: '40px',
+                maxWidth: '700px',
+                textAlign: 'center',
+                marginBottom: '40px'
+              }}>
+                <p style={{color: '#ffeb3b', fontSize: '1.2rem', lineHeight: '2', fontWeight: 'bold'}}>
+                  🔒 FOR SUPPORT: PM FoxHole or AlienOG on Discord or Twitter.
+                  <br />
+                  <span style={{color: '#ff5555', fontSize: '1.5rem'}}>⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
+                  <br />
+                  You must trigger support for a response. BE SAFE!
+                </p>
+              </div>
+
+              <div style={{display: 'flex', gap: '30px'}}>
+                <a
+                  href="https://x.com/gumbuogw3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  className="portal-action-btn"
+                  style={{fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '10px'}}
+                >
+                  <span style={{fontSize: '2rem'}}>𝕏</span> Twitter Support
+                </a>
+                <a
+                  href="https://discord.gg/NptkDYn8fm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  className="portal-action-btn"
+                  style={{fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '10px'}}
+                >
+                  <span style={{fontSize: '2rem'}}>💬</span> Discord Support
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Overhead Panel */}
+        <div className="overhead-panel steel-panel steel-brushed">
+          <div className="warning-light" style={{top: '20px', left: '50px'}}></div>
+          <div className="warning-light" style={{top: '20px', right: '50px'}}></div>
+          <div className="circuit-line" style={{top: '50%', width: '80%', left: '10%'}}></div>
+
+          {/* Title */}
           <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
-          }} className="mt-6 max-w-3xl mx-auto bg-yellow-900/40 p-6 backdrop-blur-sm">
-            <p className="text-yellow-300 font-bold text-center text-lg leading-relaxed">
-              🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">AlienOG</span> on Discord or Twitter.
-              <br />
-              <span className="text-red-400 text-xl">⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
-              <br />
-              <span className="text-yellow-200">You must trigger support for a response. BE SAFE!</span>
-            </p>
+            position: 'absolute',
+            top: '40%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            textAlign: 'center',
+            width: '100%'
+          }}>
+            <h1 style={{
+              fontFamily: 'Orbitron, sans-serif',
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              color: '#00ffff',
+              textShadow: '0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6)',
+              letterSpacing: '4px',
+              margin: 0
+            }}>
+              GUMBUO MOTHERSHIP
+            </h1>
           </div>
+        </div>
+
+        {/* Left Side Panel with Buttons */}
+        <div className="left-panel steel-panel steel-brushed">
+          <div className="rivet" style={{top: '20px', right: '20px'}}></div>
+          <div className="rivet" style={{top: '50%', right: '20px'}}></div>
+          <div className="rivet" style={{bottom: '20px', right: '20px'}}></div>
+          <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
+
+          <div style={{position: 'absolute', top: '50%', right: '12%', width: '75%', transform: 'translateY(-50%)'}}>
+            <button
+              className={`control-btn ${activeScene === 'portals' ? 'active' : ''}`}
+              onClick={() => showScene('portals')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🌀</span> PORTALS
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'drip' ? 'active' : ''}`}
+              onClick={() => showScene('drip')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">💧</span> DRIP
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
+              onClick={() => showScene('leaderboard')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🏆</span> LEADERBOARD
+              <span className="btn-status"></span>
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Support Tab */}
-        {activeTab === "support" && (
-          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
-            <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
-              SUPPORT & SAFETY
-            </h2>
+        {/* Right Side Panel with Buttons */}
+        <div className="right-panel steel-panel steel-brushed">
+          <div className="rivet" style={{top: '20px', left: '20px'}}></div>
+          <div className="rivet" style={{top: '50%', left: '20px'}}></div>
+          <div className="rivet" style={{bottom: '20px', left: '20px'}}></div>
+          <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
 
-            {/* Safety Message */}
-            <div style={{
-              borderRadius: '8px',
-              border: '2px solid #00ff9944'
-            }} className="max-w-3xl mx-auto bg-yellow-900/40 p-6 backdrop-blur-sm">
-              <p className="text-yellow-300 font-bold text-center text-lg leading-relaxed">
-                🔒 <span className="text-yellow-400">FOR SUPPORT:</span> PM <span className="text-green-400">FoxHole</span> or <span className="text-purple-400">AlienOG</span> on Discord or Twitter.
-                <br />
-                <span className="text-red-400 text-xl">⚠️ WE WILL NEVER PM YOU FIRST ⚠️</span>
-                <br />
-                <span className="text-yellow-200">You must trigger support for a response. BE SAFE!</span>
-              </p>
-            </div>
-
-            {/* Contact Links */}
-            <div className="flex gap-6 mt-4">
-              <a
-                href="https://x.com/gumbuogw3"
-                target="_blank"
-                rel="noopener noreferrer"
-                onMouseEnter={() => playSound('hover')}
-                onClick={() => playSound('click')}
-                style={{
-                  fontSize: '2rem',
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
-                }}
-                className="bg-blue-500/80 hover:bg-blue-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-blue-400/80 flex items-center gap-3"
-              >
-                <span style={{fontSize: '2.5rem'}}>𝕏</span>
-                <span>Twitter Support</span>
-              </a>
-              <a
-                href="https://discord.gg/NptkDYn8fm"
-                target="_blank"
-                rel="noopener noreferrer"
-                onMouseEnter={() => playSound('hover')}
-                onClick={() => playSound('click')}
-                style={{
-                  fontSize: '2rem',
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
-                }}
-                className="bg-purple-500/80 hover:bg-purple-600 px-12 py-4 text-white font-bold transition-all hover:scale-105 shadow-lg hover:shadow-purple-400/80 flex items-center gap-3"
-              >
-                <span style={{fontSize: '2.5rem'}}>💬</span>
-                <span>Discord Support</span>
-              </a>
-            </div>
+          <div style={{position: 'absolute', top: '50%', left: '12%', width: '75%', transform: 'translateY(-50%)'}}>
+            <button
+              className={`control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
+              onClick={() => showScene('shopify')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🛒</span> SHOP
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'socials' ? 'active' : ''}`}
+              onClick={() => showScene('socials')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🌐</span> SOCIALS
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
+              onClick={() => showScene('support')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🔒</span> SUPPORT
+              <span className="btn-status"></span>
+            </button>
           </div>
-        )}
+        </div>
+
+        {/* Front Console with MAIN CONTROLS */}
+        <div className="front-console steel-brushed">
+          <div className="rivet" style={{top: '30px', left: '30px'}}></div>
+          <div className="rivet" style={{top: '30px', right: '30px'}}></div>
+          <div className="rivet" style={{bottom: '40px', left: '30px'}}></div>
+          <div className="rivet" style={{bottom: '40px', right: '30px'}}></div>
+          <div className="circuit-line" style={{top: '20%', width: '80%', left: '10%'}}></div>
+
+          <div style={{
+            position: 'absolute',
+            bottom: '15%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '90%',
+            display: 'flex',
+            gap: '15px',
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+          }}>
+            <button
+              className={`control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
+              onClick={() => showScene('buygmb')}
+              onMouseEnter={() => playSound('hover')}
+              style={{flex: '1', minWidth: '140px', padding: '15px 20px', fontSize: '0.95rem'}}
+            >
+              <span className="btn-icon">💰</span> BUY GMB
+              <span className="btn-status"></span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <style jsx>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        .cockpit {
+          position: relative;
+          width: 100vw;
+          height: 100vh;
+          background: radial-gradient(ellipse at center, #2a2a3a 0%, #0a0a15 100%);
+          overflow: hidden;
+          font-family: 'Courier New', monospace;
+        }
+
+        /* STAINLESS STEEL PANELS */
+        .steel-panel {
+          background: linear-gradient(135deg, #c0c0c8 0%, #8a8a95 25%, #c5c5d0 50%, #7a7a85 75%, #b5b5c0 100%);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .steel-brushed::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 2px);
+          pointer-events: none;
+        }
+
+        /* Central Viewport */
+        .main-viewport {
+          position: absolute;
+          top: 8%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60%;
+          height: 50%;
+          background: #000;
+          border: 12px solid #7a7a85;
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 0 50px rgba(0, 255, 255, 0.4), inset 0 0 50px rgba(0, 0, 0, 0.9), 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .viewport-scene {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          transition: opacity 0.5s;
+        }
+
+        .viewport-scene.hidden {
+          display: none;
+        }
+
+        /* Space Scene */
+        .space-scene {
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(ellipse at center, #0a0a2e 0%, #000000 100%);
+          position: relative;
+          animation: spaceFloat 60s linear infinite;
+        }
+
+        @keyframes spaceFloat {
+          0% { background-position: 0 0; }
+          100% { background-position: -50px -30px; }
+        }
+
+        .space-star {
+          position: absolute;
+          background: white;
+          border-radius: 50%;
+          animation: starTwinkle 3s infinite;
+        }
+
+        @keyframes starTwinkle {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+
+        /* Floating Blockchain Portals using PNG images */
+        .portal-floating {
+          position: absolute;
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s;
+          animation: portalFloat 4s ease-in-out infinite;
+          border: 4px solid rgba(255, 255, 255, 0.4);
+          box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+          overflow: hidden;
+        }
+
+        @keyframes portalFloat {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-15px) scale(1.1); }
+        }
+
+        .portal-floating:hover {
+          transform: scale(1.3) !important;
+          z-index: 10;
+          box-shadow: 0 0 60px rgba(0, 255, 255, 1);
+        }
+
+        .portal-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+
+        .portal-label {
+          position: absolute;
+          bottom: -35px;
+          font-size: 0.9rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: #fff;
+          text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6);
+          background: rgba(0, 0, 0, 0.7);
+          padding: 5px 15px;
+          border-radius: 5px;
+          border: 2px solid #00ffff;
+        }
+
+        .portal-floating.base {
+          top: 20%;
+          left: 15%;
+          animation-delay: 0s;
+        }
+
+        .portal-floating.blast {
+          top: 25%;
+          right: 20%;
+          animation-delay: 1s;
+        }
+
+        .portal-floating.abstract {
+          bottom: 25%;
+          left: 20%;
+          animation-delay: 2s;
+        }
+
+        .portal-floating.arbitrum {
+          bottom: 20%;
+          right: 15%;
+          animation-delay: 1.5s;
+        }
+
+        /* Content Display Scenes */
+        .content-scene {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+          padding: 30px;
+          overflow-y: auto;
+        }
+
+        .scene-title {
+          font-size: 2rem;
+          color: #00ffff;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 3px;
+          text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+          margin-bottom: 10px;
+          font-family: 'Orbitron', sans-serif;
+        }
+
+        .scene-subtitle {
+          font-size: 1.1rem;
+          color: #00ff99;
+          text-align: center;
+          margin-bottom: 20px;
+          font-family: 'Orbitron', sans-serif;
+        }
+
+        .portal-action-btn {
+          padding: 15px 40px;
+          background: linear-gradient(135deg, #00ffff, #0099cc);
+          border: none;
+          border-radius: 8px;
+          color: #000;
+          font-size: 1.2rem;
+          font-weight: bold;
+          cursor: pointer;
+          text-transform: uppercase;
+          transition: all 0.3s;
+          box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        .portal-action-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Left Side Panel */
+        .left-panel {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 25%;
+          height: 100%;
+          transform-origin: right center;
+          transform: perspective(800px) rotateY(25deg) translateX(-10%);
+          border-right: 8px solid #5a5a65;
+          box-shadow: inset -10px 0 30px rgba(0, 0, 0, 0.6), 10px 0 50px rgba(0, 0, 0, 0.7);
+          z-index: 5;
+        }
+
+        /* Right Side Panel */
+        .right-panel {
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: 25%;
+          height: 100%;
+          transform-origin: left center;
+          transform: perspective(800px) rotateY(-25deg) translateX(10%);
+          border-left: 8px solid #5a5a65;
+          box-shadow: inset 10px 0 30px rgba(0, 0, 0, 0.6), -10px 0 50px rgba(0, 0, 0, 0.7);
+          z-index: 5;
+        }
+
+        /* Overhead Panel */
+        .overhead-panel {
+          position: absolute;
+          top: 0;
+          left: 25%;
+          width: 50%;
+          height: 15%;
+          transform-origin: center bottom;
+          transform: perspective(800px) rotateX(-30deg) translateY(-20%);
+          border-bottom: 6px solid #5a5a65;
+          box-shadow: inset 0 -10px 30px rgba(0, 0, 0, 0.6), 0 15px 40px rgba(0, 0, 0, 0.7);
+          z-index: 4;
+        }
+
+        /* Front Console */
+        .front-console {
+          position: absolute;
+          bottom: 0;
+          left: 20%;
+          width: 60%;
+          height: 35%;
+          background: linear-gradient(180deg, #9a9aa5 0%, #6a6a75 50%, #5a5a65 100%);
+          transform-origin: center top;
+          transform: perspective(600px) rotateX(30deg);
+          border-top: 8px solid #7a7a85;
+          border-radius: 20px 20px 0 0;
+          box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.6), 0 -20px 50px rgba(0, 0, 0, 0.8);
+          z-index: 10;
+        }
+
+        .rivet {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: radial-gradient(circle, #888, #333);
+          border-radius: 50%;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Physical Control Buttons */
+        .control-btn {
+          padding: 14px 22px;
+          background: linear-gradient(180deg, #9a9aa5, #6a6a75);
+          border: none;
+          border-radius: 6px;
+          color: #000;
+          font-size: 0.9rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          cursor: pointer;
+          transition: all 0.2s;
+          width: 100%;
+          margin: 10px 0;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+          position: relative;
+        }
+
+        .control-btn:hover {
+          background: linear-gradient(180deg, #aaaaaf, #7a7a85);
+          transform: translateY(-2px);
+          box-shadow: 0 5px 12px rgba(0, 255, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .control-btn:active {
+          transform: translateY(2px);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .control-btn.active {
+          background: linear-gradient(180deg, #00ffff, #0099cc);
+          color: #000;
+          box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-icon {
+          font-size: 1.2rem;
+          margin-right: 5px;
+        }
+
+        .btn-status {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          width: 8px;
+          height: 8px;
+          background: #00ff00;
+          border-radius: 50%;
+          box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+          animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+
+        /* Warning Lights */
+        .warning-light {
+          position: absolute;
+          width: 15px;
+          height: 15px;
+          background: #ff0000;
+          border-radius: 50%;
+          box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+          animation: warningBlink 1s infinite;
+        }
+
+        @keyframes warningBlink {
+          0%, 50%, 100% { opacity: 1; }
+          25%, 75% { opacity: 0.2; }
+        }
+
+        /* Circuit Lines */
+        .circuit-line {
+          position: absolute;
+          background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+          height: 2px;
+          animation: circuitFlow 4s linear infinite;
+        }
+
+        @keyframes circuitFlow {
+          0% { transform: translateX(-100%); opacity: 0; }
+          50% { opacity: 1; }
+          100% { transform: translateX(200%); opacity: 0; }
+        }
+
         @keyframes pulse {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.8; }
+          50% { opacity: 0.5; }
+        }
+
+        /* Scrollbar styling */
+        .content-scene::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .content-scene::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 4px;
+        }
+
+        .content-scene::-webkit-scrollbar-thumb {
+          background: rgba(0, 255, 255, 0.3);
+          border-radius: 4px;
+        }
+
+        .content-scene::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+          .left-panel, .right-panel { width: 20%; }
+          .main-viewport { width: 60%; }
+        }
+
+        @media (max-width: 768px) {
+          .control-btn { font-size: 0.7rem; padding: 10px 15px; }
+          .portal-floating { width: 100px; height: 100px; }
+          .portal-label { font-size: 0.7rem; }
         }
       `}</style>
-    </div>
+    </>
   );
 }
