@@ -344,8 +344,29 @@ export default function AbstractArena() {
               refetchBalance();
               playSound('click');
             }}
-            className="mt-2 px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white text-xs font-bold transition-all shadow-lg hover:shadow-purple-500/50"
-            style={{ borderRadius: '24px', border: '2px solid rgba(168, 85, 247, 0.5)' }}
+            style={{
+              padding: '8px 16px',
+              background: 'linear-gradient(135deg, #a855f7, #9333ea)',
+              color: '#fff',
+              border: '2px solid #a855f7',
+              borderRadius: '24px',
+              cursor: 'pointer',
+              fontFamily: 'Orbitron, sans-serif',
+              fontWeight: 'bold',
+              fontSize: '12px',
+              textTransform: 'uppercase',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 0 15px rgba(168, 85, 247, 0.5)',
+              marginTop: '8px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #7e22ce)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(168, 85, 247, 0.7)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #9333ea)';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(168, 85, 247, 0.5)';
+            }}
           >
             🔄 Refresh
           </button>
@@ -401,8 +422,39 @@ export default function AbstractArena() {
                 handleMint();
               }}
               disabled={isMinting || !isConnected || !isCorrectNetwork}
-              className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-cyan-500/50"
-              style={{ borderRadius: '24px', border: '2px solid rgba(0, 255, 255, 0.5)' }}
+              style={{
+                padding: '16px 32px',
+                background: isMinting || !isConnected || !isCorrectNetwork
+                  ? 'rgba(107, 114, 128, 0.5)'
+                  : 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
+                color: '#fff',
+                border: isMinting || !isConnected || !isCorrectNetwork
+                  ? '2px solid rgba(107, 114, 128, 0.5)'
+                  : '2px solid #06b6d4',
+                borderRadius: '24px',
+                cursor: isMinting || !isConnected || !isCorrectNetwork ? 'not-allowed' : 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                textTransform: 'uppercase',
+                transition: 'all 0.3s ease',
+                boxShadow: isMinting || !isConnected || !isCorrectNetwork
+                  ? 'none'
+                  : '0 0 20px rgba(6, 182, 212, 0.5)',
+                opacity: isMinting || !isConnected || !isCorrectNetwork ? 0.5 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!isMinting && isConnected && isCorrectNetwork) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #7c3aed)';
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.7)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isMinting && isConnected && isCorrectNetwork) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #8b5cf6)';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.5)';
+                }
+              }}
             >
               {isMinting ? '⏳ Minting...' : `🎲 Mint ${selectedAlienType.toUpperCase()} (${MINT_FEE} ETH)`}
             </button>
