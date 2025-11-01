@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 // Available music tracks
 const TRACKS = [
   { id: 1, name: "👽 Alien Vibes", file: "/demon.mp3", emoji: "👽" },
-  { id: 2, name: "🌌 Space Odyssey", file: "/ggumbuobeets.mp3", emoji: "🌌" },
+  { id: 2, name: "🌌 Space Odyssey", file: "/gumbuobeets.mp3", emoji: "🌌" },
   { id: 3, name: "🛸 UFO Transmission", file: "/success.mp3", emoji: "🛸" },
   { id: 4, name: "⭐ Cosmic Energy", file: "/arena.mp3", emoji: "⭐" },
   { id: 5, name: "🎵 Galactic Groove", file: "/home.mp3", emoji: "🎵" },
