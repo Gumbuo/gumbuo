@@ -1,18 +1,57 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useSwitchChain } from "wagmi";
-import { useEffect } from "react";
+import { useAccount, useSwitchChain, useDisconnect } from "wagmi";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 
 export default function GlobalWalletHUD() {
-  const { chain } = useAccount();
+  const { chain, isConnected } = useAccount();
   const { chains, switchChain } = useSwitchChain();
+  const { disconnect } = useDisconnect();
+  const [actualWalletChain, setActualWalletChain] = useState<number | null>(null);
 
   useEffect(() => {
-    console.log('🔗 Chain changed:', chain?.id, chain?.name);
-  }, [chain]);
+    // Get actual wallet chain on mount and when connection changes
+    const getActualChain = async () => {
+      if (typeof window !== 'undefined' && (window as any).ethereum && isConnected) {
+        try {
+          const walletChainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
+          const walletChainIdDecimal = parseInt(walletChainId, 16);
+          setActualWalletChain(walletChainIdDecimal);
+
+          console.log('💼 Actual wallet chain:', walletChainIdDecimal);
+          console.log('🔗 Wagmi thinks chain is:', chain?.id);
+
+          if (chain && walletChainIdDecimal !== chain.id) {
+            console.warn('⚠️ MISMATCH DETECTED!');
+            console.warn(`Wallet is on chain ${walletChainIdDecimal}, but wagmi thinks it's ${chain.id}`);
+            console.log('Please disconnect and reconnect your wallet, or manually switch in your wallet');
+          }
+        } catch (error) {
+          console.error('Failed to check wallet chain:', error);
+        }
+      }
+    };
+
+    getActualChain();
+
+    // Listen for chain changes from the wallet
+    if (typeof window !== 'undefined' && (window as any).ethereum) {
+      const handleChainChanged = (chainId: string) => {
+        const decimal = parseInt(chainId, 16);
+        console.log('🔄 Wallet chain changed to:', decimal);
+        setActualWalletChain(decimal);
+      };
+
+      (window as any).ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        (window as any).ethereum.removeListener('chainChanged', handleChainChanged);
+      };
+    }
+  }, [chain, isConnected]);
 
   const handleNetworkChange = async (chainId: number) => {
     console.log('=== Network Switch Requested ===');
@@ -105,10 +144,10 @@ export default function GlobalWalletHUD() {
         <div className="relative z-10 flex gap-2">
           <ConnectButton showBalance={false} chainStatus="none" />
 
-          {/* Custom Network Switcher */}
-          {chain && (
+          {/* Custom Network Switcher - Shows ACTUAL wallet chain */}
+          {actualWalletChain && (
             <select
-              value={chain.id}
+              value={actualWalletChain}
               onChange={(e) => handleNetworkChange(Number(e.target.value))}
               style={{
                 padding: '8px 12px',
