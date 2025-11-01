@@ -6,7 +6,7 @@ import { WagmiProvider } from "wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AlienPointsProvider } from "./context/AlienPointsEconomy";
-import { config } from "../lib/wagmi";
+import { config } from "./wagmi";
 import AlienLoader from "./components/AlienLoader";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -25,7 +25,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={config}>
-        <RainbowKitProvider>
+        <RainbowKitProvider showRecentTransactions={true}>
           <AlienPointsProvider>
             {isLoading && <AlienLoader />}
             {children}

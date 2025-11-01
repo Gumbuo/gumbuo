@@ -17,7 +17,7 @@ export default function GlobalWalletHUD() {
         <div className="corner-glow corner-glow-bl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
-          <ConnectButton />
+          <ConnectButton chainStatus="full" showBalance={false} />
         </div>
       </div>
 
