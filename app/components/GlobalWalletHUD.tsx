@@ -1,6 +1,7 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useSwitchChain } from "wagmi";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
@@ -9,14 +10,28 @@ export default function GlobalWalletHUD() {
   const { chain } = useAccount();
   const { chains, switchChain } = useSwitchChain();
 
+  useEffect(() => {
+    console.log('🔗 Chain changed:', chain?.id, chain?.name);
+  }, [chain]);
+
   const handleNetworkChange = async (chainId: number) => {
-    console.log('Attempting to switch to chain:', chainId);
+    console.log('=== Network Switch Requested ===');
+    console.log('Current chain (wagmi):', chain?.id, chain?.name);
+    console.log('Target chain:', chainId);
+
+    // Don't switch if already on this chain
+    if (chain?.id === chainId) {
+      console.log('Already on this chain, skipping switch');
+      return;
+    }
 
     const targetChain = chains.find(c => c.id === chainId);
     if (!targetChain) {
       console.error('Chain not found:', chainId);
       return;
     }
+
+    console.log('Target chain details:', targetChain);
 
     try {
       // Use wallet's native method to switch networks
@@ -27,36 +42,42 @@ export default function GlobalWalletHUD() {
 
         try {
           // Try to switch to the network
+          console.log(`Calling wallet_switchEthereumChain with chainId: ${chainIdHex}`);
           await (window as any).ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: chainIdHex }],
           });
-          console.log('Successfully switched to chain:', chainId);
+          console.log('✅ Successfully switched to chain:', chainId);
         } catch (switchError: any) {
+          console.error('Switch error:', switchError);
+          console.log('Error code:', switchError.code);
+
           // This error code indicates that the chain has not been added to the wallet
           if (switchError.code === 4902) {
-            console.log('Chain not in wallet, adding it...');
+            console.log('⚠️ Chain not in wallet, adding it...');
             try {
+              const addParams = {
+                chainId: chainIdHex,
+                chainName: targetChain.name,
+                nativeCurrency: targetChain.nativeCurrency,
+                rpcUrls: [targetChain.rpcUrls.default.http[0]],
+                blockExplorerUrls: targetChain.blockExplorers
+                  ? [targetChain.blockExplorers.default.url]
+                  : undefined,
+              };
+              console.log('Adding chain with params:', addParams);
+
               await (window as any).ethereum.request({
                 method: 'wallet_addEthereumChain',
-                params: [
-                  {
-                    chainId: chainIdHex,
-                    chainName: targetChain.name,
-                    nativeCurrency: targetChain.nativeCurrency,
-                    rpcUrls: [targetChain.rpcUrls.default.http[0]],
-                    blockExplorerUrls: targetChain.blockExplorers
-                      ? [targetChain.blockExplorers.default.url]
-                      : undefined,
-                  },
-                ],
+                params: [addParams],
               });
-              console.log('Successfully added and switched to chain:', chainId);
+              console.log('✅ Successfully added and switched to chain:', chainId);
             } catch (addError) {
-              console.error('Failed to add network:', addError);
+              console.error('❌ Failed to add network:', addError);
               throw addError;
             }
           } else {
+            console.error('❌ Unhandled switch error:', switchError);
             throw switchError;
           }
         }
