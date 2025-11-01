@@ -10,8 +10,11 @@ const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const FloatingGumbuo = dynamic(() => import("./components/FloatingGumbuo"), { ssr: false });
 
+type Tab = "portals" | "drip" | "leaderboard" | "socials";
+
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("portals");
   const { playSound } = useCosmicSound();
 
   useEffect(() => {
@@ -19,6 +22,13 @@ export default function MothershipPage() {
   }, []);
 
   if (!mounted) return null;
+
+  const tabs = [
+    { id: "portals", label: "Portals", emoji: "🌀" },
+    { id: "drip", label: "Drip Claim", emoji: "💧" },
+    { id: "leaderboard", label: "Leaderboard", emoji: "🏆" },
+    { id: "socials", label: "Socials", emoji: "🌐" },
+  ];
 
   return (
     <div className="min-h-screen bg-black relative overflow-y-auto">
@@ -69,18 +79,66 @@ export default function MothershipPage() {
           <img src="/j3d1.png" alt="J3D1" className="animate-bounce" style={{width: '80px', height: '80px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
         </h1>
 
-        {/* Active Chains */}
-        <div className="mb-6 text-center">
-          <h2 className="font-alien text-cyan-400 holographic-text flex items-center justify-center gap-4" style={{fontSize: '3rem'}}>
-            <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
-            BLOCKCHAIN PORTAL
-            <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
-          </h2>
-          <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">choose your crypto dimension • portal to pvp and boss battles</p>
+        {/* Tab Selector */}
+        <div style={{
+          display: 'flex',
+          gap: '10px',
+          padding: '15px',
+          background: 'linear-gradient(to bottom, #1a1a2e, #0f0f1e)',
+          borderBottom: '2px solid #00ff99',
+          borderRadius: '8px 8px 0 0',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          marginBottom: '20px'
+        }}>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                playSound('click');
+                setActiveTab(tab.id as Tab);
+              }}
+              onMouseEnter={() => playSound('hover')}
+              style={{
+                padding: '12px 24px',
+                background: activeTab === tab.id
+                  ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
+                  : 'rgba(0, 255, 153, 0.1)',
+                color: activeTab === tab.id ? '#000' : '#00ff99',
+                border: `2px solid ${activeTab === tab.id ? '#00ff99' : '#00ff9944'}`,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                textTransform: 'uppercase',
+                transition: 'all 0.3s ease',
+                boxShadow: activeTab === tab.id
+                  ? '0 0 20px rgba(0, 255, 153, 0.5)'
+                  : 'none',
+              }}
+            >
+              <span style={{ marginRight: '8px' }}>{tab.emoji}</span>
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        {/* Base Chain Row */}
-        <div className="flex items-center justify-center gap-6 mb-8 max-w-5xl mx-auto px-4">
+        {/* Portals Tab */}
+        {activeTab === "portals" && (
+          <>
+            {/* Active Chains Header */}
+            <div className="mb-6 text-center">
+              <h2 className="font-alien text-cyan-400 holographic-text flex items-center justify-center gap-4" style={{fontSize: '3rem'}}>
+                <img src="/nyx.png" alt="Nyx" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s'}} />
+                BLOCKCHAIN PORTAL
+                <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '60px', height: '60px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
+              </h2>
+              <p className="text-2xl text-cyan-400 mt-2 font-electro opacity-90">choose your crypto dimension • portal to pvp and boss battles</p>
+            </div>
+
+            {/* Base Chain Row */}
+            <div className="flex items-center justify-center gap-6 mb-8 max-w-5xl mx-auto px-4">
           <Link href="/base" className="block flex-shrink-0 w-[280px]">
             <div
               onMouseEnter={() => playSound('hover')}
@@ -261,24 +319,47 @@ export default function MothershipPage() {
               onClick={() => playSound('click')}
             />
           </Link>
-        </div>
+            </div>
 
+            {/* FoxHole Productions Credit */}
+            <div className="flex justify-center mt-16 mb-8">
+              <div className="flex items-center space-x-3 bg-black/60 backdrop-blur-sm px-6 py-3 rounded-xl border border-green-400/30 shadow-lg shadow-green-400/20">
+                <div style={{width: '48px', height: '48px', minWidth: '48px', minHeight: '48px', maxWidth: '48px', maxHeight: '48px', overflow: 'hidden'}}>
+                  <img
+                    src="/foxholeproductions.jpg"
+                    alt="FoxHole Productions"
+                    className="rounded-lg"
+                    style={{width: '48px', height: '48px', objectFit: 'cover', display: 'block'}}
+                  />
+                </div>
+                <div className="text-center">
+                  <p className="text-green-400 font-bold text-xl font-alien holographic-text">FoxHole Productions</p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
-        {/* Alien Drip Station */}
-        <div className="flex flex-col items-center mt-8">
-          <h2 className="font-alien text-cyan-400 holographic-text mb-6 text-center" style={{fontSize: '3rem'}}>
-            CLAIM ALL DRIPS HERE<br />FREE AND EARNED
-          </h2>
-          <AlienDripStation />
-        </div>
+        {/* Drip Claim Tab */}
+        {activeTab === "drip" && (
+          <div className="flex flex-col items-center mt-8">
+            <h2 className="font-alien text-cyan-400 holographic-text mb-6 text-center" style={{fontSize: '3rem'}}>
+              CLAIM ALL DRIPS HERE<br />FREE AND EARNED
+            </h2>
+            <AlienDripStation />
+          </div>
+        )}
 
-        {/* Alien Leaderboard */}
-        <div className="flex justify-center mt-16">
-          <AlienLeaderboard />
-        </div>
+        {/* Leaderboard Tab */}
+        {activeTab === "leaderboard" && (
+          <div className="flex justify-center mt-8">
+            <AlienLeaderboard />
+          </div>
+        )}
 
-        {/* Buy Gumbuo Buttons with Mascots */}
-        <div className="flex flex-col items-center space-y-6 mt-16 mb-12">
+        {/* Socials Tab */}
+        {activeTab === "socials" && (
+          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
           {/* Base Chain Buy Button */}
           <div className="flex flex-col items-center space-y-2">
             <div className="flex items-center justify-center space-x-4">
@@ -372,12 +453,8 @@ export default function MothershipPage() {
               <span className="text-yellow-200">You must trigger support for a response. BE SAFE!</span>
             </p>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 mb-12 text-gray-500 text-sm">
-          <p>Both chains share the same gameplay • Different economies • Your choice</p>
-        </div>
+          </div>
+        )}
       </div>
 
       <style jsx>{`
