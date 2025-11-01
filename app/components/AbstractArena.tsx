@@ -271,7 +271,7 @@ export default function AbstractArena() {
 
       {/* Network Warning */}
       {!isOnAbstract && (
-        <div className="w-full p-6 bg-red-900/30 border border-red-500 rounded-3xl text-center">
+        <div className="w-full p-6 bg-red-900/30 border border-red-500 text-center" style={{ borderRadius: '40px' }}>
           <p className="text-red-400 font-bold text-xl mb-4">⚠️ Wrong Network</p>
           <p className="text-gray-300 mb-4">
             Please switch to an Abstract network. Use the network switcher in your wallet (top right) to select Abstract or Abstract Testnet.
@@ -326,11 +326,11 @@ export default function AbstractArena() {
 
       {/* Contract Info */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-black/40 p-4 rounded-3xl border border-cyan-500/30">
+        <div className="bg-black/40 p-4 border border-cyan-500/30" style={{ borderRadius: '40px' }}>
           <p className="text-cyan-400 font-bold mb-2">🎮 Total Battles</p>
           <p className="text-white text-3xl font-bold">{totalBattles}</p>
         </div>
-        <div className="bg-black/40 p-4 rounded-3xl border border-purple-500/30">
+        <div className="bg-black/40 p-4 border border-purple-500/30" style={{ borderRadius: '40px' }}>
           <p className="text-purple-400 font-bold mb-2">👽 Your Fighters</p>
           <p className="text-white text-3xl font-bold">{nftBalance}</p>
           {nftBalance > 0 && (
@@ -349,7 +349,7 @@ export default function AbstractArena() {
             🔄 Refresh
           </button>
         </div>
-        <div className="bg-black/40 p-4 rounded-3xl border border-orange-500/30">
+        <div className="bg-black/40 p-4 border border-orange-500/30" style={{ borderRadius: '40px' }}>
           <p className="text-orange-400 font-bold mb-2">⏳ Queue Status</p>
           <p className="text-white text-xl font-bold">
             {hasQueuedFighter ? '🔴 Fighter Waiting' : '🟢 Empty'}
@@ -532,7 +532,7 @@ export default function AbstractArena() {
       </div>
 
       {/* How It Works */}
-      <div className="w-full bg-black/40 p-6 rounded-3xl border border-cyan-500/30">
+      <div className="w-full bg-black/40 p-6 border border-cyan-500/30" style={{ borderRadius: '40px' }}>
         <h3 className="text-2xl font-bold text-cyan-400 mb-4 text-center">📖 How It Works</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
@@ -563,7 +563,7 @@ export default function AbstractArena() {
       </div>
 
       {/* Contract Addresses */}
-      <div className="w-full bg-black/40 p-4 rounded-3xl border border-gray-600 text-center">
+      <div className="w-full bg-black/40 p-4 border border-gray-600 text-center" style={{ borderRadius: '40px' }}>
         <p className="text-gray-400 text-xs mb-2">Smart Contract Addresses</p>
         <div className="space-y-1">
           <p className="text-cyan-400 text-xs font-mono">NFT: {NFT_CONTRACT}</p>
