@@ -344,25 +344,6 @@ export default function MothershipPage() {
               <circle cx="50" cy="50" r="4" fill="#00ffff"/>
             </svg>
           </div>
-
-          <div style={{position: 'absolute', top: '50%', right: '12%', width: '75%', transform: 'translateY(-50%)'}}>
-            <button
-              className={`control-btn ${activeScene === 'portals' ? 'active' : ''}`}
-              onClick={() => showScene('portals')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              <span className="btn-icon">🌀</span> PORTALS
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'drip' ? 'active' : ''}`}
-              onClick={() => showScene('drip')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              <span className="btn-icon">💧</span> ALIEN DRIP
-              <span className="btn-status"></span>
-            </button>
-          </div>
         </div>
 
         {/* Right Side Panel with Buttons */}
@@ -391,25 +372,6 @@ export default function MothershipPage() {
               <line className="gauge-needle" x1="50" y1="50" x2="32" y2="37" stroke="#00ffff" strokeWidth="2"/>
               <circle cx="50" cy="50" r="4" fill="#00ffff"/>
             </svg>
-          </div>
-
-          <div style={{position: 'absolute', top: '50%', left: '12%', width: '75%', transform: 'translateY(-50%)'}}>
-            <button
-              className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
-              onClick={() => showScene('leaderboard')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              <span className="btn-icon">🏆</span> LEADERBOARD
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
-              onClick={() => showScene('support')}
-              onMouseEnter={() => playSound('hover')}
-            >
-              <span className="btn-icon">🔒</span> SUPPORT
-              <span className="btn-status"></span>
-            </button>
           </div>
         </div>
 
@@ -483,6 +445,38 @@ export default function MothershipPage() {
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
+            <button
+              className={`control-btn ${activeScene === 'portals' ? 'active' : ''}`}
+              onClick={() => showScene('portals')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🌀</span> PORTALS
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'drip' ? 'active' : ''}`}
+              onClick={() => showScene('drip')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">💧</span> ALIEN DRIP
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
+              onClick={() => showScene('leaderboard')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🏆</span> LEADERBOARD
+              <span className="btn-status"></span>
+            </button>
+            <button
+              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
+              onClick={() => showScene('support')}
+              onMouseEnter={() => playSound('hover')}
+            >
+              <span className="btn-icon">🔒</span> SUPPORT
+              <span className="btn-status"></span>
+            </button>
             <button
               className={`control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
               onClick={() => showScene('buygmb')}
