@@ -543,18 +543,18 @@ export default function MothershipPage() {
 
         .portal-label {
           margin-top: 8px;
-          font-size: 0.75rem;
+          font-size: 0.85rem;
           font-weight: bold;
           text-transform: uppercase;
           color: #00ffff;
-          text-shadow: 0 0 15px rgba(0, 255, 255, 1), 0 0 25px rgba(0, 255, 255, 0.8);
-          background: rgba(0, 0, 0, 0.95);
-          padding: 4px 12px;
+          text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+          background: rgba(0, 0, 0, 0.8);
+          padding: 5px 15px;
           border-radius: 6px;
-          border: 2px solid #00ffff;
+          border: 2px solid currentColor;
           white-space: nowrap;
           letter-spacing: 1px;
-          box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+          box-shadow: 0 0 25px currentColor;
           display: inline-block;
           width: auto;
         }
@@ -566,10 +566,7 @@ export default function MothershipPage() {
         }
 
         .portal-floating.base .portal-label {
-          color: #0099ff;
-          border-color: #0099ff;
-          text-shadow: 0 0 15px rgba(0, 153, 255, 1), 0 0 25px rgba(0, 153, 255, 0.8);
-          box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
+          color: #0099ff !important;
         }
 
         .portal-floating.blast {
@@ -579,10 +576,7 @@ export default function MothershipPage() {
         }
 
         .portal-floating.blast .portal-label {
-          color: #999999;
-          border-color: #999999;
-          text-shadow: 0 0 15px rgba(153, 153, 153, 1), 0 0 25px rgba(153, 153, 153, 0.8);
-          box-shadow: 0 0 20px rgba(153, 153, 153, 0.6);
+          color: #cccccc !important;
         }
 
         .portal-floating.abstract {
@@ -592,10 +586,7 @@ export default function MothershipPage() {
         }
 
         .portal-floating.abstract .portal-label {
-          color: #00ff99;
-          border-color: #00ff99;
-          text-shadow: 0 0 15px rgba(0, 255, 153, 1), 0 0 25px rgba(0, 255, 153, 0.8);
-          box-shadow: 0 0 20px rgba(0, 255, 153, 0.6);
+          color: #00ff99 !important;
         }
 
         .portal-floating.arbitrum {
@@ -605,10 +596,7 @@ export default function MothershipPage() {
         }
 
         .portal-floating.arbitrum .portal-label {
-          color: #ff3333;
-          border-color: #ff3333;
-          text-shadow: 0 0 15px rgba(255, 51, 51, 1), 0 0 25px rgba(255, 51, 51, 0.8);
-          box-shadow: 0 0 20px rgba(255, 51, 51, 0.6);
+          color: #ff4444 !important;
         }
 
         /* Content Display Scenes */
