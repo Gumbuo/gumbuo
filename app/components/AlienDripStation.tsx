@@ -691,8 +691,8 @@ export default function AlienDripStation() {
           </div>
 
           <div className="text-center text-purple-400 relative z-10 mb-4">
-            <p className="text-xl mb-2 font-electro alien-brackets">🔒 Continuous Staking Rewards 🔒</p>
-            <p className="text-sm opacity-75 font-mono alien-code">Stake GMB and earn AP continuously!</p>
+            <p className="text-xl mb-2 font-electro alien-brackets">🔒 No-Lock GMB Staking 🔒</p>
+            <p className="text-sm opacity-75 font-mono alien-code">Stake GMB with no lockup period - earn AP continuously!</p>
           </div>
 
           {/* STAKING CONTENT */}
@@ -735,12 +735,12 @@ export default function AlienDripStation() {
                 </div>
               </div>
 
-              {/* CONTINUOUS STAKING */}
+              {/* NO-LOCK STAKING */}
               <div className="space-y-4">
                   {stakingData.isStaking ? (
                     <>
                   <div className="glass-panel rounded-xl p-4 bg-green-500/10 border-2 border-green-500/30">
-                    <p className="text-green-400 font-bold text-center text-xl mb-2 animate-pulse">✅ STAKING ACTIVE</p>
+                    <p className="text-green-400 font-bold text-center text-xl mb-2 animate-pulse">✅ NO-LOCK STAKING ACTIVE</p>
                     <p className="text-center text-white">
                       Staked Amount: <span className="font-bold text-2xl text-green-400">{stakingData.stakedAmount.toFixed(2)} GMB</span>
                     </p>
