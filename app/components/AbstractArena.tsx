@@ -543,8 +543,28 @@ export default function AbstractArena() {
                   {canCancelQueue && (
                     <button
                       onClick={handleCancelQueue}
-                      className="px-6 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold transition-all shadow-lg hover:shadow-red-500/50"
-                      style={{ borderRadius: '24px', border: '2px solid rgba(239, 68, 68, 0.5)' }}
+                      style={{
+                        padding: '12px 24px',
+                        background: 'linear-gradient(135deg, #dc2626, #991b1b)',
+                        color: '#fff',
+                        border: '2px solid #dc2626',
+                        borderRadius: '24px',
+                        cursor: 'pointer',
+                        fontFamily: 'Orbitron, sans-serif',
+                        fontWeight: 'bold',
+                        fontSize: '14px',
+                        textTransform: 'uppercase',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 20px rgba(220, 38, 38, 0.5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #991b1b, #7f1d1d)';
+                        e.currentTarget.style.boxShadow = '0 0 30px rgba(220, 38, 38, 0.7)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+                        e.currentTarget.style.boxShadow = '0 0 20px rgba(220, 38, 38, 0.5)';
+                      }}
                     >
                       Cancel Queue (Timeout Expired)
                     </button>
@@ -555,8 +575,39 @@ export default function AbstractArena() {
                   <button
                     onClick={() => handleEnterArena()}
                     disabled={isEntering || nftBalance === 0}
-                    className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-red-500/50"
-                    style={{ borderRadius: '24px', border: '2px solid rgba(249, 115, 22, 0.5)' }}
+                    style={{
+                      padding: '16px 32px',
+                      background: isEntering || nftBalance === 0
+                        ? 'rgba(107, 114, 128, 0.5)'
+                        : 'linear-gradient(135deg, #dc2626, #f97316)',
+                      color: '#fff',
+                      border: isEntering || nftBalance === 0
+                        ? '2px solid rgba(107, 114, 128, 0.5)'
+                        : '2px solid #dc2626',
+                      borderRadius: '24px',
+                      cursor: isEntering || nftBalance === 0 ? 'not-allowed' : 'pointer',
+                      fontFamily: 'Orbitron, sans-serif',
+                      fontWeight: 'bold',
+                      fontSize: '18px',
+                      textTransform: 'uppercase',
+                      transition: 'all 0.3s ease',
+                      boxShadow: isEntering || nftBalance === 0
+                        ? 'none'
+                        : '0 0 20px rgba(220, 38, 38, 0.5)',
+                      opacity: isEntering || nftBalance === 0 ? 0.5 : 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isEntering && nftBalance > 0) {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #991b1b, #ea580c)';
+                        e.currentTarget.style.boxShadow = '0 0 30px rgba(220, 38, 38, 0.7)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isEntering && nftBalance > 0) {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #f97316)';
+                        e.currentTarget.style.boxShadow = '0 0 20px rgba(220, 38, 38, 0.5)';
+                      }
+                    }}
                   >
                     {isEntering ? '⏳ Entering...' : `⚔️ Join Battle (${ENTRY_FEE} ETH)`}
                   </button>
@@ -578,8 +629,39 @@ export default function AbstractArena() {
               <button
                 onClick={() => handleEnterArena()}
                 disabled={isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50"
-                style={{ borderRadius: '24px', border: '2px solid rgba(236, 72, 153, 0.5)' }}
+                style={{
+                  padding: '16px 32px',
+                  background: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
+                    ? 'rgba(107, 114, 128, 0.5)'
+                    : 'linear-gradient(135deg, #a855f7, #ec4899)',
+                  color: '#fff',
+                  border: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
+                    ? '2px solid rgba(107, 114, 128, 0.5)'
+                    : '2px solid #a855f7',
+                  borderRadius: '24px',
+                  cursor: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null) ? 'not-allowed' : 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '18px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
+                    ? 'none'
+                    : '0 0 20px rgba(168, 85, 247, 0.5)',
+                  opacity: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null) ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isEntering && nftBalance > 0 && isConnected && isCorrectNetwork && selectedNFTTokenId !== null) {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #db2777)';
+                    e.currentTarget.style.boxShadow = '0 0 30px rgba(168, 85, 247, 0.7)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isEntering && nftBalance > 0 && isConnected && isCorrectNetwork && selectedNFTTokenId !== null) {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #ec4899)';
+                    e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+                  }
+                }}
               >
                 {isEntering ? '⏳ Entering...' : nftBalance === 0 ? '❌ Mint a fighter first' : selectedNFTTokenId === null ? '⚠️ Select a fighter' : `⚔️ Enter Arena (${ENTRY_FEE} ETH)`}
               </button>
