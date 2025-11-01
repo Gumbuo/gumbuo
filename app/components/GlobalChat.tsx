@@ -39,9 +39,9 @@ const GlobalChat = () => {
   useEffect(() => {
     if (!isUsernameSet) return;
 
-    // Replace with your actual WebSocket server URL
+    // WebSocket server URL - Railway production or local dev
     const WS_URL = process.env.NODE_ENV === 'production'
-      ? 'ws://localhost:3001' // Replace with production URL
+      ? 'wss://gumbuo-production.up.railway.app'
       : 'ws://localhost:3001';
 
     const ws = new WebSocket(WS_URL);
