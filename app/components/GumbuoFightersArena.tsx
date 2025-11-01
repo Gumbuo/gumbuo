@@ -771,7 +771,40 @@ export default function GumbuoFightersArena() {
                       setFighter1Paid(false);
                     }}
                     disabled={fighting}
-                    className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    style={{
+                      marginTop: '8px',
+                      padding: '8px 16px',
+                      background: fighting
+                        ? 'rgba(107, 114, 128, 0.5)'
+                        : 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                      color: '#fff',
+                      border: fighting
+                        ? '2px solid rgba(107, 114, 128, 0.5)'
+                        : '2px solid #dc2626',
+                      borderRadius: '24px',
+                      cursor: fighting ? 'not-allowed' : 'pointer',
+                      fontFamily: 'Orbitron, sans-serif',
+                      fontWeight: 'bold',
+                      fontSize: '12px',
+                      textTransform: 'uppercase',
+                      transition: 'all 0.3s ease',
+                      boxShadow: fighting
+                        ? 'none'
+                        : '0 0 15px rgba(220, 38, 38, 0.5)',
+                      opacity: fighting ? 0.7 : 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!fighting) {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #b91c1c, #991b1b)';
+                        e.currentTarget.style.boxShadow = '0 0 25px rgba(220, 38, 38, 0.7)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!fighting) {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                        e.currentTarget.style.boxShadow = '0 0 15px rgba(220, 38, 38, 0.5)';
+                      }
+                    }}
                   >
                     Remove {fighter1Paid ? '(Refund 100 AP)' : ''}
                   </button>
@@ -956,7 +989,40 @@ export default function GumbuoFightersArena() {
                       setFighter2Paid(false);
                     }}
                     disabled={fighting}
-                    className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    style={{
+                      marginTop: '8px',
+                      padding: '8px 16px',
+                      background: fighting
+                        ? 'rgba(107, 114, 128, 0.5)'
+                        : 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                      color: '#fff',
+                      border: fighting
+                        ? '2px solid rgba(107, 114, 128, 0.5)'
+                        : '2px solid #dc2626',
+                      borderRadius: '24px',
+                      cursor: fighting ? 'not-allowed' : 'pointer',
+                      fontFamily: 'Orbitron, sans-serif',
+                      fontWeight: 'bold',
+                      fontSize: '12px',
+                      textTransform: 'uppercase',
+                      transition: 'all 0.3s ease',
+                      boxShadow: fighting
+                        ? 'none'
+                        : '0 0 15px rgba(220, 38, 38, 0.5)',
+                      opacity: fighting ? 0.7 : 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!fighting) {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #b91c1c, #991b1b)';
+                        e.currentTarget.style.boxShadow = '0 0 25px rgba(220, 38, 38, 0.7)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!fighting) {
+                        e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                        e.currentTarget.style.boxShadow = '0 0 15px rgba(220, 38, 38, 0.5)';
+                      }
+                    }}
                   >
                     Remove {fighter2Paid ? '(Refund 100 AP)' : ''}
                   </button>
@@ -1250,9 +1316,34 @@ export default function GumbuoFightersArena() {
             </p>
             {fightLog.length > 3 && (
               <button
-                onClick={() => setShowAllHistory(!showAllHistory)}
-                onMouseEnter={() => playSound('hover')}
-                className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-black font-bold rounded-lg transition-all duration-200 hover:scale-105"
+                onClick={() => {
+                  setShowAllHistory(!showAllHistory);
+                  playSound('hover');
+                }}
+                style={{
+                  padding: '8px 24px',
+                  background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+                  color: '#fff',
+                  border: '2px solid #06b6d4',
+                  borderRadius: '24px',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 0 15px rgba(6, 182, 212, 0.5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #0e7490)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.7)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(6, 182, 212, 0.5)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
               >
                 {showAllHistory ? '▲ Show Less' : '▼ Show More'}
               </button>
