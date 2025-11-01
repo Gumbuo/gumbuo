@@ -522,38 +522,65 @@ export default function AlienDripStation() {
         <span className="animate-glow">💧 Alien Drip Station 💧</span>
       </h2>
 
-      {/* Tab Navigation */}
-      <div className="flex justify-center gap-4 relative z-10 w-full max-w-2xl">
-        <button
-          onClick={() => { setActiveTab("staking"); playSound('click'); }}
-          className={`flex-1 px-8 py-4 text-xl font-bold tracking-wider rounded-xl transition-all duration-300 ${
-            activeTab === "staking"
-              ? "alien-button alien-button-purple text-white scale-105"
-              : "glass-panel text-gray-400 hover:text-white hover:scale-105"
-          }`}
-        >
-          🔒 STAKING
-        </button>
-        <button
-          onClick={() => { setActiveTab("faucet"); playSound('click'); }}
-          className={`flex-1 px-8 py-4 text-xl font-bold tracking-wider rounded-xl transition-all duration-300 ${
-            activeTab === "faucet"
-              ? "alien-button alien-button-gold text-black scale-105"
-              : "glass-panel text-gray-400 hover:text-white hover:scale-105"
-          }`}
-        >
-          💧 FAUCET/DRIP
-        </button>
-        <button
-          onClick={() => { setActiveTab("nft"); playSound('click'); }}
-          className={`flex-1 px-8 py-4 text-xl font-bold tracking-wider rounded-xl transition-all duration-300 ${
-            activeTab === "nft"
-              ? "alien-button alien-button-danger text-white scale-105"
-              : "glass-panel text-gray-400 hover:text-white hover:scale-105"
-          }`}
-        >
-          🖼️ NFT STAKING
-        </button>
+      {/* Tab Navigation - Symmetrical Grid */}
+      <div className="grid grid-cols-3 gap-4 relative z-10 w-full">
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="holographic-panel relative">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
+          <button
+            onClick={() => { setActiveTab("staking"); playSound('click'); }}
+            className={`w-full px-8 py-4 text-xl font-bold tracking-wider transition-all duration-300 relative z-10 ${
+              activeTab === "staking"
+                ? "text-purple-400 scale-105"
+                : "text-gray-400 hover:text-white hover:scale-105"
+            }`}
+          >
+            🔒 STAKING
+          </button>
+        </div>
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="holographic-panel relative">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
+          <button
+            onClick={() => { setActiveTab("faucet"); playSound('click'); }}
+            className={`w-full px-8 py-4 text-xl font-bold tracking-wider transition-all duration-300 relative z-10 ${
+              activeTab === "faucet"
+                ? "text-green-400 scale-105"
+                : "text-gray-400 hover:text-white hover:scale-105"
+            }`}
+          >
+            💧 FAUCET/DRIP
+          </button>
+        </div>
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="holographic-panel relative">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
+          <button
+            onClick={() => { setActiveTab("nft"); playSound('click'); }}
+            className={`w-full px-8 py-4 text-xl font-bold tracking-wider transition-all duration-300 relative z-10 ${
+              activeTab === "nft"
+                ? "text-red-400 scale-105"
+                : "text-gray-400 hover:text-white hover:scale-105"
+            }`}
+          >
+            🖼️ NFT STAKING
+          </button>
+        </div>
       </div>
 
       {/* Tab Content */}
@@ -561,8 +588,15 @@ export default function AlienDripStation() {
         <>
           {/* STAKING TAB */}
           {activeTab === "staking" && (
-            <div className="w-full space-y-6 relative z-10">
-              <div className="flex justify-center gap-6 mb-2">
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #00ff9944'
+            }} className="w-full space-y-6 relative holographic-panel p-6">
+              <div className="corner-glow corner-glow-tl"></div>
+              <div className="corner-glow corner-glow-tr"></div>
+              <div className="corner-glow corner-glow-bl"></div>
+              <div className="corner-glow corner-glow-br"></div>
+              <div className="flex justify-center gap-6 mb-2 relative z-10">
             {/* Staking Action Button */}
             {stakingData.isStaking ? (
               <div className="flex gap-4">
@@ -614,21 +648,42 @@ export default function AlienDripStation() {
           </div>
 
           {/* STAKING CONTENT */}
-          <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-purple-500/10 via-green-500/10 to-purple-500/10">
-            <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="holographic-panel relative p-6 bg-gradient-to-br from-purple-500/10 via-green-500/10 to-purple-500/10">
+            <div className="corner-glow corner-glow-tl"></div>
+            <div className="corner-glow corner-glow-tr"></div>
+            <div className="corner-glow corner-glow-bl"></div>
+            <div className="corner-glow corner-glow-br"></div>
+            <h3 className="text-4xl font-bold text-center mb-6 holographic-text relative z-10">
               <span className="text-purple-400">🔒</span> STAKING REWARDS <span className="text-purple-400">🔒</span>
             </h3>
 
-            <div className="space-y-6">
+            <div className="space-y-6 relative z-10">
               {/* GMB Balance & Points */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="glass-panel rounded-xl p-4 text-center">
-                  <p className="text-gray-400 text-sm mb-1">Your GMB Balance</p>
-                  <p className="text-white font-bold text-3xl">{gmbAmount.toFixed(2)}</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-4 text-center">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-gray-400 text-sm mb-1 relative z-10">Your GMB Balance</p>
+                  <p className="text-white font-bold text-3xl relative z-10">{gmbAmount.toFixed(2)}</p>
                 </div>
-                <div className="glass-panel rounded-xl p-4 text-center">
-                  <p className="text-gray-400 text-sm mb-1">Your Alien Points</p>
-                  <p className="text-green-400 font-bold text-3xl">{userPoints.toLocaleString()}</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-4 text-center">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-gray-400 text-sm mb-1 relative z-10">Your Alien Points</p>
+                  <p className="text-green-400 font-bold text-3xl relative z-10">{userPoints.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -706,8 +761,15 @@ export default function AlienDripStation() {
 
       {/* FAUCET/DRIP TAB */}
       {activeTab === "faucet" && (
-        <div className="w-full space-y-6 relative z-10">
-          <div className="flex justify-center gap-6 mb-2">
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="w-full space-y-6 relative holographic-panel p-6">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
+          <div className="flex justify-center gap-6 mb-2 relative z-10">
             {/* Daily Claim Button */}
             <button
               onClick={handleClaim}
@@ -732,21 +794,42 @@ export default function AlienDripStation() {
           </div>
 
           {/* FAUCET CONTENT */}
-          <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-green-500/10 via-yellow-500/10 to-green-500/10">
-            <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="holographic-panel relative p-6 bg-gradient-to-br from-green-500/10 via-yellow-500/10 to-green-500/10">
+            <div className="corner-glow corner-glow-tl"></div>
+            <div className="corner-glow corner-glow-tr"></div>
+            <div className="corner-glow corner-glow-bl"></div>
+            <div className="corner-glow corner-glow-br"></div>
+            <h3 className="text-4xl font-bold text-center mb-6 holographic-text relative z-10">
               <span className="text-green-400">💧</span> DRIP REWARDS <span className="text-green-400">💧</span>
             </h3>
 
-            <div className="space-y-6">
+            <div className="space-y-6 relative z-10">
               {/* GMB Balance & Points */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="glass-panel rounded-xl p-4 text-center">
-                  <p className="text-gray-400 text-sm mb-1">Your GMB Balance</p>
-                  <p className="text-white font-bold text-3xl">{gmbAmount.toFixed(2)}</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-4 text-center">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-gray-400 text-sm mb-1 relative z-10">Your GMB Balance</p>
+                  <p className="text-white font-bold text-3xl relative z-10">{gmbAmount.toFixed(2)}</p>
                 </div>
-                <div className="glass-panel rounded-xl p-4 text-center">
-                  <p className="text-gray-400 text-sm mb-1">Your Alien Points</p>
-                  <p className="text-green-400 font-bold text-3xl">{userPoints.toLocaleString()}</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-4 text-center">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-gray-400 text-sm mb-1 relative z-10">Your Alien Points</p>
+                  <p className="text-green-400 font-bold text-3xl relative z-10">{userPoints.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -809,33 +892,68 @@ export default function AlienDripStation() {
 
       {/* NFT STAKING TAB */}
       {activeTab === "nft" && (
-        <div className="w-full space-y-6 relative z-10">
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #00ff9944'
+        }} className="w-full space-y-6 relative holographic-panel p-6">
+          <div className="corner-glow corner-glow-tl"></div>
+          <div className="corner-glow corner-glow-tr"></div>
+          <div className="corner-glow corner-glow-bl"></div>
+          <div className="corner-glow corner-glow-br"></div>
           <div className="text-center text-red-400 relative z-10 mb-4">
             <p className="text-xl mb-2 font-electro alien-brackets">🖼️ NFT Staking Coming Soon 🖼️</p>
             <p className="text-sm opacity-75 font-mono alien-code">Stake your NFTs and earn exclusive rewards!</p>
           </div>
 
           {/* NFT CONTENT */}
-          <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-red-500/10">
-            <h3 className="text-4xl font-bold text-center mb-6 holographic-text">
+          <div style={{
+            borderRadius: '8px',
+            border: '2px solid #00ff9944'
+          }} className="holographic-panel relative p-6 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-red-500/10">
+            <div className="corner-glow corner-glow-tl"></div>
+            <div className="corner-glow corner-glow-tr"></div>
+            <div className="corner-glow corner-glow-bl"></div>
+            <div className="corner-glow corner-glow-br"></div>
+            <h3 className="text-4xl font-bold text-center mb-6 holographic-text relative z-10">
               <span className="text-red-400">🖼️</span> NFT STAKING <span className="text-red-400">🖼️</span>
             </h3>
 
-            <div className="space-y-6 text-center">
+            <div className="space-y-6 text-center relative z-10">
               <p className="text-2xl text-gray-300">🚧 Under Construction 🚧</p>
               <p className="text-lg text-gray-400">This feature is coming soon! Stay tuned for updates.</p>
               <div className="grid grid-cols-3 gap-4 mt-8">
-                <div className="glass-panel rounded-xl p-6">
-                  <p className="text-4xl mb-2">🎨</p>
-                  <p className="text-sm text-gray-400">Stake NFTs</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-6">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-4xl mb-2 relative z-10">🎨</p>
+                  <p className="text-sm text-gray-400 relative z-10">Stake NFTs</p>
                 </div>
-                <div className="glass-panel rounded-xl p-6">
-                  <p className="text-4xl mb-2">💎</p>
-                  <p className="text-sm text-gray-400">Earn Rewards</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-6">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-4xl mb-2 relative z-10">💎</p>
+                  <p className="text-sm text-gray-400 relative z-10">Earn Rewards</p>
                 </div>
-                <div className="glass-panel rounded-xl p-6">
-                  <p className="text-4xl mb-2">🏆</p>
-                  <p className="text-sm text-gray-400">Exclusive Benefits</p>
+                <div style={{
+                  borderRadius: '8px',
+                  border: '2px solid #00ff9944'
+                }} className="holographic-panel relative p-6">
+                  <div className="corner-glow corner-glow-tl"></div>
+                  <div className="corner-glow corner-glow-tr"></div>
+                  <div className="corner-glow corner-glow-bl"></div>
+                  <div className="corner-glow corner-glow-br"></div>
+                  <p className="text-4xl mb-2 relative z-10">🏆</p>
+                  <p className="text-sm text-gray-400 relative z-10">Exclusive Benefits</p>
                 </div>
               </div>
             </div>
