@@ -450,7 +450,7 @@ export default function MothershipPage() {
           left: 50%;
           transform: translateX(-50%);
           width: 60%;
-          height: 50%;
+          height: 60%;
           background: #000;
           border: 12px solid #7a7a85;
           border-radius: 10px;
@@ -498,8 +498,8 @@ export default function MothershipPage() {
         /* Floating Blockchain Portals using PNG images */
         .portal-floating {
           position: absolute;
-          width: 120px;
-          height: 120px;
+          width: 80px;
+          height: 80px;
           border-radius: 50%;
           display: flex;
           flex-direction: column;
@@ -508,8 +508,8 @@ export default function MothershipPage() {
           cursor: pointer;
           transition: all 0.3s;
           animation: portalFloat 4s ease-in-out infinite;
-          border: 3px solid rgba(255, 255, 255, 0.4);
-          box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+          border: 2px solid rgba(255, 255, 255, 0.4);
+          box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
           overflow: hidden;
         }
 
@@ -533,40 +533,40 @@ export default function MothershipPage() {
 
         .portal-label {
           position: absolute;
-          bottom: -30px;
-          font-size: 0.75rem;
+          bottom: -25px;
+          font-size: 0.7rem;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
           text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6);
-          background: rgba(0, 0, 0, 0.8);
-          padding: 4px 12px;
-          border-radius: 5px;
+          background: rgba(0, 0, 0, 0.9);
+          padding: 3px 10px;
+          border-radius: 4px;
           border: 2px solid #00ffff;
           white-space: nowrap;
         }
 
         .portal-floating.base {
-          top: 15%;
-          left: 10%;
+          top: 10%;
+          left: 8%;
           animation-delay: 0s;
         }
 
         .portal-floating.blast {
-          top: 15%;
-          right: 10%;
+          top: 10%;
+          right: 8%;
           animation-delay: 1s;
         }
 
         .portal-floating.abstract {
-          bottom: 15%;
-          left: 10%;
+          bottom: 10%;
+          left: 8%;
           animation-delay: 2s;
         }
 
         .portal-floating.arbitrum {
-          bottom: 15%;
-          right: 10%;
+          bottom: 10%;
+          right: 8%;
           animation-delay: 1.5s;
         }
 
@@ -667,7 +667,7 @@ export default function MothershipPage() {
           bottom: 0;
           left: 20%;
           width: 60%;
-          height: 35%;
+          height: 25%;
           background: linear-gradient(180deg, #9a9aa5 0%, #6a6a75 50%, #5a5a65 100%);
           transform-origin: center top;
           transform: perspective(600px) rotateX(30deg);
@@ -806,8 +806,8 @@ export default function MothershipPage() {
 
         @media (max-width: 768px) {
           .control-btn { font-size: 0.7rem; padding: 10px 15px; }
-          .portal-floating { width: 80px; height: 80px; }
-          .portal-label { font-size: 0.6rem; bottom: -25px; padding: 3px 8px; }
+          .portal-floating { width: 60px; height: 60px; }
+          .portal-label { font-size: 0.55rem; bottom: -20px; padding: 2px 6px; }
         }
       `}</style>
     </>
