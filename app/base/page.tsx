@@ -1,7 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import NetworkSwitcher, { CHAIN_IDS, CHAIN_NAMES } from "../components/NetworkSwitcher";
 
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
 
@@ -17,9 +16,6 @@ export default function BasePage() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
-      {/* Network Switcher */}
-      <NetworkSwitcher requiredChainId={CHAIN_IDS.BASE} chainName={CHAIN_NAMES[CHAIN_IDS.BASE]} />
-
       {/* Game Selector */}
       <div style={{
         display: 'flex',

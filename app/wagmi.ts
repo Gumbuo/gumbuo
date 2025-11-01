@@ -1,5 +1,5 @@
 import { createConfig, http } from "wagmi";
-import { mainnet, base, blast, arbitrum } from "wagmi/chains";
+import { base, blast, arbitrum } from "wagmi/chains";
 import { defineChain } from "viem";
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
@@ -26,22 +26,46 @@ export const abstractMainnet = defineChain({
   },
 });
 
+// Define Abstract Testnet
+export const abstractTestnet = defineChain({
+  id: 11124,
+  name: 'Abstract Testnet',
+  network: 'abstract-testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://api.testnet.abs.xyz'],
+    },
+    public: {
+      http: ['https://api.testnet.abs.xyz'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Explorer', url: 'https://explorer.testnet.abs.xyz' },
+  },
+  testnet: true,
+});
+
 export const config = getDefaultConfig({
   appName: 'Gumbuo',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'daa01cf96f2a5031c4b1fa193752d48d',
   chains: [
     base,
     abstractMainnet,
+    abstractTestnet,
     blast,
     arbitrum,
-    mainnet,
   ],
   transports: {
-    [mainnet.id]: http(),
     [base.id]: http(),
+    [abstractMainnet.id]: http('https://api.mainnet.abs.xyz'),
+    [abstractTestnet.id]: http('https://api.testnet.abs.xyz'),
     [blast.id]: http(),
     [arbitrum.id]: http(),
-    [abstractMainnet.id]: http('https://api.mainnet.abs.xyz'),
   },
   ssr: false,
 });
