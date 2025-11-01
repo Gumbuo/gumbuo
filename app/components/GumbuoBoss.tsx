@@ -688,51 +688,110 @@ export default function GumbuoBoss() {
           <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
             {/* Normal Attack Button */}
             <button
-              onClick={() => setSelectedAttack('normal')}
-              onMouseEnter={() => playSound('hover')}
+              onClick={() => {
+                setSelectedAttack('normal');
+                playSound('hover');
+              }}
               style={{
                 padding: '32px',
+                background: selectedAttack === 'normal'
+                  ? 'linear-gradient(135deg, #06b6d4, #0891b2)'
+                  : 'rgba(107, 114, 128, 0.5)',
+                color: '#fff',
+                border: selectedAttack === 'normal'
+                  ? '2px solid #06b6d4'
+                  : '2px solid rgba(107, 114, 128, 0.5)',
                 borderRadius: '24px',
-                border: '2px solid #00ff9944',
-                transition: 'all 0.3s ease'
+                cursor: 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                boxShadow: selectedAttack === 'normal'
+                  ? '0 0 30px rgba(6, 182, 212, 0.7)'
+                  : '0 0 10px rgba(6, 182, 212, 0.3)',
+                transform: selectedAttack === 'normal' ? 'scale(1.05)' : 'scale(1)'
               }}
-              className={`transition-all duration-300 ${
-                selectedAttack === 'normal'
-                  ? 'bg-gradient-to-br from-cyan-500 to-cyan-700 shadow-2xl shadow-cyan-500/60 scale-105'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-cyan-600/50 hover:to-cyan-800/50 hover:scale-102'
-              }`}
+              onMouseEnter={(e) => {
+                if (selectedAttack !== 'normal') {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+                  e.currentTarget.style.border = '2px solid #06b6d4';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.5)';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedAttack !== 'normal') {
+                  e.currentTarget.style.background = 'rgba(107, 114, 128, 0.5)';
+                  e.currentTarget.style.border = '2px solid rgba(107, 114, 128, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.3)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
+              }}
             >
-              <div className="text-6xl mb-3">👊</div>
-              <div className="text-white font-bold text-2xl mb-2">NORMAL</div>
-              <div className="text-yellow-300 text-lg font-bold mb-1">{ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP</div>
-              <div className="text-green-400 text-sm">Level {attackLevels.normal}</div>
+              <div style={{ fontSize: '60px', marginBottom: '12px' }}>👊</div>
+              <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '24px', marginBottom: '8px' }}>NORMAL</div>
+              <div style={{ color: '#fde047', fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>{ATTACK_ENTRY_FEES.normal[attackLevels.normal - 1]} AP</div>
+              <div style={{ color: '#4ade80', fontSize: '14px' }}>Level {attackLevels.normal}</div>
             </button>
 
             {/* Power Attack Button */}
             <button
-              onClick={() => powerCooldown === 0 && setSelectedAttack('power')}
-              onMouseEnter={() => powerCooldown === 0 && playSound('hover')}
+              onClick={() => {
+                if (powerCooldown === 0) {
+                  setSelectedAttack('power');
+                  playSound('hover');
+                }
+              }}
               disabled={powerCooldown > 0}
               style={{
                 padding: '32px',
-                borderRadius: '24px',
-                border: '2px solid #00ff9944',
-                transition: 'all 0.3s ease'
-              }}
-              className={`transition-all duration-300 ${
-                powerCooldown > 0
-                  ? 'bg-gray-800 opacity-50 cursor-not-allowed'
+                background: powerCooldown > 0
+                  ? 'rgba(107, 114, 128, 0.3)'
                   : selectedAttack === 'power'
-                  ? 'bg-gradient-to-br from-purple-500 to-purple-700 shadow-2xl shadow-purple-500/60 scale-105'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-purple-600/50 hover:to-purple-800/50 hover:scale-102'
-              }`}
+                  ? 'linear-gradient(135deg, #a855f7, #9333ea)'
+                  : 'rgba(107, 114, 128, 0.5)',
+                color: '#fff',
+                border: powerCooldown > 0
+                  ? '2px solid rgba(107, 114, 128, 0.3)'
+                  : selectedAttack === 'power'
+                  ? '2px solid #a855f7'
+                  : '2px solid rgba(107, 114, 128, 0.5)',
+                borderRadius: '24px',
+                cursor: powerCooldown > 0 ? 'not-allowed' : 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                boxShadow: powerCooldown > 0
+                  ? 'none'
+                  : selectedAttack === 'power'
+                  ? '0 0 30px rgba(168, 85, 247, 0.7)'
+                  : '0 0 10px rgba(168, 85, 247, 0.3)',
+                opacity: powerCooldown > 0 ? 0.5 : 1,
+                transform: selectedAttack === 'power' ? 'scale(1.05)' : 'scale(1)'
+              }}
+              onMouseEnter={(e) => {
+                if (powerCooldown === 0 && selectedAttack !== 'power') {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #9333ea)';
+                  e.currentTarget.style.border = '2px solid #a855f7';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(168, 85, 247, 0.5)';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (powerCooldown === 0 && selectedAttack !== 'power') {
+                  e.currentTarget.style.background = 'rgba(107, 114, 128, 0.5)';
+                  e.currentTarget.style.border = '2px solid rgba(107, 114, 128, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.3)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
+              }}
             >
-              <div className="text-6xl mb-3">💪</div>
-              <div className="text-white font-bold text-2xl mb-2">POWER</div>
-              <div className="text-yellow-300 text-lg font-bold mb-1">{ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP</div>
-              <div className="text-green-400 text-sm">Level {attackLevels.power}</div>
+              <div style={{ fontSize: '60px', marginBottom: '12px' }}>💪</div>
+              <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '24px', marginBottom: '8px' }}>POWER</div>
+              <div style={{ color: '#fde047', fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>{ATTACK_ENTRY_FEES.power[attackLevels.power - 1]} AP</div>
+              <div style={{ color: '#4ade80', fontSize: '14px' }}>Level {attackLevels.power}</div>
               {powerCooldown > 0 && (
-                <div className="text-red-400 font-bold text-sm mt-2">
+                <div style={{ color: '#f87171', fontWeight: 'bold', fontSize: '14px', marginTop: '8px' }}>
                   CD: {(powerCooldown / 1000).toFixed(0)}s
                 </div>
               )}
@@ -740,29 +799,62 @@ export default function GumbuoBoss() {
 
             {/* Cosmic Attack Button */}
             <button
-              onClick={() => ultimateCooldown === 0 && setSelectedAttack('ultimate')}
-              onMouseEnter={() => ultimateCooldown === 0 && playSound('hover')}
+              onClick={() => {
+                if (ultimateCooldown === 0) {
+                  setSelectedAttack('ultimate');
+                  playSound('hover');
+                }
+              }}
               disabled={ultimateCooldown > 0}
               style={{
                 padding: '32px',
-                borderRadius: '24px',
-                border: '2px solid #00ff9944',
-                transition: 'all 0.3s ease'
-              }}
-              className={`transition-all duration-300 ${
-                ultimateCooldown > 0
-                  ? 'bg-gray-800 opacity-50 cursor-not-allowed'
+                background: ultimateCooldown > 0
+                  ? 'rgba(107, 114, 128, 0.3)'
                   : selectedAttack === 'ultimate'
-                  ? 'bg-gradient-to-br from-yellow-500 to-orange-600 shadow-2xl shadow-yellow-500/60 scale-105'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-900 hover:from-yellow-600/50 hover:to-orange-700/50 hover:scale-102'
-              }`}
+                  ? 'linear-gradient(135deg, #f59e0b, #d97706)'
+                  : 'rgba(107, 114, 128, 0.5)',
+                color: '#fff',
+                border: ultimateCooldown > 0
+                  ? '2px solid rgba(107, 114, 128, 0.3)'
+                  : selectedAttack === 'ultimate'
+                  ? '2px solid #f59e0b'
+                  : '2px solid rgba(107, 114, 128, 0.5)',
+                borderRadius: '24px',
+                cursor: ultimateCooldown > 0 ? 'not-allowed' : 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                boxShadow: ultimateCooldown > 0
+                  ? 'none'
+                  : selectedAttack === 'ultimate'
+                  ? '0 0 30px rgba(245, 158, 11, 0.7)'
+                  : '0 0 10px rgba(245, 158, 11, 0.3)',
+                opacity: ultimateCooldown > 0 ? 0.5 : 1,
+                transform: selectedAttack === 'ultimate' ? 'scale(1.05)' : 'scale(1)'
+              }}
+              onMouseEnter={(e) => {
+                if (ultimateCooldown === 0 && selectedAttack !== 'ultimate') {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                  e.currentTarget.style.border = '2px solid #f59e0b';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.5)';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (ultimateCooldown === 0 && selectedAttack !== 'ultimate') {
+                  e.currentTarget.style.background = 'rgba(107, 114, 128, 0.5)';
+                  e.currentTarget.style.border = '2px solid rgba(107, 114, 128, 0.5)';
+                  e.currentTarget.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.3)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
+              }}
             >
-              <div className="text-6xl mb-3">⚡</div>
-              <div className="text-white font-bold text-2xl mb-2">COSMIC</div>
-              <div className="text-yellow-300 text-lg font-bold mb-1">{ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP</div>
-              <div className="text-green-400 text-sm">Level {attackLevels.ultimate}</div>
+              <div style={{ fontSize: '60px', marginBottom: '12px' }}>⚡</div>
+              <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '24px', marginBottom: '8px' }}>COSMIC</div>
+              <div style={{ color: '#fde047', fontSize: '18px', fontWeight: 'bold', marginBottom: '4px' }}>{ATTACK_ENTRY_FEES.ultimate[attackLevels.ultimate - 1]} AP</div>
+              <div style={{ color: '#4ade80', fontSize: '14px' }}>Level {attackLevels.ultimate}</div>
               {ultimateCooldown > 0 && (
-                <div className="text-red-400 font-bold text-sm mt-2">
+                <div style={{ color: '#f87171', fontWeight: 'bold', fontSize: '14px', marginTop: '8px' }}>
                   CD: {(ultimateCooldown / 1000).toFixed(0)}s
                 </div>
               )}
@@ -774,22 +866,49 @@ export default function GumbuoBoss() {
             {/* Normal Upgrade */}
             {attackLevels.normal < MAX_ATTACK_LEVEL && (
               <button
-                onClick={() => handleUpgradeAttack('normal')}
-                onMouseEnter={() => playSound('hover')}
-                style={{
-                  borderRadius: '24px',
-                  border: '2px solid #00ff9944'
+                onClick={() => {
+                  handleUpgradeAttack('normal');
+                  playSound('hover');
                 }}
-                className="px-4 py-2 text-sm font-bold bg-cyan-600/80 hover:bg-cyan-600 text-white transition-all shadow-lg shadow-cyan-500/30"
+                style={{
+                  padding: '8px 16px',
+                  background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+                  color: '#fff',
+                  border: '2px solid #06b6d4',
+                  borderRadius: '24px',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 0 15px rgba(6, 182, 212, 0.5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #0e7490)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(6, 182, 212, 0.7)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(6, 182, 212, 0.5)';
+                }}
               >
                 ⬆️ Upgrade Normal ({UPGRADE_COSTS.normal[attackLevels.normal - 1].toLocaleString()} AP)
               </button>
             )}
             {attackLevels.normal >= MAX_ATTACK_LEVEL && (
               <div style={{
+                padding: '8px 16px',
+                background: 'rgba(34, 197, 94, 0.3)',
+                color: '#4ade80',
+                border: '2px solid #4ade80',
                 borderRadius: '24px',
-                border: '2px solid #00ff9944'
-              }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '12px',
+                textTransform: 'uppercase',
+                textAlign: 'center'
+              }}>
                 ✅ Max Level
               </div>
             )}
@@ -797,22 +916,49 @@ export default function GumbuoBoss() {
             {/* Power Upgrade */}
             {attackLevels.power < MAX_ATTACK_LEVEL && (
               <button
-                onClick={() => handleUpgradeAttack('power')}
-                onMouseEnter={() => playSound('hover')}
-                style={{
-                  borderRadius: '24px',
-                  border: '2px solid #00ff9944'
+                onClick={() => {
+                  handleUpgradeAttack('power');
+                  playSound('hover');
                 }}
-                className="px-4 py-2 text-sm font-bold bg-purple-600/80 hover:bg-purple-600 text-white transition-all shadow-lg shadow-purple-500/30"
+                style={{
+                  padding: '8px 16px',
+                  background: 'linear-gradient(135deg, #a855f7, #9333ea)',
+                  color: '#fff',
+                  border: '2px solid #a855f7',
+                  borderRadius: '24px',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 0 15px rgba(168, 85, 247, 0.5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #9333ea, #7e22ce)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(168, 85, 247, 0.7)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #a855f7, #9333ea)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(168, 85, 247, 0.5)';
+                }}
               >
                 ⬆️ Upgrade Power ({UPGRADE_COSTS.power[attackLevels.power - 1].toLocaleString()} AP)
               </button>
             )}
             {attackLevels.power >= MAX_ATTACK_LEVEL && (
               <div style={{
+                padding: '8px 16px',
+                background: 'rgba(34, 197, 94, 0.3)',
+                color: '#4ade80',
+                border: '2px solid #4ade80',
                 borderRadius: '24px',
-                border: '2px solid #00ff9944'
-              }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '12px',
+                textTransform: 'uppercase',
+                textAlign: 'center'
+              }}>
                 ✅ Max Level
               </div>
             )}
@@ -820,22 +966,49 @@ export default function GumbuoBoss() {
             {/* Cosmic Upgrade */}
             {attackLevels.ultimate < MAX_ATTACK_LEVEL && (
               <button
-                onClick={() => handleUpgradeAttack('ultimate')}
-                onMouseEnter={() => playSound('hover')}
-                style={{
-                  borderRadius: '24px',
-                  border: '2px solid #00ff9944'
+                onClick={() => {
+                  handleUpgradeAttack('ultimate');
+                  playSound('hover');
                 }}
-                className="px-4 py-2 text-sm font-bold bg-yellow-600/80 hover:bg-yellow-600 text-white transition-all shadow-lg shadow-yellow-500/30"
+                style={{
+                  padding: '8px 16px',
+                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                  color: '#fff',
+                  border: '2px solid #f59e0b',
+                  borderRadius: '24px',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #d97706, #b45309)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(245, 158, 11, 0.7)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(245, 158, 11, 0.5)';
+                }}
               >
                 ⬆️ Upgrade Cosmic ({UPGRADE_COSTS.ultimate[attackLevels.ultimate - 1].toLocaleString()} AP)
               </button>
             )}
             {attackLevels.ultimate >= MAX_ATTACK_LEVEL && (
               <div style={{
+                padding: '8px 16px',
+                background: 'rgba(34, 197, 94, 0.3)',
+                color: '#4ade80',
+                border: '2px solid #4ade80',
                 borderRadius: '24px',
-                border: '2px solid #00ff9944'
-              }} className="px-4 py-2 text-sm font-bold bg-green-600/40 text-green-300 text-center">
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '12px',
+                textTransform: 'uppercase',
+                textAlign: 'center'
+              }}>
                 ✅ Max Level
               </div>
             )}
@@ -844,18 +1017,47 @@ export default function GumbuoBoss() {
           {/* Main Attack Button */}
           <div className="flex justify-center">
             <button
-              onClick={handleAttack}
-              onMouseEnter={() => (canAttack || !isConnected) && playSound('hover')}
+              onClick={() => {
+                handleAttack();
+                if (canAttack || !isConnected) playSound('hover');
+              }}
               disabled={isAttacking || !canAttack}
               style={{
+                padding: '24px 64px',
+                background: isAttacking || !canAttack
+                  ? 'rgba(107, 114, 128, 0.5)'
+                  : 'linear-gradient(135deg, #dc2626, #ea580c)',
+                color: isAttacking || !canAttack ? '#9ca3af' : '#fff',
+                border: isAttacking || !canAttack
+                  ? '2px solid rgba(107, 114, 128, 0.5)'
+                  : '2px solid #dc2626',
                 borderRadius: '24px',
-                border: '2px solid #00ff9944'
+                cursor: isAttacking || !canAttack ? 'not-allowed' : 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '36px',
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                transition: 'all 0.3s ease',
+                boxShadow: isAttacking || !canAttack
+                  ? 'none'
+                  : '0 0 30px rgba(220, 38, 38, 0.5)',
+                opacity: isAttacking || !canAttack ? 0.7 : 1
               }}
-              className={`px-16 py-6 text-4xl font-bold tracking-wider transition-all duration-300 ${
-                isAttacking || !canAttack
-                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-red-600 to-orange-600 text-white hover:from-red-500 hover:to-orange-500 shadow-lg shadow-red-500/50 hover:scale-105"
-              }`}
+              onMouseEnter={(e) => {
+                if (!isAttacking && canAttack) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #b91c1c, #c2410c)';
+                  e.currentTarget.style.boxShadow = '0 0 40px rgba(220, 38, 38, 0.7)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isAttacking && canAttack) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #ea580c)';
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(220, 38, 38, 0.5)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
+              }}
             >
               {!isConnected
                 ? "CONNECT WALLET"
