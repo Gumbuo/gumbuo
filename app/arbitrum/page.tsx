@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import NetworkSwitcher, { CHAIN_IDS, CHAIN_NAMES } from "../components/NetworkSwitcher";
 
 export default function ArbitrumPage() {
   const [selectedGame, setSelectedGame] = useState("invasion");
@@ -13,6 +14,9 @@ export default function ArbitrumPage() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
+      {/* Network Switcher */}
+      <NetworkSwitcher requiredChainId={CHAIN_IDS.ARBITRUM} chainName={CHAIN_NAMES[CHAIN_IDS.ARBITRUM]} />
+
       {/* Game Selector */}
       <div style={{
         display: 'flex',

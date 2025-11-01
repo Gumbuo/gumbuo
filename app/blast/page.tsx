@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import NetworkSwitcher, { CHAIN_IDS, CHAIN_NAMES } from "../components/NetworkSwitcher";
 
 export default function BlastPage() {
   const [selectedGame, setSelectedGame] = useState("invasion");
@@ -13,6 +14,9 @@ export default function BlastPage() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
+      {/* Network Switcher */}
+      <NetworkSwitcher requiredChainId={CHAIN_IDS.BLAST} chainName={CHAIN_NAMES[CHAIN_IDS.BLAST]} />
+
       {/* Game Selector */}
       <div style={{
         display: 'flex',
