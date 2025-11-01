@@ -9,6 +9,23 @@ export default function GlobalWalletHUD() {
   const { chain } = useAccount();
   const { chains, switchChain } = useSwitchChain();
 
+  const handleNetworkChange = async (chainId: number) => {
+    console.log('Attempting to switch to chain:', chainId);
+    if (!switchChain) {
+      console.error('switchChain is not available');
+      return;
+    }
+
+    try {
+      console.log('Calling switchChain...');
+      const result = await switchChain({ chainId });
+      console.log('Switch successful:', result);
+    } catch (error) {
+      console.error('Failed to switch network:', error);
+      alert(`Failed to switch network: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   return (
     <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 1000}} className="flex flex-col items-end space-y-4">
       {/* Wallet Connect Button with Alien Styling */}
@@ -27,7 +44,7 @@ export default function GlobalWalletHUD() {
           {chain && (
             <select
               value={chain.id}
-              onChange={(e) => switchChain?.({ chainId: Number(e.target.value) })}
+              onChange={(e) => handleNetworkChange(Number(e.target.value))}
               style={{
                 padding: '8px 12px',
                 background: '#000',
