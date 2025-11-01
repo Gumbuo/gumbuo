@@ -287,10 +287,10 @@ export default function MothershipPage() {
         {/* Overhead Panel */}
         <div className="overhead-panel steel-panel steel-brushed">
           <div className="rivet rivet-red" style={{top: '20px', left: '50px'}}></div>
-          <div className="rivet rivet-blue" style={{top: '25px', left: '20%'}}></div>
-          <div className="rivet rivet-grey" style={{top: '30px', left: '35%'}}></div>
-          <div className="rivet rivet-blue" style={{top: '25px', right: '35%'}}></div>
-          <div className="rivet rivet-grey" style={{top: '30px', right: '20%'}}></div>
+          <div className="rivet rivet-red" style={{top: '25px', left: '20%'}}></div>
+          <div className="rivet rivet-red" style={{top: '30px', left: '35%'}}></div>
+          <div className="rivet rivet-red" style={{top: '25px', right: '35%'}}></div>
+          <div className="rivet rivet-red" style={{top: '30px', right: '20%'}}></div>
           <div className="rivet rivet-red" style={{top: '20px', right: '50px'}}></div>
           <div className="circuit-line" style={{top: '50%', width: '80%', left: '10%'}}></div>
 
@@ -320,11 +320,11 @@ export default function MothershipPage() {
         {/* Left Side Panel with Buttons */}
         <div className="left-panel steel-panel steel-brushed">
           <div className="rivet rivet-red" style={{top: '20px', right: '20px'}}></div>
-          <div className="rivet rivet-blue" style={{top: '15%', right: '15px'}}></div>
-          <div className="rivet rivet-grey" style={{top: '35%', right: '25px'}}></div>
+          <div className="rivet rivet-red" style={{top: '15%', right: '15px'}}></div>
+          <div className="rivet rivet-red" style={{top: '35%', right: '25px'}}></div>
           <div className="rivet rivet-red" style={{top: '50%', right: '20px'}}></div>
-          <div className="rivet rivet-blue" style={{top: '60%', right: '30px'}}></div>
-          <div className="rivet rivet-grey" style={{bottom: '30%', right: '18px'}}></div>
+          <div className="rivet rivet-red" style={{top: '60%', right: '30px'}}></div>
+          <div className="rivet rivet-red" style={{bottom: '30%', right: '18px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '20px', right: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
 
@@ -342,7 +342,7 @@ export default function MothershipPage() {
               onClick={() => showScene('drip')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">💧</span> DRIP
+              <span className="btn-icon">💧</span> ALIEN DRIP
               <span className="btn-status"></span>
             </button>
           </div>
@@ -350,13 +350,13 @@ export default function MothershipPage() {
 
         {/* Right Side Panel with Buttons */}
         <div className="right-panel steel-panel steel-brushed">
-          <div className="rivet rivet-blue" style={{top: '20px', left: '20px'}}></div>
+          <div className="rivet rivet-red" style={{top: '20px', left: '20px'}}></div>
           <div className="rivet rivet-red" style={{top: '18%', left: '28px'}}></div>
-          <div className="rivet rivet-grey" style={{top: '40%', left: '15px'}}></div>
-          <div className="rivet rivet-blue" style={{top: '50%', left: '20px'}}></div>
+          <div className="rivet rivet-red" style={{top: '40%', left: '15px'}}></div>
+          <div className="rivet rivet-red" style={{top: '50%', left: '20px'}}></div>
           <div className="rivet rivet-red" style={{top: '65%', left: '25px'}}></div>
-          <div className="rivet rivet-grey" style={{bottom: '25%', left: '18px'}}></div>
-          <div className="rivet rivet-blue" style={{bottom: '20px', left: '20px'}}></div>
+          <div className="rivet rivet-red" style={{bottom: '25%', left: '18px'}}></div>
+          <div className="rivet rivet-red" style={{bottom: '20px', left: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
 
           <div style={{position: 'absolute', top: '50%', left: '12%', width: '75%', transform: 'translateY(-50%)'}}>
@@ -382,14 +382,14 @@ export default function MothershipPage() {
         {/* Front Console with MAIN CONTROLS */}
         <div className="front-console steel-brushed">
           <div className="rivet rivet-red" style={{top: '30px', left: '30px'}}></div>
-          <div className="rivet rivet-blue" style={{top: '35px', left: '15%'}}></div>
-          <div className="rivet rivet-grey" style={{top: '30px', left: '30%'}}></div>
+          <div className="rivet rivet-red" style={{top: '35px', left: '15%'}}></div>
+          <div className="rivet rivet-red" style={{top: '30px', left: '30%'}}></div>
           <div className="rivet rivet-red" style={{top: '30px', right: '30%'}}></div>
-          <div className="rivet rivet-blue" style={{top: '35px', right: '15%'}}></div>
-          <div className="rivet rivet-grey" style={{top: '30px', right: '30px'}}></div>
-          <div className="rivet rivet-blue" style={{bottom: '40px', left: '30px'}}></div>
+          <div className="rivet rivet-red" style={{top: '35px', right: '15%'}}></div>
+          <div className="rivet rivet-red" style={{top: '30px', right: '30px'}}></div>
+          <div className="rivet rivet-red" style={{bottom: '40px', left: '30px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '45px', left: '20%'}}></div>
-          <div className="rivet rivet-grey" style={{bottom: '40px', right: '20%'}}></div>
+          <div className="rivet rivet-red" style={{bottom: '40px', right: '20%'}}></div>
           <div className="rivet rivet-red" style={{bottom: '40px', right: '30px'}}></div>
           <div className="circuit-line" style={{top: '20%', width: '80%', left: '10%'}}></div>
 
@@ -417,7 +417,7 @@ export default function MothershipPage() {
               onClick={() => showScene('shopify')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🛒</span> SHOP
+              <span className="btn-icon">🛒</span> ALIEN GEAR
               <span className="btn-status"></span>
             </button>
             <button
@@ -725,18 +725,6 @@ export default function MothershipPage() {
           animation: blinkRed 2s infinite;
         }
 
-        .rivet-blue {
-          background: #0099ff;
-          box-shadow: 0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.6);
-          animation: blinkBlue 2.3s infinite;
-        }
-
-        .rivet-grey {
-          background: #999999;
-          box-shadow: 0 0 10px rgba(153, 153, 153, 0.8), 0 0 20px rgba(153, 153, 153, 0.6);
-          animation: blinkGrey 1.8s infinite;
-        }
-
         @keyframes blinkRed {
           0%, 100% {
             opacity: 1;
@@ -745,28 +733,6 @@ export default function MothershipPage() {
           50% {
             opacity: 0.3;
             box-shadow: 0 0 5px rgba(255, 0, 0, 0.3), 0 0 10px rgba(255, 0, 0, 0.2);
-          }
-        }
-
-        @keyframes blinkBlue {
-          0%, 100% {
-            opacity: 1;
-            box-shadow: 0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.6);
-          }
-          50% {
-            opacity: 0.3;
-            box-shadow: 0 0 5px rgba(0, 153, 255, 0.3), 0 0 10px rgba(0, 153, 255, 0.2);
-          }
-        }
-
-        @keyframes blinkGrey {
-          0%, 100% {
-            opacity: 1;
-            box-shadow: 0 0 10px rgba(153, 153, 153, 0.8), 0 0 20px rgba(153, 153, 153, 0.6);
-          }
-          50% {
-            opacity: 0.3;
-            box-shadow: 0 0 5px rgba(153, 153, 153, 0.3), 0 0 10px rgba(153, 153, 153, 0.2);
           }
         }
 
