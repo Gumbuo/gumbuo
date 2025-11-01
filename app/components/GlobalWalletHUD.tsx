@@ -11,15 +11,59 @@ export default function GlobalWalletHUD() {
 
   const handleNetworkChange = async (chainId: number) => {
     console.log('Attempting to switch to chain:', chainId);
-    if (!switchChain) {
-      console.error('switchChain is not available');
+
+    const targetChain = chains.find(c => c.id === chainId);
+    if (!targetChain) {
+      console.error('Chain not found:', chainId);
       return;
     }
 
     try {
-      console.log('Calling switchChain...');
-      const result = await switchChain({ chainId });
-      console.log('Switch successful:', result);
+      // Use wallet's native method to switch networks
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        console.log('Using wallet_switchEthereumChain...');
+
+        const chainIdHex = `0x${chainId.toString(16)}`;
+
+        try {
+          // Try to switch to the network
+          await (window as any).ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: chainIdHex }],
+          });
+          console.log('Successfully switched to chain:', chainId);
+        } catch (switchError: any) {
+          // This error code indicates that the chain has not been added to the wallet
+          if (switchError.code === 4902) {
+            console.log('Chain not in wallet, adding it...');
+            try {
+              await (window as any).ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId: chainIdHex,
+                    chainName: targetChain.name,
+                    nativeCurrency: targetChain.nativeCurrency,
+                    rpcUrls: [targetChain.rpcUrls.default.http[0]],
+                    blockExplorerUrls: targetChain.blockExplorers
+                      ? [targetChain.blockExplorers.default.url]
+                      : undefined,
+                  },
+                ],
+              });
+              console.log('Successfully added and switched to chain:', chainId);
+            } catch (addError) {
+              console.error('Failed to add network:', addError);
+              throw addError;
+            }
+          } else {
+            throw switchError;
+          }
+        }
+      } else {
+        console.error('window.ethereum is not available');
+        alert('Please install a Web3 wallet like MetaMask');
+      }
     } catch (error) {
       console.error('Failed to switch network:', error);
       alert(`Failed to switch network: ${error instanceof Error ? error.message : 'Unknown error'}`);
