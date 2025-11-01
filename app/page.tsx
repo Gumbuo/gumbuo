@@ -72,24 +72,24 @@ export default function MothershipPage() {
           {/* Scene 1: Space with Floating Portals (DEFAULT) */}
           <div id="scene-portals" className={`viewport-scene ${activeScene !== 'portals' ? 'hidden' : ''}`}>
             <div className="space-scene" id="space-scene">
-              {/* Floating Blockchain Portals using PNG images */}
+              {/* Floating Blockchain Portals using portal PNG images */}
               <Link href="/base" className="portal-floating base">
-                <img src="/nyx.png" alt="Base Chain" className="portal-image" />
+                <img src="/blueportal.png" alt="Base Chain" className="portal-image" />
                 <div className="portal-label">BASE</div>
               </Link>
 
               <Link href="/abstract" className="portal-floating abstract">
-                <img src="/zorb.png" alt="Abstract Chain" className="portal-image" />
+                <img src="/greenportal.png" alt="Abstract Chain" className="portal-image" />
                 <div className="portal-label">ABSTRACT</div>
               </Link>
 
               <Link href="/blast" className="portal-floating blast">
-                <img src="/j3d1.jpg" alt="Blast Chain" className="portal-image" />
+                <img src="/greyportal.png" alt="Blast Chain" className="portal-image" />
                 <div className="portal-label">BLAST</div>
               </Link>
 
               <Link href="/arbitrum" className="portal-floating arbitrum">
-                <img src="/apliean.png" alt="Arbitrum Chain" className="portal-image" />
+                <img src="/redportal.png" alt="Arbitrum Chain" className="portal-image" />
                 <div className="portal-label">ARBITRUM</div>
               </Link>
             </div>
