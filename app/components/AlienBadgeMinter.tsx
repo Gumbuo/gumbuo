@@ -103,7 +103,7 @@ export default function AlienBadgeMinter() {
         </p>
 
         {/* Current Points Display */}
-        <div className="mb-8 p-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-lg border border-purple-500/30">
+        <div className="mb-8 p-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-3xl border border-purple-500/30">
           <div className="flex items-center justify-between">
             <span className="text-purple-400 font-bold">Your Alien Points:</span>
             <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400 font-alien">
@@ -113,7 +113,7 @@ export default function AlienBadgeMinter() {
         </div>
 
         {!isOnAbstract && (
-          <div className="mb-6 p-4 bg-yellow-900/20 rounded-lg border border-yellow-500/30">
+          <div className="mb-6 p-4 bg-yellow-900/20 rounded-3xl border border-yellow-500/30">
             <p className="text-yellow-400 text-center">
               ⚠️ Switch to Abstract Chain to mint badges and earn XP!
             </p>
@@ -130,7 +130,7 @@ export default function AlienBadgeMinter() {
             return (
               <div
                 key={badge.id}
-                className={`p-6 rounded-lg border-2 transition-all duration-300 ${
+                className={`p-6 rounded-3xl border-2 transition-all duration-300 ${
                   isMintedBadge
                     ? "bg-green-900/30 border-green-500"
                     : isLocked
@@ -168,7 +168,7 @@ export default function AlienBadgeMinter() {
                   <button
                     onClick={() => handleMint(badge.id)}
                     disabled={!canMintBadge || minting}
-                    className={`w-full font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                    className={`w-full font-bold py-3 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
                       canMintBadge
                         ? `bg-gradient-to-r ${badge.color} hover:shadow-lg text-white`
                         : "bg-gray-700 text-gray-400 cursor-not-allowed opacity-50"
@@ -187,7 +187,7 @@ export default function AlienBadgeMinter() {
         </div>
 
         {/* XP Earning Info */}
-        <div className="p-4 bg-gradient-to-r from-green-900/20 to-cyan-900/20 rounded-lg border border-green-500/30">
+        <div className="p-4 bg-gradient-to-r from-green-900/20 to-cyan-900/20 rounded-3xl border border-green-500/30">
           <h3 className="text-green-400 font-bold mb-2 flex items-center gap-2">
             ✨ NFT Minting = Abstract XP
           </h3>
@@ -201,7 +201,7 @@ export default function AlienBadgeMinter() {
 
         {/* Minted Count */}
         {mintedBadges.length > 0 && (
-          <div className="mt-4 text-center p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
+          <div className="mt-4 text-center p-3 bg-purple-900/20 rounded-3xl border border-purple-500/30">
             <p className="text-purple-400 font-bold">
               🎖️ Badges Collected: {mintedBadges.length} / {BADGES.length}
             </p>

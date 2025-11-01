@@ -145,7 +145,7 @@ export default function AbstractActivityFeed() {
         </div>
 
         {!isOnAbstract ? (
-          <div className="text-center p-8 bg-yellow-900/20 rounded-lg border border-yellow-500/30">
+          <div className="text-center p-8 bg-yellow-900/20 rounded-3xl border border-yellow-500/30">
             <p className="text-yellow-400 mb-2">
               ⚠️ Switch to Abstract Chain to view your transaction feed
             </p>
@@ -154,7 +154,7 @@ export default function AbstractActivityFeed() {
             </p>
           </div>
         ) : transactions.length === 0 ? (
-          <div className="text-center p-12 bg-black/30 rounded-lg border border-gray-700">
+          <div className="text-center p-12 bg-black/30 rounded-3xl border border-gray-700">
             <div className="text-6xl mb-4">🛸</div>
             <p className="text-gray-400 text-lg mb-2">No transactions yet!</p>
             <p className="text-sm text-gray-500">
@@ -165,17 +165,17 @@ export default function AbstractActivityFeed() {
           <>
             {/* Summary Stats */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-lg border border-cyan-500/30">
+              <div className="p-4 bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-3xl border border-cyan-500/30">
                 <div className="text-cyan-400 text-xs mb-1">Total Transactions</div>
                 <div className="text-2xl font-bold text-white">{transactions.length}</div>
               </div>
-              <div className="p-4 bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-lg border border-green-500/30">
+              <div className="p-4 bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-3xl border border-green-500/30">
                 <div className="text-green-400 text-xs mb-1">Estimated XP</div>
                 <div className="text-2xl font-bold text-white">
                   {transactions.reduce((sum, tx) => sum + tx.xpEstimate, 0)}
                 </div>
               </div>
-              <div className="p-4 bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-lg border border-purple-500/30">
+              <div className="p-4 bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-3xl border border-purple-500/30">
                 <div className="text-purple-400 text-xs mb-1">Total Volume</div>
                 <div className="text-2xl font-bold text-white">
                   {transactions
@@ -192,7 +192,7 @@ export default function AbstractActivityFeed() {
                 <div
                   key={tx.hash}
                   onClick={() => openExplorer(tx.hash)}
-                  className="p-4 bg-black/40 rounded-lg border border-cyan-500/30 hover:border-cyan-400 transition-all duration-300 cursor-pointer hover:scale-102 group"
+                  className="p-4 bg-black/40 rounded-3xl border border-cyan-500/30 hover:border-cyan-400 transition-all duration-300 cursor-pointer hover:scale-102 group"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
@@ -234,7 +234,7 @@ export default function AbstractActivityFeed() {
                 onClick={() =>
                   window.open(`https://explorer.abs.xyz/address/${address}`, "_blank")
                 }
-                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105"
               >
                 🔍 View All on Block Explorer
               </button>
@@ -243,7 +243,7 @@ export default function AbstractActivityFeed() {
         )}
 
         {/* Info Box */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-lg border border-purple-500/30">
+        <div className="mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-3xl border border-purple-500/30">
           <p className="text-purple-400 text-sm">
             💡 <strong>XP Tracking:</strong> All your on-chain activities on Abstract are
             tracked automatically. The more you interact, the more XP you earn!

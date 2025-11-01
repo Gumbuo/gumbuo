@@ -105,7 +105,7 @@ export default function AbstractXPDashboard() {
   };
 
   return (
-    <div className="holographic-panel glass-panel p-8 rounded-2xl max-w-3xl mx-auto">
+    <div className="holographic-panel glass-panel p-8 rounded-3xl max-w-3xl mx-auto">
       {/* Corner glows */}
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
@@ -123,21 +123,21 @@ export default function AbstractXPDashboard() {
         {/* XP Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Estimated XP */}
-          <div className="p-6 rounded-xl bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-2 border-purple-500/50">
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-2 border-purple-500/50">
             <div className="text-purple-400 text-sm mb-2">Estimated XP</div>
             <div className="text-4xl font-bold text-white mb-1">{estimatedXP}</div>
             <div className="text-xs text-gray-400">From on-chain activities</div>
           </div>
 
           {/* Total Activities */}
-          <div className="p-6 rounded-xl bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-2 border-cyan-500/50">
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-2 border-cyan-500/50">
             <div className="text-cyan-400 text-sm mb-2">Total Activities</div>
             <div className="text-4xl font-bold text-white mb-1">{activities.length}</div>
             <div className="text-xs text-gray-400">XP-earning actions</div>
           </div>
 
           {/* Alien Points */}
-          <div className="p-6 rounded-xl bg-gradient-to-br from-green-900/40 to-emerald-900/40 border-2 border-green-500/50">
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-green-900/40 to-emerald-900/40 border-2 border-green-500/50">
             <div className="text-green-400 text-sm mb-2">Alien Points</div>
             <div className="text-4xl font-bold text-white mb-1">{currentPoints}</div>
             <div className="text-xs text-gray-400">Your current level</div>
@@ -148,7 +148,7 @@ export default function AbstractXPDashboard() {
         <div className="mb-6">
           <button
             onClick={openAbstractPortal}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
           >
             🎖️ View Official Abstract XP & Badges
           </button>
@@ -161,7 +161,7 @@ export default function AbstractXPDashboard() {
           </h3>
 
           {activities.length === 0 ? (
-            <div className="text-center p-8 bg-black/30 rounded-lg border border-gray-700">
+            <div className="text-center p-8 bg-black/30 rounded-3xl border border-gray-700">
               <p className="text-gray-400 mb-4">No activities yet!</p>
               <p className="text-sm text-gray-500">
                 Start bridging, swapping, or minting to earn XP
@@ -172,7 +172,7 @@ export default function AbstractXPDashboard() {
               {activities.map((activity) => (
                 <div
                   key={activity.id}
-                  className={`p-4 rounded-lg border-2 ${getActivityColor(
+                  className={`p-4 rounded-3xl border-2 ${getActivityColor(
                     activity.type
                   )} transition-all duration-300 hover:scale-102`}
                 >
@@ -204,7 +204,7 @@ export default function AbstractXPDashboard() {
         </div>
 
         {/* XP Earning Guide */}
-        <div className="p-6 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 rounded-lg border border-cyan-500/30">
+        <div className="p-6 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 rounded-3xl border border-cyan-500/30">
           <h3 className="text-cyan-400 font-bold mb-3 flex items-center gap-2">
             💡 How to Earn More XP
           </h3>
@@ -241,7 +241,7 @@ export default function AbstractXPDashboard() {
         </div>
 
         {/* Airdrop Info */}
-        <div className="mt-6 p-4 bg-yellow-900/20 rounded-lg border border-yellow-500/30">
+        <div className="mt-6 p-4 bg-yellow-900/20 rounded-3xl border border-yellow-500/30">
           <p className="text-yellow-400 text-sm">
             🎁 <strong>Airdrop Coming 2025:</strong> Your XP will determine your allocation
             of the Abstract token. Keep earning to maximize your rewards!
