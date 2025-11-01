@@ -504,14 +504,13 @@ export default function MothershipPage() {
         /* Floating Blockchain Portals using PNG images */
         .portal-floating {
           position: absolute;
-          width: 100px;
-          height: 140px;
+          width: 150px;
+          height: 190px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: flex-start;
           cursor: pointer;
-          transition: transform 0.3s;
           animation: portalFloat 3s ease-in-out infinite;
         }
 
@@ -533,8 +532,8 @@ export default function MothershipPage() {
         }
 
         .portal-image {
-          width: 100px;
-          height: 100px;
+          width: 150px;
+          height: 150px;
           object-fit: cover;
           border-radius: 50%;
           border: 3px solid #00ffff;
@@ -566,10 +565,24 @@ export default function MothershipPage() {
           animation-delay: 0s;
         }
 
+        .portal-floating.base .portal-label {
+          color: #0099ff;
+          border-color: #0099ff;
+          text-shadow: 0 0 15px rgba(0, 153, 255, 1), 0 0 25px rgba(0, 153, 255, 0.8);
+          box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
+        }
+
         .portal-floating.blast {
           top: 15%;
           right: 20%;
           animation-delay: 1s;
+        }
+
+        .portal-floating.blast .portal-label {
+          color: #999999;
+          border-color: #999999;
+          text-shadow: 0 0 15px rgba(153, 153, 153, 1), 0 0 25px rgba(153, 153, 153, 0.8);
+          box-shadow: 0 0 20px rgba(153, 153, 153, 0.6);
         }
 
         .portal-floating.abstract {
@@ -578,10 +591,24 @@ export default function MothershipPage() {
           animation-delay: 2s;
         }
 
+        .portal-floating.abstract .portal-label {
+          color: #00ff99;
+          border-color: #00ff99;
+          text-shadow: 0 0 15px rgba(0, 255, 153, 1), 0 0 25px rgba(0, 255, 153, 0.8);
+          box-shadow: 0 0 20px rgba(0, 255, 153, 0.6);
+        }
+
         .portal-floating.arbitrum {
           bottom: 25%;
           right: 20%;
           animation-delay: 1.5s;
+        }
+
+        .portal-floating.arbitrum .portal-label {
+          color: #ff3333;
+          border-color: #ff3333;
+          text-shadow: 0 0 15px rgba(255, 51, 51, 1), 0 0 25px rgba(255, 51, 51, 0.8);
+          box-shadow: 0 0 20px rgba(255, 51, 51, 0.6);
         }
 
         /* Content Display Scenes */
