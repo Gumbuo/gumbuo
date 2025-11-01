@@ -2,12 +2,10 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useCosmicSound } from "./hooks/useCosmicSound";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
-const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 
 type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
 
@@ -47,26 +45,6 @@ export default function MothershipPage() {
   return (
     <>
       <div className="cockpit">
-        {/* Top Right - Connect Button and HUD */}
-        <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 100}} className="flex flex-col items-end space-y-4">
-          {/* Wallet Connect Button with Alien Styling */}
-          <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
-          }} className="holographic-panel glass-panel p-4">
-            <div className="corner-glow corner-glow-tl"></div>
-            <div className="corner-glow corner-glow-tr"></div>
-            <div className="corner-glow corner-glow-bl"></div>
-            <div className="corner-glow corner-glow-br"></div>
-            <div className="relative z-10">
-              <ConnectButton />
-            </div>
-          </div>
-
-          {/* Alien HUD */}
-          <AlienHUD />
-        </div>
-
         {/* Central Viewport Window */}
         <div className="main-viewport">
           {/* Scene 1: Space with Floating Portals (DEFAULT) */}
