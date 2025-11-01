@@ -328,6 +328,23 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '20px', right: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
 
+          {/* Gauge above Portal buttons */}
+          <div className="tachometer" style={{position: 'absolute', top: '20%', right: '15%', transform: 'translateX(50%)'}}>
+            <svg width="70" height="70" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="30" fill="none" stroke="#333" strokeWidth="1"/>
+              {/* Gauge marks */}
+              <line x1="50" y1="18" x2="50" y2="28" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="75" y1="32" x2="68" y2="37" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="82" y1="50" x2="72" y2="50" stroke="#ffff00" strokeWidth="2"/>
+              <line x1="75" y1="68" x2="68" y2="63" stroke="#ff9900" strokeWidth="2"/>
+              <line x1="50" y1="82" x2="50" y2="72" stroke="#ff0000" strokeWidth="2"/>
+              {/* Needle */}
+              <line className="gauge-needle" x1="50" y1="50" x2="68" y2="37" stroke="#00ffff" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="4" fill="#00ffff"/>
+            </svg>
+          </div>
+
           <div style={{position: 'absolute', top: '50%', right: '12%', width: '75%', transform: 'translateY(-50%)'}}>
             <button
               className={`control-btn ${activeScene === 'portals' ? 'active' : ''}`}
@@ -358,6 +375,23 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '25%', left: '18px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '20px', left: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
+
+          {/* Gauge above Leaderboard buttons */}
+          <div className="tachometer" style={{position: 'absolute', top: '20%', left: '15%', transform: 'translateX(-50%)'}}>
+            <svg width="70" height="70" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="30" fill="none" stroke="#333" strokeWidth="1"/>
+              {/* Gauge marks */}
+              <line x1="50" y1="18" x2="50" y2="28" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="25" y1="32" x2="32" y2="37" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="18" y1="50" x2="28" y2="50" stroke="#ffff00" strokeWidth="2"/>
+              <line x1="25" y1="68" x2="32" y2="63" stroke="#ff9900" strokeWidth="2"/>
+              <line x1="50" y1="82" x2="50" y2="72" stroke="#ff0000" strokeWidth="2"/>
+              {/* Needle */}
+              <line className="gauge-needle" x1="50" y1="50" x2="32" y2="37" stroke="#00ffff" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="4" fill="#00ffff"/>
+            </svg>
+          </div>
 
           <div style={{position: 'absolute', top: '50%', left: '12%', width: '75%', transform: 'translateY(-50%)'}}>
             <button
