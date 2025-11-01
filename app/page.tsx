@@ -498,8 +498,8 @@ export default function MothershipPage() {
         /* Floating Blockchain Portals using PNG images */
         .portal-floating {
           position: absolute;
-          width: 80px;
-          height: 80px;
+          width: 50px;
+          height: 50px;
           border-radius: 50%;
           display: flex;
           flex-direction: column;
@@ -533,40 +533,40 @@ export default function MothershipPage() {
 
         .portal-label {
           position: absolute;
-          bottom: -25px;
-          font-size: 0.7rem;
+          bottom: -20px;
+          font-size: 0.6rem;
           font-weight: bold;
           text-transform: uppercase;
           color: #fff;
           text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6);
           background: rgba(0, 0, 0, 0.9);
-          padding: 3px 10px;
+          padding: 2px 8px;
           border-radius: 4px;
           border: 2px solid #00ffff;
           white-space: nowrap;
         }
 
         .portal-floating.base {
-          top: 10%;
-          left: 8%;
+          top: 15%;
+          left: 15%;
           animation-delay: 0s;
         }
 
         .portal-floating.blast {
-          top: 10%;
-          right: 8%;
+          top: 15%;
+          right: 15%;
           animation-delay: 1s;
         }
 
         .portal-floating.abstract {
-          bottom: 10%;
-          left: 8%;
+          bottom: 15%;
+          left: 15%;
           animation-delay: 2s;
         }
 
         .portal-floating.arbitrum {
-          bottom: 10%;
-          right: 8%;
+          bottom: 15%;
+          right: 15%;
           animation-delay: 1.5s;
         }
 
