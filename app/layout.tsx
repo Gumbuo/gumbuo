@@ -6,6 +6,7 @@ import { Providers } from "./providers";
 import dynamic from "next/dynamic";
 
 const GlobalMusicPlayer = dynamic(() => import("./components/GlobalMusicPlayer"), { ssr: false });
+const GlobalChat = dynamic(() => import("./components/GlobalChat"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Gumbuo - Alien Points Economy",
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen bg-black">
         <Providers>
           <GlobalMusicPlayer />
+          <GlobalChat />
           {children}
         </Providers>
       </body>
