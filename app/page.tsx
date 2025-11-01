@@ -697,11 +697,23 @@ export default function MothershipPage() {
 
         .rivet {
           position: absolute;
-          width: 10px;
-          height: 10px;
-          background: radial-gradient(circle, #888, #333);
+          width: 12px;
+          height: 12px;
+          background: #ff0000;
           border-radius: 50%;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+          box-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6);
+          animation: blinkRed 2s infinite;
+        }
+
+        @keyframes blinkRed {
+          0%, 100% {
+            opacity: 1;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6);
+          }
+          50% {
+            opacity: 0.3;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.3), 0 0 10px rgba(255, 0, 0, 0.2);
+          }
         }
 
         /* Physical Control Buttons */
