@@ -424,7 +424,6 @@ export default function MothershipPage() {
               className={`control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
               onClick={() => showScene('buygmb')}
               onMouseEnter={() => playSound('hover')}
-              style={{flex: '1', minWidth: '140px', padding: '15px 20px', fontSize: '0.95rem'}}
             >
               <span className="btn-icon">💰</span> BUY GMB
               <span className="btn-status"></span>
@@ -773,19 +772,22 @@ export default function MothershipPage() {
 
         /* Physical Control Buttons */
         .control-btn {
-          padding: 14px 22px;
+          padding: 8px 12px;
           background: linear-gradient(180deg, #9a9aa5, #6a6a75);
           border: none;
-          border-radius: 6px;
+          border-radius: 4px;
           color: #000;
-          font-size: 0.9rem;
+          font-size: 0.75rem;
           font-weight: bold;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 0.5px;
           cursor: pointer;
           transition: all 0.2s;
-          width: 100%;
-          margin: 10px 0;
+          width: auto;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin: 6px 0;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
           position: relative;
         }
@@ -808,20 +810,17 @@ export default function MothershipPage() {
         }
 
         .btn-icon {
-          font-size: 1.2rem;
-          margin-right: 5px;
+          font-size: 1rem;
         }
 
         .btn-status {
-          position: absolute;
-          top: 5px;
-          right: 5px;
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           background: #00ff00;
           border-radius: 50%;
-          box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+          box-shadow: 0 0 6px rgba(0, 255, 0, 0.8);
           animation: blink 2s infinite;
+          flex-shrink: 0;
         }
 
         @keyframes blink {
