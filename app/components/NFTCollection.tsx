@@ -185,7 +185,7 @@ export default function NFTCollection({ onSelectNFT }: { onSelectNFT?: (tokenId:
             background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
             color: '#fff',
             border: '2px solid #06b6d4',
-            borderRadius: '24px',
+            borderRadius: '8px',
             cursor: 'pointer',
             fontFamily: 'Orbitron, sans-serif',
             fontWeight: 'bold',

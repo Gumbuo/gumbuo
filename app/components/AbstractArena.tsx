@@ -271,7 +271,7 @@ export default function AbstractArena() {
 
       {/* Network Warning */}
       {!isOnAbstract && (
-        <div className="w-full p-8 bg-red-900/30 border border-red-500 text-center" style={{ borderRadius: '40px' }}>
+        <div className="w-full p-8 bg-red-900/30 border border-red-500 text-center" style={{ borderRadius: '8px' }}>
           <p className="text-red-400 font-bold text-xl mb-4">⚠️ Wrong Network</p>
           <p className="text-gray-300 mb-4">
             Please switch to an Abstract network. Use the network switcher in your wallet (top right) to select Abstract or Abstract Testnet.
@@ -326,11 +326,11 @@ export default function AbstractArena() {
 
       {/* Contract Info */}
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-black/40 p-6 border border-cyan-500/30 text-center" style={{ borderRadius: '40px' }}>
+        <div className="bg-black/40 p-6 border border-cyan-500/30 text-center" style={{ borderRadius: '8px' }}>
           <p className="text-cyan-400 font-bold mb-2">🎮 Total Battles</p>
           <p className="text-white text-3xl font-bold">{totalBattles}</p>
         </div>
-        <div className="bg-black/40 p-6 border border-purple-500/30 text-center" style={{ borderRadius: '40px' }}>
+        <div className="bg-black/40 p-6 border border-purple-500/30 text-center" style={{ borderRadius: '8px' }}>
           <p className="text-purple-400 font-bold mb-2">👽 Your Fighters</p>
           <p className="text-white text-3xl font-bold">{nftBalance}</p>
           {nftBalance > 0 && (
@@ -349,7 +349,7 @@ export default function AbstractArena() {
               background: 'linear-gradient(135deg, #a855f7, #9333ea)',
               color: '#fff',
               border: '2px solid #a855f7',
-              borderRadius: '24px',
+              borderRadius: '8px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
               fontWeight: 'bold',
@@ -371,7 +371,7 @@ export default function AbstractArena() {
             🔄 Refresh
           </button>
         </div>
-        <div className="bg-black/40 p-6 border border-orange-500/30 text-center" style={{ borderRadius: '40px' }}>
+        <div className="bg-black/40 p-6 border border-orange-500/30 text-center" style={{ borderRadius: '8px' }}>
           <p className="text-orange-400 font-bold mb-2">⏳ Queue Status</p>
           <p className="text-white text-xl font-bold">
             {hasQueuedFighter ? '🔴 Fighter Waiting' : '🟢 Empty'}
@@ -380,7 +380,7 @@ export default function AbstractArena() {
       </div>
 
       {/* Mint Section */}
-      <div style={{borderRadius: '40px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
+      <div style={{borderRadius: '8px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
@@ -431,7 +431,7 @@ export default function AbstractArena() {
                 border: isMinting || !isConnected || !isCorrectNetwork
                   ? '2px solid rgba(107, 114, 128, 0.5)'
                   : '2px solid #06b6d4',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 cursor: isMinting || !isConnected || !isCorrectNetwork ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -487,7 +487,7 @@ export default function AbstractArena() {
       </div>
 
       {/* NFT Collection */}
-      <div style={{borderRadius: '40px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
+      <div style={{borderRadius: '8px', border: '2px solid #00ff9944'}} className="w-full holographic-panel glass-panel p-8">
         <div className="corner-glow corner-glow-tl"></div>
         <div className="corner-glow corner-glow-br"></div>
         <div className="relative z-10">
@@ -497,7 +497,7 @@ export default function AbstractArena() {
 
       {/* Arena Queue */}
       <div
-        style={{borderRadius: '40px', border: '2px solid #00ff9944'}}
+        style={{borderRadius: '8px', border: '2px solid #00ff9944'}}
         className="w-full holographic-panel glass-panel p-8"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -548,7 +548,7 @@ export default function AbstractArena() {
                         background: 'linear-gradient(135deg, #dc2626, #991b1b)',
                         color: '#fff',
                         border: '2px solid #dc2626',
-                        borderRadius: '24px',
+                        borderRadius: '8px',
                         cursor: 'pointer',
                         fontFamily: 'Orbitron, sans-serif',
                         fontWeight: 'bold',
@@ -584,7 +584,7 @@ export default function AbstractArena() {
                       border: isEntering || nftBalance === 0
                         ? '2px solid rgba(107, 114, 128, 0.5)'
                         : '2px solid #dc2626',
-                      borderRadius: '24px',
+                      borderRadius: '8px',
                       cursor: isEntering || nftBalance === 0 ? 'not-allowed' : 'pointer',
                       fontFamily: 'Orbitron, sans-serif',
                       fontWeight: 'bold',
@@ -638,7 +638,7 @@ export default function AbstractArena() {
                   border: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null)
                     ? '2px solid rgba(107, 114, 128, 0.5)'
                     : '2px solid #a855f7',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   cursor: (isEntering || nftBalance === 0 || !isConnected || !isCorrectNetwork || selectedNFTTokenId === null) ? 'not-allowed' : 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
                   fontWeight: 'bold',
@@ -671,7 +671,7 @@ export default function AbstractArena() {
       </div>
 
       {/* How It Works */}
-      <div className="max-w-5xl mx-auto bg-black/40 p-8 border border-cyan-500/30" style={{ borderRadius: '40px' }}>
+      <div className="max-w-5xl mx-auto bg-black/40 p-8 border border-cyan-500/30" style={{ borderRadius: '8px' }}>
         <h3 className="text-2xl font-bold text-cyan-400 mb-4 text-center">📖 How It Works</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
@@ -702,7 +702,7 @@ export default function AbstractArena() {
       </div>
 
       {/* Contract Addresses */}
-      <div className="max-w-5xl mx-auto bg-black/40 p-6 border border-gray-600 text-center" style={{ borderRadius: '40px' }}>
+      <div className="max-w-5xl mx-auto bg-black/40 p-6 border border-gray-600 text-center" style={{ borderRadius: '8px' }}>
         <p className="text-gray-400 text-xs mb-2">Smart Contract Addresses</p>
         <div className="space-y-1">
           <p className="text-cyan-400 text-xs font-mono">NFT: {NFT_CONTRACT}</p>

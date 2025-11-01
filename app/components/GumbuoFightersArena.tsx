@@ -781,7 +781,7 @@ export default function GumbuoFightersArena() {
                       border: fighting
                         ? '2px solid rgba(107, 114, 128, 0.5)'
                         : '2px solid #dc2626',
-                      borderRadius: '24px',
+                      borderRadius: '8px',
                       cursor: fighting ? 'not-allowed' : 'pointer',
                       fontFamily: 'Orbitron, sans-serif',
                       fontWeight: 'bold',
@@ -999,7 +999,7 @@ export default function GumbuoFightersArena() {
                       border: fighting
                         ? '2px solid rgba(107, 114, 128, 0.5)'
                         : '2px solid #dc2626',
-                      borderRadius: '24px',
+                      borderRadius: '8px',
                       cursor: fighting ? 'not-allowed' : 'pointer',
                       fontFamily: 'Orbitron, sans-serif',
                       fontWeight: 'bold',
@@ -1325,7 +1325,7 @@ export default function GumbuoFightersArena() {
                   background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
                   color: '#fff',
                   border: '2px solid #06b6d4',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
                   fontWeight: 'bold',

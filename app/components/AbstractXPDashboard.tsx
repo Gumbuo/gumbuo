@@ -154,7 +154,7 @@ export default function AbstractXPDashboard() {
               background: 'linear-gradient(135deg, #a855f7, #ec4899)',
               color: '#fff',
               border: '2px solid #a855f7',
-              borderRadius: '24px',
+              borderRadius: '8px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
               fontWeight: 'bold',

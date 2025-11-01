@@ -34,7 +34,7 @@ export default function ArbitrumPage() {
                 : 'rgba(0, 255, 153, 0.1)',
               color: selectedGame === key ? '#000' : '#00ff99',
               border: `2px solid ${selectedGame === key ? '#00ff99' : '#00ff9944'}`,
-              borderRadius: '24px',
+              borderRadius: '8px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
               fontWeight: 'bold',

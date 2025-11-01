@@ -87,7 +87,7 @@ export default function AlienBadgeMinter() {
   const isMinted = (badgeId: number) => mintedBadges.includes(badgeId);
 
   return (
-    <div style={{borderRadius: '24px', border: '2px solid #00ff9944'}} className="holographic-panel glass-panel p-8 max-w-3xl mx-auto">
+    <div style={{borderRadius: '8px', border: '2px solid #00ff9944'}} className="holographic-panel glass-panel p-8 max-w-3xl mx-auto">
       {/* Corner glows */}
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
@@ -178,7 +178,7 @@ export default function AlienBadgeMinter() {
                       border: canMintBadge && !minting
                         ? `2px solid ${badge.color.includes('green') ? '#22c55e' : badge.color.includes('blue') ? '#06b6d4' : badge.color.includes('purple') ? '#a855f7' : '#f59e0b'}`
                         : '2px solid rgba(107, 114, 128, 0.5)',
-                      borderRadius: '24px',
+                      borderRadius: '8px',
                       cursor: canMintBadge && !minting ? 'pointer' : 'not-allowed',
                       fontFamily: 'Orbitron, sans-serif',
                       fontWeight: 'bold',

@@ -535,7 +535,7 @@ export default function GumbuoBoss() {
       padding: '32px',
       background: 'rgba(0, 0, 0, 0.4)',
       maxWidth: '1152px',
-      borderRadius: '24px',
+      borderRadius: '8px',
       border: '2px solid #00ff9944'
     }}>
       {/* CSS Animations */}
@@ -571,7 +571,7 @@ export default function GumbuoBoss() {
       <div style={{
         width: '100%',
         background: 'rgba(0, 0, 0, 0.6)',
-        borderRadius: '24px',
+        borderRadius: '8px',
         border: '2px solid #00ff9944',
         padding: '32px'
       }}>
@@ -640,7 +640,7 @@ export default function GumbuoBoss() {
           {!bossState.isAlive && (
             <div style={{
               background: 'rgba(0, 0, 0, 0.6)',
-              borderRadius: '24px',
+              borderRadius: '8px',
               border: '2px solid #00ff9944',
               padding: '16px',
               textAlign: 'center'
@@ -654,7 +654,7 @@ export default function GumbuoBoss() {
           {lastDamage && bossState.isAlive && (
             <div style={{
               background: 'rgba(0, 0, 0, 0.6)',
-              borderRadius: '24px',
+              borderRadius: '8px',
               border: '2px solid #00ff9944',
               padding: '16px',
               textAlign: 'center'
@@ -675,7 +675,7 @@ export default function GumbuoBoss() {
         <div style={{
           width: '100%',
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '24px',
+          borderRadius: '8px',
           border: '2px solid #00ff9944',
           padding: '24px',
           display: 'flex',
@@ -701,7 +701,7 @@ export default function GumbuoBoss() {
                 border: selectedAttack === 'normal'
                   ? '2px solid #06b6d4'
                   : '2px solid rgba(107, 114, 128, 0.5)',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 cursor: 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -756,7 +756,7 @@ export default function GumbuoBoss() {
                   : selectedAttack === 'power'
                   ? '2px solid #a855f7'
                   : '2px solid rgba(107, 114, 128, 0.5)',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 cursor: powerCooldown > 0 ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -819,7 +819,7 @@ export default function GumbuoBoss() {
                   : selectedAttack === 'ultimate'
                   ? '2px solid #f59e0b'
                   : '2px solid rgba(107, 114, 128, 0.5)',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 cursor: ultimateCooldown > 0 ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -875,7 +875,7 @@ export default function GumbuoBoss() {
                   background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
                   color: '#fff',
                   border: '2px solid #06b6d4',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
                   fontWeight: 'bold',
@@ -902,7 +902,7 @@ export default function GumbuoBoss() {
                 background: 'rgba(34, 197, 94, 0.3)',
                 color: '#4ade80',
                 border: '2px solid #4ade80',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
                 fontSize: '12px',
@@ -925,7 +925,7 @@ export default function GumbuoBoss() {
                   background: 'linear-gradient(135deg, #a855f7, #9333ea)',
                   color: '#fff',
                   border: '2px solid #a855f7',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
                   fontWeight: 'bold',
@@ -952,7 +952,7 @@ export default function GumbuoBoss() {
                 background: 'rgba(34, 197, 94, 0.3)',
                 color: '#4ade80',
                 border: '2px solid #4ade80',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
                 fontSize: '12px',
@@ -975,7 +975,7 @@ export default function GumbuoBoss() {
                   background: 'linear-gradient(135deg, #f59e0b, #d97706)',
                   color: '#fff',
                   border: '2px solid #f59e0b',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
                   fontWeight: 'bold',
@@ -1002,7 +1002,7 @@ export default function GumbuoBoss() {
                 background: 'rgba(34, 197, 94, 0.3)',
                 color: '#4ade80',
                 border: '2px solid #4ade80',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
                 fontSize: '12px',
@@ -1031,7 +1031,7 @@ export default function GumbuoBoss() {
                 border: isAttacking || !canAttack
                   ? '2px solid rgba(107, 114, 128, 0.5)'
                   : '2px solid #dc2626',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 cursor: isAttacking || !canAttack ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -1074,7 +1074,7 @@ export default function GumbuoBoss() {
             <div style={{
               marginTop: '24px',
               background: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '24px',
+              borderRadius: '8px',
               border: '2px solid #00ff9944',
               padding: '24px'
             }}>
@@ -1085,7 +1085,7 @@ export default function GumbuoBoss() {
                   flex: 1,
                   textAlign: 'center',
                   background: 'rgba(168, 85, 247, 0.2)',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   border: '2px solid #00ff9944',
                   padding: '16px'
                 }}>
@@ -1101,7 +1101,7 @@ export default function GumbuoBoss() {
                   flex: 1,
                   textAlign: 'center',
                   background: 'rgba(34, 197, 94, 0.2)',
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   border: '2px solid #00ff9944',
                   padding: '16px'
                 }}>
@@ -1123,7 +1123,7 @@ export default function GumbuoBoss() {
               <div style={{
                 textAlign: 'center',
                 background: 'rgba(0, 0, 0, 0.4)',
-                borderRadius: '24px',
+                borderRadius: '8px',
                 border: '2px solid #00ff9944',
                 padding: '12px'
               }}>
@@ -1145,7 +1145,7 @@ export default function GumbuoBoss() {
         {/* Leaderboard */}
         <div style={{
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '24px',
+          borderRadius: '8px',
           border: '2px solid #00ff9944',
           padding: '24px'
         }}>
@@ -1156,7 +1156,7 @@ export default function GumbuoBoss() {
             ) : (
               leaderboard.map((entry, index) => (
                 <div key={index} style={{
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   border: '2px solid #00ff9944'
                 }} className={`flex items-center gap-3 p-3 ${
                   index === 0 ? 'bg-yellow-500/20' :
@@ -1186,7 +1186,7 @@ export default function GumbuoBoss() {
         {/* Recent Attackers */}
         <div style={{
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '24px',
+          borderRadius: '8px',
           border: '2px solid #00ff9944',
           padding: '24px'
         }}>
@@ -1197,7 +1197,7 @@ export default function GumbuoBoss() {
             ) : (
               recentAttackers.map((attacker, index) => (
                 <div key={index} style={{
-                  borderRadius: '24px',
+                  borderRadius: '8px',
                   border: '2px solid #00ff9944',
                   animationDuration: '2s'
                 }} className={`flex items-center gap-3 p-3 ${
@@ -1232,7 +1232,7 @@ export default function GumbuoBoss() {
           onClick={handleClaimReward}
           onMouseEnter={() => playSound('hover')}
           style={{
-            borderRadius: '24px',
+            borderRadius: '8px',
             border: '2px solid #00ff9944'
           }}
           className="px-16 py-6 text-3xl font-bold tracking-wider alien-button alien-button-primary alien-button-glow alien-button-organic"
@@ -1245,7 +1245,7 @@ export default function GumbuoBoss() {
       {!bossState.isAlive && hasClaimedReward && (
         <div style={{
           background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '24px',
+          borderRadius: '8px',
           border: '2px solid #00ff9944',
           padding: '24px',
           textAlign: 'center'
@@ -1261,7 +1261,7 @@ export default function GumbuoBoss() {
         textAlign: 'center',
         maxWidth: '768px',
         background: 'rgba(0, 0, 0, 0.6)',
-        borderRadius: '24px',
+        borderRadius: '8px',
         border: '2px solid #00ff9944',
         padding: '24px',
         color: '#f87171'
