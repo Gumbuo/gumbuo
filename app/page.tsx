@@ -317,7 +317,7 @@ export default function MothershipPage() {
           </div>
         </div>
 
-        {/* Left Side Panel with Buttons */}
+        {/* Left Side Panel with Support Button */}
         <div className="left-panel steel-panel steel-brushed">
           <div className="rivet rivet-red" style={{top: '20px', right: '20px'}}></div>
           <div className="rivet rivet-red" style={{top: '15%', right: '15px'}}></div>
@@ -327,6 +327,42 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '30%', right: '18px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '20px', right: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
+
+          {/* Support Button - Centered to Viewport */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80%',
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <button
+              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
+              onClick={() => showScene('support')}
+              onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'support'
+                  ? 'linear-gradient(135deg, #ff8c00, #ff6500)'
+                  : 'linear-gradient(135deg, #ff6500, #cc5200)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
+                border: '3px solid #ff8c00',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                width: '100%',
+                boxShadow: activeScene === 'support'
+                  ? '0 0 25px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
+            >
+              🔒 SUPPORT
+              <span className="btn-status"></span>
+            </button>
+          </div>
         </div>
 
         {/* Right Side Panel with Buttons */}
@@ -349,23 +385,6 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '40px', left: '30px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '40px', right: '30px'}}></div>
 
-          {/* Center - Alien Hourglass */}
-          <div className="alien-hourglass" style={{position: 'absolute', top: '30px', left: '50%', transform: 'translateX(-50%)'}}>
-            <svg width="50" height="70" viewBox="0 0 50 70">
-              {/* Top bulb */}
-              <ellipse cx="25" cy="15" rx="18" ry="12" fill="rgba(0,255,153,0.3)" stroke="#00ff99" strokeWidth="2"/>
-              {/* Bottom bulb */}
-              <ellipse cx="25" cy="55" rx="18" ry="12" fill="rgba(0,255,153,0.6)" stroke="#00ff99" strokeWidth="2"/>
-              {/* Narrow middle */}
-              <path d="M 15 25 L 25 35 L 35 25 M 15 45 L 25 35 L 35 45" fill="none" stroke="#00ff99" strokeWidth="2"/>
-              {/* Frame */}
-              <rect x="5" y="5" width="40" height="15" fill="none" stroke="#666" strokeWidth="2" rx="2"/>
-              <rect x="5" y="50" width="40" height="15" fill="none" stroke="#666" strokeWidth="2" rx="2"/>
-              {/* Liquid flow */}
-              <circle className="liquid-drop" cx="25" cy="20" r="3" fill="#00ff99" opacity="0.8"/>
-            </svg>
-          </div>
-
           {/* MOTHERSHIP CONTROL PANEL */}
           <div style={{
             position: 'absolute',
@@ -375,6 +394,7 @@ export default function MothershipPage() {
             width: '95%',
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateRows: 'repeat(2, 1fr)',
             gap: '12px',
             padding: '0 20px'
           }}>
@@ -519,34 +539,6 @@ export default function MothershipPage() {
               🌐 SOCIALS
               <span className="btn-status"></span>
             </button>
-
-            {/* Row 3 - Centered Support Button */}
-            <div style={{gridColumn: '1 / -1', display: 'flex', justifyContent: 'center'}}>
-              <button
-                className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
-                onClick={() => showScene('support')}
-                onMouseEnter={() => playSound('hover')}
-                style={{
-                  background: activeScene === 'support'
-                    ? 'linear-gradient(135deg, #ff8c00, #ff6500)'
-                    : 'linear-gradient(135deg, #ff6500, #cc5200)',
-                  color: '#000',
-                  textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
-                  border: '3px solid #ff8c00',
-                  borderRadius: '8px',
-                  padding: '14px 32px',
-                  fontSize: '0.85rem',
-                  fontWeight: 'bold',
-                  width: 'auto',
-                  boxShadow: activeScene === 'support'
-                    ? '0 0 25px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                    : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
-                }}
-              >
-                🔒 SUPPORT
-                <span className="btn-status"></span>
-              </button>
-            </div>
           </div>
         </div>
       </div>
