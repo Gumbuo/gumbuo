@@ -148,7 +148,8 @@ export default function AbstractXPDashboard() {
         <div className="mb-6">
           <button
             onClick={openAbstractPortal}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
+            style={{ borderRadius: '24px', border: '2px solid rgba(236, 72, 153, 0.5)' }}
           >
             🎖️ View Official Abstract XP & Badges
           </button>

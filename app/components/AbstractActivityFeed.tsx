@@ -234,7 +234,8 @@ export default function AbstractActivityFeed() {
                 onClick={() =>
                   window.open(`https://explorer.abs.xyz/address/${address}`, "_blank")
                 }
-                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 px-6 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
+                style={{ borderRadius: '24px', border: '2px solid rgba(0, 255, 255, 0.5)' }}
               >
                 🔍 View All on Block Explorer
               </button>

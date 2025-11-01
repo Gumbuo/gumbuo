@@ -168,11 +168,12 @@ export default function AlienBadgeMinter() {
                   <button
                     onClick={() => handleMint(badge.id)}
                     disabled={!canMintBadge || minting}
-                    className={`w-full font-bold py-3 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                    className={`w-full font-bold py-3 px-6 transition-all duration-300 transform hover:scale-105 shadow-lg ${
                       canMintBadge
                         ? `bg-gradient-to-r ${badge.color} hover:shadow-lg text-white`
                         : "bg-gray-700 text-gray-400 cursor-not-allowed opacity-50"
                     }`}
+                    style={{ borderRadius: '24px', border: canMintBadge ? '2px solid rgba(255, 255, 255, 0.3)' : '2px solid rgba(107, 114, 128, 0.5)' }}
                   >
                     {minting && selectedBadge === badge.id
                       ? "Minting... 🌌"
