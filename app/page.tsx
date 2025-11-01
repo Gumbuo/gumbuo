@@ -769,23 +769,27 @@ export default function MothershipPage() {
         }
 
         .portal-item:nth-child(1) .portal-label {
-          background: #0099ff;
-          color: #fff;
+          background: #00d4ff;
+          color: #000;
+          box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
         }
 
         .portal-item:nth-child(2) .portal-label {
-          background: #888888;
-          color: #fff;
+          background: #e0e0e0;
+          color: #000;
+          box-shadow: 0 0 20px rgba(224, 224, 224, 0.8);
         }
 
         .portal-item:nth-child(3) .portal-label {
           background: #00ff99;
           color: #000;
+          box-shadow: 0 0 20px rgba(0, 255, 153, 0.8);
         }
 
         .portal-item:nth-child(4) .portal-label {
-          background: #ff4444;
-          color: #fff;
+          background: #ff3366;
+          color: #000;
+          box-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
         }
 
         /* Content Display Scenes */
