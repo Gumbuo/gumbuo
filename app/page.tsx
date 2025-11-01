@@ -449,7 +449,7 @@ export default function MothershipPage() {
           top: 8%;
           left: 50%;
           transform: translateX(-50%);
-          width: 60%;
+          width: 70%;
           height: 60%;
           background: #000;
           border: 12px solid #7a7a85;
@@ -624,7 +624,7 @@ export default function MothershipPage() {
           position: absolute;
           left: 0;
           top: 0;
-          width: 25%;
+          width: 20%;
           height: 100%;
           transform-origin: right center;
           transform: perspective(800px) rotateY(25deg) translateX(-10%);
@@ -638,7 +638,7 @@ export default function MothershipPage() {
           position: absolute;
           right: 0;
           top: 0;
-          width: 25%;
+          width: 20%;
           height: 100%;
           transform-origin: left center;
           transform: perspective(800px) rotateY(-25deg) translateX(10%);
@@ -651,8 +651,8 @@ export default function MothershipPage() {
         .overhead-panel {
           position: absolute;
           top: 0;
-          left: 25%;
-          width: 50%;
+          left: 20%;
+          width: 60%;
           height: 15%;
           transform-origin: center bottom;
           transform: perspective(800px) rotateX(-30deg) translateY(-20%);
@@ -665,8 +665,8 @@ export default function MothershipPage() {
         .front-console {
           position: absolute;
           bottom: 0;
-          left: 20%;
-          width: 60%;
+          left: 15%;
+          width: 70%;
           height: 25%;
           background: linear-gradient(180deg, #9a9aa5 0%, #6a6a75 50%, #5a5a65 100%);
           transform-origin: center top;
@@ -800,8 +800,8 @@ export default function MothershipPage() {
 
         /* Responsive */
         @media (max-width: 1024px) {
-          .left-panel, .right-panel { width: 20%; }
-          .main-viewport { width: 60%; }
+          .left-panel, .right-panel { width: 18%; }
+          .main-viewport { width: 64%; }
         }
 
         @media (max-width: 768px) {
