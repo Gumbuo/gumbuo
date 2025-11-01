@@ -327,23 +327,6 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '30%', right: '18px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '20px', right: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
-
-          {/* Gauge above Portal buttons */}
-          <div className="tachometer" style={{position: 'absolute', top: '25%', right: '50%', transform: 'translateX(50%)'}}>
-            <svg width="70" height="70" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
-              <circle cx="50" cy="50" r="30" fill="none" stroke="#333" strokeWidth="1"/>
-              {/* Gauge marks */}
-              <line x1="50" y1="18" x2="50" y2="28" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="75" y1="32" x2="68" y2="37" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="82" y1="50" x2="72" y2="50" stroke="#ffff00" strokeWidth="2"/>
-              <line x1="75" y1="68" x2="68" y2="63" stroke="#ff9900" strokeWidth="2"/>
-              <line x1="50" y1="82" x2="50" y2="72" stroke="#ff0000" strokeWidth="2"/>
-              {/* Needle */}
-              <line className="gauge-needle" x1="50" y1="50" x2="68" y2="37" stroke="#00ffff" strokeWidth="2"/>
-              <circle cx="50" cy="50" r="4" fill="#00ffff"/>
-            </svg>
-          </div>
         </div>
 
         {/* Right Side Panel with Buttons */}
@@ -356,23 +339,6 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '25%', left: '18px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '20px', left: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
-
-          {/* Gauge above Leaderboard buttons */}
-          <div className="tachometer" style={{position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)'}}>
-            <svg width="70" height="70" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
-              <circle cx="50" cy="50" r="30" fill="none" stroke="#333" strokeWidth="1"/>
-              {/* Gauge marks */}
-              <line x1="50" y1="18" x2="50" y2="28" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="25" y1="32" x2="32" y2="37" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="18" y1="50" x2="28" y2="50" stroke="#ffff00" strokeWidth="2"/>
-              <line x1="25" y1="68" x2="32" y2="63" stroke="#ff9900" strokeWidth="2"/>
-              <line x1="50" y1="82" x2="50" y2="72" stroke="#ff0000" strokeWidth="2"/>
-              {/* Needle */}
-              <line className="gauge-needle" x1="50" y1="50" x2="32" y2="37" stroke="#00ffff" strokeWidth="2"/>
-              <circle cx="50" cy="50" r="4" fill="#00ffff"/>
-            </svg>
-          </div>
         </div>
 
         {/* Front Console with MAIN CONTROLS */}
@@ -382,23 +348,6 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{top: '30px', right: '30px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '40px', left: '30px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '40px', right: '30px'}}></div>
-
-          {/* Left Side - Tachometer Gauge */}
-          <div className="tachometer" style={{position: 'absolute', top: '50%', left: '60px', transform: 'translateY(-50%)'}}>
-            <svg width="80" height="80" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
-              <circle cx="50" cy="50" r="35" fill="none" stroke="#333" strokeWidth="1"/>
-              {/* Gauge marks */}
-              <line x1="50" y1="15" x2="50" y2="25" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="80" y1="30" x2="73" y2="35" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="85" y1="50" x2="75" y2="50" stroke="#ffff00" strokeWidth="2"/>
-              <line x1="80" y1="70" x2="73" y2="65" stroke="#ff9900" strokeWidth="2"/>
-              <line x1="50" y1="85" x2="50" y2="75" stroke="#ff0000" strokeWidth="2"/>
-              {/* Needle */}
-              <line className="gauge-needle" x1="50" y1="50" x2="50" y2="25" stroke="#00ffff" strokeWidth="3"/>
-              <circle cx="50" cy="50" r="5" fill="#00ffff"/>
-            </svg>
-          </div>
 
           {/* Center - Alien Hourglass */}
           <div className="alien-hourglass" style={{position: 'absolute', top: '30px', left: '50%', transform: 'translateX(-50%)'}}>
@@ -414,23 +363,6 @@ export default function MothershipPage() {
               <rect x="5" y="50" width="40" height="15" fill="none" stroke="#666" strokeWidth="2" rx="2"/>
               {/* Liquid flow */}
               <circle className="liquid-drop" cx="25" cy="20" r="3" fill="#00ff99" opacity="0.8"/>
-            </svg>
-          </div>
-
-          {/* Right Side - Tachometer Gauge */}
-          <div className="tachometer" style={{position: 'absolute', top: '50%', right: '60px', transform: 'translateY(-50%)'}}>
-            <svg width="80" height="80" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
-              <circle cx="50" cy="50" r="35" fill="none" stroke="#333" strokeWidth="1"/>
-              {/* Gauge marks */}
-              <line x1="50" y1="15" x2="50" y2="25" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="20" y1="30" x2="27" y2="35" stroke="#00ff99" strokeWidth="2"/>
-              <line x1="15" y1="50" x2="25" y2="50" stroke="#ffff00" strokeWidth="2"/>
-              <line x1="20" y1="70" x2="27" y2="65" stroke="#ff9900" strokeWidth="2"/>
-              <line x1="50" y1="85" x2="50" y2="75" stroke="#ff0000" strokeWidth="2"/>
-              {/* Needle */}
-              <line className="gauge-needle" x1="50" y1="50" x2="73" y2="35" stroke="#00ffff" strokeWidth="3"/>
-              <circle cx="50" cy="50" r="5" fill="#00ffff"/>
             </svg>
           </div>
 
@@ -450,7 +382,7 @@ export default function MothershipPage() {
               onClick={() => showScene('portals')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🌀</span> PORTALS
+              PORTALS
               <span className="btn-status"></span>
             </button>
             <button
@@ -458,7 +390,7 @@ export default function MothershipPage() {
               onClick={() => showScene('drip')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">💧</span> ALIEN DRIP
+              ALIEN DRIP
               <span className="btn-status"></span>
             </button>
             <button
@@ -466,7 +398,7 @@ export default function MothershipPage() {
               onClick={() => showScene('leaderboard')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🏆</span> LEADERBOARD
+              LEADERBOARD
               <span className="btn-status"></span>
             </button>
             <button
@@ -474,7 +406,7 @@ export default function MothershipPage() {
               onClick={() => showScene('support')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🔒</span> SUPPORT
+              SUPPORT
               <span className="btn-status"></span>
             </button>
             <button
@@ -482,7 +414,7 @@ export default function MothershipPage() {
               onClick={() => showScene('buygmb')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">💰</span> BUY GMB
+              BUY GMB
               <span className="btn-status"></span>
             </button>
             <button
@@ -490,7 +422,7 @@ export default function MothershipPage() {
               onClick={() => showScene('shopify')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🛒</span> ALIEN GEAR
+              ALIEN GEAR
               <span className="btn-status"></span>
             </button>
             <button
@@ -498,7 +430,7 @@ export default function MothershipPage() {
               onClick={() => showScene('socials')}
               onMouseEnter={() => playSound('hover')}
             >
-              <span className="btn-icon">🌐</span> SOCIALS
+              SOCIALS
               <span className="btn-status"></span>
             </button>
           </div>

@@ -8,8 +8,8 @@ const server = http.createServer();
 const wss = new WebSocket.Server({ server });
 
 // Store connected users
-const users = new Map(); // socket -> { address, displayName }
-const userSockets = new Map(); // address -> socket
+const users = new Map(); // socket -> username
+const userSockets = new Map(); // username -> socket
 
 // Broadcast to all connected clients
 function broadcast(data, excludeSocket = null) {
@@ -22,10 +22,10 @@ function broadcast(data, excludeSocket = null) {
 
 // Send updated user list to all clients
 function broadcastUserList() {
-  const userList = Array.from(users.values());
+  const usernames = Array.from(users.values());
   broadcast({
     type: 'users',
-    users: userList
+    users: usernames
   });
 }
 
@@ -41,34 +41,32 @@ wss.on('connection', (ws) => {
         case 'join':
           // User joining the chat
           const username = data.username;
-          const displayName = data.displayName;
-
-          // Check if wallet address is already connected
-          if (Array.from(users.values()).some(u => u.address === username)) {
+          
+          // Check if username is already taken
+          if (Array.from(users.values()).includes(username)) {
             ws.send(JSON.stringify({
               type: 'error',
-              message: 'Wallet already connected'
+              message: 'Username already taken'
             }));
             return;
           }
 
-          const userInfo = { address: username, displayName };
-          users.set(ws, userInfo);
+          users.set(ws, username);
           userSockets.set(username, ws);
-
-          console.log(`${displayName || username} joined the chat`);
-
+          
+          console.log(`${username} joined the chat`);
+          
           // Notify all users
           broadcast({
             type: 'message',
             username: 'System',
-            text: `${displayName || username} joined the chat`,
+            text: `${username} joined the chat`,
             timestamp: Date.now()
           });
-
+          
           // Send updated user list
           broadcastUserList();
-
+          
           // Send welcome message to new user
           ws.send(JSON.stringify({
             type: 'message',
@@ -84,25 +82,11 @@ wss.on('connection', (ws) => {
           if (sender) {
             broadcast({
               type: 'message',
-              username: sender.address,
-              displayName: sender.displayName,
+              username: sender,
               text: data.text,
               timestamp: Date.now()
             });
-            console.log(`${sender.displayName || sender.address}: ${data.text}`);
-          }
-          break;
-
-        case 'update-displayname':
-          // Update user's display name
-          const user = users.get(ws);
-          if (user) {
-            user.displayName = data.displayName;
-            users.set(ws, user);
-            console.log(`${user.address} changed display name to ${data.displayName}`);
-
-            // Broadcast updated user list
-            broadcastUserList();
+            console.log(`${sender}: ${data.text}`);
           }
           break;
 
@@ -111,15 +95,14 @@ wss.on('connection', (ws) => {
           const inviter = users.get(ws);
           const invitee = data.to;
           const inviteeSocket = userSockets.get(invitee);
-
+          
           if (inviteeSocket && inviteeSocket.readyState === WebSocket.OPEN) {
             inviteeSocket.send(JSON.stringify({
               type: 'game-invite',
-              from: inviter.address,
-              fromDisplayName: inviter.displayName,
+              from: inviter,
               timestamp: Date.now()
             }));
-
+            
             // Notify the inviter that invite was sent
             ws.send(JSON.stringify({
               type: 'message',
@@ -127,8 +110,8 @@ wss.on('connection', (ws) => {
               text: `Game invite sent to ${invitee}`,
               timestamp: Date.now()
             }));
-
-            console.log(`${inviter.displayName || inviter.address} invited ${invitee} to a game`);
+            
+            console.log(`${inviter} invited ${invitee} to a game`);
           }
           break;
 
@@ -137,12 +120,11 @@ wss.on('connection', (ws) => {
           const accepter = users.get(ws);
           const inviterUsername = data.from;
           const inviterSocket = userSockets.get(inviterUsername);
-
+          
           if (inviterSocket && inviterSocket.readyState === WebSocket.OPEN) {
             inviterSocket.send(JSON.stringify({
               type: 'game-accepted',
-              from: accepter.address,
-              fromDisplayName: accepter.displayName,
+              from: accepter,
               gameId: data.gameId,
               timestamp: Date.now()
             }));
@@ -158,21 +140,21 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
-    const userInfo = users.get(ws);
-
-    if (userInfo) {
-      console.log(`${userInfo.displayName || userInfo.address} disconnected`);
+    const username = users.get(ws);
+    
+    if (username) {
+      console.log(`${username} disconnected`);
       users.delete(ws);
-      userSockets.delete(userInfo.address);
-
+      userSockets.delete(username);
+      
       // Notify all users
       broadcast({
         type: 'message',
         username: 'System',
-        text: `${userInfo.displayName || userInfo.address} left the chat`,
+        text: `${username} left the chat`,
         timestamp: Date.now()
       });
-
+      
       // Send updated user list
       broadcastUserList();
     }

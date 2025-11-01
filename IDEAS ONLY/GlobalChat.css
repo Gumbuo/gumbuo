@@ -1,7 +1,9 @@
 .global-chat {
   position: fixed;
-  width: 280px;
-  height: 400px;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
   background: rgba(20, 20, 40, 0.95);
   border: 2px solid #00ffff;
   border-radius: 12px;
@@ -9,14 +11,8 @@
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  transition: box-shadow 0.2s ease;
+  transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  user-select: none;
-}
-
-.global-chat.dragging {
-  box-shadow: 0 12px 48px rgba(0, 255, 255, 0.5);
-  transition: none;
 }
 
 .global-chat.collapsed {
@@ -80,21 +76,9 @@
 .online-indicator {
   width: 8px;
   height: 8px;
+  background: #00ff00;
   border-radius: 50%;
   animation: pulse 2s infinite;
-}
-
-.online-indicator.connected {
-  background: #00ff00;
-}
-
-.online-indicator.connecting {
-  background: #ffff00;
-}
-
-.online-indicator.disconnected {
-  background: #ff0000;
-  animation: none;
 }
 
 @keyframes pulse {
@@ -113,8 +97,7 @@
 }
 
 .minimize-btn,
-.collapse-btn,
-.edit-name-btn {
+.collapse-btn {
   background: rgba(0, 255, 255, 0.1);
   border: 1px solid #00ffff;
   color: #00ffff;
@@ -130,52 +113,9 @@
 }
 
 .minimize-btn:hover,
-.collapse-btn:hover,
-.edit-name-btn:hover {
+.collapse-btn:hover {
   background: rgba(0, 255, 255, 0.3);
   transform: scale(1.1);
-}
-
-/* Display Name Editor */
-.display-name-editor {
-  padding: 12px;
-  background: rgba(20, 20, 40, 0.95);
-  border-bottom: 2px solid #00ffff;
-}
-
-.display-name-editor input {
-  width: 100%;
-  padding: 8px;
-  background: rgba(10, 10, 30, 0.8);
-  border: 2px solid #00ffff;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 13px;
-}
-
-.display-name-editor input:focus {
-  outline: none;
-  border-color: #00ff99;
-}
-
-.display-name-editor button {
-  padding: 6px 12px;
-  background: linear-gradient(135deg, #00ffff 0%, #0088ff 100%);
-  border: none;
-  border-radius: 4px;
-  color: #000;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 12px;
-  transition: transform 0.2s ease;
-}
-
-.display-name-editor button:hover {
-  transform: scale(1.05);
-}
-
-.display-name-editor button:active {
-  transform: scale(0.95);
 }
 
 /* Body */

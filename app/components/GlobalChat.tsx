@@ -1,30 +1,56 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useAccount } from 'wagmi';
 import './GlobalChat.css';
 
 interface Message {
   id: number;
   username: string;
+  displayName?: string;
   text: string;
   timestamp: number;
 }
 
+interface OnlineUser {
+  address: string;
+  displayName?: string;
+}
+
 const GlobalChat = () => {
+  const { address, isConnected } = useAccount();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [username, setUsername] = useState('');
-  const [isUsernameSet, setIsUsernameSet] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [position, setPosition] = useState({ x: 20, y: 20 }); // Position from bottom-right
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
+  const [displayName, setDisplayName] = useState('');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [tempDisplayName, setTempDisplayName] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
+
+  // Helper function to shorten wallet address
+  const shortenAddress = (addr: string) => {
+    if (!addr) return '';
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
+  // Load display name from localStorage on mount
+  useEffect(() => {
+    if (address) {
+      const savedName = localStorage.getItem(`chat_displayname_${address}`);
+      if (savedName) {
+        setDisplayName(savedName);
+      }
+    }
+  }, [address]);
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -37,25 +63,31 @@ const GlobalChat = () => {
 
   // WebSocket connection
   useEffect(() => {
-    if (!isUsernameSet) return;
+    if (!isConnected || !address) return;
 
     // WebSocket server URL - Railway production or local dev
     const WS_URL = process.env.NODE_ENV === 'production'
       ? 'wss://gumbuo-production.up.railway.app'
       : 'ws://localhost:3001';
 
+    console.log('Attempting to connect to WebSocket:', WS_URL);
+    setConnectionStatus('connecting');
+
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log('Connected to chat server');
+      console.log('✅ Connected to chat server');
+      setConnectionStatus('connected');
       ws.send(JSON.stringify({
         type: 'join',
-        username: username
+        username: address,
+        displayName: displayName || undefined
       }));
     };
 
     ws.onmessage = (event) => {
+      console.log('📩 Received message:', event.data);
       const data = JSON.parse(event.data);
 
       switch(data.type) {
@@ -63,12 +95,14 @@ const GlobalChat = () => {
           setMessages(prev => [...prev, {
             id: Date.now(),
             username: data.username,
+            displayName: data.displayName,
             text: data.text,
             timestamp: data.timestamp
           }]);
           break;
         case 'users':
-          setOnlineUsers(data.users);
+          setOnlineUsers(data.users || []);
+          console.log('👥 Online users updated:', data.users);
           break;
         case 'game-invite':
           // Handle game invite notification
@@ -80,11 +114,13 @@ const GlobalChat = () => {
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error('❌ WebSocket error:', error);
+      setConnectionStatus('disconnected');
     };
 
     ws.onclose = () => {
-      console.log('Disconnected from chat server');
+      console.log('🔌 Disconnected from chat server');
+      setConnectionStatus('disconnected');
     };
 
     return () => {
@@ -92,7 +128,7 @@ const GlobalChat = () => {
         ws.close();
       }
     };
-  }, [isUsernameSet, username]);
+  }, [isConnected, address]);
 
   // Drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -148,33 +184,60 @@ const GlobalChat = () => {
     };
   }, [isDragging, dragOffset]);
 
-  const handleUsernameSubmit = (e: React.FormEvent) => {
+  const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim()) {
-      setIsUsernameSet(true);
+    console.log('📤 Attempting to send message:', inputMessage);
+    console.log('WebSocket state:', wsRef.current?.readyState, '(OPEN=1)');
+
+    if (inputMessage.trim() && wsRef.current?.readyState === WebSocket.OPEN && address) {
+      const message = {
+        type: 'message',
+        text: inputMessage,
+        username: address,
+        displayName: displayName || undefined
+      };
+      console.log('Sending message:', message);
+      wsRef.current.send(JSON.stringify(message));
+      setInputMessage('');
+    } else {
+      console.warn('⚠️ Cannot send message. Message empty or WebSocket not open.');
+      console.log('Message empty?', !inputMessage.trim());
+      console.log('WebSocket ready state:', wsRef.current?.readyState);
+      console.log('Address:', address);
     }
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputMessage.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'message',
-        text: inputMessage,
-        username: username
-      }));
-      setInputMessage('');
+  const handleSaveDisplayName = () => {
+    if (tempDisplayName.trim() && address) {
+      const newName = tempDisplayName.trim();
+      setDisplayName(newName);
+      localStorage.setItem(`chat_displayname_${address}`, newName);
+      setIsEditingName(false);
+
+      // Notify server of display name change
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'update-displayname',
+          username: address,
+          displayName: newName
+        }));
+      }
     }
+  };
+
+  const handleEditDisplayName = () => {
+    setTempDisplayName(displayName);
+    setIsEditingName(true);
   };
 
   const handleGameInvite = (targetUser: string) => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
+    if (wsRef.current?.readyState === WebSocket.OPEN && address) {
       wsRef.current.send(JSON.stringify({
         type: 'game-invite',
         to: targetUser,
-        from: username
+        from: address
       }));
-      alert(`Game invite sent to ${targetUser}!`);
+      alert(`Game invite sent to ${shortenAddress(targetUser)}!`);
     }
   };
 
@@ -183,7 +246,7 @@ const GlobalChat = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  if (!isUsernameSet) {
+  if (!isConnected || !address) {
     return (
       <div
         ref={chatRef}
@@ -191,20 +254,13 @@ const GlobalChat = () => {
         style={{ right: `${position.x}px`, bottom: `${position.y}px` }}
       >
         <div className="chat-header" onMouseDown={handleMouseDown} style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
-          <h3>Enter Chat</h3>
+          <h3>Global Chat</h3>
         </div>
         <div className="chat-body username-prompt">
-          <form onSubmit={handleUsernameSubmit}>
-            <input
-              type="text"
-              placeholder="Enter your username..."
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              maxLength={20}
-              autoFocus
-            />
-            <button type="submit">Join Chat</button>
-          </form>
+          <div style={{ textAlign: 'center', color: '#00ffff' }}>
+            <p style={{ marginBottom: '10px' }}>🔌 Connect your wallet to join the chat</p>
+            <p style={{ fontSize: '12px', color: '#888' }}>Use the wallet button in the top right</p>
+          </div>
         </div>
       </div>
     );
@@ -218,11 +274,19 @@ const GlobalChat = () => {
     >
       <div className="chat-header" onMouseDown={handleMouseDown} style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
         <div className="chat-title">
-          <span className="online-indicator"></span>
+          <span className={`online-indicator ${connectionStatus}`}></span>
           <h3>Global Chat</h3>
           <span className="user-count">({onlineUsers.length} online)</span>
         </div>
         <div className="chat-controls">
+          <button
+            className="edit-name-btn"
+            onClick={(e) => { e.stopPropagation(); handleEditDisplayName(); }}
+            title="Edit display name"
+            style={{ fontSize: '14px', marginRight: '4px' }}
+          >
+            ✏️
+          </button>
           <button
             className="minimize-btn"
             onClick={() => setIsMinimized(!isMinimized)}
@@ -242,15 +306,37 @@ const GlobalChat = () => {
 
       {!isMinimized && (
         <>
+          {isEditingName && (
+            <div className="display-name-editor">
+              <input
+                type="text"
+                placeholder="Enter display name..."
+                value={tempDisplayName}
+                onChange={(e) => setTempDisplayName(e.target.value)}
+                maxLength={20}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSaveDisplayName();
+                  if (e.key === 'Escape') setIsEditingName(false);
+                }}
+              />
+              <div style={{ display: 'flex', gap: '5px', marginTop: '5px' }}>
+                <button onClick={handleSaveDisplayName} style={{ flex: 1 }}>Save</button>
+                <button onClick={() => setIsEditingName(false)} style={{ flex: 1 }}>Cancel</button>
+              </div>
+            </div>
+          )}
           <div className="chat-body">
             <div className="messages-container">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`message ${msg.username === username ? 'own-message' : ''}`}
+                  className={`message ${msg.username === address ? 'own-message' : ''}`}
                 >
                   <div className="message-header">
-                    <span className="message-username">{msg.username}</span>
+                    <span className="message-username">
+                      {msg.displayName || shortenAddress(msg.username)}
+                    </span>
                     <span className="message-time">{formatTimestamp(msg.timestamp)}</span>
                   </div>
                   <div className="message-text">{msg.text}</div>
@@ -262,12 +348,14 @@ const GlobalChat = () => {
             <div className="online-users">
               <h4>Online Players</h4>
               <div className="users-list">
-                {onlineUsers.filter(u => u !== username).map((user, index) => (
+                {onlineUsers.filter(u => u.address !== address).map((user, index) => (
                   <div key={index} className="user-item">
-                    <span className="user-name">{user}</span>
+                    <span className="user-name">
+                      {user.displayName || shortenAddress(user.address)}
+                    </span>
                     <button
                       className="invite-btn"
-                      onClick={() => handleGameInvite(user)}
+                      onClick={() => handleGameInvite(user.address)}
                       title="Invite to game"
                     >
                       🎮

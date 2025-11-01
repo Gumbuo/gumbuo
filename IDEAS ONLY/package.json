@@ -1,0 +1,23 @@
+{
+  "name": "gumbuo-chat-server",
+  "version": "1.0.0",
+  "description": "WebSocket chat server for Gumbuo.io",
+  "main": "chat-server.js",
+  "scripts": {
+    "start": "node chat-server.js",
+    "dev": "nodemon chat-server.js"
+  },
+  "keywords": [
+    "websocket",
+    "chat",
+    "realtime"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
