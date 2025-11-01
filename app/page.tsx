@@ -381,17 +381,62 @@ export default function MothershipPage() {
 
         {/* Front Console with MAIN CONTROLS */}
         <div className="front-console steel-brushed">
+          {/* 4 Corner Red Lights */}
           <div className="rivet rivet-red" style={{top: '30px', left: '30px'}}></div>
-          <div className="rivet rivet-red" style={{top: '35px', left: '15%'}}></div>
-          <div className="rivet rivet-red" style={{top: '30px', left: '30%'}}></div>
-          <div className="rivet rivet-red" style={{top: '30px', right: '30%'}}></div>
-          <div className="rivet rivet-red" style={{top: '35px', right: '15%'}}></div>
           <div className="rivet rivet-red" style={{top: '30px', right: '30px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '40px', left: '30px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '45px', left: '20%'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '40px', right: '20%'}}></div>
           <div className="rivet rivet-red" style={{bottom: '40px', right: '30px'}}></div>
-          <div className="circuit-line" style={{top: '20%', width: '80%', left: '10%'}}></div>
+
+          {/* Left Side - Tachometer Gauge */}
+          <div className="tachometer" style={{position: 'absolute', top: '50%', left: '60px', transform: 'translateY(-50%)'}}>
+            <svg width="80" height="80" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#333" strokeWidth="1"/>
+              {/* Gauge marks */}
+              <line x1="50" y1="15" x2="50" y2="25" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="80" y1="30" x2="73" y2="35" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="85" y1="50" x2="75" y2="50" stroke="#ffff00" strokeWidth="2"/>
+              <line x1="80" y1="70" x2="73" y2="65" stroke="#ff9900" strokeWidth="2"/>
+              <line x1="50" y1="85" x2="50" y2="75" stroke="#ff0000" strokeWidth="2"/>
+              {/* Needle */}
+              <line className="gauge-needle" x1="50" y1="50" x2="50" y2="25" stroke="#00ffff" strokeWidth="3"/>
+              <circle cx="50" cy="50" r="5" fill="#00ffff"/>
+            </svg>
+          </div>
+
+          {/* Center - Alien Hourglass */}
+          <div className="alien-hourglass" style={{position: 'absolute', top: '30px', left: '50%', transform: 'translateX(-50%)'}}>
+            <svg width="50" height="70" viewBox="0 0 50 70">
+              {/* Top bulb */}
+              <ellipse cx="25" cy="15" rx="18" ry="12" fill="rgba(0,255,153,0.3)" stroke="#00ff99" strokeWidth="2"/>
+              {/* Bottom bulb */}
+              <ellipse cx="25" cy="55" rx="18" ry="12" fill="rgba(0,255,153,0.6)" stroke="#00ff99" strokeWidth="2"/>
+              {/* Narrow middle */}
+              <path d="M 15 25 L 25 35 L 35 25 M 15 45 L 25 35 L 35 45" fill="none" stroke="#00ff99" strokeWidth="2"/>
+              {/* Frame */}
+              <rect x="5" y="5" width="40" height="15" fill="none" stroke="#666" strokeWidth="2" rx="2"/>
+              <rect x="5" y="50" width="40" height="15" fill="none" stroke="#666" strokeWidth="2" rx="2"/>
+              {/* Liquid flow */}
+              <circle className="liquid-drop" cx="25" cy="20" r="3" fill="#00ff99" opacity="0.8"/>
+            </svg>
+          </div>
+
+          {/* Right Side - Tachometer Gauge */}
+          <div className="tachometer" style={{position: 'absolute', top: '50%', right: '60px', transform: 'translateY(-50%)'}}>
+            <svg width="80" height="80" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" fill="rgba(0,0,0,0.8)" stroke="#00ffff" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#333" strokeWidth="1"/>
+              {/* Gauge marks */}
+              <line x1="50" y1="15" x2="50" y2="25" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="20" y1="30" x2="27" y2="35" stroke="#00ff99" strokeWidth="2"/>
+              <line x1="15" y1="50" x2="25" y2="50" stroke="#ffff00" strokeWidth="2"/>
+              <line x1="20" y1="70" x2="27" y2="65" stroke="#ff9900" strokeWidth="2"/>
+              <line x1="50" y1="85" x2="50" y2="75" stroke="#ff0000" strokeWidth="2"/>
+              {/* Needle */}
+              <line className="gauge-needle" x1="50" y1="50" x2="73" y2="35" stroke="#00ffff" strokeWidth="3"/>
+              <circle cx="50" cy="50" r="5" fill="#00ffff"/>
+            </svg>
+          </div>
 
           <div style={{
             position: 'absolute',
@@ -734,6 +779,32 @@ export default function MothershipPage() {
             opacity: 0.3;
             box-shadow: 0 0 5px rgba(255, 0, 0, 0.3), 0 0 10px rgba(255, 0, 0, 0.2);
           }
+        }
+
+        /* Gauge Animations */
+        .gauge-needle {
+          transform-origin: 50px 50px;
+          animation: gaugeSwing 3s ease-in-out infinite;
+        }
+
+        @keyframes gaugeSwing {
+          0%, 100% { transform: rotate(-45deg); }
+          50% { transform: rotate(45deg); }
+        }
+
+        /* Hourglass Animations */
+        .liquid-drop {
+          animation: liquidDrip 2s ease-in-out infinite;
+        }
+
+        @keyframes liquidDrip {
+          0% { cy: 20; opacity: 0.8; }
+          50% { cy: 35; opacity: 0.5; }
+          100% { cy: 50; opacity: 0; }
+        }
+
+        .alien-hourglass {
+          filter: drop-shadow(0 0 10px rgba(0, 255, 153, 0.5));
         }
 
         /* Physical Control Buttons */
