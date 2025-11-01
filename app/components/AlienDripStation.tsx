@@ -187,7 +187,7 @@ export default function AlienDripStation() {
   }, [stakingData, currentStakingRewards]);
 
   // Start staking
-  const handleStartStaking = () => {
+  const handleStartStaking = async () => {
     if (!isConnected || !address) {
       playSound('error');
       alert("Please connect your wallet first!");
