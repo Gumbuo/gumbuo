@@ -509,12 +509,12 @@ export default function MothershipPage() {
         /* Portals Header */
         .portals-header {
           text-align: center;
-          font-size: 2.5rem;
+          font-size: 2rem;
           font-weight: bold;
           color: #00ffff;
           text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6);
           font-family: 'Orbitron', sans-serif;
-          margin: 30px 0 40px 0;
+          margin: 20px 0 20px 0;
           letter-spacing: 2px;
           text-transform: uppercase;
         }
@@ -523,10 +523,10 @@ export default function MothershipPage() {
         .portals-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 60px;
-          max-width: 700px;
+          gap: 40px 80px;
+          max-width: 650px;
           margin: 0 auto;
-          padding: 20px;
+          padding: 10px 20px;
           place-items: center;
         }
 
@@ -544,8 +544,8 @@ export default function MothershipPage() {
         }
 
         .portal-image {
-          width: 150px;
-          height: 150px;
+          width: 130px;
+          height: 130px;
           object-fit: cover;
           border-radius: 50%;
           border: 3px solid #00ffff;
@@ -554,13 +554,13 @@ export default function MothershipPage() {
         }
 
         .portal-label {
-          margin-top: 12px;
-          font-size: 0.9rem;
+          margin-top: 10px;
+          font-size: 0.85rem;
           font-weight: bold;
           text-transform: uppercase;
           color: #000;
           background: #00ffff;
-          padding: 6px 18px;
+          padding: 5px 16px;
           border-radius: 6px;
           border: 2px solid currentColor;
           white-space: nowrap;
