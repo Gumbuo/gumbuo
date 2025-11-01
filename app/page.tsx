@@ -10,7 +10,7 @@ const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const FloatingGumbuo = dynamic(() => import("./components/FloatingGumbuo"), { ssr: false });
 
-type Tab = "portals" | "drip" | "leaderboard" | "buygmb" | "socials" | "support";
+type Tab = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -28,6 +28,7 @@ export default function MothershipPage() {
     { id: "drip", label: "Drip Claim", emoji: "💧" },
     { id: "leaderboard", label: "Leaderboard", emoji: "🏆" },
     { id: "buygmb", label: "Buy GMB", emoji: "💰" },
+    { id: "shopify", label: "Shop", emoji: "🛒" },
     { id: "socials", label: "Socials", emoji: "🌐" },
     { id: "support", label: "Support", emoji: "🔒" },
   ];
@@ -408,6 +409,41 @@ export default function MothershipPage() {
                 <img src="/zorb.png" alt="Zorb" className="animate-bounce" style={{width: '50px', height: '50px', maxWidth: '50px', maxHeight: '50px', objectFit: 'cover', animationDuration: '2s', animationDelay: '0.5s'}} />
               </div>
               <p className="text-purple-400 font-bold text-xl animate-pulse tracking-wider">👆 LIVE NOW 👆</p>
+            </div>
+          </div>
+        )}
+
+        {/* Shopify Tab */}
+        {activeTab === "shopify" && (
+          <div className="flex flex-col items-center space-y-6 mt-8 mb-12">
+            <h2 className="font-alien text-cyan-400 holographic-text text-center" style={{fontSize: '3rem'}}>
+              ALIEN GEAR SHOP
+            </h2>
+
+            {/* Coming Soon Message */}
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #00ff9944',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.2))'
+            }} className="max-w-3xl mx-auto p-8 backdrop-blur-sm">
+              <div className="text-center space-y-4">
+                <div className="text-6xl animate-bounce" style={{animationDuration: '2s'}}>
+                  👽🛒👕
+                </div>
+                <h3 className="text-yellow-400 text-4xl font-bold font-alien animate-pulse">
+                  COMING SOON!
+                </h3>
+                <div className="space-y-3 text-purple-300 text-xl">
+                  <p className="font-bold">🎁 Win Exclusive Alien Gear!</p>
+                  <p className="text-lg">Get Shopify discount codes</p>
+                  <p className="text-2xl font-bold text-green-400">Pay Shipping & Handling ONLY!</p>
+                </div>
+                <div className="mt-6 pt-6 border-t border-purple-500/30">
+                  <p className="text-cyan-400 text-base opacity-90">
+                    Stay tuned for merch drops, giveaways, and exclusive alien apparel! 🚀
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
