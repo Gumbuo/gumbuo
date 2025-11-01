@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 const GlobalMusicPlayer = dynamic(() => import("./components/GlobalMusicPlayer"), { ssr: false });
 const GlobalChat = dynamic(() => import("./components/GlobalChat"), { ssr: false });
 const GlobalWalletHUD = dynamic(() => import("./components/GlobalWalletHUD"), { ssr: false });
+const RouteNetworkGuard = dynamic(() => import("./components/RouteNetworkGuard"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Gumbuo - Alien Points Economy",
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <GlobalMusicPlayer />
           <GlobalChat />
           <GlobalWalletHUD />
+          <RouteNetworkGuard />
           {children}
         </Providers>
       </body>
