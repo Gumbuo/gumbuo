@@ -76,7 +76,7 @@ export default function MazePage() {
           marginRight: 'auto',
           background: 'rgba(0, 255, 153, 0.05)',
           border: '2px solid #00ff9944',
-          borderRadius: '8px',
+          borderRadius: '24px',
           padding: '32px'
         }}>
           <h2 style={{
@@ -93,7 +93,7 @@ export default function MazePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', color: '#22d3ee' }}>
             <div style={{
               background: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
+              borderRadius: '16px',
               padding: '24px',
               border: '2px solid rgba(34, 211, 238, 0.3)'
             }}>
@@ -109,7 +109,7 @@ export default function MazePage() {
 
             <div style={{
               background: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
+              borderRadius: '16px',
               padding: '24px',
               border: '2px solid rgba(168, 85, 247, 0.3)'
             }}>
@@ -124,7 +124,7 @@ export default function MazePage() {
 
             <div style={{
               background: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
+              borderRadius: '16px',
               padding: '24px',
               border: '2px solid rgba(34, 197, 94, 0.3)'
             }}>
@@ -139,7 +139,7 @@ export default function MazePage() {
 
             <div style={{
               background: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
+              borderRadius: '16px',
               padding: '24px',
               border: '2px solid rgba(234, 179, 8, 0.3)'
             }}>
@@ -157,7 +157,7 @@ export default function MazePage() {
             marginTop: '24px',
             background: 'rgba(34, 197, 94, 0.2)',
             border: '2px solid #4ade80',
-            borderRadius: '8px',
+            borderRadius: '16px',
             padding: '16px',
             textAlign: 'center'
           }}>

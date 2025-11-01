@@ -694,7 +694,7 @@ export default function AlienMaze() {
 
       {/* NFT Character Selector */}
       {!isGameActive && isConnected && hasNFTs && (
-        <div className="relative z-10 mb-4 bg-purple-900/40 border-2 border-purple-400 rounded-xl px-6 py-4">
+        <div className="relative z-10 mb-4 bg-purple-900/40 border-2 border-purple-400 rounded-3xl px-6 py-4">
           <div className="text-purple-400 text-sm font-bold mb-3 text-center">SELECT YOUR CHARACTER</div>
           <div className="flex gap-3 justify-center">
             {nfts.map((nft) => {
@@ -706,7 +706,7 @@ export default function AlienMaze() {
                     playSound("click");
                   }}
                   onMouseEnter={() => playSound("hover")}
-                  className={`p-2 rounded-xl border-2 transition-all hover:scale-110 ${
+                  className={`p-2 rounded-2xl border-2 transition-all hover:scale-110 ${
                     selectedNFT?.tokenId === nft.tokenId
                       ? "bg-cyan-500/40 border-cyan-400 shadow-lg shadow-cyan-500/50"
                       : "bg-gray-800/40 border-gray-600 hover:border-purple-400"
@@ -734,7 +734,7 @@ export default function AlienMaze() {
 
       {/* Wallet Connection Prompt */}
       {!isConnected && !isGameActive && (
-        <div className="relative z-10 mb-4 bg-yellow-900/40 border-2 border-yellow-400 rounded-xl px-6 py-3 text-center max-w-md">
+        <div className="relative z-10 mb-4 bg-yellow-900/40 border-2 border-yellow-400 rounded-3xl px-6 py-3 text-center max-w-md">
           <div className="text-yellow-400 text-sm">
             💡 Connect your wallet to use your Gumbuo Fighter NFTs and save your scores to the leaderboard!
           </div>
@@ -743,22 +743,22 @@ export default function AlienMaze() {
 
       {/* Game Stats */}
       <div className="relative z-10 flex gap-6 mb-4 text-center">
-        <div className="bg-cyan-900/40 border-2 border-cyan-400 rounded-xl px-6 py-2">
+        <div className="bg-cyan-900/40 border-2 border-cyan-400 rounded-2xl px-6 py-2">
           <div className="text-cyan-400 text-sm font-bold">SCORE</div>
           <div className="text-cyan-300 text-2xl font-alien">{score}</div>
         </div>
-        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-xl px-6 py-2">
+        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl px-6 py-2">
           <div className="text-purple-400 text-sm font-bold">TIME</div>
           <div className="text-purple-300 text-2xl font-alien">{timeElapsed}s</div>
         </div>
-        <div className="bg-green-900/40 border-2 border-green-400 rounded-xl px-6 py-2">
+        <div className="bg-green-900/40 border-2 border-green-400 rounded-2xl px-6 py-2">
           <div className="text-green-400 text-sm font-bold">COLLECTED</div>
           <div className="text-green-300 text-2xl font-alien">
             {collectibles.filter(c => c.clicked).length}/{collectibles.length}
           </div>
         </div>
         {isGameActive && roomId && (
-          <div className="bg-orange-900/40 border-2 border-orange-400 rounded-xl px-6 py-2">
+          <div className="bg-orange-900/40 border-2 border-orange-400 rounded-2xl px-6 py-2">
             <div className="text-orange-400 text-sm font-bold">PLAYERS</div>
             <div className="text-orange-300 text-2xl font-alien">
               {Object.keys(otherPlayers).length + 1}
@@ -771,7 +771,7 @@ export default function AlienMaze() {
       {!isGameActive && (
         <button
           onClick={initGame}
-          className="relative z-10 mb-4 px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-alien text-xl rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/50"
+          className="relative z-10 mb-4 px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-alien text-xl rounded-3xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/50"
         >
           {gameWon ? '🎉 PLAY AGAIN 🎉' : 'START GAME'}
         </button>
@@ -779,7 +779,7 @@ export default function AlienMaze() {
 
       {/* Win Message */}
       {gameWon && (
-        <div className="relative z-10 mb-4 bg-green-900/60 border-2 border-green-400 rounded-xl px-8 py-4 text-center animate-pulse">
+        <div className="relative z-10 mb-4 bg-green-900/60 border-2 border-green-400 rounded-3xl px-8 py-4 text-center animate-pulse">
           <div className="text-green-400 font-alien text-3xl mb-2">🏆 YOU WIN! 🏆</div>
           <div className="text-green-300 text-lg">
             Score: {score} | Time: {timeElapsed}s
@@ -792,7 +792,7 @@ export default function AlienMaze() {
 
       {/* Maze Grid */}
       <div
-        className="relative z-10 inline-block p-4 bg-black/60 rounded-xl border-2 border-cyan-500/50"
+        className="relative z-10 inline-block p-4 bg-black/60 rounded-3xl border-2 border-cyan-500/50"
         style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`,
@@ -816,7 +816,7 @@ export default function AlienMaze() {
                   ...getCellStyle(x, y),
                   width: `${CELL_SIZE}px`,
                   height: `${CELL_SIZE}px`,
-                  borderRadius: '2px'
+                  borderRadius: '4px'
                 }}
               >
                 {getCellContent(x, y)}
