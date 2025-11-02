@@ -1061,3 +1061,28 @@
 .alien-button-organic:hover {
   border-radius: 35px 25px 40px 30px / 30px 40px 25px 35px;
 }
+
+.alien-button-blue {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(0, 255, 255, 0.15));
+  border-color: #06b6d4;
+  box-shadow:
+    0 0 10px rgba(6, 182, 212, 0.3),
+    inset 0 0 10px rgba(6, 182, 212, 0.1);
+}
+
+.alien-button-blue:hover {
+  border-color: #00ffff;
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.6),
+    0 0 40px rgba(0, 255, 255, 0.4),
+    inset 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.alien-button-blue-active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(0, 255, 255, 0.3));
+  border-color: #00ffff;
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.6),
+    0 0 40px rgba(0, 255, 255, 0.4),
+    inset 0 0 15px rgba(6, 182, 212, 0.2);
+}

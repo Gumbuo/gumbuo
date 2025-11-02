@@ -12,6 +12,38 @@ interface LeaderboardEntry {
   rank: number;
 }
 
+interface GameStats {
+  aliensPurchased?: number;
+  apSpentOnAliens?: number;
+  arenaBattlesFought?: number;
+  arenaBattlesWon?: number;
+  arenaBattlesLost?: number;
+  bossAttacksTotal?: number;
+  bossAPSpent?: number;
+  bossDamageDealt?: number;
+  normalAttacksUsed?: number;
+  powerAttacksUsed?: number;
+  ultimateAttacksUsed?: number;
+}
+
+interface APLeaderboardEntry {
+  wallet: string;
+  alienPoints: number;
+  lastUpdated: number;
+  rank: number;
+  gmbHoldings?: {
+    base: number;
+    abstract: number;
+    arbitrum: number;
+    blast: number;
+    total: number;
+  };
+  stakedAmount?: number;
+  totalStakingClaims?: number;
+  totalFaucetClaims?: number;
+  gameStats?: GameStats;
+}
+
 const MAX_FIRST_TIMERS = 50;
 
 export default function AlienLeaderboard() {
@@ -25,6 +57,13 @@ export default function AlienLeaderboard() {
   const [spotsRemaining, setSpotsRemaining] = useState(MAX_FIRST_TIMERS);
   const [isLoading, setIsLoading] = useState(true);
   const [isOGExpanded, setIsOGExpanded] = useState(false); // Collapsed by default
+
+  // New AP Leaderboard state
+  const [apLeaderboard, setAPLeaderboard] = useState<APLeaderboardEntry[]>([]);
+  const [apUserRank, setAPUserRank] = useState<number | null>(null);
+  const [apIsLoading, setAPIsLoading] = useState(true);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [expandedWallet, setExpandedWallet] = useState<string | null>(null);
 
   // Fetch leaderboard from API
   const fetchLeaderboard = async () => {
@@ -51,6 +90,50 @@ export default function AlienLeaderboard() {
     }
   };
 
+  // Fetch AP Leaderboard from API with detailed stats
+  const fetchAPLeaderboard = async () => {
+    try {
+      const response = await fetch('/api/ap-leaderboard?includeDetails=true');
+      const data = await response.json();
+
+      if (data.success) {
+        setAPLeaderboard(data.leaderboard);
+        setTotalUsers(data.totalUsers);
+      } else {
+        console.error("API returned error:", data.error);
+        setAPLeaderboard([]);
+        setTotalUsers(0);
+      }
+    } catch (error) {
+      console.error("Error fetching AP leaderboard:", error);
+      setAPLeaderboard([]);
+      setTotalUsers(0);
+    } finally {
+      setAPIsLoading(false);
+    }
+  };
+
+  // Update user's AP on the leaderboard
+  const updateUserAP = async (wallet: string, alienPoints: number) => {
+    try {
+      const response = await fetch('/api/ap-leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet, alienPoints }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAPUserRank(data.entry.rank);
+        // Refresh leaderboard after update
+        fetchAPLeaderboard();
+      }
+    } catch (error) {
+      console.error("Error updating AP leaderboard:", error);
+    }
+  };
+
   // Load leaderboard on mount and clear old localStorage
   useEffect(() => {
     // Clear old localStorage data (migration)
@@ -60,9 +143,10 @@ export default function AlienLeaderboard() {
     }
 
     fetchLeaderboard();
+    fetchAPLeaderboard();
   }, []);
 
-  // Check if user is registered and update their points
+  // Check if user is registered and update their points (OG Leaderboard)
   useEffect(() => {
     if (!address) return;
 
@@ -82,6 +166,22 @@ export default function AlienLeaderboard() {
       setUserRank(null);
     }
   }, [address, leaderboard.length, getUserBalance]);
+
+  // Auto-update user's AP in the new leaderboard
+  useEffect(() => {
+    if (!address || apIsLoading) return;
+
+    const currentPoints = getUserBalance(address);
+
+    // Update user's AP on the leaderboard
+    updateUserAP(address, currentPoints);
+
+    // Also check user's rank from current leaderboard
+    const userEntry = apLeaderboard.find(entry => entry.wallet.toLowerCase() === address.toLowerCase());
+    if (userEntry) {
+      setAPUserRank(userEntry.rank);
+    }
+  }, [address, getUserBalance, apIsLoading]);
 
   const updateUserPoints = async (wallet: string, points: number) => {
     try {
@@ -428,37 +528,246 @@ export default function AlienLeaderboard() {
           Compete for the top spot! Earn Alien Points through staking, faucet claims, and future challenges!
         </p>
 
-        {/* Coming Soon Badge */}
-        <div style={{
-          borderRadius: '8px',
-          border: '2px solid #9B59B644'
-        }} className="w-full bg-purple-900/40 p-8 text-center">
-          <p className="text-purple-400 text-3xl font-bold mb-4 animate-pulse">🚀 Coming Soon! 🚀</p>
-          <p className="text-purple-300 text-lg mb-6">
-            The new Alien Points leaderboard will feature:
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-3xl mx-auto">
-            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
-              <p className="text-purple-400 font-bold mb-2">🎯 Live Rankings</p>
-              <p className="text-purple-300 text-sm">Real-time leaderboard based on your Alien Points balance</p>
-            </div>
-            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
-              <p className="text-purple-400 font-bold mb-2">🏅 Rewards & Prizes</p>
-              <p className="text-purple-300 text-sm">Monthly rewards for top performers</p>
-            </div>
-            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
-              <p className="text-purple-400 font-bold mb-2">📊 Stats & Analytics</p>
-              <p className="text-purple-300 text-sm">Track your progress and compare with others</p>
-            </div>
-            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
-              <p className="text-purple-400 font-bold mb-2">🎁 Special Perks</p>
-              <p className="text-purple-300 text-sm">Exclusive benefits for leaderboard leaders</p>
-            </div>
+        {apIsLoading ? (
+          <div className="w-full bg-purple-900/40 p-8 text-center">
+            <p className="text-purple-400 text-2xl font-bold animate-pulse">Loading Live Rankings... 👽</p>
           </div>
-          <p className="text-purple-400 text-base mt-6">
-            Keep earning Alien Points through staking and drip claims to prepare for launch! 👽
-          </p>
-        </div>
+        ) : (
+          <>
+            {/* User Rank Display */}
+            {isConnected && address && apUserRank && (
+              <div style={{
+                borderRadius: '8px',
+                border: '2px solid #9B59B644'
+              }} className="w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 p-6 text-center">
+                <p className="text-purple-300 text-lg font-bold mb-2">Your Current Rank</p>
+                <p className="text-6xl font-bold holographic-text mb-2">#{apUserRank}</p>
+                <p className="text-purple-400 text-sm">out of {totalUsers} users</p>
+                <p className="text-purple-300 text-base mt-2">
+                  {getUserBalance(address).toLocaleString()} AP
+                </p>
+              </div>
+            )}
+
+            {/* Stats */}
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #9B59B644'
+            }} className="w-full bg-black/60 p-4">
+              <div className="flex justify-between items-center">
+                <p className="text-purple-400 text-lg">
+                  📊 Total Users: <span className="font-bold text-xl">{totalUsers}</span>
+                </p>
+                <p className="text-purple-400 text-sm">
+                  🔄 Updates automatically
+                </p>
+              </div>
+            </div>
+
+            {/* Leaderboard Table */}
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #9B59B644'
+            }} className="w-full bg-black/60 overflow-hidden">
+              <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-3 gap-4 font-bold text-purple-400">
+                <div className="text-center">Rank</div>
+                <div className="text-center">Wallet</div>
+                <div className="text-center">Alien Points</div>
+              </div>
+
+              <div className="max-h-[600px] overflow-y-auto">
+                {apLeaderboard.length === 0 ? (
+                  <div className="p-12 text-center text-purple-400 opacity-50">
+                    <p className="text-2xl mb-4">👽 No users yet! 👽</p>
+                    <p className="text-base">Connect your wallet and earn Alien Points to be first!</p>
+                  </div>
+                ) : (
+                  apLeaderboard.slice(0, 100).map((entry, index) => {
+                    const isExpanded = expandedWallet === entry.wallet;
+                    return (
+                      <div key={entry.wallet}>
+                        <div
+                          onClick={() => {
+                            setExpandedWallet(isExpanded ? null : entry.wallet);
+                            playSound('click');
+                          }}
+                          className={`relative transition-all duration-200 cursor-pointer ${
+                            address && entry.wallet.toLowerCase() === address.toLowerCase()
+                              ? 'bg-purple-400 bg-opacity-30 border-l-4 border-purple-400'
+                              : 'hover:bg-purple-400 hover:bg-opacity-10'
+                          } ${
+                            index < 3 ? 'text-yellow-400 font-bold' : 'text-purple-400'
+                          }`}
+                        >
+                          <div className="grid grid-cols-3 gap-4 p-4">
+                            <div className="text-center flex items-center justify-center text-xl">
+                              {index === 0 && '🥇'}
+                              {index === 1 && '🥈'}
+                              {index === 2 && '🥉'}
+                              {index > 2 && `#${entry.rank}`}
+                            </div>
+                            <div className="text-center font-mono text-sm flex items-center justify-center gap-2">
+                              {formatWallet(entry.wallet)}
+                              {address && entry.wallet.toLowerCase() === address.toLowerCase() && (
+                                <span className="text-xs bg-purple-500 px-2 py-1 rounded">YOU</span>
+                              )}
+                            </div>
+                            <div className="text-center flex items-center justify-center font-bold text-lg">
+                              {entry.alienPoints.toLocaleString()}
+                            </div>
+                          </div>
+
+                          {/* Prominent View Details Button */}
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                            <button
+                              style={{
+                                background: isExpanded
+                                  ? 'linear-gradient(135deg, #0099ff, #0077cc)'
+                                  : 'linear-gradient(135deg, #0077cc, #005599)',
+                                color: isExpanded ? '#fff' : '#00ffff',
+                                textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
+                                border: '3px solid #0099ff',
+                                borderRadius: '8px',
+                                padding: '10px 14px',
+                                fontSize: '0.75rem',
+                                fontWeight: 'bold',
+                                boxShadow: isExpanded
+                                  ? '0 0 25px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                                transition: 'all 0.3s ease',
+                              }}
+                            >
+                              {isExpanded ? '📊 Hide Stats' : '📊 View Stats'}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Expanded Details */}
+                        {isExpanded && (
+                          <div className="bg-black/80 p-6 border-t border-purple-400/30">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              {/* GMB Holdings */}
+                              <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/30">
+                                <p className="text-purple-400 font-bold mb-3 text-center">💎 GMB Holdings</p>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-blue-400">⛓️ Base:</span>
+                                    <span className="text-purple-300 font-mono">{(entry.gmbHoldings?.base || 0).toLocaleString()} GMB</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-purple-400">⚡ Abstract:</span>
+                                    <span className="text-purple-300 font-mono">{(entry.gmbHoldings?.abstract || 0).toLocaleString()} GMB</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-orange-400">🔶 Arbitrum:</span>
+                                    <span className="text-gray-400 font-mono text-xs">Coming Soon</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-yellow-400">💥 Blast:</span>
+                                    <span className="text-gray-400 font-mono text-xs">Coming Soon</span>
+                                  </div>
+                                  <div className="flex justify-between pt-2 border-t border-purple-400/30">
+                                    <span className="text-yellow-400 font-bold">TOTAL:</span>
+                                    <span className="text-yellow-400 font-bold font-mono">{(entry.gmbHoldings?.total || 0).toLocaleString()} GMB</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Staking & Claims */}
+                              <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/30">
+                                <p className="text-purple-400 font-bold mb-3 text-center">📊 Earnings</p>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-purple-400">🔒 Staked:</span>
+                                    <span className="text-purple-300 font-mono">{(entry.stakedAmount || 0).toLocaleString()} GMB</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-green-400">💰 Staking Claims:</span>
+                                    <span className="text-green-300 font-mono">{(entry.totalStakingClaims || 0).toLocaleString()} AP</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-cyan-400">💧 Faucet Claims:</span>
+                                    <span className="text-cyan-300 font-mono">{(entry.totalFaucetClaims || 0).toLocaleString()} AP</span>
+                                  </div>
+                                  <div className="flex justify-between pt-2 border-t border-purple-400/30">
+                                    <span className="text-yellow-400 font-bold">Total Earned:</span>
+                                    <span className="text-yellow-400 font-bold font-mono">
+                                      {((entry.totalStakingClaims || 0) + (entry.totalFaucetClaims || 0)).toLocaleString()} AP
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Game Stats */}
+                              <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/30">
+                                <p className="text-purple-400 font-bold mb-3 text-center">🎮 Game Stats</p>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-orange-400">👽 Aliens Bought:</span>
+                                    <span className="text-orange-300 font-mono">{entry.gameStats?.aliensPurchased || 0}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-red-400">⚔️ Arena Fights:</span>
+                                    <span className="text-red-300 font-mono">{entry.gameStats?.arenaBattlesFought || 0} ({entry.gameStats?.arenaBattlesWon || 0}W/{entry.gameStats?.arenaBattlesLost || 0}L)</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-purple-400">💀 Boss Attacks:</span>
+                                    <span className="text-purple-300 font-mono">{entry.gameStats?.bossAttacksTotal || 0}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-yellow-400">💥 Boss Damage:</span>
+                                    <span className="text-yellow-300 font-mono">{(entry.gameStats?.bossDamageDealt || 0).toLocaleString()} HP</span>
+                                  </div>
+                                  <div className="flex justify-between pt-2 border-t border-purple-400/30">
+                                    <span className="text-cyan-400 font-bold">Total AP Spent:</span>
+                                    <span className="text-cyan-300 font-bold font-mono">
+                                      {((entry.gameStats?.apSpentOnAliens || 0) + (entry.gameStats?.bossAPSpent || 0)).toLocaleString()} AP
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* Info */}
+            {!isConnected && (
+              <div style={{
+                borderRadius: '8px',
+                border: '2px solid #9B59B644'
+              }} className="w-full bg-purple-900/40 p-6 text-center">
+                <p className="text-purple-400 text-lg font-bold mb-2">👋 Connect Your Wallet</p>
+                <p className="text-purple-300 text-base">
+                  Connect your wallet to see your rank and compete on the leaderboard!
+                </p>
+              </div>
+            )}
+
+            {/* How to earn points */}
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #9B59B644'
+            }} className="w-full bg-black/60 p-6 text-center">
+              <p className="text-purple-400 text-xl font-bold mb-4">💎 How to Earn Alien Points</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/30">
+                  <p className="text-purple-400 font-bold mb-2">🔒 Staking</p>
+                  <p className="text-purple-300 text-sm">Stake GMB to earn up to 10,000 AP/day</p>
+                </div>
+                <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/30">
+                  <p className="text-purple-400 font-bold mb-2">💧 Faucet Claims</p>
+                  <p className="text-purple-300 text-sm">Claim daily rewards based on your GMB holdings</p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

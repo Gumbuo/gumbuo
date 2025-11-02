@@ -446,6 +446,45 @@ export default function GumbuoFightersArena() {
         await addPoints(winnerOwner, WINNER_PRIZE, 'arena');
       }
 
+      // Track game stats: arena battle
+      if (fighter1Owner) {
+        try {
+          await fetch('/api/user-data', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              wallet: fighter1Owner,
+              statUpdates: {
+                arenaBattlesFought: 1,
+                arenaBattlesWon: winner === fighter1 ? 1 : 0,
+                arenaBattlesLost: winner === fighter1 ? 0 : 1,
+              },
+            }),
+          });
+        } catch (error) {
+          console.error('Failed to track arena stats for fighter1:', error);
+        }
+      }
+
+      if (fighter2Owner) {
+        try {
+          await fetch('/api/user-data', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              wallet: fighter2Owner,
+              statUpdates: {
+                arenaBattlesFought: 1,
+                arenaBattlesWon: winner === fighter2 ? 1 : 0,
+                arenaBattlesLost: winner === fighter2 ? 0 : 1,
+              },
+            }),
+          });
+        } catch (error) {
+          console.error('Failed to track arena stats for fighter2:', error);
+        }
+      }
+
       // Add house fee to burn pool
       try {
         await fetch('/api/points', {

@@ -386,6 +386,35 @@ export default function GumbuoBoss() {
           setBossState(data.bossState);
           setRecentAttackers(data.recentAttackers || []);
 
+          // Track game stats: boss attack
+          try {
+            const statUpdates: Record<string, number> = {
+              bossAttacksTotal: 1,
+              bossAPSpent: entryFee,
+              bossDamageDealt: attackResult.damage,
+            };
+
+            // Track attack type used
+            if (selectedAttack === 'normal') {
+              statUpdates.normalAttacksUsed = 1;
+            } else if (selectedAttack === 'power') {
+              statUpdates.powerAttacksUsed = 1;
+            } else if (selectedAttack === 'ultimate') {
+              statUpdates.ultimateAttacksUsed = 1;
+            }
+
+            await fetch('/api/user-data', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                wallet: address,
+                statUpdates,
+              }),
+            });
+          } catch (error) {
+            console.error('Failed to track boss attack stats:', error);
+          }
+
           // Check if boss was defeated
           if (!data.bossState.isAlive) {
             playSound('success');

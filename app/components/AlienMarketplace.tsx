@@ -193,6 +193,23 @@ export default function AlienMarketplace() {
         // Update user balance
         setUserPoints(getUserBalance(address));
 
+        // Track game stats: alien purchase
+        try {
+          await fetch('/api/user-data', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              wallet: address,
+              statUpdates: {
+                aliensPurchased: 1,
+                apSpentOnAliens: pic.price,
+              },
+            }),
+          });
+        } catch (error) {
+          console.error('Failed to track alien purchase stats:', error);
+        }
+
         // Increment global sales counter
         try {
           const salesResponse = await fetch('/api/alien-sales', {
