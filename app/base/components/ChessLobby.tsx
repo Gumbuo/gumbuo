@@ -209,28 +209,74 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-lg p-6 mb-8">
           <h2 className="text-2xl font-bold text-cyan-400 mb-4">🎮 Free Games</h2>
           <div className="flex flex-wrap justify-center gap-4">
-            {/* 1 Player vs CPU */}
+            {/* 1 Player vs CPU - Blue */}
             <button
               onClick={() => handleCreateGame(-1, true)}
               disabled={loading}
-              className="bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border-2 border-purple-400 rounded-lg p-6 hover:from-purple-600/30 hover:to-cyan-600/30 transition-all hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ minWidth: '200px' }}
+              style={{
+                padding: '24px',
+                background: 'rgba(59, 130, 246, 0.2)',
+                color: '#3b82f6',
+                border: '2px solid #3b82f6',
+                borderRadius: '8px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                opacity: loading ? 0.5 : 1,
+                minWidth: '200px',
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = 'rgba(59, 130, 246, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 0 20px #3b82f666';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = 'rgba(59, 130, 246, 0.2)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }
+              }}
             >
-              <div className="text-lg font-bold text-purple-300">1 PLAYER</div>
+              <div className="text-lg">1 PLAYER</div>
               <div className="text-3xl mt-2 text-white">🤖 vs CPU</div>
-              <div className="text-sm mt-2 text-purple-300">Practice Mode</div>
+              <div className="text-sm mt-2" style={{ color: '#3b82f6' }}>Practice Mode</div>
             </button>
 
-            {/* 2 Player PvP */}
+            {/* 2 Player PvP - Green */}
             <button
               onClick={() => handleCreateGame(-1, false)}
               disabled={loading}
-              className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-400 rounded-lg p-6 hover:from-green-600/30 hover:to-blue-600/30 transition-all hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ minWidth: '200px' }}
+              style={{
+                padding: '24px',
+                background: 'rgba(34, 197, 94, 0.2)',
+                color: '#22c55e',
+                border: '2px solid #22c55e',
+                borderRadius: '8px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                opacity: loading ? 0.5 : 1,
+                minWidth: '200px',
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = 'rgba(34, 197, 94, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 0 20px #22c55e66';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = 'rgba(34, 197, 94, 0.2)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }
+              }}
             >
-              <div className="text-lg font-bold text-green-300">2 PLAYER</div>
+              <div className="text-lg">2 PLAYER</div>
               <div className="text-3xl mt-2 text-white">👥 PvP</div>
-              <div className="text-sm mt-2 text-green-300">Wait for Opponent</div>
+              <div className="text-sm mt-2" style={{ color: '#22c55e' }}>Wait for Opponent</div>
             </button>
           </div>
           <p className="text-sm text-purple-300 mt-4 text-center">
