@@ -763,7 +763,6 @@ export default function AlienDripStation() {
               <>
                 <button
                   onClick={handleClaimStakingRewards}
-                  onMouseEnter={() => accumulatedRewards > 0 && !claimingStake && playSound('hover')}
                   disabled={accumulatedRewards <= 0 || claimingStake}
                   style={{
                     padding: '12px 24px',
@@ -785,6 +784,7 @@ export default function AlienDripStation() {
                   }}
                   onMouseEnter={(e) => {
                     if (accumulatedRewards > 0 && !claimingStake) {
+                      playSound('hover');
                       e.currentTarget.style.transform = 'scale(1.05)';
                     }
                   }}
