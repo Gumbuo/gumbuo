@@ -674,6 +674,55 @@ export default function GumbuoBoss() {
             </div>
           )}
 
+          {/* Claim Reward Button - Prominent Position */}
+          {!bossState.isAlive && !hasClaimedReward && userTotalDamage > 0 && (
+            <button
+              onClick={handleClaimReward}
+              onMouseEnter={() => playSound('hover')}
+              style={{
+                borderRadius: '8px',
+                border: '3px solid #ffd700',
+                background: 'linear-gradient(135deg, #ffd700, #ffed4e)',
+                color: '#000',
+                width: '100%',
+                padding: '24px',
+                fontSize: '28px',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                boxShadow: '0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3)',
+                animation: 'pulse 2s ease-in-out infinite',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 0 50px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3)';
+              }}
+            >
+              {!isConnected ? "🔗 CONNECT WALLET" : `🏆 CLAIM ${Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} AP REWARD! 🏆`}
+            </button>
+          )}
+
+          {/* Already Claimed Message */}
+          {!bossState.isAlive && hasClaimedReward && (
+            <div style={{
+              background: 'rgba(0, 255, 0, 0.1)',
+              borderRadius: '8px',
+              border: '2px solid #00ff99',
+              padding: '20px',
+              textAlign: 'center',
+              width: '100%'
+            }}>
+              <p className="text-green-400 text-2xl font-bold">✅ Reward Already Claimed! ✅</p>
+              <p className="text-green-300 text-base mt-2">Wait for boss respawn to earn more rewards!</p>
+            </div>
+          )}
+
           {/* Last Attack Result */}
           {lastDamage && bossState.isAlive && (
             <div style={{
@@ -1250,34 +1299,6 @@ export default function GumbuoBoss() {
         </div>
       </div>
 
-      {/* Claim Reward Button */}
-      {!bossState.isAlive && !hasClaimedReward && userTotalDamage > 0 && (
-        <button
-          onClick={handleClaimReward}
-          onMouseEnter={() => playSound('hover')}
-          style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
-          }}
-          className="px-16 py-6 text-3xl font-bold tracking-wider alien-button alien-button-primary alien-button-glow alien-button-organic"
-        >
-          {!isConnected ? "CONNECT WALLET" : "🏆 CLAIM REWARD 🏆"}
-        </button>
-      )}
-
-      {/* Already Claimed */}
-      {!bossState.isAlive && hasClaimedReward && (
-        <div style={{
-          background: 'rgba(0, 0, 0, 0.6)',
-          borderRadius: '8px',
-          border: '2px solid #00ff9944',
-          padding: '24px',
-          textAlign: 'center'
-        }}>
-          <p className="text-green-400 text-xl font-bold">✅ Reward Already Claimed! ✅</p>
-          <p className="text-green-400 text-base mt-2">Wait for boss respawn to earn more rewards!</p>
-        </div>
-      )}
 
       {/* Battle Info */}
       <div style={{
