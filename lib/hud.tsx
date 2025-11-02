@@ -186,22 +186,22 @@ export function AlienHUD() {
                 <div className="ml-3 space-y-1">
                   {parseFloat(ethBalanceBase?.formatted || '0') > 0 && (
                     <p className="text-blue-400 alien-code">
-                      <strong>Base:</strong> {parseFloat(ethBalanceBase.formatted).toFixed(4)} ETH
+                      <strong>Base:</strong> {parseFloat(ethBalanceBase?.formatted || '0').toFixed(4)} ETH
                     </p>
                   )}
                   {parseFloat(ethBalanceAbstract?.formatted || '0') > 0 && (
                     <p className="text-purple-400 alien-code">
-                      <strong>Abstract:</strong> {parseFloat(ethBalanceAbstract.formatted).toFixed(4)} ETH
+                      <strong>Abstract:</strong> {parseFloat(ethBalanceAbstract?.formatted || '0').toFixed(4)} ETH
                     </p>
                   )}
                   {parseFloat(ethBalanceBlast?.formatted || '0') > 0 && (
                     <p className="text-yellow-400 alien-code">
-                      <strong>Blast:</strong> {parseFloat(ethBalanceBlast.formatted).toFixed(4)} ETH
+                      <strong>Blast:</strong> {parseFloat(ethBalanceBlast?.formatted || '0').toFixed(4)} ETH
                     </p>
                   )}
                   {parseFloat(ethBalanceArbitrum?.formatted || '0') > 0 && (
                     <p className="text-orange-400 alien-code">
-                      <strong>Arbitrum:</strong> {parseFloat(ethBalanceArbitrum.formatted).toFixed(4)} ETH
+                      <strong>Arbitrum:</strong> {parseFloat(ethBalanceArbitrum?.formatted || '0').toFixed(4)} ETH
                     </p>
                   )}
                 </div>
