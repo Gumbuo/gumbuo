@@ -68,6 +68,11 @@ export function AlienHUD() {
     }
   }, [address, getUserBalance]);
 
+  useEffect(() => {
+    console.log("Abstract Mainnet Balance:", ethBalanceAbstract);
+    console.log("Abstract Testnet Balance:", ethBalanceAbstractTestnet);
+  }, [ethBalanceAbstract, ethBalanceAbstractTestnet]);
+
   // Add token to MetaMask
   const addTokenToMetaMask = async (tokenAddress: string, symbol: string, decimals: number, chainName: string) => {
     try {
@@ -146,48 +151,73 @@ export function AlienHUD() {
               <span className="font-mono alien-code">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
             </p>
 
-            <div className="space-y-2">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">💎 MAINNET BALANCES:</p>
-              <div className="ml-3 space-y-1">
-                <p className="text-blue-400 alien-code">
-                  <strong>Base:</strong> {ethBalanceBase?.formatted ? parseFloat(ethBalanceBase.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-purple-400 alien-code">
-                  <strong>Abstract:</strong> {ethBalanceAbstract?.formatted ? parseFloat(ethBalanceAbstract.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-yellow-400 alien-code">
-                  <strong>Blast:</strong> {ethBalanceBlast?.formatted ? parseFloat(ethBalanceBlast.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
-                <p className="text-orange-400 alien-code">
-                  <strong>Arbitrum:</strong> {ethBalanceArbitrum?.formatted ? parseFloat(ethBalanceArbitrum.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
+            {/* Mainnet Balances - Only show chains with balance > 0 */}
+            {(parseFloat(ethBalanceBase?.formatted || '0') > 0 ||
+              parseFloat(ethBalanceAbstract?.formatted || '0') > 0 ||
+              parseFloat(ethBalanceBlast?.formatted || '0') > 0 ||
+              parseFloat(ethBalanceArbitrum?.formatted || '0') > 0) && (
+              <div className="space-y-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">💎 MAINNET BALANCES:</p>
+                <div className="ml-3 space-y-1">
+                  {parseFloat(ethBalanceBase?.formatted || '0') > 0 && (
+                    <p className="text-blue-400 alien-code">
+                      <strong>Base:</strong> {parseFloat(ethBalanceBase.formatted).toFixed(4)} ETH
+                    </p>
+                  )}
+                  {parseFloat(ethBalanceAbstract?.formatted || '0') > 0 && (
+                    <p className="text-purple-400 alien-code">
+                      <strong>Abstract:</strong> {parseFloat(ethBalanceAbstract.formatted).toFixed(4)} ETH
+                    </p>
+                  )}
+                  {parseFloat(ethBalanceBlast?.formatted || '0') > 0 && (
+                    <p className="text-yellow-400 alien-code">
+                      <strong>Blast:</strong> {parseFloat(ethBalanceBlast.formatted).toFixed(4)} ETH
+                    </p>
+                  )}
+                  {parseFloat(ethBalanceArbitrum?.formatted || '0') > 0 && (
+                    <p className="text-orange-400 alien-code">
+                      <strong>Arbitrum:</strong> {parseFloat(ethBalanceArbitrum.formatted).toFixed(4)} ETH
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="space-y-2">
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">🧪 TESTNET BALANCES:</p>
-              <div className="ml-3 space-y-1">
-                <p className="text-pink-400 alien-code">
-                  <strong>Abstract Testnet:</strong> {ethBalanceAbstractTestnet?.formatted ? parseFloat(ethBalanceAbstractTestnet.formatted).toFixed(4) : '0.0000'} ETH
-                </p>
+            {/* Testnet Balances - Only show chains with balance > 0 */}
+            {parseFloat(ethBalanceAbstractTestnet?.formatted || '0') > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">🧪 TESTNET BALANCES:</p>
+                <div className="ml-3 space-y-1">
+                  <p className="text-pink-400 alien-code">
+                    <strong>Abstract Testnet:</strong> {parseFloat(ethBalanceAbstractTestnet.formatted).toFixed(4)} ETH
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="space-y-2">
-              <p className="text-xs text-gray-500 uppercase tracking-wider">🪙 GMB Holdings:</p>
-              <div className="ml-3 space-y-1">
-                <p className="text-blue-400 alien-code">
-                  <strong>Base:</strong> {gmbBalanceBase?.formatted ? parseFloat(gmbBalanceBase.formatted).toFixed(2) : '0.00'} GMB
-                </p>
-                <p className="text-purple-400 alien-code">
-                  <strong>Abstract:</strong> {gmbBalanceAbstract?.formatted ? parseFloat(gmbBalanceAbstract.formatted).toFixed(2) : '0.00'} GMB
-                </p>
-                {/* TODO: Uncomment when Blast GMB token is deployed */}
-                {/* <p className="text-yellow-400 alien-code">
-                  <strong>Blast:</strong> {gmbBalanceBlast?.formatted ? parseFloat(gmbBalanceBlast.formatted).toFixed(2) : '0.00'} GMB
-                </p> */}
+            {/* GMB Holdings - Only show chains with balance > 0 */}
+            {(parseFloat(gmbBalanceBase?.formatted || '0') > 0 ||
+              parseFloat(gmbBalanceAbstract?.formatted || '0') > 0) && (
+              <div className="space-y-2">
+                <p className="text-xs text-gray-500 uppercase tracking-wider">🪙 GMB Holdings:</p>
+                <div className="ml-3 space-y-1">
+                  {parseFloat(gmbBalanceBase?.formatted || '0') > 0 && (
+                    <p className="text-blue-400 alien-code">
+                      <strong>Base:</strong> {parseFloat(gmbBalanceBase.formatted).toFixed(2)} GMB
+                    </p>
+                  )}
+                  {parseFloat(gmbBalanceAbstract?.formatted || '0') > 0 && (
+                    <p className="text-purple-400 alien-code">
+                      <strong>Abstract:</strong> {parseFloat(gmbBalanceAbstract.formatted).toFixed(2)} GMB
+                    </p>
+                  )}
+                  {/* TODO: Uncomment when Blast GMB token is deployed */}
+                  {/* <p className="text-yellow-400 alien-code">
+                    <strong>Blast:</strong> {gmbBalanceBlast?.formatted ? parseFloat(gmbBalanceBlast.formatted).toFixed(2) : '0.00'} GMB
+                  </p> */}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-4 pt-3 border-t border-cyan-500/30">
               <p className="flex items-center justify-between">
