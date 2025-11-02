@@ -1210,8 +1210,9 @@ export default function GumbuoFightersArena() {
                 </div>
                 <div className="w-full bg-gray-900 rounded-full h-8 border-4 border-blue-400 overflow-hidden shadow-lg shadow-blue-400/50">
                   <div
+                    key={fighter1Health}
                     className="bg-gradient-to-r from-blue-400 to-cyan-400 h-full transition-all duration-300 shadow-lg shadow-blue-400/50"
-                    style={{width: `${fighter1Health}%`}}
+                    style={{width: `${fighter1Health}%`, maxWidth: '100%', minWidth: '0%', willChange: 'width'}}
                   ></div>
                 </div>
               </div>
@@ -1246,8 +1247,9 @@ export default function GumbuoFightersArena() {
                 </div>
                 <div className="w-full bg-gray-900 rounded-full h-8 border-4 border-red-400 overflow-hidden shadow-lg shadow-red-400/50">
                   <div
+                    key={fighter2Health}
                     className="bg-gradient-to-r from-red-400 to-orange-400 h-full transition-all duration-300 shadow-lg shadow-red-400/50"
-                    style={{width: `${fighter2Health}%`}}
+                    style={{width: `${fighter2Health}%`, maxWidth: '100%', minWidth: '0%', willChange: 'width'}}
                   ></div>
                 </div>
               </div>
