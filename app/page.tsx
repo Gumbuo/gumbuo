@@ -50,11 +50,31 @@ export default function MothershipPage() {
           {/* Scene 1: Space with Floating Portals (DEFAULT) */}
           <div id="scene-portals" className={`viewport-scene ${activeScene !== 'portals' ? 'hidden' : ''}`}>
             <div className="space-scene" id="space-scene">
+              {/* Video Background */}
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  zIndex: 0,
+                  opacity: 0.7
+                }}
+              >
+                <source src="/alien.mp4" type="video/mp4" />
+              </video>
+
               {/* Header */}
-              <h1 className="portals-header">Gumbuo's Blockchain Portals</h1>
+              <h1 className="portals-header" style={{ position: 'relative', zIndex: 10 }}>Gumbuo's Blockchain Portals</h1>
 
               {/* Centered Portal Grid */}
-              <div className="portals-grid">
+              <div className="portals-grid" style={{ position: 'relative', zIndex: 10 }}>
                 <Link
                   href="/base"
                   className="portal-item"
@@ -660,11 +680,10 @@ export default function MothershipPage() {
         .space-scene {
           width: 100%;
           height: 100%;
-          background: radial-gradient(ellipse at center, #0a0a2e 0%, #000000 100%);
-          position: absolute;
+          position: relative;
           top: 0;
           left: 0;
-          animation: spaceFloat 60s linear infinite;
+          overflow: hidden;
         }
 
         @keyframes spaceFloat {
