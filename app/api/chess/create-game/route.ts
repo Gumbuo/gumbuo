@@ -5,7 +5,7 @@ const BUY_IN_AMOUNTS = ['0.001', '0.005', '0.01'];
 
 export async function POST(request: NextRequest) {
   try {
-    const { wallet, buyInTier } = await request.json();
+    const { wallet, buyInTier, isCpuGame = false } = await request.json();
 
     if (!wallet) {
       return NextResponse.json(
@@ -31,17 +31,18 @@ export async function POST(request: NextRequest) {
     const newGame = {
       id: gameId,
       player1: wallet,
-      player2: null,
+      player2: isCpuGame ? 'CPU' : null,
       buyIn,
       pot: buyIn,
-      currentTurn: null, // Will be set when player2 joins
-      lastMoveTime: null,
+      currentTurn: isCpuGame ? wallet : null, // Start immediately for CPU games
+      lastMoveTime: isCpuGame ? Date.now() : null,
       winner: null,
       completed: false,
       claimed: false,
       fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', // Starting position
       moveHistory: [],
       createdAt: Date.now(),
+      isCpuGame,
     };
 
     // Add to games list

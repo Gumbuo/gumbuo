@@ -24,7 +24,6 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
 
   // Fixed buy-in amounts
   const buyInOptions = [
-    { tier: -1, amount: '0', label: 'FREE' },
     { tier: 0, amount: '0.001', label: '0.001 ETH' },
     { tier: 1, amount: '0.005', label: '0.005 ETH' },
     { tier: 2, amount: '0.01', label: '0.01 ETH' },
@@ -55,7 +54,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
   }, [isConnected]);
 
   // Create new game
-  const handleCreateGame = async (tier: number) => {
+  const handleCreateGame = async (tier: number, isCpuGame: boolean = false) => {
     if (!address) return;
 
     setLoading(true);
@@ -66,6 +65,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         body: JSON.stringify({
           wallet: address,
           buyInTier: tier,
+          isCpuGame,
         }),
       });
 
@@ -205,14 +205,46 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
           </div>
         </div>
 
-        {/* Create Game Section */}
+        {/* Create Game Section - FREE GAMES */}
+        <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-lg p-6 mb-8">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4">🎮 Free Games</h2>
+          <div className="flex flex-wrap justify-center gap-4">
+            {/* 1 Player vs CPU */}
+            <button
+              onClick={() => handleCreateGame(-1, true)}
+              disabled={loading}
+              className="bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border-2 border-purple-400 rounded-lg p-6 hover:from-purple-600/30 hover:to-cyan-600/30 transition-all hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ minWidth: '200px' }}
+            >
+              <div className="text-lg font-bold text-purple-300">1 PLAYER</div>
+              <div className="text-3xl mt-2 text-white">🤖 vs CPU</div>
+              <div className="text-sm mt-2 text-purple-300">Practice Mode</div>
+            </button>
+
+            {/* 2 Player PvP */}
+            <button
+              onClick={() => handleCreateGame(-1, false)}
+              disabled={loading}
+              className="bg-gradient-to-r from-green-600/20 to-blue-600/20 border-2 border-green-400 rounded-lg p-6 hover:from-green-600/30 hover:to-blue-600/30 transition-all hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ minWidth: '200px' }}
+            >
+              <div className="text-lg font-bold text-green-300">2 PLAYER</div>
+              <div className="text-3xl mt-2 text-white">👥 PvP</div>
+              <div className="text-sm mt-2 text-green-300">Wait for Opponent</div>
+            </button>
+          </div>
+          <p className="text-sm text-purple-300 mt-4 text-center">
+            No buy-in required • Practice or play with friends
+          </p>
+        </div>
+
+        {/* Create Game Section - PAID GAMES */}
         <div className="bg-purple-900/40 border-2 border-purple-400 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-cyan-400 mb-4">Create New Game</h2>
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4">💰 Paid Games (PvP Only)</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {buyInOptions.map((option, index) => {
               // Define colors for each tier
               const colors = [
-                { bg: 'rgba(107, 114, 128, 0.2)', border: '#9ca3af', hover: 'rgba(107, 114, 128, 0.3)', text: '#9ca3af' }, // Grey for FREE
                 { bg: 'rgba(59, 130, 246, 0.2)', border: '#3b82f6', hover: 'rgba(59, 130, 246, 0.3)', text: '#3b82f6' }, // Blue for 0.001
                 { bg: 'rgba(34, 197, 94, 0.2)', border: '#22c55e', hover: 'rgba(34, 197, 94, 0.3)', text: '#22c55e' }, // Green for 0.005
                 { bg: 'rgba(239, 68, 68, 0.2)', border: '#ef4444', hover: 'rgba(239, 68, 68, 0.3)', text: '#ef4444' }, // Red for 0.01
@@ -222,7 +254,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
               return (
                 <button
                   key={option.tier}
-                  onClick={() => handleCreateGame(option.tier)}
+                  onClick={() => handleCreateGame(option.tier, false)}
                   disabled={loading}
                   style={{
                     padding: '12px 24px',
@@ -259,7 +291,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
             })}
           </div>
           <p className="text-sm text-purple-300 mt-4 text-center">
-            ⏱️ 24-hour move timer - Forfeit if you don't move in time
+            ⏱️ 24-hour move timer - Forfeit if you don't move in time • Winner takes all
           </p>
         </div>
 

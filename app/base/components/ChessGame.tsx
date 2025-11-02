@@ -23,7 +23,9 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
 
   // Player color - player1 is white, player2 is black
   const playerColor = isPlayer1 ? 'w' : 'b';
-  const isMyTurn = game.turn() === playerColor;
+  const isCpuGame = gameState?.isCpuGame || false;
+  const isCpuTurn = isCpuGame && game.turn() === 'b'; // CPU is always black (player2)
+  const isMyTurn = game.turn() === playerColor && !isCpuTurn;
 
   // WebSocket connection for real-time moves
   useEffect(() => {
@@ -129,6 +131,41 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
       return () => clearInterval(timer);
     }
   }, [timeRemaining]);
+
+  // CPU move logic - make random move after player moves
+  useEffect(() => {
+    if (isCpuGame && isCpuTurn && !game.isGameOver()) {
+      const cpuMoveTimeout = setTimeout(() => {
+        const possibleMoves = game.moves({ verbose: true });
+
+        if (possibleMoves.length > 0) {
+          // Pick a random move
+          const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+
+          // Make the move
+          const gameCopy = new Chess(game.fen());
+          gameCopy.move(randomMove);
+          setGame(gameCopy);
+
+          // Send move to server
+          fetch('/api/chess/make-move', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              gameId,
+              move: { from: randomMove.from, to: randomMove.to, promotion: randomMove.promotion },
+              fen: gameCopy.fen(),
+              wallet: 'CPU',
+            }),
+          });
+
+          console.log('🤖 CPU played:', randomMove.san);
+        }
+      }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
+
+      return () => clearTimeout(cpuMoveTimeout);
+    }
+  }, [isCpuGame, isCpuTurn, game, gameId]);
 
   // Format time remaining
   const formatTime = (ms: number) => {
@@ -311,9 +348,16 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
           >
             ← Back to Lobby
           </button>
-          <h1 className="text-3xl font-bold text-cyan-400">
-            ♟️ Game #{gameId}
-          </h1>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-cyan-400">
+              ♟️ Game #{gameId}
+            </h1>
+            {isCpuGame && (
+              <div className="text-purple-300 text-sm mt-1">
+                🤖 vs CPU (Practice Mode)
+              </div>
+            )}
+          </div>
           <div className="text-purple-300">
             You are: {isPlayer1 ? '⬜ White' : '⬛ Black'}
           </div>
