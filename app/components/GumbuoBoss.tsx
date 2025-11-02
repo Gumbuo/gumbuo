@@ -638,11 +638,15 @@ export default function GumbuoBoss() {
 
             <div className="w-full bg-gray-900 rounded-full h-8 border-2 border-gray-700 overflow-hidden shadow-2xl relative">
               <div
+                key={bossState.currentHP}
                 className={`bg-gradient-to-r ${getHPBarColor()} h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden`}
                 style={{
                   width: `${getHPPercentage()}%`,
+                  maxWidth: '100%',
+                  minWidth: '0%',
                   boxShadow: bossState.isAlive ? '0 0 20px currentColor, inset 0 0 20px rgba(255,255,255,0.3)' : 'none',
-                  animation: bossShaking ? 'pulse 0.5s ease-in-out' : 'none'
+                  animation: bossShaking ? 'pulse 0.5s ease-in-out' : 'none',
+                  willChange: 'width'
                 }}
               >
                 {/* Animated shine effect */}
