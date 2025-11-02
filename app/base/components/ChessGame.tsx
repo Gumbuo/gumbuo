@@ -21,6 +21,47 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const wsRef = useRef<WebSocket | null>(null);
 
+  // Alien sound effects using Web Audio API
+  const playAlienMoveSound = () => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    // Alien "blip" sound
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+  };
+
+  const playAlienCpuSound = () => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    // Different alien "boop" sound for CPU
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.15);
+
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.15);
+  };
+
   // Player color - player1 is white, player2 is black
   const playerColor = isPlayer1 ? 'w' : 'b';
   const isCpuGame = gameState?.isCpuGame || gameState?.player2 === 'CPU' || false;
@@ -68,11 +109,14 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
 
       switch (data.type) {
         case 'chess-move':
-          if (data.gameId === gameId) {
+          if (data.gameId === gameId && data.player !== address) {
             // Apply opponent's move
             const gameCopy = new Chess(game.fen());
             gameCopy.move(data.move);
             setGame(gameCopy);
+
+            // Play alien move sound for opponent's move
+            playAlienCpuSound();
           }
           break;
         case 'chess-game-state':
@@ -165,6 +209,9 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
           gameCopy.move(randomMove);
           setGame(gameCopy);
 
+          // Play alien CPU sound
+          playAlienCpuSound();
+
           // Send move to server
           fetch('/api/chess/make-move', {
             method: 'POST',
@@ -208,6 +255,9 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
       if (move === null) return false; // Invalid move
 
       setGame(gameCopy);
+
+      // Play alien move sound
+      playAlienMoveSound();
 
       // Send move to server via WebSocket
       if (wsRef.current?.readyState === WebSocket.OPEN) {
