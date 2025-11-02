@@ -218,7 +218,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
                 background: 'rgba(59, 130, 246, 0.2)',
                 color: '#3b82f6',
                 border: '2px solid #3b82f6',
-                borderRadius: '8px',
+                borderRadius: '16px',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -253,7 +253,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
                 background: 'rgba(34, 197, 94, 0.2)',
                 color: '#22c55e',
                 border: '2px solid #22c55e',
-                borderRadius: '8px',
+                borderRadius: '16px',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
                 fontWeight: 'bold',
@@ -307,7 +307,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
                     background: color.bg,
                     color: color.text,
                     border: `2px solid ${color.border}`,
-                    borderRadius: '8px',
+                    borderRadius: '16px',
                     cursor: loading ? 'not-allowed' : 'pointer',
                     fontFamily: 'Orbitron, sans-serif',
                     fontWeight: 'bold',
@@ -345,7 +345,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         {myGames.length > 0 && (
           <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-2xl p-6 mb-8 mx-auto w-fit min-w-[500px]">
             <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">My Active Games</h2>
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
               {myGames.map((game) => (
                 <div
                   key={game.id}
@@ -381,7 +381,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
               No open games available. Create one above!
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
               {openGames.map((game) => (
                 <div
                   key={game.id}
