@@ -214,7 +214,7 @@ export function AlienHUD() {
                 <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">🧪 TESTNET BALANCES:</p>
                 <div className="ml-3 space-y-1">
                   <p className="text-pink-400 alien-code">
-                    <strong>Abstract Testnet:</strong> {parseFloat(ethBalanceAbstractTestnet.formatted).toFixed(4)} ETH
+                    <strong>Abstract Testnet:</strong> {parseFloat(ethBalanceAbstractTestnet?.formatted || '0').toFixed(4)} ETH
                   </p>
                 </div>
               </div>
@@ -228,12 +228,12 @@ export function AlienHUD() {
                 <div className="ml-3 space-y-1">
                   {parseFloat(gmbBalanceBase?.formatted || '0') > 0 && (
                     <p className="text-blue-400 alien-code">
-                      <strong>Base:</strong> {parseFloat(gmbBalanceBase.formatted).toFixed(2)} GMB
+                      <strong>Base:</strong> {parseFloat(gmbBalanceBase?.formatted || '0').toFixed(2)} GMB
                     </p>
                   )}
                   {parseFloat(gmbBalanceAbstract?.formatted || '0') > 0 && (
                     <p className="text-purple-400 alien-code">
-                      <strong>Abstract:</strong> {parseFloat(gmbBalanceAbstract.formatted).toFixed(2)} GMB
+                      <strong>Abstract:</strong> {parseFloat(gmbBalanceAbstract?.formatted || '0').toFixed(2)} GMB
                     </p>
                   )}
                   {/* TODO: Uncomment when Blast GMB token is deployed */}
