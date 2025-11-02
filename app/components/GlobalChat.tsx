@@ -74,7 +74,7 @@ const GlobalChat = () => {
 
     // WebSocket server URL - Railway production or local dev
     const WS_URL = process.env.NODE_ENV === 'production'
-      ? 'wss://gumbuo-production.up.railway.app'
+      ? (process.env.NEXT_PUBLIC_WS_URL || 'wss://gumbuo-production.up.railway.app')
       : 'ws://localhost:3001';
 
     console.log('Attempting to connect to WebSocket:', WS_URL);
