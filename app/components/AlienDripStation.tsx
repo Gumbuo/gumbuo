@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { useAlienPoints } from "../context/AlienPointsEconomy";
 import { useCosmicSound } from "../hooks/useCosmicSound";
@@ -9,20 +9,21 @@ type TabType = "staking" | "faucet" | "nft";
 const GMB_TOKEN_ADDRESS_BASE = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
 const GMB_TOKEN_ADDRESS_ABSTRACT = "0x1660AA473D936029C7659e7d047F05EcF28D40c9";
 
-// Drip tiers based on GMB holdings (daily claim)
+// Drip tiers based on GMB holdings (daily claim - 12 hour cooldown)
 const DRIP_TIERS = [
-  { minGMB: 1000000, maxGMB: Infinity, points: 50000, name: "LEGENDARY WHALE", color: "#FFD700" },
-  { minGMB: 500000, maxGMB: 999999, points: 25000, name: "Epic Holder", color: "#FF6B6B" },
-  { minGMB: 100000, maxGMB: 499999, points: 15000, name: "Rare Collector", color: "#9B59B6" },
-  { minGMB: 50000, maxGMB: 99999, points: 10000, name: "Uncommon Stacker", color: "#3498DB" },
-  { minGMB: 10000, maxGMB: 49999, points: 7500, name: "Common Holder", color: "#00ff99" },
-  { minGMB: 1000, maxGMB: 9999, points: 6000, name: "Starter", color: "#95A5A6" },
-  { minGMB: 0, maxGMB: 999, points: 5000, name: "Beginner", color: "#7F8C8D" },
+  { minGMB: 1000000, maxGMB: Infinity, points: 10000, name: "LEGENDARY WHALE", color: "#FFD700" },
+  { minGMB: 500000, maxGMB: 999999, points: 8000, name: "Epic Holder", color: "#FF6B6B" },
+  { minGMB: 100000, maxGMB: 499999, points: 6000, name: "Rare Collector", color: "#9B59B6" },
+  { minGMB: 50000, maxGMB: 99999, points: 5000, name: "Uncommon Stacker", color: "#3498DB" },
+  { minGMB: 10000, maxGMB: 49999, points: 4000, name: "Common Holder", color: "#00ff99" },
+  { minGMB: 1000, maxGMB: 9999, points: 3500, name: "Starter", color: "#95A5A6" },
+  { minGMB: 0, maxGMB: 999, points: 3000, name: "Beginner", color: "#7F8C8D" },
 ];
 
-// Staking formula: 100 AP per day for every 1M GMB held
-// Example: 5M GMB = 500 AP/day = ~20.83 AP/hour
-const AP_PER_DAY_PER_MILLION = 100;
+// Staking formula: 10,000 AP per day for every 1M GMB held
+// Example: 1M GMB = 10,000 AP/day = ~416.67 AP/hour
+// Example: 5M GMB = 50,000 AP/day = ~2,083.33 AP/hour
+const AP_PER_DAY_PER_MILLION = 10000;
 const AP_PER_HOUR_PER_MILLION = AP_PER_DAY_PER_MILLION / 24;
 
 // Calculate AP per hour based on GMB amount
@@ -85,10 +86,13 @@ export default function AlienDripStation() {
 
   const gmbAmount = parseFloat(gmbBalance?.formatted || "0");
 
-  // Load staking data from backend API
+  // Load staking data from backend API (only on mount and address change)
   useEffect(() => {
+    console.log('📡 Data loading useEffect triggered', { address });
+
     // Reset staking state when wallet disconnects
     if (!address) {
+      console.log('🚫 No address, resetting state');
       setStakingData({
         isStaking: false,
         stakedAmount: 0,
@@ -102,8 +106,11 @@ export default function AlienDripStation() {
 
     const fetchStakingData = async () => {
       try {
+        console.log('📥 Fetching staking data from backend for', address);
         const response = await fetch(`/api/user-data?wallet=${address}`);
         const result = await response.json();
+
+        console.log('📦 Backend response:', result);
 
         if (result.success && result.userData) {
           const data = result.userData.stakingData || {
@@ -112,23 +119,22 @@ export default function AlienDripStation() {
             stakeStartTime: 0,
             lastClaimTime: 0,
           };
-          setStakingData(data);
 
-          // Only check balance drop if GMB amount has actually loaded (> 0)
-          if (data.isStaking && gmbAmount > 0 && gmbAmount < data.stakedAmount * 0.95) {
-            // Balance dropped more than 5% - pause staking
-            playSound('error');
-            alert("⚠️ Your GMB balance dropped! Staking rewards have been paused. Your accumulated rewards are still claimable.");
-            const pausedData = { ...data, isStaking: false };
-            setStakingData(pausedData);
+          console.log('✏️ Setting stakingData to:', data);
 
-            // Save to backend
-            await fetch('/api/user-data', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ wallet: address, stakingData: pausedData }),
-            });
+          // Calculate how long ago staking started
+          if (data.isStaking && data.lastClaimTime > 0) {
+            const now = Date.now();
+            const timeElapsed = now - data.lastClaimTime;
+            const hoursElapsed = timeElapsed / (1000 * 60 * 60);
+            const minutesElapsed = timeElapsed / (1000 * 60);
+            console.log(`⏰ Last claim was ${minutesElapsed.toFixed(2)} minutes ago (${hoursElapsed.toFixed(2)} hours)`);
+            console.log(`📅 Last claim time: ${new Date(data.lastClaimTime).toLocaleString()}`);
           }
+
+          setStakingData(data);
+        } else {
+          console.log('❌ No user data found in backend response');
         }
       } catch (error) {
         console.error('Failed to load staking data:', error);
@@ -136,7 +142,58 @@ export default function AlienDripStation() {
     };
 
     fetchStakingData();
-  }, [address, gmbAmount]);
+  }, [address]);
+
+  // Separate effect to check for balance drops (only after GMB has loaded from BOTH chains)
+  useEffect(() => {
+    // Skip if not staking
+    if (!stakingData.isStaking) {
+      return;
+    }
+
+    // Skip if GMB hasn't loaded yet
+    if (!gmbAmount || gmbAmount === 0) {
+      return;
+    }
+
+    // IMPORTANT: Wait for both chain balances to load before checking
+    // This prevents false positives when one chain loads faster than the other
+    const baseLoaded = gmbBalanceBase !== undefined && gmbBalanceBase !== null;
+    const abstractLoaded = gmbBalanceAbstract !== undefined && gmbBalanceAbstract !== null;
+
+    if (!baseLoaded || !abstractLoaded) {
+      console.log('⏳ Waiting for both chain balances to load...', { baseLoaded, abstractLoaded });
+      return;
+    }
+
+    // Add a 2-second delay after page load to ensure balances are stable
+    const timeoutId = setTimeout(() => {
+      // Check if balance dropped more than 5%
+      if (gmbAmount < stakingData.stakedAmount * 0.95) {
+        console.log('⚠️ Balance dropped, pausing staking', {
+          currentGMB: gmbAmount,
+          stakedAmount: stakingData.stakedAmount,
+          threshold: stakingData.stakedAmount * 0.95,
+          baseBalance: parseFloat(gmbBalanceBase?.formatted || '0'),
+          abstractBalance: parseFloat(gmbBalanceAbstract?.formatted || '0')
+        });
+        playSound('error');
+        alert("⚠️ Your GMB balance dropped! Staking rewards have been paused. Your accumulated rewards are still claimable.");
+
+        const pausedData = { ...stakingData, isStaking: false };
+        setStakingData(pausedData);
+
+        // Save to backend
+        fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet: address, stakingData: pausedData }),
+        }).catch(error => console.error('Failed to save paused state:', error));
+      }
+    }, 2000); // Wait 2 seconds for balances to stabilize
+
+    return () => clearTimeout(timeoutId);
+  }, [gmbAmount, stakingData.stakedAmount, gmbBalanceBase, gmbBalanceAbstract]);
 
   // Calculate staking rewards dynamically based on GMB amount
   const getStakingRewards = (amount: number) => {
@@ -154,11 +211,22 @@ export default function AlienDripStation() {
     };
   };
 
-  const currentStakingRewards = getStakingRewards(stakingData.isStaking ? stakingData.stakedAmount : gmbAmount);
+  // Memoize to prevent unnecessary re-renders of the rewards counter
+  const currentStakingRewards = useMemo(() => {
+    return getStakingRewards(stakingData.isStaking ? stakingData.stakedAmount : gmbAmount);
+  }, [stakingData.isStaking, stakingData.stakedAmount, gmbAmount]);
 
   // Calculate accumulated rewards in real-time
   useEffect(() => {
+    console.log('🔄 Rewards useEffect triggered', {
+      isStaking: stakingData.isStaking,
+      stakedAmount: stakingData.stakedAmount,
+      lastClaimTime: stakingData.lastClaimTime,
+      currentStakingRewards
+    });
+
     if (!stakingData.isStaking || !currentStakingRewards) {
+      console.log('❌ Not staking or no rewards calculated');
       setAccumulatedRewards(0);
       return;
     }
@@ -167,7 +235,18 @@ export default function AlienDripStation() {
       const now = Date.now();
       const timeElapsed = now - stakingData.lastClaimTime;
       const hoursElapsed = timeElapsed / (1000 * 60 * 60);
-      const rewards = Math.floor(hoursElapsed * currentStakingRewards.apPerHour);
+      // Show 2 decimal places for real-time counting, but claim will round down to whole number
+      const rewards = parseFloat((hoursElapsed * currentStakingRewards.apPerHour).toFixed(2));
+
+      console.log('💰 Updating rewards:', {
+        now,
+        lastClaimTime: stakingData.lastClaimTime,
+        timeElapsed,
+        hoursElapsed,
+        apPerHour: currentStakingRewards.apPerHour,
+        rewards
+      });
+
       setAccumulatedRewards(rewards);
 
       // Update time staked display
@@ -180,21 +259,29 @@ export default function AlienDripStation() {
       setTimeStaked(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     };
 
+    console.log('✅ Starting rewards counter interval');
     updateRewards();
     const interval = setInterval(updateRewards, 1000);
 
-    return () => clearInterval(interval);
-  }, [stakingData, currentStakingRewards]);
+    return () => {
+      console.log('🛑 Clearing rewards counter interval');
+      clearInterval(interval);
+    };
+  }, [stakingData.isStaking, stakingData.lastClaimTime, stakingData.stakeStartTime, currentStakingRewards]);
 
   // Start staking
   const handleStartStaking = async () => {
+    console.log('🚀 START STAKING button clicked', { isConnected, address, gmbAmount });
+
     if (!isConnected || !address) {
+      console.log('❌ Not connected or no address');
       playSound('error');
       alert("Please connect your wallet first!");
       return;
     }
 
     if (gmbAmount < 100) {
+      console.log('❌ Insufficient GMB balance:', gmbAmount);
       playSound('error');
       alert("You need at least 100 GMB to start staking!");
       return;
@@ -211,6 +298,7 @@ export default function AlienDripStation() {
     );
 
     if (!confirmed) {
+      console.log('❌ User cancelled confirmation dialog');
       playSound('error');
       return;
     }
@@ -223,6 +311,8 @@ export default function AlienDripStation() {
       lastClaimTime: now,
     };
 
+    console.log('💾 Attempting to save staking data to backend:', newStakingData);
+
     // Save to backend API first
     try {
       const response = await fetch('/api/user-data', {
@@ -231,18 +321,27 @@ export default function AlienDripStation() {
         body: JSON.stringify({ wallet: address, stakingData: newStakingData }),
       });
 
+      console.log('📡 Backend response status:', response.status);
+
       const result = await response.json();
+
+      console.log('📦 Backend response data:', result);
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to save staking data');
       }
 
+      console.log('✅ Backend save successful! Updating local state...');
+
       // Only update local state if save was successful
       setStakingData(newStakingData);
+
+      console.log('✅ Local state updated to:', newStakingData);
+
       playSound('success');
       alert(`✅ Staking started! You're now earning ${currentStakingRewards?.apPerDay.toFixed(2) || 0} AP per day!`);
     } catch (error) {
-      console.error('Failed to save staking data:', error);
+      console.error('❌ Failed to save staking data:', error);
       playSound('error');
       alert(`❌ Failed to start staking: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
     }
@@ -348,7 +447,9 @@ export default function AlienDripStation() {
       setClaimingStake(true);
 
       setTimeout(async () => {
-        const success = await addPoints(address, accumulatedRewards, 'staking');
+        // Round down to whole number when claiming
+        const rewardsToAdd = Math.floor(accumulatedRewards);
+        const success = await addPoints(address, rewardsToAdd, 'staking');
 
         if (success) {
           playSound('success');
@@ -371,7 +472,7 @@ export default function AlienDripStation() {
           setUserPoints(getUserBalance(address));
           setAccumulatedRewards(0);
 
-          alert(`💰 Claimed ${accumulatedRewards} AP from staking! Counter reset!`);
+          alert(`💰 Claimed ${rewardsToAdd} AP from staking! Counter reset!`);
         } else {
           playSound('error');
           alert("Failed to claim rewards. Please try again.");
@@ -691,7 +792,7 @@ export default function AlienDripStation() {
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
                 >
-                  {claimingStake ? "💰 Claiming..." : accumulatedRewards > 0 ? `CLAIM ${accumulatedRewards} AP! 💰` : "CLAIM REWARDS (0 AP)"}
+                  {claimingStake ? "💰 Claiming..." : accumulatedRewards > 0 ? `CLAIM ${Math.floor(accumulatedRewards)} AP! 💰` : "CLAIM REWARDS (0 AP)"}
                 </button>
                 <button
                   onClick={handleStopStaking}
@@ -830,13 +931,16 @@ export default function AlienDripStation() {
                     <p className="text-center text-6xl font-bold text-yellow-300 animate-pulse relative z-10 mb-3" style={{
                       textShadow: '0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.5)'
                     }}>
-                      {accumulatedRewards.toLocaleString()} AP
+                      {accumulatedRewards.toFixed(2)} AP
                     </p>
                     <p className="text-center text-yellow-400 text-lg mt-2 relative z-10 font-bold">
                       ⚡ Earning {currentStakingRewards?.apPerDay.toFixed(2) || 0} AP/day
                     </p>
                     <p className="text-center text-yellow-300 text-sm mt-1 relative z-10">
                       ({currentStakingRewards?.apPerHour.toFixed(2) || 0} AP/hr)
+                    </p>
+                    <p className="text-center text-gray-400 text-xs mt-2 relative z-10 italic">
+                      *Displays show decimals, but claims round down to whole AP
                     </p>
                     {/* Debug Info */}
                     <div className="text-xs text-gray-500 mt-3 relative z-10 text-center">
@@ -863,26 +967,85 @@ export default function AlienDripStation() {
               )}
               </div>
 
-              {/* Staking Formula */}
+              {/* Staking Tiers */}
               <div className="glass-panel rounded-xl p-6">
-                <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 STAKING INFO 💎</p>
+                <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 STAKING TIERS 💎</p>
                 <div className="space-y-3">
-                    <p className="text-purple-400 font-bold text-center text-lg">🔒 Staking Formula</p>
-                    <div className="bg-purple-400 bg-opacity-20 p-3 rounded-lg text-center">
-                      <p className="text-yellow-400 font-bold">100 AP/day per 1M GMB</p>
-                      <p className="text-gray-400 text-xs mt-1">Scales with holdings</p>
+                    <p className="text-purple-400 font-bold text-center text-lg">🔒 Staking Rewards by Tier</p>
+                    <div className="bg-purple-400 bg-opacity-20 p-3 rounded-lg text-center mb-3">
+                      <p className="text-yellow-400 font-bold">10,000 AP/day per 1M GMB</p>
+                      <p className="text-gray-400 text-xs mt-1">Earn continuously with no lock-up period</p>
                     </div>
-                    <div className="space-y-1 text-xs text-gray-300 text-center">
-                      <p>📊 1M GMB = 100 AP/day</p>
-                      <p>📊 5M GMB = 500 AP/day</p>
-                      <p>📊 10M GMB = 1,000 AP/day</p>
-                    </div>
-                    {currentStakingRewards && (
-                      <div className="bg-green-400 bg-opacity-20 p-2 rounded-lg border border-green-400 text-center">
-                        <p className="text-green-400 font-bold text-xs">Your Rate:</p>
-                        <p className="text-white text-lg font-bold">{currentStakingRewards.apPerDay.toFixed(2)} AP/day</p>
+
+                    {/* Current Tier Display (if staking) */}
+                    {stakingData.isStaking && currentStakingRewards && (
+                      <div className="glass-panel rounded-xl p-4 text-center border-2 border-purple-500/30 relative overflow-hidden mb-4">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-purple-500/0 animate-pulse"></div>
+                        <p className="text-sm opacity-75 mb-1 relative z-10">Your Staking Tier:</p>
+                        <p className="text-2xl font-bold tracking-wider relative z-10 animate-pulse text-purple-400" style={{
+                          textShadow: '0 0 20px rgba(155, 89, 182, 0.8), 0 0 40px rgba(155, 89, 182, 0.5)'
+                        }}>
+                          {stakingData.stakedAmount >= 10_000_000 ? "🏆 WHALE STAKER" :
+                           stakingData.stakedAmount >= 5_000_000 ? "💎 DIAMOND STAKER" :
+                           stakingData.stakedAmount >= 1_000_000 ? "🔥 ELITE STAKER" :
+                           stakingData.stakedAmount >= 500_000 ? "⭐ PRO STAKER" :
+                           stakingData.stakedAmount >= 100_000 ? "🌟 ADVANCED STAKER" :
+                           "🌱 STARTER STAKER"}
+                        </p>
+                        <p className="text-2xl font-bold text-purple-400 mt-2 relative z-10">
+                          🔒 {currentStakingRewards.apPerDay.toFixed(2)} AP/day
+                        </p>
+                        <p className="text-sm text-purple-300 mt-1 relative z-10">
+                          ({currentStakingRewards.apPerHour.toFixed(2)} AP/hr)
+                        </p>
                       </div>
                     )}
+
+                    {/* Tier Breakdown */}
+                    <div className="space-y-1 text-xs">
+                      <div className={`flex justify-between items-center p-2 rounded ${
+                        stakingData.isStaking && stakingData.stakedAmount >= 10_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                      }`}>
+                        <span className="text-yellow-400 font-bold">🏆 WHALE STAKER</span>
+                        <span className="text-gray-400">10M+ GMB</span>
+                        <span className="text-purple-400 font-bold">100,000+ AP/day</span>
+                      </div>
+                      <div className={`flex justify-between items-center p-2 rounded ${
+                        stakingData.isStaking && stakingData.stakedAmount >= 5_000_000 && stakingData.stakedAmount < 10_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                      }`}>
+                        <span className="text-cyan-400 font-bold">💎 DIAMOND STAKER</span>
+                        <span className="text-gray-400">5M - 10M GMB</span>
+                        <span className="text-purple-400 font-bold">50,000 - 100,000 AP/day</span>
+                      </div>
+                      <div className={`flex justify-between items-center p-2 rounded ${
+                        stakingData.isStaking && stakingData.stakedAmount >= 1_000_000 && stakingData.stakedAmount < 5_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                      }`}>
+                        <span className="text-red-400 font-bold">🔥 ELITE STAKER</span>
+                        <span className="text-gray-400">1M - 5M GMB</span>
+                        <span className="text-purple-400 font-bold">10,000 - 50,000 AP/day</span>
+                      </div>
+                      <div className={`flex justify-between items-center p-2 rounded ${
+                        stakingData.isStaking && stakingData.stakedAmount >= 500_000 && stakingData.stakedAmount < 1_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                      }`}>
+                        <span className="text-orange-400 font-bold">⭐ PRO STAKER</span>
+                        <span className="text-gray-400">500K - 1M GMB</span>
+                        <span className="text-purple-400 font-bold">5,000 - 10,000 AP/day</span>
+                      </div>
+                      <div className={`flex justify-between items-center p-2 rounded ${
+                        stakingData.isStaking && stakingData.stakedAmount >= 100_000 && stakingData.stakedAmount < 500_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                      }`}>
+                        <span className="text-green-400 font-bold">🌟 ADVANCED STAKER</span>
+                        <span className="text-gray-400">100K - 500K GMB</span>
+                        <span className="text-purple-400 font-bold">1,000 - 5,000 AP/day</span>
+                      </div>
+                      <div className={`flex justify-between items-center p-2 rounded ${
+                        stakingData.isStaking && stakingData.stakedAmount >= 100 && stakingData.stakedAmount < 100_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                      }`}>
+                        <span className="text-blue-400 font-bold">🌱 STARTER STAKER</span>
+                        <span className="text-gray-400">100 - 100K GMB</span>
+                        <span className="text-purple-400 font-bold">1 - 1,000 AP/day</span>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>

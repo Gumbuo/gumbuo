@@ -24,6 +24,7 @@ export default function AlienLeaderboard() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [spotsRemaining, setSpotsRemaining] = useState(MAX_FIRST_TIMERS);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOGExpanded, setIsOGExpanded] = useState(false); // Collapsed by default
 
   // Fetch leaderboard from API
   const fetchLeaderboard = async () => {
@@ -182,13 +183,36 @@ export default function AlienLeaderboard() {
   }
 
   return (
-    <div style={{
-      borderRadius: '8px',
-      border: '2px solid #00ff9944'
-    }} className="flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm max-w-6xl">
-      <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '4rem'}}>
-        <span className="text-purple-400">👽 Free GMB Airdrop 🛸</span>
-      </h2>
+    <div className="flex flex-col items-center space-y-6 max-w-6xl w-full">
+      {/* First 50 OGs - Collapsible Memorial Section */}
+      <div style={{
+        borderRadius: '8px',
+        border: '2px solid #FFD70044'
+      }} className="w-full bg-gradient-to-br from-yellow-900/20 to-orange-900/20 backdrop-blur-sm">
+        <button
+          onClick={() => {
+            setIsOGExpanded(!isOGExpanded);
+            playSound('click');
+          }}
+          className="w-full p-4 flex items-center justify-between hover:bg-yellow-400/10 transition-all"
+        >
+          <h3 className="font-alien font-bold text-yellow-400 tracking-wider flex items-center gap-3" style={{fontSize: '2rem'}}>
+            <span>👑</span>
+            <span>First 50 OGs - LEGENDARY STATUS</span>
+            <span>👑</span>
+          </h3>
+          <span className="text-yellow-400 text-3xl transition-transform" style={{
+            transform: isOGExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+          }}>
+            ▼
+          </span>
+        </button>
+
+        {isOGExpanded && (
+          <div className="p-6 space-y-6">
+            <p className="text-center text-yellow-300 text-lg">
+              🏆 The legendary first 50 wallets - Forever remembered in Gumbuo history! 🏆
+            </p>
 
       {/* Progress Bar */}
       <div style={{
@@ -376,17 +400,65 @@ export default function AlienLeaderboard() {
         </div>
       )}
 
-      {/* Info Section */}
+            {/* Info Section */}
+            <div style={{
+              borderRadius: '8px',
+              border: '2px solid #FFD70044'
+            }} className="w-full text-yellow-400 text-xs text-center max-w-2xl bg-black/60 p-4">
+              <p className="font-bold mb-2">ℹ️ OG Leaderboard Info</p>
+              <p className="opacity-75">
+                The first 50 wallets to register received an exclusive GMB token airdrop!
+                These legendary members are forever remembered in Gumbuo history! 👑
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* NEW MAIN LEADERBOARD */}
       <div style={{
         borderRadius: '8px',
         border: '2px solid #00ff9944'
-      }} className="w-full text-purple-400 text-xs text-center max-w-2xl bg-black/60 p-4">
-        <p className="font-bold mb-2">ℹ️ Leaderboard Info</p>
-        <p className="opacity-75">
-          The first 50 wallets to register will receive an exclusive GMB token airdrop!
-          Your Alien Points are tracked and displayed on the leaderboard.
-          More features and rewards coming soon! 🚀
+      }} className="w-full flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm">
+        <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '4rem'}}>
+          <span className="text-purple-400">🏆 Alien Points Leaderboard 🏆</span>
+        </h2>
+
+        <p className="text-center text-purple-300 text-xl max-w-2xl">
+          Compete for the top spot! Earn Alien Points through staking, faucet claims, and future challenges!
         </p>
+
+        {/* Coming Soon Badge */}
+        <div style={{
+          borderRadius: '8px',
+          border: '2px solid #9B59B644'
+        }} className="w-full bg-purple-900/40 p-8 text-center">
+          <p className="text-purple-400 text-3xl font-bold mb-4 animate-pulse">🚀 Coming Soon! 🚀</p>
+          <p className="text-purple-300 text-lg mb-6">
+            The new Alien Points leaderboard will feature:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-3xl mx-auto">
+            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
+              <p className="text-purple-400 font-bold mb-2">🎯 Live Rankings</p>
+              <p className="text-purple-300 text-sm">Real-time leaderboard based on your Alien Points balance</p>
+            </div>
+            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
+              <p className="text-purple-400 font-bold mb-2">🏅 Rewards & Prizes</p>
+              <p className="text-purple-300 text-sm">Monthly rewards for top performers</p>
+            </div>
+            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
+              <p className="text-purple-400 font-bold mb-2">📊 Stats & Analytics</p>
+              <p className="text-purple-300 text-sm">Track your progress and compare with others</p>
+            </div>
+            <div className="bg-black/60 rounded-lg p-4 border border-purple-400/30">
+              <p className="text-purple-400 font-bold mb-2">🎁 Special Perks</p>
+              <p className="text-purple-300 text-sm">Exclusive benefits for leaderboard leaders</p>
+            </div>
+          </div>
+          <p className="text-purple-400 text-base mt-6">
+            Keep earning Alien Points through staking and drip claims to prepare for launch! 👽
+          </p>
+        </div>
       </div>
     </div>
   );
