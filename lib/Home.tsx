@@ -9,9 +9,10 @@ const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBac
 
 interface HomeProps {
   chainType?: string;
+  hideConnectButton?: boolean;
 }
 
-export default function Home({ chainType = "base" }: HomeProps) {
+export default function Home({ chainType = "base", hideConnectButton = false }: HomeProps) {
   return (
     <main className="min-h-screen bg-black overflow-y-auto">
       {/* Video Background */}
@@ -28,21 +29,23 @@ export default function Home({ chainType = "base" }: HomeProps) {
       <StarfieldBackground />
 
       {/* Top Right - Connect Button and HUD */}
-      <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
-        {/* Wallet Connect Button with Alien Styling */}
-        <div className="holographic-panel glass-panel p-4 rounded-xl">
-          <div className="corner-glow corner-glow-tl"></div>
-          <div className="corner-glow corner-glow-tr"></div>
-          <div className="corner-glow corner-glow-bl"></div>
-          <div className="corner-glow corner-glow-br"></div>
-          <div className="relative z-10">
-            <ConnectButton />
+      {!hideConnectButton && (
+        <div style={{position: 'fixed', top: '24px', right: '24px', zIndex: 50}} className="flex flex-col items-end space-y-4">
+          {/* Wallet Connect Button with Alien Styling */}
+          <div className="holographic-panel glass-panel p-4 rounded-xl">
+            <div className="corner-glow corner-glow-tl"></div>
+            <div className="corner-glow corner-glow-tr"></div>
+            <div className="corner-glow corner-glow-bl"></div>
+            <div className="corner-glow corner-glow-br"></div>
+            <div className="relative z-10">
+              <ConnectButton />
+            </div>
           </div>
-        </div>
 
-        {/* Alien HUD */}
-        <AlienHUD />
-      </div>
+          {/* Alien HUD */}
+          <AlienHUD />
+        </div>
+      )}
 
       {/* Content with proper spacing */}
       <div className="relative z-10 p-6">

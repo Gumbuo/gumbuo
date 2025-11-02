@@ -273,7 +273,7 @@ export default function AbstractPage() {
                 <span style={{ color: '#4ade80', fontWeight: 'bold' }}>Connected to Abstract Chain</span>
               </div>
             </div>
-            <Home chainType="abstract" />
+            <Home chainType="abstract" hideConnectButton={true} />
           </div>
         )}
 
