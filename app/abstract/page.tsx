@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import BackToMothershipButton from "../components/BackToMothershipButton";
 import AlienBadgeMinter from "../components/AlienBadgeMinter";
 import AbstractXPDashboard from "../components/AbstractXPDashboard";
 import AbstractActivityFeed from "../components/AbstractActivityFeed";
@@ -25,6 +26,7 @@ export default function AbstractPage() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
+      <BackToMothershipButton />
       {/* Tab Selector */}
       <div style={{
         display: 'flex',
@@ -86,10 +88,9 @@ export default function AbstractPage() {
         {activeTab === "overview" && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* XP Info Section */}
-            <div style={{
+            <div className="holographic-panel" style={{
               padding: '32px',
               background: 'rgba(0, 255, 153, 0.05)',
-              border: '2px solid #00ff9944',
               borderRadius: '24px'
             }}>
               <h2 style={{
@@ -120,10 +121,9 @@ export default function AbstractPage() {
             </div>
 
             {/* Abstract Transaction Games Info */}
-            <div style={{
+            <div className="holographic-panel" style={{
               padding: '32px',
               background: 'rgba(0, 255, 153, 0.05)',
-              border: '2px solid #00ff9944',
               borderRadius: '24px'
             }}>
               <h2 style={{
@@ -136,10 +136,9 @@ export default function AbstractPage() {
                 ⚔️ Play to Earn Abstract XP
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-                <div style={{
+                <div className="holographic-panel" style={{
                   padding: '24px',
                   background: 'rgba(255, 0, 0, 0.1)',
-                  border: '2px solid rgba(239, 68, 68, 0.4)',
                   borderRadius: '24px'
                 }}>
                   <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f87171', marginBottom: '12px' }}>
@@ -164,10 +163,9 @@ export default function AbstractPage() {
                   </div>
                 </div>
 
-                <div style={{
+                <div className="holographic-panel" style={{
                   padding: '24px',
                   background: 'rgba(168, 85, 247, 0.1)',
-                  border: '2px solid rgba(168, 85, 247, 0.4)',
                   borderRadius: '24px'
                 }}>
                   <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '12px' }}>
@@ -194,11 +192,10 @@ export default function AbstractPage() {
                 </div>
               </div>
 
-              <div style={{
+              <div className="holographic-panel" style={{
                 marginTop: '24px',
                 padding: '16px',
                 background: 'rgba(234, 179, 8, 0.1)',
-                border: '2px solid rgba(234, 179, 8, 0.3)',
                 borderRadius: '24px',
                 display: 'flex',
                 gap: '12px',
@@ -239,10 +236,9 @@ export default function AbstractPage() {
 
         {activeTab === "games" && (
           <div>
-            <div style={{
+            <div className="holographic-panel" style={{
               padding: '24px',
               background: 'rgba(0, 255, 153, 0.05)',
-              border: '2px solid #00ff9944',
               borderRadius: '24px',
               marginBottom: '32px',
               textAlign: 'center'
@@ -259,13 +255,12 @@ export default function AbstractPage() {
               <p style={{ color: '#999', marginBottom: '16px' }}>
                 All games require real ETH transactions on Abstract. Each transaction earns you Abstract XP!
               </p>
-              <div style={{
+              <div className="holographic-panel" style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 padding: '8px 16px',
                 background: 'rgba(34, 197, 94, 0.2)',
-                border: '2px solid rgba(34, 197, 94, 0.3)',
                 borderRadius: '24px'
               }}>
                 <span style={{

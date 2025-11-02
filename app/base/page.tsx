@@ -1,12 +1,42 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import BackToMothershipButton from "../components/BackToMothershipButton";
+import { useAlienPoints } from "../context/AlienPointContext";
 
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
 const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: false });
 
 export default function BasePage() {
   const [selectedGame, setSelectedGame] = useState("boss");
+  const alienPointContext = useAlienPoints();
+
+  // Listen for alien points updates from maze iframe
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Handle alien points claimed in iframe
+      if (event.data.type === 'ALIEN_POINTS_CLAIMED' && alienPointContext) {
+        console.log('Iframe claimed alien points:', event.data.claimed, 'New total:', event.data.alienPoints);
+        alienPointContext.setAlienPoints(event.data.alienPoints);
+      }
+
+      // Handle alien points request from iframe
+      if (event.data.type === 'REQUEST_ALIEN_POINTS' && alienPointContext) {
+        console.log('Iframe requested alien points, sending:', alienPointContext.alienPoints);
+        // Find the iframe and send it the current alien points
+        const iframe = document.querySelector('iframe');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage({
+            type: 'ALIEN_POINTS_UPDATE',
+            alienPoints: alienPointContext.alienPoints
+          }, '*');
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [alienPointContext]);
 
   const games = {
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
@@ -18,6 +48,7 @@ export default function BasePage() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
+      <BackToMothershipButton />
       {/* Game Selector */}
       <div style={{
         display: 'flex',

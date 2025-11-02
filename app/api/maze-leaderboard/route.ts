@@ -1,4 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Redis } from "@upstash/redis";
+
+// Initialize Redis client
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
+
+const MAZE_LEADERBOARD_KEY = "gumbuo:maze_leaderboard";
 
 // Type definitions
 interface MazeScore {
@@ -12,12 +21,12 @@ interface MazeScore {
   rank?: number;
 }
 
-// In-memory storage (will be replaced with Vercel KV in production)
-let leaderboard: MazeScore[] = [];
-
 // GET - Fetch leaderboard
 export async function GET(req: NextRequest) {
   try {
+    // Fetch leaderboard from Redis
+    const leaderboard = await redis.get<MazeScore[]>(MAZE_LEADERBOARD_KEY) || [];
+
     // Sort by score (descending), then by time (ascending - faster is better)
     const sortedLeaderboard = [...leaderboard].sort((a, b) => {
       if (b.score !== a.score) {
@@ -74,7 +83,10 @@ export async function POST(req: NextRequest) {
       timestamp: Date.now()
     };
 
-    // Add to leaderboard
+    // Fetch current leaderboard
+    const leaderboard = await redis.get<MazeScore[]>(MAZE_LEADERBOARD_KEY) || [];
+
+    // Add new score
     leaderboard.push(newScore);
 
     // Sort leaderboard
@@ -84,6 +96,9 @@ export async function POST(req: NextRequest) {
       }
       return a.timeElapsed - b.timeElapsed;
     });
+
+    // Save back to Redis
+    await redis.set(MAZE_LEADERBOARD_KEY, leaderboard);
 
     // Find the rank of the new entry
     const rank = leaderboard.findIndex(
@@ -107,7 +122,7 @@ export async function POST(req: NextRequest) {
 // DELETE - Clear leaderboard (admin only)
 export async function DELETE(req: NextRequest) {
   try {
-    leaderboard = [];
+    await redis.set(MAZE_LEADERBOARD_KEY, []);
     return NextResponse.json({
       success: true,
       message: "Leaderboard cleared"

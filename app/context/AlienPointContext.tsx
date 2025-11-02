@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 export type AlienPointContextType = {
   alienPoints: number;
@@ -9,7 +9,23 @@ export type AlienPointContextType = {
 const AlienPointContext = createContext<AlienPointContextType | null>(null);
 
 export function AlienPointProvider({ children }: { children: React.ReactNode }) {
-  const [alienPoints, setAlienPoints] = useState(100);
+  // Load initial value from localStorage, default to 100
+  const [alienPoints, setAlienPointsState] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("alienPoints");
+      return stored ? parseInt(stored, 10) : 100;
+    }
+    return 100;
+  });
+
+  // Wrapper to also save to localStorage when updating
+  const setAlienPoints = (value: number) => {
+    setAlienPointsState(value);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("alienPoints", value.toString());
+      console.log("AlienPoints saved to localStorage:", value);
+    }
+  };
 
   return (
     <AlienPointContext.Provider value={{ alienPoints, setAlienPoints }}>

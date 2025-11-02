@@ -658,8 +658,7 @@ export default function AlienDripStation() {
 
   return (
     <div style={{
-      borderRadius: '8px',
-      border: '2px solid #00ff9944'
+      borderRadius: '8px'
     }} className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible">
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
@@ -790,8 +789,7 @@ export default function AlienDripStation() {
           {/* STAKING TAB */}
           {activeTab === "staking" && (
             <div style={{
-              borderRadius: '8px',
-              border: '2px solid #00ff9944'
+              borderRadius: '8px'
             }} className="w-full space-y-6 relative holographic-panel p-6">
               <div className="corner-glow corner-glow-tl"></div>
               <div className="corner-glow corner-glow-tr"></div>
@@ -905,8 +903,7 @@ export default function AlienDripStation() {
 
           {/* STAKING CONTENT */}
           <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
+            borderRadius: '8px'
           }} className="holographic-panel relative p-6 bg-gradient-to-br from-purple-500/10 via-green-500/10 to-purple-500/10">
             <div className="corner-glow corner-glow-tl"></div>
             <div className="corner-glow corner-glow-tr"></div>
@@ -920,8 +917,7 @@ export default function AlienDripStation() {
               {/* GMB Balance & Points */}
               <div className="grid grid-cols-2 gap-4">
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-4 text-center">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>
@@ -931,8 +927,7 @@ export default function AlienDripStation() {
                   <p className="text-white font-bold text-3xl relative z-10">{gmbAmount.toFixed(2)}</p>
                 </div>
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-4 text-center">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>
@@ -959,8 +954,7 @@ export default function AlienDripStation() {
 
                   {/* Real-time Rewards Counter */}
                   <div style={{
-                    borderRadius: '8px',
-                    border: '2px solid #FFD70088'
+                    borderRadius: '8px'
                   }} className="holographic-panel relative p-6 bg-yellow-500/10 overflow-hidden">
                     <div className="corner-glow corner-glow-tl"></div>
                     <div className="corner-glow corner-glow-tr"></div>
@@ -1096,8 +1090,7 @@ export default function AlienDripStation() {
       {/* FAUCET/DRIP TAB */}
       {activeTab === "faucet" && (
         <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
+          borderRadius: '8px'
         }} className="w-full space-y-6 relative holographic-panel p-6">
           <div className="corner-glow corner-glow-tl"></div>
           <div className="corner-glow corner-glow-tr"></div>
@@ -1147,8 +1140,7 @@ export default function AlienDripStation() {
 
           {/* FAUCET CONTENT */}
           <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
+            borderRadius: '8px'
           }} className="holographic-panel relative p-6 bg-gradient-to-br from-green-500/10 via-yellow-500/10 to-green-500/10">
             <div className="corner-glow corner-glow-tl"></div>
             <div className="corner-glow corner-glow-tr"></div>
@@ -1162,8 +1154,7 @@ export default function AlienDripStation() {
               {/* GMB Balance & Points */}
               <div className="grid grid-cols-2 gap-4">
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-4 text-center">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>
@@ -1173,8 +1164,7 @@ export default function AlienDripStation() {
                   <p className="text-white font-bold text-3xl relative z-10">{gmbAmount.toFixed(2)}</p>
                 </div>
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-4 text-center">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>
@@ -1245,8 +1235,7 @@ export default function AlienDripStation() {
       {/* NFT STAKING TAB */}
       {activeTab === "nft" && (
         <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
+          borderRadius: '8px'
         }} className="w-full space-y-6 relative holographic-panel p-6">
           <div className="corner-glow corner-glow-tl"></div>
           <div className="corner-glow corner-glow-tr"></div>
@@ -1259,8 +1248,7 @@ export default function AlienDripStation() {
 
           {/* NFT CONTENT */}
           <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
+            borderRadius: '8px'
           }} className="holographic-panel relative p-6 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-red-500/10">
             <div className="corner-glow corner-glow-tl"></div>
             <div className="corner-glow corner-glow-tr"></div>
@@ -1275,8 +1263,7 @@ export default function AlienDripStation() {
               <p className="text-lg text-gray-400">This feature is coming soon! Stay tuned for updates.</p>
               <div className="grid grid-cols-3 gap-4 mt-8">
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-6">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>
@@ -1286,8 +1273,7 @@ export default function AlienDripStation() {
                   <p className="text-sm text-gray-400 relative z-10">Stake NFTs</p>
                 </div>
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-6">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>
@@ -1297,8 +1283,7 @@ export default function AlienDripStation() {
                   <p className="text-sm text-gray-400 relative z-10">Earn Rewards</p>
                 </div>
                 <div style={{
-                  borderRadius: '8px',
-                  border: '2px solid #00ff9944'
+                  borderRadius: '8px'
                 }} className="holographic-panel relative p-6">
                   <div className="corner-glow corner-glow-tl"></div>
                   <div className="corner-glow corner-glow-tr"></div>

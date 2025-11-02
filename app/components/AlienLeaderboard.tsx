@@ -273,9 +273,8 @@ export default function AlienLeaderboard() {
   if (isLoading) {
     return (
       <div style={{
-        borderRadius: '8px',
-        border: '2px solid #00ff9944'
-      }} className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm max-w-4xl w-full min-h-96">
+        borderRadius: '8px'
+      }} className="flex flex-col items-center justify-center space-y-4 p-8 bg-black/40 backdrop-blur-sm max-w-4xl w-full min-h-96 holographic-panel">
         <div className="text-purple-400 text-xl">Loading Leaderboard...</div>
         <div className="text-purple-400 text-base">Fetching galactic data 🛸</div>
       </div>
@@ -286,9 +285,8 @@ export default function AlienLeaderboard() {
     <div className="flex flex-col items-center space-y-6 max-w-6xl w-full">
       {/* First 50 OGs - Collapsible Memorial Section */}
       <div style={{
-        borderRadius: '8px',
-        border: '2px solid #FFD70044'
-      }} className="w-full bg-gradient-to-br from-yellow-900/20 to-orange-900/20 backdrop-blur-sm">
+        borderRadius: '8px'
+      }} className="w-full bg-gradient-to-br from-yellow-900/20 to-orange-900/20 backdrop-blur-sm holographic-panel">
         <button
           onClick={() => {
             setIsOGExpanded(!isOGExpanded);
@@ -316,9 +314,8 @@ export default function AlienLeaderboard() {
 
       {/* Progress Bar */}
       <div style={{
-        borderRadius: '8px',
-        border: '2px solid #00ff9944'
-      }} className="w-full bg-black/60 p-4">
+        borderRadius: '8px'
+      }} className="w-full bg-black/60 p-4 holographic-panel">
         <div className="flex justify-between items-center mb-2">
           <p className="text-purple-400 text-lg">
             📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
@@ -338,9 +335,8 @@ export default function AlienLeaderboard() {
       {/* User Status - Only show if registered */}
       {isConnected && address && isRegistered && (
         <div style={{
-          borderRadius: '8px',
-          border: '2px solid #00ff9944'
-        }} className="w-full bg-black/60 p-4">
+          borderRadius: '8px'
+        }} className="w-full bg-black/60 p-4 holographic-panel">
           <div className="text-center">
             <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
             <p className="text-purple-400 text-base mt-1">Your Rank: <span className="text-2xl font-bold">#{userRank}</span></p>
@@ -356,10 +352,9 @@ export default function AlienLeaderboard() {
           onMouseEnter={() => leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
           disabled={leaderboard.length >= MAX_FIRST_TIMERS}
           style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
+            borderRadius: '8px'
           }}
-          className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 ${
+          className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 holographic-panel ${
             leaderboard.length >= MAX_FIRST_TIMERS
               ? "bg-gray-600 text-gray-400 cursor-not-allowed"
               : "bg-purple-500 text-white hover:bg-purple-600"
@@ -375,9 +370,8 @@ export default function AlienLeaderboard() {
 
       {/* Leaderboard Table */}
       <div style={{
-        borderRadius: '8px',
-        border: '2px solid #00ff9944'
-      }} className="w-full bg-black/60 overflow-hidden">
+        borderRadius: '8px'
+      }} className="w-full bg-black/60 overflow-hidden holographic-panel">
         <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-5 gap-2 font-bold text-purple-400">
           <div className="text-center">Rank</div>
           <div className="text-center">Wallet</div>
@@ -434,18 +428,16 @@ export default function AlienLeaderboard() {
       {leaderboard.length >= MAX_FIRST_TIMERS && (
         <div className="w-full space-y-4">
           <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
-          }} className="w-full bg-black/60 p-6 text-center animate-pulse">
+            borderRadius: '8px'
+          }} className="w-full bg-black/60 p-6 text-center animate-pulse holographic-panel">
             <p className="text-yellow-400 text-3xl font-bold">🎉 GOAL REACHED! 🎉</p>
             <p className="text-yellow-400 text-lg mt-2">All 50 spots filled! Check your rewards below! 👽</p>
           </div>
 
           {/* Rewards Section */}
           <div style={{
-            borderRadius: '8px',
-            border: '2px solid #00ff9944'
-          }} className="w-full bg-gradient-to-br from-purple-900/40 to-pink-900/40 p-6">
+            borderRadius: '8px'
+          }} className="w-full bg-gradient-to-br from-purple-900/40 to-pink-900/40 p-6 holographic-panel">
             <h3 className="text-yellow-400 text-3xl font-bold text-center mb-2">🎁 LEGENDARY AIRDROP REWARDS 🎁</h3>
             <p className="text-center text-purple-300 text-lg mb-6">Each wallet receives LEGENDARY rank status! 👑</p>
 
@@ -502,9 +494,8 @@ export default function AlienLeaderboard() {
 
             {/* Info Section */}
             <div style={{
-              borderRadius: '8px',
-              border: '2px solid #FFD70044'
-            }} className="w-full text-yellow-400 text-xs text-center max-w-2xl bg-black/60 p-4">
+              borderRadius: '8px'
+            }} className="w-full text-yellow-400 text-xs text-center max-w-2xl bg-black/60 p-4 holographic-panel">
               <p className="font-bold mb-2">ℹ️ OG Leaderboard Info</p>
               <p className="opacity-75">
                 The first 50 wallets to register received an exclusive GMB token airdrop!
@@ -517,9 +508,8 @@ export default function AlienLeaderboard() {
 
       {/* NEW MAIN LEADERBOARD */}
       <div style={{
-        borderRadius: '8px',
-        border: '2px solid #00ff9944'
-      }} className="w-full flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm">
+        borderRadius: '8px'
+      }} className="w-full flex flex-col items-center space-y-6 p-8 bg-black/40 backdrop-blur-sm holographic-panel">
         <h2 className="font-alien font-bold holographic-text tracking-wider text-center" style={{fontSize: '4rem'}}>
           <span className="text-purple-400">🏆 Alien Points Leaderboard 🏆</span>
         </h2>
@@ -537,9 +527,8 @@ export default function AlienLeaderboard() {
             {/* User Rank Display */}
             {isConnected && address && apUserRank && (
               <div style={{
-                borderRadius: '8px',
-                border: '2px solid #9B59B644'
-              }} className="w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 p-6 text-center">
+                borderRadius: '8px'
+              }} className="w-full bg-gradient-to-r from-purple-900/60 to-pink-900/60 p-6 text-center holographic-panel">
                 <p className="text-purple-300 text-lg font-bold mb-2">Your Current Rank</p>
                 <p className="text-6xl font-bold holographic-text mb-2">#{apUserRank}</p>
                 <p className="text-purple-400 text-sm">out of {totalUsers} users</p>
@@ -551,9 +540,8 @@ export default function AlienLeaderboard() {
 
             {/* Stats */}
             <div style={{
-              borderRadius: '8px',
-              border: '2px solid #9B59B644'
-            }} className="w-full bg-black/60 p-4">
+              borderRadius: '8px'
+            }} className="w-full bg-black/60 p-4 holographic-panel">
               <div className="flex justify-between items-center">
                 <p className="text-purple-400 text-lg">
                   📊 Total Users: <span className="font-bold text-xl">{totalUsers}</span>
@@ -566,9 +554,8 @@ export default function AlienLeaderboard() {
 
             {/* Leaderboard Table */}
             <div style={{
-              borderRadius: '8px',
-              border: '2px solid #9B59B644'
-            }} className="w-full bg-black/60 overflow-hidden">
+              borderRadius: '8px'
+            }} className="w-full bg-black/60 overflow-hidden holographic-panel">
               <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-3 gap-4 font-bold text-purple-400">
                 <div className="text-center">Rank</div>
                 <div className="text-center">Wallet</div>
@@ -739,9 +726,8 @@ export default function AlienLeaderboard() {
             {/* Info */}
             {!isConnected && (
               <div style={{
-                borderRadius: '8px',
-                border: '2px solid #9B59B644'
-              }} className="w-full bg-purple-900/40 p-6 text-center">
+                borderRadius: '8px'
+              }} className="w-full bg-purple-900/40 p-6 text-center holographic-panel">
                 <p className="text-purple-400 text-lg font-bold mb-2">👋 Connect Your Wallet</p>
                 <p className="text-purple-300 text-base">
                   Connect your wallet to see your rank and compete on the leaderboard!
@@ -751,9 +737,8 @@ export default function AlienLeaderboard() {
 
             {/* How to earn points */}
             <div style={{
-              borderRadius: '8px',
-              border: '2px solid #9B59B644'
-            }} className="w-full bg-black/60 p-6 text-center">
+              borderRadius: '8px'
+            }} className="w-full bg-black/60 p-6 text-center holographic-panel">
               <p className="text-purple-400 text-xl font-bold mb-4">💎 How to Earn Alien Points</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
                 <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/30">

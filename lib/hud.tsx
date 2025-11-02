@@ -1,6 +1,7 @@
 "use client";
 import { useAccount, useBalance } from "wagmi";
-import { useAlienPoints } from "../app/context/AlienPointsEconomy";
+import { useAlienPoints as useAlienPointsEconomy } from "../app/context/AlienPointsEconomy";
+import { useAlienPoints as useAlienPointsSimple } from "../app/context/AlienPointContext";
 import { useEffect, useState } from "react";
 import { base, blast, arbitrum } from "wagmi/chains";
 
@@ -59,14 +60,21 @@ export function AlienHUD() {
   //   token: GMB_TOKEN_ADDRESS_BLAST as `0x${string}`
   // });
 
-  const { getUserBalance } = useAlienPoints();
+  const { getUserBalance } = useAlienPointsEconomy();
+  const alienPointsSimple = useAlienPointsSimple();
   const [alienPoints, setAlienPoints] = useState(0);
 
+  // Use simple context if available (for maze rewards), otherwise use economy context
   useEffect(() => {
-    if (address) {
-      setAlienPoints(getUserBalance(address));
+    if (alienPointsSimple && alienPointsSimple.alienPoints !== undefined) {
+      console.log("HUD updating from simple context:", alienPointsSimple.alienPoints);
+      setAlienPoints(alienPointsSimple.alienPoints);
+    } else if (address) {
+      const balance = getUserBalance(address);
+      console.log("HUD updating from economy context:", balance);
+      setAlienPoints(balance);
     }
-  }, [address, getUserBalance]);
+  }, [address, getUserBalance, alienPointsSimple?.alienPoints]); // Watch the actual value!
 
   useEffect(() => {
     console.log("Abstract Mainnet Balance:", ethBalanceAbstract);

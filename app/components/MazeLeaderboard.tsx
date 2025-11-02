@@ -223,8 +223,18 @@ export default function MazeLeaderboard() {
             fetchLeaderboard();
             playSound("click");
           }}
-          onMouseEnter={() => playSound("hover")}
-          className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-alien text-sm rounded-3xl transition-all hover:scale-105"
+          onMouseEnter={(e) => {
+            playSound("hover");
+            e.currentTarget.style.backgroundColor = '#2563eb';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#3b82f6';
+          }}
+          className="px-6 py-2 text-white font-alien text-sm rounded-3xl transition-all hover:scale-105"
+          style={{
+            backgroundColor: '#3b82f6',
+            boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.5)'
+          }}
         >
           🔄 REFRESH
         </button>

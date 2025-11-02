@@ -143,7 +143,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 via-black to-black p-8">
+    <div className="bg-gradient-to-b from-purple-900 via-black to-black p-8" style={{ minHeight: '100vh', paddingBottom: '600px' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -205,8 +205,8 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
           </div>
         </div>
 
-        {/* Create Game Section - FREE GAMES */}
-        <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-2xl p-6 mb-8 mx-auto w-fit">
+        {/* Create Game Section - FREE GAMES - UPDATED */}
+        <div className="bg-purple-900/40 rounded-2xl p-6 mb-8 mx-auto w-fit holographic-panel" style={{borderRadius: '16px'}}>
           <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">🎮 Free Games</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {/* 1 Player vs CPU - Blue */}
@@ -285,7 +285,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         </div>
 
         {/* Create Game Section - PAID GAMES */}
-        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 mb-8 mx-auto w-fit">
+        <div className="bg-purple-900/40 rounded-2xl p-6 mb-8 mx-auto w-fit holographic-panel" style={{borderRadius: '16px'}}>
           <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">💰 Paid Games (PvP Only)</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {buyInOptions.map((option, index) => {
@@ -343,13 +343,14 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
 
         {/* My Active Games */}
         {myGames.length > 0 && (
-          <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-2xl p-6 mb-8 mx-auto w-fit min-w-[500px]">
+          <div className="bg-purple-900/40 rounded-2xl p-6 mb-8 mx-auto w-fit min-w-[500px] holographic-panel" style={{borderRadius: '16px'}}>
             <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">My Active Games</h2>
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
               {myGames.map((game) => (
                 <div
                   key={game.id}
-                  className="bg-black/40 border border-cyan-400/50 rounded-2xl p-4 flex justify-between items-center"
+                  className="bg-black/40 rounded-2xl p-4 flex justify-between items-center holographic-panel"
+                  style={{borderRadius: '16px'}}
                 >
                   <div>
                     <div className="text-white font-bold">Game #{game.id}</div>
@@ -373,7 +374,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         )}
 
         {/* Open Games */}
-        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 mx-auto w-fit min-w-[500px]">
+        <div className="bg-purple-900/40 rounded-2xl p-6 mb-32 mx-auto w-fit min-w-[500px] holographic-panel" style={{borderRadius: '16px'}}>
           <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">Open Games</h2>
 
           {openGames.length === 0 ? (
@@ -381,11 +382,12 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
               No open games available. Create one above!
             </p>
           ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
               {openGames.map((game) => (
                 <div
                   key={game.id}
-                  className="bg-black/40 border border-purple-400/50 rounded-2xl p-4 flex justify-between items-center"
+                  className="bg-black/40 rounded-2xl p-4 flex justify-between items-center holographic-panel"
+                  style={{borderRadius: '16px'}}
                 >
                   <div>
                     <div className="text-white font-bold">Game #{game.id}</div>

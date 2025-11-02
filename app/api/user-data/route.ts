@@ -67,6 +67,17 @@ interface GameStats {
   chessGamesWon: number;
   chessGamesLost: number;
   chessEthWon: number;
+  mazeLevelsCompleted: number;
+  mazeHighestLevel: number;
+  mazeTotalScore: number;
+  mazeAPEarned: number;
+}
+
+interface MazeProgress {
+  currentLevel: number;
+  sessionScore: number;
+  levelsCompletedThisSession: number;
+  lastPlayed: number;
 }
 
 interface UserGameData {
@@ -82,6 +93,7 @@ interface UserGameData {
   totalStakingClaims: number;
   totalFaucetClaims: number;
   gameStats: GameStats;
+  mazeProgress: MazeProgress;
 }
 
 const EMPTY_USER_DATA: UserGameData = {
@@ -112,6 +124,16 @@ const EMPTY_USER_DATA: UserGameData = {
     chessGamesWon: 0,
     chessGamesLost: 0,
     chessEthWon: 0,
+    mazeLevelsCompleted: 0,
+    mazeHighestLevel: 0,
+    mazeTotalScore: 0,
+    mazeAPEarned: 0,
+  },
+  mazeProgress: {
+    currentLevel: 1,
+    sessionScore: 0,
+    levelsCompletedThisSession: 0,
+    lastPlayed: 0,
   },
 };
 
@@ -293,6 +315,10 @@ export async function PUT(request: NextRequest) {
         chessGamesWon: 0,
         chessGamesLost: 0,
         chessEthWon: 0,
+        mazeLevelsCompleted: 0,
+        mazeHighestLevel: 0,
+        mazeTotalScore: 0,
+        mazeAPEarned: 0,
       };
     }
 

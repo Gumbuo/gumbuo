@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import BackToMothershipButton from "../components/BackToMothershipButton";
 
 export default function BlastPage() {
   const [selectedGame, setSelectedGame] = useState("invasion");
@@ -13,6 +14,7 @@ export default function BlastPage() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
+      <BackToMothershipButton />
       {/* Game Selector */}
       <div style={{
         display: 'flex',

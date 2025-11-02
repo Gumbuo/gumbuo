@@ -406,7 +406,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
   const winner = isGameOver ? (game.isCheckmate() ? (game.turn() === 'w' ? 'Black' : 'White') : 'Draw') : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 via-black to-black p-8">
+    <div className="bg-gradient-to-b from-purple-900 via-black to-black p-8 pb-96" style={{ minHeight: '100vh' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -435,11 +435,14 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
           {/* Chessboard */}
           <div className="lg:col-span-2 flex justify-center">
             <div
-              className="border-2 border-purple-400 rounded-lg p-4 relative overflow-hidden"
+              className="rounded-2xl relative holographic-panel"
               style={{
                 background: '#000',
-                width: '550px',
+                width: '680px',
                 maxWidth: '100%',
+                minHeight: '680px',
+                padding: '60px',
+                borderRadius: '16px',
               }}
             >
               {/* Video Background */}
@@ -470,7 +473,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
                   onPieceDrop={onPieceDrop}
                   onSquareClick={onSquareClick}
                   onSquareRightClick={onSquareRightClick}
-                  boardWidth={500}
+                  boardWidth={560}
                   customSquareStyles={{
                     ...optionSquares,
                     ...rightClickedSquares,

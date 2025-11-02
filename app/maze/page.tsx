@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useCosmicSound } from "../hooks/useCosmicSound";
+import BackToMothershipButton from "../components/BackToMothershipButton";
 
 const AlienMaze = dynamic(() => import("../components/AlienMaze"), { ssr: false });
 const MazeLeaderboard = dynamic(() => import("../components/MazeLeaderboard"), { ssr: false });
@@ -11,10 +11,13 @@ const StarfieldBackground = dynamic(() => import("../components/StarfieldBackgro
 
 export default function MazePage() {
   const [mounted, setMounted] = useState(false);
+  const [isInIframe, setIsInIframe] = useState(false);
   const { playSound } = useCosmicSound();
 
   useEffect(() => {
     setMounted(true);
+    // Check if we're in an iframe
+    setIsInIframe(window.self !== window.top);
   }, []);
 
   if (!mounted) return null;
@@ -24,15 +27,17 @@ export default function MazePage() {
       {/* Animated Starfield Background */}
       <StarfieldBackground />
 
+      {/* Back to Mothership Button - Only show if NOT in iframe */}
+      {!isInIframe && <BackToMothershipButton />}
+
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="text-center mb-8">
           <h1
-            className="font-alien mb-4 holographic-text tracking-wider animate-pulse text-cyan-400 flex items-center justify-center gap-4"
+            className="font-alien mb-4 holographic-text tracking-wider animate-pulse flex items-center justify-center gap-4"
             style={{
               fontSize: '4rem',
-              textShadow: '0 0 30px #00ff99, 0 0 60px #00ff99, 0 0 90px #00ff99',
               animation: 'pulse 3s ease-in-out infinite'
             }}
           >
@@ -43,19 +48,6 @@ export default function MazePage() {
           <p className="text-cyan-300 text-xl max-w-2xl mx-auto">
             Navigate through the alien labyrinth using WASD keys! Collect cosmic treasures, avoid dead ends, and reach the portal to earn massive Alien Points!
           </p>
-        </div>
-
-        {/* Back to Home Button */}
-        <div className="flex justify-center mb-6">
-          <Link href="/">
-            <button
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-alien rounded-xl transition-all hover:scale-105 shadow-lg shadow-purple-500/50"
-            >
-              ← BACK TO MOTHERSHIP
-            </button>
-          </Link>
         </div>
 
         {/* Game */}
@@ -69,20 +61,18 @@ export default function MazePage() {
         </div>
 
         {/* Instructions */}
-        <div style={{
+        <div className="holographic-panel" style={{
           marginTop: '48px',
           maxWidth: '64rem',
           marginLeft: 'auto',
           marginRight: 'auto',
           background: 'rgba(0, 255, 153, 0.05)',
-          border: '2px solid #00ff9944',
           borderRadius: '8px',
           padding: '32px'
         }}>
-          <h2 style={{
+          <h2 className="holographic-text" style={{
             fontFamily: 'Orbitron, sans-serif',
             fontSize: '1.875rem',
-            color: '#00ff99',
             marginBottom: '24px',
             textAlign: 'center',
             fontWeight: 'bold'
@@ -91,13 +81,12 @@ export default function MazePage() {
           </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', color: '#22d3ee' }}>
-            <div style={{
+            <div className="holographic-panel" style={{
               background: 'rgba(0, 0, 0, 0.4)',
               borderRadius: '8px',
-              padding: '24px',
-              border: '2px solid rgba(34, 211, 238, 0.3)'
+              padding: '24px'
             }}>
-              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#22d3ee', marginBottom: '12px' }}>🎮 CONTROLS</h3>
+              <h3 className="holographic-text" style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', marginBottom: '12px' }}>🎮 CONTROLS</h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
                 <li>• <span style={{ color: '#4ade80', fontWeight: 'bold' }}>W or ↑</span> - Move Up</li>
                 <li>• <span style={{ color: '#4ade80', fontWeight: 'bold' }}>S or ↓</span> - Move Down</li>
@@ -107,13 +96,12 @@ export default function MazePage() {
               </ul>
             </div>
 
-            <div style={{
+            <div className="holographic-panel" style={{
               background: 'rgba(0, 0, 0, 0.4)',
               borderRadius: '8px',
-              padding: '24px',
-              border: '2px solid rgba(168, 85, 247, 0.3)'
+              padding: '24px'
             }}>
-              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#a855f7', marginBottom: '12px' }}>💎 COLLECTIBLES</h3>
+              <h3 className="holographic-text" style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', marginBottom: '12px' }}>💎 COLLECTIBLES</h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
                 <li>• <span style={{ fontSize: '1.5rem' }}>💎</span> <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>Coins</span> - Worth 10 points each</li>
                 <li>• <span style={{ fontSize: '1.5rem' }}>⚡</span> <span style={{ color: '#facc15', fontWeight: 'bold' }}>Power-ups</span> - Worth 25 points each</li>
@@ -122,13 +110,12 @@ export default function MazePage() {
               </ul>
             </div>
 
-            <div style={{
+            <div className="holographic-panel" style={{
               background: 'rgba(0, 0, 0, 0.4)',
               borderRadius: '8px',
-              padding: '24px',
-              border: '2px solid rgba(34, 197, 94, 0.3)'
+              padding: '24px'
             }}>
-              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#4ade80', marginBottom: '12px' }}>🏆 SCORING</h3>
+              <h3 className="holographic-text" style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', marginBottom: '12px' }}>🏆 SCORING</h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
                 <li>• Collect items to increase your score</li>
                 <li>• Finish faster for TIME BONUS (up to +300 points!)</li>
@@ -137,13 +124,12 @@ export default function MazePage() {
               </ul>
             </div>
 
-            <div style={{
+            <div className="holographic-panel" style={{
               background: 'rgba(0, 0, 0, 0.4)',
               borderRadius: '8px',
-              padding: '24px',
-              border: '2px solid rgba(234, 179, 8, 0.3)'
+              padding: '24px'
             }}>
-              <h3 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', color: '#facc15', marginBottom: '12px' }}>💡 TIPS</h3>
+              <h3 className="holographic-text" style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '1.25rem', marginBottom: '12px' }}>💡 TIPS</h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
                 <li>• Explore every path to find all collectibles</li>
                 <li>• Click on nearby items for quick collection</li>
@@ -153,10 +139,9 @@ export default function MazePage() {
             </div>
           </div>
 
-          <div style={{
+          <div className="holographic-panel" style={{
             marginTop: '24px',
             background: 'rgba(34, 197, 94, 0.2)',
-            border: '2px solid #4ade80',
             borderRadius: '8px',
             padding: '16px',
             textAlign: 'center'
