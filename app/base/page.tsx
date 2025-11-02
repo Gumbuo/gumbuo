@@ -3,12 +3,14 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
+const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: false });
 
 export default function BasePage() {
   const [selectedGame, setSelectedGame] = useState("boss");
 
   const games = {
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
+    chess: { title: "PvP Chess", component: <ChessWrapper /> },
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     maze: { title: "Maze Game", src: "/maze" },
@@ -72,7 +74,7 @@ export default function BasePage() {
         height: 'calc(100vh - 70px)',
         overflow: 'hidden'
       }}>
-        {selectedGame === "boss" ? (
+        {(selectedGame === "boss" || selectedGame === "chess") ? (
           <div style={{
             width: '100%',
             height: '100%',
@@ -84,7 +86,7 @@ export default function BasePage() {
             overflowX: 'hidden',
             padding: '20px 0'
           }}>
-            {games.boss.component}
+            {selectedGame === "boss" ? games.boss.component : games.chess.component}
           </div>
         ) : (
           <iframe

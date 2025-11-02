@@ -63,6 +63,10 @@ interface GameStats {
   normalAttacksUsed: number;
   powerAttacksUsed: number;
   ultimateAttacksUsed: number;
+  chessGamesPlayed: number;
+  chessGamesWon: number;
+  chessGamesLost: number;
+  chessEthWon: number;
 }
 
 interface UserGameData {
@@ -104,6 +108,10 @@ const EMPTY_USER_DATA: UserGameData = {
     normalAttacksUsed: 0,
     powerAttacksUsed: 0,
     ultimateAttacksUsed: 0,
+    chessGamesPlayed: 0,
+    chessGamesWon: 0,
+    chessGamesLost: 0,
+    chessEthWon: 0,
   },
 };
 
@@ -281,6 +289,10 @@ export async function PUT(request: NextRequest) {
         normalAttacksUsed: 0,
         powerAttacksUsed: 0,
         ultimateAttacksUsed: 0,
+        chessGamesPlayed: 0,
+        chessGamesWon: 0,
+        chessGamesLost: 0,
+        chessEthWon: 0,
       };
     }
 

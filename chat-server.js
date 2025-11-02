@@ -11,6 +11,9 @@ const wss = new WebSocket.Server({ server });
 const users = new Map(); // socket -> { address, displayName }
 const userSockets = new Map(); // address -> socket
 
+// Store chess game rooms
+const chessGames = new Map(); // gameId -> Set of sockets
+
 // Broadcast to all connected clients
 function broadcast(data, excludeSocket = null) {
   wss.clients.forEach((client) => {
@@ -27,6 +30,18 @@ function broadcastUserList() {
     type: 'users',
     users: userList
   });
+}
+
+// Broadcast to all players in a chess game
+function broadcastToGame(gameId, data) {
+  const gameSockets = chessGames.get(gameId);
+  if (gameSockets) {
+    gameSockets.forEach((socket) => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(data));
+      }
+    });
+  }
 }
 
 // Handle new connections
@@ -149,6 +164,65 @@ wss.on('connection', (ws) => {
           }
           break;
 
+        case 'chess-join':
+          // Player joins a chess game room
+          const gameId = data.gameId;
+          const player = data.wallet;
+
+          if (!chessGames.has(gameId)) {
+            chessGames.set(gameId, new Set());
+          }
+
+          chessGames.get(gameId).add(ws);
+          console.log(`${player} joined chess game ${gameId}`);
+
+          // Notify player they joined
+          ws.send(JSON.stringify({
+            type: 'chess-joined',
+            gameId,
+            timestamp: Date.now()
+          }));
+          break;
+
+        case 'chess-move':
+          // Player makes a move
+          const moveGameId = data.gameId;
+          const movePlayer = data.wallet;
+          const move = data.move;
+          const fen = data.fen;
+
+          console.log(`Chess move in game ${moveGameId} by ${movePlayer}: ${JSON.stringify(move)}`);
+
+          // Broadcast move to all players in this game (including sender for confirmation)
+          broadcastToGame(moveGameId, {
+            type: 'chess-move',
+            gameId: moveGameId,
+            move,
+            fen,
+            player: movePlayer,
+            timestamp: Date.now()
+          });
+          break;
+
+        case 'chess-game-over':
+          // Game over notification
+          const endGameId = data.gameId;
+          const winner = data.winner;
+
+          console.log(`Chess game ${endGameId} ended. Winner: ${winner || 'Draw'}`);
+
+          // Broadcast game over to all players
+          broadcastToGame(endGameId, {
+            type: 'chess-game-over',
+            gameId: endGameId,
+            winner,
+            timestamp: Date.now()
+          });
+
+          // Clean up game room
+          chessGames.delete(endGameId);
+          break;
+
         default:
           console.log('Unknown message type:', data.type);
       }
@@ -176,6 +250,19 @@ wss.on('connection', (ws) => {
       // Send updated user list
       broadcastUserList();
     }
+
+    // Remove from all chess game rooms
+    chessGames.forEach((sockets, gameId) => {
+      if (sockets.has(ws)) {
+        sockets.delete(ws);
+        console.log(`Player removed from chess game ${gameId}`);
+
+        // If game room is empty, remove it
+        if (sockets.size === 0) {
+          chessGames.delete(gameId);
+        }
+      }
+    });
   });
 
   ws.on('error', (error) => {
