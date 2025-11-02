@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAlienPoints } from "../context/AlienPointsEconomy";
+import { useAlienPoints } from "../context/AlienPointContext";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
 const BOSS_MAX_HP = 1_000_000;
 const MIN_DAMAGE = 1_000;
 const MAX_DAMAGE = 10_000;
 const ATTACK_COOLDOWN = 5000; // 5 seconds
-const REWARD_POOL_SIZE = 5_000_000; // Alien Points in pool
+const REWARD_POOL_SIZE = 60_000; // Alien Points in pool (top player can get ~40k max)
 const BOSS_RESPAWN_TIME = 3600000; // 1 hour in milliseconds
 
 // Attack Level System
@@ -55,7 +55,7 @@ interface AttackLevels {
 export default function GumbuoBoss() {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
-  const { getUserBalance, addPoints } = useAlienPoints();
+  const alienPointContext = useAlienPoints();
   const { playSound } = useCosmicSound();
 
   const [bossState, setBossState] = useState<BossState>({
@@ -278,7 +278,7 @@ export default function GumbuoBoss() {
     // Check alien points balance and deduct entry fee
     const currentLevel = attackLevels[selectedAttack];
     const entryFee = ATTACK_ENTRY_FEES[selectedAttack][currentLevel - 1];
-    const userBalance = getUserBalance(address);
+    const userBalance = alienPointContext?.alienPoints || 0;
 
     if (userBalance < entryFee) {
       playSound('error');
@@ -323,7 +323,9 @@ export default function GumbuoBoss() {
     }
 
     // Deduct entry fee
-    await addPoints(address, -entryFee, 'boss');
+    if (alienPointContext) {
+      alienPointContext.setAlienPoints(alienPointContext.alienPoints - entryFee);
+    }
 
     playSound('click');
     setIsAttacking(true);
@@ -470,9 +472,8 @@ export default function GumbuoBoss() {
     playSound('click');
 
     // Add points to user
-    const success = await addPoints(address, rewardAmount, 'boss');
-
-    if (success) {
+    if (alienPointContext) {
+      alienPointContext.setAlienPoints(alienPointContext.alienPoints + rewardAmount);
       playSound('success');
 
       // Save reward claimed status to backend API
@@ -488,9 +489,6 @@ export default function GumbuoBoss() {
 
       setHasClaimedReward(true);
       alert(`🎉 Claimed ${rewardAmount.toLocaleString()} Alien Points!\n\nYour damage: ${userDamage.toLocaleString()} (${(damagePercentage * 100).toFixed(2)}% of total)\n\nReward pool share: ${rewardAmount.toLocaleString()} AP 🏆`);
-    } else {
-      playSound('error');
-      alert("Failed to claim reward. Please try again.");
     }
   };
 
@@ -510,7 +508,7 @@ export default function GumbuoBoss() {
     }
 
     const upgradeCost = UPGRADE_COSTS[attackType][currentLevel - 1];
-    const userBalance = getUserBalance(address);
+    const userBalance = alienPointContext?.alienPoints || 0;
 
     if (userBalance < upgradeCost) {
       playSound('error');
@@ -519,29 +517,26 @@ export default function GumbuoBoss() {
     }
 
     // Deduct upgrade cost
-    const success = await addPoints(address, -upgradeCost, 'boss');
-
-    if (success) {
-      const newLevels = { ...attackLevels, [attackType]: currentLevel + 1 };
-      setAttackLevels(newLevels);
-
-      // Save attack levels to backend API
-      try {
-        await fetch('/api/user-data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ wallet: address, attackLevels: newLevels }),
-        });
-      } catch (error) {
-        console.error('Failed to save attack levels:', error);
-      }
-
-      playSound('success');
-      alert(`✨ Attack upgraded to Level ${currentLevel + 1}! ✨\n\nDamage multiplier increased!`);
-    } else {
-      playSound('error');
-      alert('Failed to upgrade. Please try again.');
+    if (alienPointContext) {
+      alienPointContext.setAlienPoints(alienPointContext.alienPoints - upgradeCost);
     }
+
+    const newLevels = { ...attackLevels, [attackType]: currentLevel + 1 };
+    setAttackLevels(newLevels);
+
+    // Save attack levels to backend API
+    try {
+      await fetch('/api/user-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: address, attackLevels: newLevels }),
+      });
+    } catch (error) {
+      console.error('Failed to save attack levels:', error);
+    }
+
+    playSound('success');
+    alert(`✨ Attack upgraded to Level ${currentLevel + 1}! ✨\n\nDamage multiplier increased!`);
   };
 
   const getHPPercentage = () => {
