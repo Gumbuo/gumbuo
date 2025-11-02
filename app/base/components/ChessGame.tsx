@@ -383,10 +383,10 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
           </div>
 
           {/* Game Info */}
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center">
             {/* Status */}
-            <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-lg p-6">
-              <h2 className="text-xl font-bold text-cyan-400 mb-4">Game Status</h2>
+            <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-2xl p-6 w-fit min-w-[280px]">
+              <h2 className="text-xl font-bold text-cyan-400 mb-4 text-center">Game Status</h2>
               <div className="space-y-2 text-white">
                 {isGameOver ? (
                   <>
@@ -396,7 +396,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
                       <button
                         onClick={handleClaimWinnings}
                         className="w-full bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-500 hover:to-cyan-500
-                                 text-white font-bold py-3 px-6 rounded-lg mt-4"
+                                 text-white font-bold py-3 px-6 rounded-2xl mt-4"
                       >
                         💰 Claim Winnings
                       </button>
@@ -404,13 +404,13 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
                   </>
                 ) : (
                   <>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-4">
                       <span className="text-purple-300">Turn:</span>
                       <span className={isMyTurn ? 'text-cyan-400 font-bold' : 'text-purple-300'}>
                         {game.turn() === 'w' ? '⬜ White' : '⬛ Black'}
                       </span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-4">
                       <span className="text-purple-300">Your Turn:</span>
                       <span className={isMyTurn ? 'text-green-400 font-bold' : 'text-red-400'}>
                         {isMyTurn ? 'YES' : 'NO'}
@@ -428,8 +428,8 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
 
             {/* Timer */}
             {!isGameOver && timeRemaining > 0 && (
-              <div className="bg-purple-900/40 border-2 border-purple-400 rounded-lg p-6">
-                <h2 className="text-xl font-bold text-cyan-400 mb-4">⏱️ Time Remaining</h2>
+              <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 w-fit min-w-[280px]">
+                <h2 className="text-xl font-bold text-cyan-400 mb-4 text-center">⏱️ Time Remaining</h2>
                 <div className={`text-2xl font-mono text-center ${timeRemaining < 3600000 ? 'text-red-400' : 'text-cyan-400'}`}>
                   {formatTime(timeRemaining)}
                 </div>
@@ -441,19 +441,19 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
 
             {/* Buy-In Info */}
             {gameState && (
-              <div className="bg-purple-900/40 border-2 border-purple-400 rounded-lg p-6">
-                <h2 className="text-xl font-bold text-cyan-400 mb-4">
+              <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 w-fit min-w-[280px]">
+                <h2 className="text-xl font-bold text-cyan-400 mb-4 text-center">
                   {gameState.buyIn === '0' ? '🎮 Free Game' : '💰 Prize Pool'}
                 </h2>
                 <div className="space-y-2 text-white">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-4">
                     <span className="text-purple-300">Buy-In:</span>
                     <span className="text-cyan-400">
                       {gameState.buyIn === '0' ? 'FREE' : `${gameState.buyIn} ETH`}
                     </span>
                   </div>
                   {gameState.buyIn !== '0' && (
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-4">
                       <span className="text-purple-300">Total Pot:</span>
                       <span className="text-cyan-400 font-bold">{gameState.pot} ETH</span>
                     </div>
@@ -463,14 +463,14 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
             )}
 
             {/* Move History */}
-            <div className="bg-purple-900/40 border-2 border-purple-400 rounded-lg p-6">
-              <h2 className="text-xl font-bold text-cyan-400 mb-4">Move History</h2>
+            <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 w-fit min-w-[280px]">
+              <h2 className="text-xl font-bold text-cyan-400 mb-4 text-center">Move History</h2>
               <div className="max-h-48 overflow-y-auto text-sm text-purple-300 font-mono">
                 {game.history().length === 0 ? (
                   <p className="text-center">No moves yet</p>
                 ) : (
                   game.history().map((move, i) => (
-                    <div key={i} className="py-1">
+                    <div key={i} className="py-1 text-center">
                       {Math.floor(i / 2) + 1}. {move}
                     </div>
                   ))
