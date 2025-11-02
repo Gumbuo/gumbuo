@@ -1067,7 +1067,6 @@ export default function AlienDripStation() {
             {/* Daily Claim Button */}
             <button
               onClick={handleClaim}
-              onMouseEnter={() => !hasClaimedToday && !claiming && currentTier && playSound('hover')}
               disabled={hasClaimedToday || claiming || !currentTier}
               style={{
                 padding: '12px 24px',
@@ -1089,6 +1088,7 @@ export default function AlienDripStation() {
               }}
               onMouseEnter={(e) => {
                 if (!hasClaimedToday && !claiming && currentTier) {
+                  playSound('hover');
                   e.currentTarget.style.transform = 'scale(1.05)';
                 }
               }}
