@@ -25,6 +25,11 @@ export function AlienHUD() {
     chainId: ABSTRACT_CHAIN_ID
   });
 
+  const { data: ethBalanceAbstractTestnet } = useBalance({
+    address,
+    chainId: ABSTRACT_TESTNET_CHAIN_ID
+  });
+
   const { data: ethBalanceBlast } = useBalance({
     address,
     chainId: blast.id
@@ -155,6 +160,15 @@ export function AlienHUD() {
                 </p>
                 <p className="text-orange-400 alien-code">
                   <strong>Arbitrum:</strong> {ethBalanceArbitrum?.formatted ? parseFloat(ethBalanceArbitrum.formatted).toFixed(4) : '0.0000'} ETH
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">🧪 TESTNET BALANCES:</p>
+              <div className="ml-3 space-y-1">
+                <p className="text-pink-400 alien-code">
+                  <strong>Abstract Testnet:</strong> {ethBalanceAbstractTestnet?.formatted ? parseFloat(ethBalanceAbstractTestnet.formatted).toFixed(4) : '0.0000'} ETH
                 </p>
               </div>
             </div>
