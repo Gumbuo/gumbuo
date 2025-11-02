@@ -4,10 +4,16 @@ import { useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function WalletHUD() {
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
 
-  const ethBalance = address
-    ? useBalance({ address }).data
+  // Abstract Mainnet ETH (chain ID 2741)
+  const abstractMainnetBalance = address
+    ? useBalance({ address, chainId: 2741 }).data
+    : undefined;
+
+  // Abstract Testnet ETH (chain ID 11124)
+  const abstractTestnetBalance = address
+    ? useBalance({ address, chainId: 11124 }).data
     : undefined;
 
   const wethBalance = address
@@ -19,9 +25,11 @@ export default function WalletHUD() {
 
   useEffect(() => {
     console.log("WalletHUD mounted, address:", address);
-    console.log("ETH balance:", ethBalance);
+    console.log("Chain:", chain?.name, "ID:", chain?.id);
+    console.log("Abstract Mainnet balance:", abstractMainnetBalance);
+    console.log("Abstract Testnet balance:", abstractTestnetBalance);
     console.log("WETH balance:", wethBalance);
-  }, [address, ethBalance, wethBalance]);
+  }, [address, chain, abstractMainnetBalance, abstractTestnetBalance, wethBalance]);
 
   return (
     <div className="holographic-panel glass-panel px-6 py-4 rounded-xl shadow-2xl relative">
@@ -47,9 +55,15 @@ export default function WalletHUD() {
               </span>
             </div>
             <div className="flex items-center justify-end gap-2">
-              <span className="text-gray-400">ETH:</span>
+              <span className="text-gray-400">Abstract Mainnet:</span>
               <span className="text-green-400 font-bold alien-code">
-                {ethBalance?.formatted ? parseFloat(ethBalance.formatted).toFixed(4) : "0"} {ethBalance?.symbol ?? ""}
+                {abstractMainnetBalance?.formatted ? parseFloat(abstractMainnetBalance.formatted).toFixed(4) : "0"} ETH
+              </span>
+            </div>
+            <div className="flex items-center justify-end gap-2">
+              <span className="text-gray-400">Abstract Testnet:</span>
+              <span className="text-yellow-400 font-bold alien-code">
+                {abstractTestnetBalance?.formatted ? parseFloat(abstractTestnetBalance.formatted).toFixed(4) : "0"} ETH
               </span>
             </div>
             <div className="flex items-center justify-end gap-2">
