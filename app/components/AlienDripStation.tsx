@@ -796,7 +796,6 @@ export default function AlienDripStation() {
                 </button>
                 <button
                   onClick={handleStopStaking}
-                  onMouseEnter={() => playSound('hover')}
                   style={{
                     padding: '12px 24px',
                     background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
@@ -812,6 +811,7 @@ export default function AlienDripStation() {
                     boxShadow: '0 0 20px rgba(255, 107, 107, 0.5)',
                   }}
                   onMouseEnter={(e) => {
+                    playSound('hover');
                     e.currentTarget.style.transform = 'scale(1.05)';
                   }}
                   onMouseLeave={(e) => {
@@ -824,7 +824,6 @@ export default function AlienDripStation() {
             ) : (
               <button
                 onClick={handleStartStaking}
-                onMouseEnter={() => gmbAmount >= 100 && playSound('hover')}
                 disabled={gmbAmount < 100}
                 style={{
                   padding: '12px 24px',
@@ -846,6 +845,7 @@ export default function AlienDripStation() {
                 }}
                 onMouseEnter={(e) => {
                   if (gmbAmount >= 100) {
+                    playSound('hover');
                     e.currentTarget.style.transform = 'scale(1.05)';
                   }
                 }}
