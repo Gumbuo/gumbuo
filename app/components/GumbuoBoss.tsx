@@ -682,7 +682,15 @@ export default function GumbuoBoss() {
           {!bossState.isAlive && !hasClaimedReward && userTotalDamage > 0 && (
             <button
               onClick={handleClaimReward}
-              onMouseEnter={() => playSound('hover')}
+              onMouseEnter={(e) => {
+                playSound('hover');
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 0 50px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3)';
+              }}
               style={{
                 borderRadius: '8px',
                 border: '3px solid #ffd700',
@@ -698,14 +706,6 @@ export default function GumbuoBoss() {
                 animation: 'pulse 2s ease-in-out infinite',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)';
-                e.currentTarget.style.boxShadow = '0 0 50px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3)';
               }}
             >
               {!isConnected ? "🔗 CONNECT WALLET" : `🏆 CLAIM ${Math.floor(REWARD_POOL_SIZE * (userTotalDamage / Object.values(bossState.totalDamageDealt).reduce((a, b) => a + b, 0))).toLocaleString()} AP REWARD! 🏆`}
