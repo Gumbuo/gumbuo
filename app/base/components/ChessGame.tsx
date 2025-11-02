@@ -191,7 +191,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
   // Get possible moves for a square
   function getMoveOptions(square: string) {
     const moves = game.moves({
-      square,
+      square: square as any,
       verbose: true,
     });
 
@@ -203,7 +203,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
     moves.map((move: any) => {
       newSquares[move.to] = {
         background:
-          game.get(move.to) && game.get(move.to).color !== game.get(square).color
+          game.get(move.to as any) && game.get(move.to as any).color !== game.get(square as any).color
             ? 'radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)'
             : 'radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)',
         borderRadius: '50%',
