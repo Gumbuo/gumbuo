@@ -20,16 +20,18 @@ const DRIP_TIERS = [
   { minGMB: 0, maxGMB: 999, points: 3000, name: "Beginner", color: "#7F8C8D" },
 ];
 
-// Staking formula: 10,000 AP per day for every 1M GMB held
-// Example: 1M GMB = 10,000 AP/day = ~416.67 AP/hour
-// Example: 5M GMB = 50,000 AP/day = ~2,083.33 AP/hour
-const AP_PER_DAY_PER_MILLION = 10000;
-const AP_PER_HOUR_PER_MILLION = AP_PER_DAY_PER_MILLION / 24;
+// Staking formula: 10,000 AP per day MAXIMUM (scales up to 1M GMB)
+// Example: 100K GMB = 1,000 AP/day = ~41.67 AP/hour
+// Example: 1M+ GMB = 10,000 AP/day = ~416.67 AP/hour (CAPPED)
+const MAX_STAKING_AP_PER_DAY = 10000;
+const MAX_STAKING_AP_PER_HOUR = MAX_STAKING_AP_PER_DAY / 24;
 
-// Calculate AP per hour based on GMB amount
+// Calculate AP per hour based on GMB amount (capped at 10,000 AP/day)
 const calculateAPPerHour = (gmbAmount: number): number => {
   const millions = gmbAmount / 1_000_000;
-  return millions * AP_PER_HOUR_PER_MILLION;
+  const uncappedAPPerHour = millions * (MAX_STAKING_AP_PER_DAY / 24);
+  // Cap at max staking rate (10k AP/day = ~416.67 AP/hour)
+  return Math.min(uncappedAPPerHour, MAX_STAKING_AP_PER_HOUR);
 };
 
 interface StakingData {
@@ -973,8 +975,8 @@ export default function AlienDripStation() {
                 <div className="space-y-3">
                     <p className="text-purple-400 font-bold text-center text-lg">🔒 Staking Rewards by Tier</p>
                     <div className="bg-purple-400 bg-opacity-20 p-3 rounded-lg text-center mb-3">
-                      <p className="text-yellow-400 font-bold">10,000 AP/day per 1M GMB</p>
-                      <p className="text-gray-400 text-xs mt-1">Earn continuously with no lock-up period</p>
+                      <p className="text-yellow-400 font-bold">Max 10,000 AP/day</p>
+                      <p className="text-gray-400 text-xs mt-1">Scales with GMB held (up to 1M+ GMB) • No lock-up period</p>
                     </div>
 
                     {/* Current Tier Display (if staking) */}
