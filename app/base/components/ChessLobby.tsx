@@ -206,8 +206,8 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         </div>
 
         {/* Create Game Section - FREE GAMES */}
-        <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-cyan-400 mb-4">🎮 Free Games</h2>
+        <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-2xl p-6 mb-8 mx-auto w-fit">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">🎮 Free Games</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {/* 1 Player vs CPU - Blue */}
             <button
@@ -285,8 +285,8 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         </div>
 
         {/* Create Game Section - PAID GAMES */}
-        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-cyan-400 mb-4">💰 Paid Games (PvP Only)</h2>
+        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 mb-8 mx-auto w-fit">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">💰 Paid Games (PvP Only)</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {buyInOptions.map((option, index) => {
               // Define colors for each tier
@@ -343,13 +343,13 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
 
         {/* My Active Games */}
         {myGames.length > 0 && (
-          <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-cyan-400 mb-4">My Active Games</h2>
+          <div className="bg-purple-900/40 border-2 border-cyan-400 rounded-2xl p-6 mb-8 mx-auto w-fit min-w-[500px]">
+            <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">My Active Games</h2>
             <div className="space-y-3">
               {myGames.map((game) => (
                 <div
                   key={game.id}
-                  className="bg-black/40 border border-cyan-400/50 rounded-lg p-4 flex justify-between items-center"
+                  className="bg-black/40 border border-cyan-400/50 rounded-2xl p-4 flex justify-between items-center"
                 >
                   <div>
                     <div className="text-white font-bold">Game #{game.id}</div>
@@ -362,7 +362,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
                   </div>
                   <button
                     onClick={() => handleContinueGame(game.id, game.player1.toLowerCase() === address?.toLowerCase())}
-                    className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg transition-all"
+                    className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-6 rounded-2xl transition-all"
                   >
                     {game.status === 'waiting' ? 'View' : 'Continue'}
                   </button>
@@ -373,8 +373,8 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
         )}
 
         {/* Open Games */}
-        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-cyan-400 mb-4">Open Games</h2>
+        <div className="bg-purple-900/40 border-2 border-purple-400 rounded-2xl p-6 mx-auto w-fit min-w-[500px]">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">Open Games</h2>
 
           {openGames.length === 0 ? (
             <p className="text-purple-300 text-center py-8">
@@ -385,7 +385,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
               {openGames.map((game) => (
                 <div
                   key={game.id}
-                  className="bg-black/40 border border-purple-400/50 rounded-lg p-4 flex justify-between items-center"
+                  className="bg-black/40 border border-purple-400/50 rounded-2xl p-4 flex justify-between items-center"
                 >
                   <div>
                     <div className="text-white font-bold">Game #{game.id}</div>
@@ -400,7 +400,7 @@ const ChessLobby: React.FC<ChessLobbyProps> = ({ onGameStart }) => {
                     onClick={() => handleJoinGame(game.id, game.buyIn)}
                     disabled={loading || game.player1.toLowerCase() === address?.toLowerCase()}
                     className="bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-500 hover:to-cyan-500
-                             text-white font-bold py-2 px-6 rounded-lg transition-all
+                             text-white font-bold py-2 px-6 rounded-2xl transition-all
                              disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {game.player1.toLowerCase() === address?.toLowerCase() ? 'Your Game' : 'Join Game'}
