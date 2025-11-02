@@ -23,12 +23,30 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
 
   // Player color - player1 is white, player2 is black
   const playerColor = isPlayer1 ? 'w' : 'b';
-  const isCpuGame = gameState?.isCpuGame || false;
+  const isCpuGame = gameState?.isCpuGame || gameState?.player2 === 'CPU' || false;
   const isCpuTurn = isCpuGame && game.turn() === 'b'; // CPU is always black (player2)
   const isMyTurn = game.turn() === playerColor && !isCpuTurn;
 
-  // WebSocket connection for real-time moves
+  // Debug logging
   useEffect(() => {
+    console.log('🎮 Game State:', {
+      isCpuGame,
+      isCpuTurn,
+      currentTurn: game.turn(),
+      playerColor,
+      isMyTurn,
+      gameStatePlayer2: gameState?.player2,
+    });
+  }, [isCpuGame, isCpuTurn, game, playerColor, isMyTurn, gameState]);
+
+  // WebSocket connection for real-time moves (disabled for CPU games)
+  useEffect(() => {
+    // Skip WebSocket for CPU games
+    if (isCpuGame) {
+      console.log('🤖 CPU game detected - WebSocket disabled');
+      return;
+    }
+
     const WS_URL = process.env.NODE_ENV === 'production'
       ? (process.env.NEXT_PUBLIC_WS_URL || 'wss://gumbuo-production.up.railway.app')
       : 'ws://localhost:3001';
@@ -87,7 +105,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, isPlayer1, onBackToLobby 
         ws.close();
       }
     };
-  }, [gameId, address]);
+  }, [gameId, address, isCpuGame]);
 
   // Fetch game state periodically
   useEffect(() => {
