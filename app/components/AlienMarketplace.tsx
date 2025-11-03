@@ -288,11 +288,23 @@ export default function AlienMarketplace() {
                 onClick={() => handlePurchase(pic)}
                 onMouseEnter={() => !isPurchasing && playSound('hover')}
                 disabled={isPurchasing}
-                className={`px-8 py-3 text-base font-bold rounded-xl transition-all duration-200 ${
-                  isPurchasing
-                    ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                    : "bg-orange-500 text-white hover:bg-orange-600"
-                }`}
+                style={{
+                  padding: '12px 24px',
+                  background: isPurchasing
+                    ? 'rgba(100, 100, 100, 0.5)'
+                    : 'linear-gradient(135deg, #00d4ff, #0099cc)',
+                  color: isPurchasing ? '#666' : '#000',
+                  border: `2px solid ${isPurchasing ? '#666' : '#00d4ff'}`,
+                  borderRadius: '8px',
+                  cursor: isPurchasing ? 'not-allowed' : 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: isPurchasing ? 'none' : '0 0 20px rgba(0, 212, 255, 0.5)',
+                }}
+                className="transition-all duration-200"
               >
                 {!isConnected
                   ? "Connect"
