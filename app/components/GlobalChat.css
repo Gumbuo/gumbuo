@@ -178,6 +178,21 @@
   transform: scale(0.95);
 }
 
+.name-editor-buttons {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.name-editor-buttons button {
+  flex: 1;
+}
+
+.edit-name-btn {
+  font-size: 14px;
+  margin-right: 4px;
+}
+
 /* Body */
 .chat-body {
   flex: 1;

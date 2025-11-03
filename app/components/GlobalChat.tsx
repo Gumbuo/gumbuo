@@ -301,7 +301,6 @@ const GlobalChat = () => {
             className="edit-name-btn"
             onClick={(e) => { e.stopPropagation(); handleEditDisplayName(); }}
             title="Edit display name"
-            style={{ fontSize: '14px', marginRight: '4px' }}
           >
             ✏️
           </button>
@@ -338,9 +337,9 @@ const GlobalChat = () => {
                   if (e.key === 'Escape') setIsEditingName(false);
                 }}
               />
-              <div style={{ display: 'flex', gap: '5px', marginTop: '5px' }}>
-                <button onClick={handleSaveDisplayName} style={{ flex: 1 }}>Save</button>
-                <button onClick={() => setIsEditingName(false)} style={{ flex: 1 }}>Cancel</button>
+              <div className="name-editor-buttons">
+                <button onClick={handleSaveDisplayName}>Save</button>
+                <button onClick={() => setIsEditingName(false)}>Cancel</button>
               </div>
             </div>
           )}
