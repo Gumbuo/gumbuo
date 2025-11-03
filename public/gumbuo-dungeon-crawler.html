@@ -227,7 +227,10 @@
 
         // Alien images
         const alienImages = {};
-        const alienImageFiles = ['nyx.png', 'zorb.png', 'apliean.png', 'j3d1.png'];
+        const alienImageFiles = ['nyx.png', 'zorb.png', 'baob.png', 'apelian.jpg', 'j3d1.jpg', 'zit.png'];
+
+        // Player image
+        let playerImage = null;
         let loadedImageCount = 0;
 
         function loadAlienImages() {
@@ -236,9 +239,20 @@
                 img.crossOrigin = "anonymous";
                 img.onload = () => { loadedImageCount++; };
                 img.onerror = () => { loadedImageCount++; };
-                img.src = `http://www.gumbuo.io/${filename}`;
+                img.src = `/${filename}`;
                 alienImages[filename] = img;
             });
+        }
+
+        function loadPlayerImage() {
+            playerImage = new Image();
+            playerImage.onload = () => {
+                console.log('✓ Loaded: muscle.png');
+            };
+            playerImage.onerror = () => {
+                console.error('✗ Failed to load muscle.png');
+            };
+            playerImage.src = '/muscle.png';
         }
 
         const classes = {
@@ -280,6 +294,7 @@
         let attacking = false;
 
         loadAlienImages();
+        loadPlayerImage();
 
         function selectClass(className) {
             const classData = classes[className];
@@ -291,7 +306,7 @@
             player.speed = classData.speed;
             player.color = classData.color;
             player.range = classData.range;
-            player.image = alienImages[alienImageFiles[0]];
+            player.image = playerImage;
             
             document.getElementById('class').textContent = className.toUpperCase();
             classSelectDiv.classList.add('hidden');
@@ -428,6 +443,11 @@
                 ctx.fillRect(player.x, player.y, player.width, player.height);
             }
 
+            // Green border around player
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(player.x, player.y, player.width, player.height);
+
             // Health bar
             ctx.fillStyle = '#ff0000';
             ctx.fillRect(player.x, player.y - 10, player.width, 5);
@@ -452,17 +472,16 @@
                 ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
             }
 
+            // Red border around all enemies
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineWidth = enemy.isBoss ? 5 : 3; // Thicker border for bosses
+            ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
             // Health bar
             ctx.fillStyle = '#ff0000';
             ctx.fillRect(enemy.x, enemy.y - 10, enemy.width, 5);
             ctx.fillStyle = '#00ff00';
             ctx.fillRect(enemy.x, enemy.y - 10, enemy.width * (enemy.health / enemy.maxHealth), 5);
-
-            if (enemy.isBoss) {
-                ctx.strokeStyle = '#ff0000';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(enemy.x - 2, enemy.y - 2, enemy.width + 4, enemy.height + 4);
-            }
         }
 
         function drawLoot(item) {
