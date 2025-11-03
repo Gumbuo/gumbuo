@@ -17,8 +17,8 @@ export default function AutoChainSwitcher() {
   const lastSwitchAttempt = useRef<string>('');
 
   useEffect(() => {
-    // Only proceed if wallet is connected
-    if (!isConnected || !switchChain) return;
+    // Only proceed if wallet is connected and pathname exists
+    if (!isConnected || !switchChain || !pathname) return;
 
     // Get the target chain ID for current route
     const targetChainId = ROUTE_CHAIN_MAP[pathname];
