@@ -17,6 +17,9 @@ interface OnlineUser {
   displayName?: string;
 }
 
+// Global connection manager to prevent duplicate connections
+const globalConnections = new Map<string, WebSocket>();
+
 const GlobalChat = () => {
   // Hide chat if we're in an iframe to prevent duplicates
   const [isInIframe, setIsInIframe] = useState(false);
@@ -68,12 +71,21 @@ const GlobalChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  // WebSocket connection
+  // WebSocket connection - ONLY depends on isConnected and address
   useEffect(() => {
     console.log('🔌 WebSocket useEffect triggered', { isConnected, address, nodeEnv: process.env.NODE_ENV });
 
     if (!isConnected || !address) {
       console.log('⚠️ Not connecting: isConnected=', isConnected, 'address=', address);
+      return;
+    }
+
+    // Check if there's already a global connection for this address
+    const existingConnection = globalConnections.get(address);
+    if (existingConnection?.readyState === WebSocket.OPEN || existingConnection?.readyState === WebSocket.CONNECTING) {
+      console.log('⚠️ Global connection already exists for this address, reusing...');
+      wsRef.current = existingConnection;
+      setConnectionStatus('connected');
       return;
     }
 
@@ -87,6 +99,7 @@ const GlobalChat = () => {
 
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
+    globalConnections.set(address, ws); // Store in global map
 
     ws.onopen = () => {
       console.log('✅ Connected to chat server');
@@ -137,11 +150,17 @@ const GlobalChat = () => {
 
     return () => {
       console.log('🧹 [Chat] Cleaning up WebSocket connection');
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
+      // Only close if this is the current global connection
+      if (address && globalConnections.get(address) === ws) {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
+        globalConnections.delete(address);
+        console.log('🗑️ Removed global connection for', address);
       }
+      wsRef.current = null;
     };
-  }, [isConnected, address, displayName]);
+  }, [isConnected, address]); // Removed displayName from dependencies
 
   // Drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {

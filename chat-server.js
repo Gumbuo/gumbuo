@@ -16,11 +16,18 @@ const chessGames = new Map(); // gameId -> Set of sockets
 
 // Broadcast to all connected clients
 function broadcast(data, excludeSocket = null) {
+  console.log('📢 Broadcasting to', wss.clients.size, 'total clients');
+  let sentCount = 0;
   wss.clients.forEach((client) => {
+    const userInfo = users.get(client);
+    console.log('  - Client:', userInfo?.address || 'unknown', 'readyState:', client.readyState, 'excluded?', client === excludeSocket);
     if (client.readyState === WebSocket.OPEN && client !== excludeSocket) {
       client.send(JSON.stringify(data));
+      sentCount++;
+      console.log('    ✅ Sent to', userInfo?.address || 'unknown');
     }
   });
+  console.log('📢 Sent to', sentCount, 'clients');
 }
 
 // Send updated user list to all clients
@@ -51,6 +58,7 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message);
+      console.log('📥 Received message from client:', data.type, data);
 
       switch (data.type) {
         case 'join':
@@ -59,11 +67,31 @@ wss.on('connection', (ws) => {
           const displayName = data.displayName;
 
           // Check if wallet address is already connected
-          if (Array.from(users.values()).some(u => u.address === username)) {
-            ws.send(JSON.stringify({
-              type: 'error',
-              message: 'Wallet already connected'
-            }));
+          const existingSocket = userSockets.get(username);
+          if (existingSocket && existingSocket !== ws) {
+            // Update to new socket but keep display name if it exists
+            const existingUser = users.get(existingSocket);
+            const userInfo = {
+              address: username,
+              displayName: displayName || existingUser?.displayName
+            };
+
+            // Close old socket to prevent duplicates
+            if (existingSocket.readyState === WebSocket.OPEN) {
+              existingSocket.close();
+            }
+
+            // Remove old socket
+            users.delete(existingSocket);
+
+            // Add new socket
+            users.set(ws, userInfo);
+            userSockets.set(username, ws);
+
+            console.log(`${userInfo.displayName || username} reconnected (closed old socket, updated to new)`);
+
+            // Send updated user list
+            broadcastUserList();
             return;
           }
 
@@ -95,16 +123,28 @@ wss.on('connection', (ws) => {
 
         case 'message':
           // Regular chat message
-          const sender = users.get(ws);
+          // Use username from message data instead of WebSocket instance
+          const senderAddress = data.username;
+          const senderSocket = userSockets.get(senderAddress);
+          const sender = senderSocket ? users.get(senderSocket) : null;
+
+          console.log('📤 Message case - senderAddress:', senderAddress);
+          console.log('📤 Message case - sender:', sender);
+          console.log('📊 Current users map size:', users.size);
+
           if (sender) {
-            broadcast({
+            const broadcastMsg = {
               type: 'message',
               username: sender.address,
               displayName: sender.displayName,
               text: data.text,
               timestamp: Date.now()
-            });
+            };
+            console.log('📡 Broadcasting message:', broadcastMsg);
+            broadcast(broadcastMsg);
             console.log(`${sender.displayName || sender.address}: ${data.text}`);
+          } else {
+            console.error('❌ Sender not found! Address:', senderAddress, 'userSockets size:', userSockets.size);
           }
           break;
 
