@@ -602,8 +602,8 @@ export default function AlienLeaderboard() {
                             </div>
                           </div>
 
-                          {/* Prominent View Details Button */}
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          {/* Compact View Details Button */}
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2">
                             <button
                               style={{
                                 background: isExpanded
@@ -611,18 +611,19 @@ export default function AlienLeaderboard() {
                                   : 'linear-gradient(135deg, #0077cc, #005599)',
                                 color: isExpanded ? '#fff' : '#00ffff',
                                 textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
-                                border: '3px solid #0099ff',
-                                borderRadius: '8px',
-                                padding: '10px 14px',
-                                fontSize: '0.75rem',
+                                border: '2px solid #0099ff',
+                                borderRadius: '6px',
+                                padding: '6px 8px',
+                                fontSize: '0.65rem',
                                 fontWeight: 'bold',
                                 boxShadow: isExpanded
-                                  ? '0 0 25px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                                  ? '0 0 20px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
                                   : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
                                 transition: 'all 0.3s ease',
+                                whiteSpace: 'nowrap',
                               }}
                             >
-                              {isExpanded ? '📊 Hide Stats' : '📊 View Stats'}
+                              {isExpanded ? '📊 Hide' : '📊 Stats'}
                             </button>
                           </div>
                         </div>

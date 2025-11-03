@@ -1216,7 +1216,15 @@ export default function AlienDripStation() {
                         }`}
                       >
                         <span style={{color: tier.color}} className="font-bold text-xs">{tier.name}</span>
-                        <span className="text-gray-400 text-xs">{tier.minGMB >= 1000 ? `${(tier.minGMB/1000).toFixed(0)}K` : tier.minGMB} - {tier.maxGMB === Infinity ? '∞' : tier.maxGMB >= 1000 ? `${(tier.maxGMB/1000).toFixed(0)}K` : tier.maxGMB}</span>
+                        <span className="text-gray-400 text-xs font-mono flex items-center gap-1">
+                          <span className="inline-block text-right" style={{minWidth: '50px'}}>
+                            {tier.minGMB >= 1000 ? `${(tier.minGMB/1000).toFixed(0)}K` : tier.minGMB}
+                          </span>
+                          <span>-</span>
+                          <span className="inline-block text-left" style={{minWidth: '50px'}}>
+                            {tier.maxGMB === Infinity ? '∞' : tier.maxGMB >= 1000 ? `${(tier.maxGMB/1000).toFixed(0)}K` : tier.maxGMB}
+                          </span>
+                        </span>
                         <span className="text-green-400 font-bold text-xs">{tier.points} AP</span>
                       </div>
                     ))}
