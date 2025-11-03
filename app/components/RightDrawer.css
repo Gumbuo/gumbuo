@@ -258,6 +258,35 @@
   box-sizing: border-box !important;
 }
 
+/* Make alien points display compact in drawer */
+.drawer-section-hud .text-3xl {
+  font-size: 1.5rem !important;
+  line-height: 1.2 !important;
+}
+
+.drawer-section-hud .flex.items-center {
+  gap: 4px !important;
+  flex-wrap: nowrap !important;
+}
+
+.drawer-section-hud .font-bold.text-cyan-400 {
+  white-space: nowrap !important;
+  font-size: 0.85rem !important;
+}
+
+/* Reduce padding in HUD section */
+.drawer-section-hud .glass-panel {
+  padding: 10px !important;
+}
+
+.drawer-section-hud .space-y-3 {
+  gap: 8px !important;
+}
+
+.drawer-section-hud .space-y-4 > div {
+  margin-top: 8px !important;
+}
+
 /* Global Music Player adjustments */
 .drawer-section-music > div {
   width: 100% !important;

@@ -271,7 +271,7 @@ export function AlienHUD() {
             )}
 
             <div className="mt-4 pt-3 border-t border-cyan-500/30">
-              <p className="flex items-center justify-between">
+              <p className="flex items-center gap-2">
                 <span className="text-cyan-400 font-bold">AlienPoints:</span>
                 <span className="text-3xl font-bold holographic-text font-alien">{alienPoints.toLocaleString()}</span>
               </p>

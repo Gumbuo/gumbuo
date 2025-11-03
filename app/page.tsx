@@ -942,14 +942,19 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #00cccc, #008b8b)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.5)',
-                border: '3px solid #00ffff',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #00ffff',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'portals'
-                  ? '0 0 25px rgba(0, 255, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(0, 255, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '4px'
               }}
             >
               🌀 PORTALS
@@ -965,14 +970,15 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #00cc7a, #008855)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(0, 255, 153, 0.8), 0 0 20px rgba(0, 255, 153, 0.5)',
-                border: '3px solid #00ff99',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #00ff99',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'drip'
-                  ? '0 0 25px rgba(0, 255, 153, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(0, 255, 153, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
               💧 ALIEN DRIP
@@ -988,14 +994,15 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #ffb700, #cc9200)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5)',
-                border: '3px solid #ffd700',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #ffd700',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'leaderboard'
-                  ? '0 0 25px rgba(255, 215, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(255, 215, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
               🏆 LEADERBOARD
@@ -1013,14 +1020,15 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #0077cc, #005599)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
-                border: '3px solid #0099ff',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #0099ff',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'buygmb'
-                  ? '0 0 25px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
               💰 BUY GMB
@@ -1036,14 +1044,15 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.5)',
-                border: '3px solid #a855f7',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #a855f7',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'shopify'
-                  ? '0 0 25px rgba(168, 85, 247, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(168, 85, 247, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
               🛒 ALIEN GEAR
@@ -1059,14 +1068,15 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #dc143c, #c71585)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(255, 20, 147, 0.8), 0 0 20px rgba(255, 20, 147, 0.5)',
-                border: '3px solid #ff1493',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #ff1493',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'socials'
-                  ? '0 0 25px rgba(255, 20, 147, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(255, 20, 147, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
               🌐 SOCIALS
@@ -1085,14 +1095,15 @@ export default function MothershipPage() {
                   : 'linear-gradient(135deg, #ff6500, #cc5200)',
                 color: '#000',
                 textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
-                border: '3px solid #ff8c00',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
+                border: '2px solid #ff8c00',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                fontSize: '0.7rem',
                 fontWeight: 'bold',
                 boxShadow: activeScene === 'support'
-                  ? '0 0 25px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  ? '0 0 20px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
               🔒 SUPPORT
