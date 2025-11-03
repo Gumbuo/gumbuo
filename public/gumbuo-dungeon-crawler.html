@@ -172,9 +172,19 @@
             </div>
         </div>
 
+        <!-- Claimable Alien Points Display -->
+        <div id="claimableAP" style="display: none; text-align: center; margin: 15px 0; padding: 15px; background: rgba(0, 255, 255, 0.1); border: 2px solid #00ffff; border-radius: 10px;">
+            <div style="color: #00ffff; font-size: 1.3em; font-weight: bold; margin-bottom: 10px;">
+                👽 Claimable AP: <span id="claimableAPAmount">0</span> | Kills: <span id="killCount">0</span>
+            </div>
+            <button id="claimBtn" onclick="claimAlienPoints()" style="padding: 12px 30px; font-size: 1.1em; background: linear-gradient(135deg, #00ffff, #00cccc); color: #000; border: 2px solid #00ffff; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); transition: all 0.3s;">
+                CLAIM ALIEN POINTS
+            </button>
+        </div>
+
         <div style="position: relative;">
             <canvas id="gameCanvas" width="900" height="650"></canvas>
-            
+
             <div id="classSelect">
                 <h2 style="color: #ff6600; margin-bottom: 20px;">CHOOSE YOUR CLASS</h2>
                 <button class="class-btn" onclick="selectClass('warrior')">
@@ -748,6 +758,79 @@
             document.getElementById('defense').textContent = player.defense;
             document.getElementById('gold').textContent = player.gold;
             document.getElementById('kills').textContent = kills;
+            updateClaimableAP();
+        }
+
+        function updateClaimableAP() {
+            const claimableAP = kills * 10;
+            document.getElementById('claimableAPAmount').textContent = claimableAP;
+            document.getElementById('killCount').textContent = kills;
+
+            // Show/hide claim display based on kills
+            const claimDisplay = document.getElementById('claimableAP');
+            if (kills > 0) {
+                claimDisplay.style.display = 'block';
+            } else {
+                claimDisplay.style.display = 'none';
+            }
+        }
+
+        function claimAlienPoints() {
+            const claimableAP = kills * 10;
+
+            if (claimableAP <= 0) {
+                alert('No alien points to claim!');
+                return;
+            }
+
+            const claimBtn = document.getElementById('claimBtn');
+            claimBtn.disabled = true;
+            claimBtn.textContent = 'CLAIMING...';
+
+            console.log('🎮 Dungeon Crawler claim! Awarding', claimableAP, 'AP | Kills:', kills);
+
+            // Send message to parent window
+            window.parent.postMessage({
+                type: 'DUNGEON_CLAIM_AP',
+                alienPoints: claimableAP,
+                kills: kills
+            }, '*');
+
+            // Listen for success/failure response
+            let timeout;
+            const messageHandler = (event) => {
+                if (event.data.type === 'DUNGEON_CLAIM_SUCCESS') {
+                    clearTimeout(timeout);
+                    window.removeEventListener('message', messageHandler);
+
+                    alert(`🎉 Successfully claimed ${claimableAP} Alien Points from ${kills} kills!`);
+
+                    // Reset kills and hide claim display
+                    kills = 0;
+                    updateHUD();
+
+                    claimBtn.disabled = false;
+                    claimBtn.textContent = 'CLAIM ALIEN POINTS';
+                } else if (event.data.type === 'DUNGEON_CLAIM_FAILED') {
+                    clearTimeout(timeout);
+                    window.removeEventListener('message', messageHandler);
+
+                    alert('❌ Failed to claim: ' + (event.data.error || 'Please try again'));
+
+                    claimBtn.disabled = false;
+                    claimBtn.textContent = 'CLAIM ALIEN POINTS';
+                }
+            };
+
+            window.addEventListener('message', messageHandler);
+
+            // Timeout after 10 seconds
+            timeout = setTimeout(() => {
+                window.removeEventListener('message', messageHandler);
+                alert('⏰ Claim timed out. Please try again.');
+                claimBtn.disabled = false;
+                claimBtn.textContent = 'CLAIM ALIEN POINTS';
+            }, 10000);
         }
 
         function gameLoop() {

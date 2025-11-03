@@ -110,6 +110,78 @@ export default function BasePage() {
           }
         }
       }
+
+      // Handle alien points claim from Dungeon Crawler game
+      if (event.data.type === 'DUNGEON_CLAIM_AP') {
+        console.log('📨 Received DUNGEON_CLAIM_AP message:', event.data);
+        const pointsToAward = event.data.alienPoints || 0;
+        const killsCount = event.data.kills || 0;
+
+        // Check if wallet is connected
+        if (!address) {
+          console.error('❌ No wallet connected! Address:', address);
+          // Send failure message back to iframe
+          const iframe = document.querySelector('iframe');
+          console.log('Found iframe:', iframe);
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+              type: 'DUNGEON_CLAIM_FAILED',
+              error: 'Please connect your wallet first!'
+            }, '*');
+          }
+          return;
+        }
+
+        console.log('🎮 Dungeon Crawler claim! Awarding', pointsToAward, 'AP to', address, '| Kills:', killsCount);
+        console.log('addPoints function available?', typeof addPoints === 'function');
+
+        try {
+          console.log('⏳ Calling addPoints...');
+          // Use 'arena' as source - API only accepts: wheel, faucet, arena, boss, staking
+          const success = await addPoints(address, pointsToAward, 'arena');
+          console.log('addPoints result:', success);
+
+          const iframe = document.querySelector('iframe');
+          console.log('Found iframe for response:', iframe);
+
+          if (iframe && iframe.contentWindow) {
+            if (success) {
+              console.log('✅ Successfully awarded', pointsToAward, 'AP from', killsCount, 'kills');
+
+              // Send success message to iframe
+              iframe.contentWindow.postMessage({
+                type: 'DUNGEON_CLAIM_SUCCESS',
+                alienPoints: pointsToAward
+              }, '*');
+
+              // Force reload the page to refresh the HUD
+              setTimeout(() => {
+                console.log('🔄 Reloading page...');
+                window.location.reload();
+              }, 2000);
+            } else {
+              console.error('❌ Failed to award points - addPoints returned false');
+              // Send failure message to iframe
+              iframe.contentWindow.postMessage({
+                type: 'DUNGEON_CLAIM_FAILED',
+                error: 'Failed to add points. Please try again.'
+              }, '*');
+            }
+          } else {
+            console.error('❌ Could not find iframe to send response');
+          }
+        } catch (error) {
+          console.error('❌ Exception in addPoints:', error);
+          // Send failure message to iframe
+          const iframe = document.querySelector('iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+              type: 'DUNGEON_CLAIM_FAILED',
+              error: String(error)
+            }, '*');
+          }
+        }
+      }
     };
 
     window.addEventListener('message', handleMessage);
