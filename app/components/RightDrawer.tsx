@@ -8,11 +8,8 @@ const GlobalMusicPlayer = dynamic(() => import("./GlobalMusicPlayer"), { ssr: fa
 const GlobalChat = dynamic(() => import("./GlobalChat"), { ssr: false });
 const GlobalWalletHUD = dynamic(() => import("./GlobalWalletHUD"), { ssr: false });
 
-type TabType = "music" | "hud" | "chat";
-
 export default function RightDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabType>("hud");
 
   return (
     <>
@@ -27,48 +24,22 @@ export default function RightDrawer() {
 
       {/* Drawer */}
       <div className={`right-drawer ${isOpen ? "open" : ""}`}>
-        {/* Tabs */}
-        <div className="drawer-tabs">
-          <button
-            className={`tab-button ${activeTab === "music" ? "active" : ""}`}
-            onClick={() => setActiveTab("music")}
-          >
-            <span className="tab-icon">🎵</span>
-            <span className="tab-label">Music</span>
-          </button>
-          <button
-            className={`tab-button ${activeTab === "hud" ? "active" : ""}`}
-            onClick={() => setActiveTab("hud")}
-          >
-            <span className="tab-icon">👽</span>
-            <span className="tab-label">HUD</span>
-          </button>
-          <button
-            className={`tab-button ${activeTab === "chat" ? "active" : ""}`}
-            onClick={() => setActiveTab("chat")}
-          >
-            <span className="tab-icon">💬</span>
-            <span className="tab-label">Chat</span>
-          </button>
-        </div>
+        {/* Stacked Content */}
+        <div className="drawer-content-stacked">
+          {/* Wallet Connect & HUD */}
+          <div className="drawer-section drawer-section-hud">
+            <GlobalWalletHUD />
+          </div>
 
-        {/* Tab Content */}
-        <div className="drawer-content">
-          {activeTab === "music" && (
-            <div className="tab-panel">
-              <GlobalMusicPlayer />
-            </div>
-          )}
-          {activeTab === "hud" && (
-            <div className="tab-panel">
-              <GlobalWalletHUD />
-            </div>
-          )}
-          {activeTab === "chat" && (
-            <div className="tab-panel">
-              <GlobalChat />
-            </div>
-          )}
+          {/* Music Player */}
+          <div className="drawer-section drawer-section-music">
+            <GlobalMusicPlayer />
+          </div>
+
+          {/* Chat */}
+          <div className="drawer-section drawer-section-chat">
+            <GlobalChat />
+          </div>
         </div>
       </div>
 

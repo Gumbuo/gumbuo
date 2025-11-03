@@ -72,9 +72,9 @@
   box-shadow: -8px 0 32px rgba(0, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   z-index: 9999;
-  display: flex;
-  flex-direction: column;
   transition: right 0.3s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .right-drawer.open {
@@ -164,6 +164,42 @@
   }
 }
 
+/* Stacked Content Layout */
+.drawer-content-stacked {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+}
+
+.drawer-section {
+  position: relative;
+  width: 100%;
+  border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+}
+
+.drawer-section:last-child {
+  border-bottom: none;
+  flex: 1;
+  min-height: 400px;
+}
+
+/* HUD Section - compact */
+.drawer-section-hud {
+  padding: 16px;
+}
+
+/* Music Section - compact */
+.drawer-section-music {
+  padding: 16px;
+}
+
+/* Chat Section - takes remaining space */
+.drawer-section-chat {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .right-drawer {
@@ -176,7 +212,64 @@
   }
 }
 
-/* Make Global Chat fit inside the drawer */
+/* Component overrides for stacked layout */
+
+/* Override fixed positioning for all drawer sections */
+.drawer-section > div {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: auto !important;
+}
+
+/* Global Wallet HUD adjustments */
+.drawer-section-hud > div > div {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: auto !important;
+}
+
+.drawer-section-hud .flex.flex-col.items-end {
+  align-items: stretch !important;
+}
+
+/* Global Music Player adjustments */
+.drawer-section-music > div {
+  width: 100% !important;
+}
+
+.drawer-section-music .alien-music-player {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Global Chat adjustments */
+.drawer-section-chat .global-chat {
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  flex: 1;
+}
+
+.drawer-section-chat .global-chat .chat-header {
+  border-radius: 0 !important;
+}
+
+.drawer-section-chat .global-chat .chat-footer {
+  border-radius: 0 !important;
+}
+
+/* Legacy tab-panel styles (kept for backwards compatibility) */
 .tab-panel .global-chat {
   position: relative !important;
   right: auto !important;
@@ -196,7 +289,6 @@
   border-radius: 0 !important;
 }
 
-/* Make Global Music Player fit inside the drawer */
 .tab-panel > div {
   position: relative !important;
   top: auto !important;
@@ -208,7 +300,6 @@
   z-index: auto !important;
 }
 
-/* Override Global Wallet HUD fixed positioning */
 .tab-panel > div > div {
   position: relative !important;
   top: auto !important;
@@ -218,13 +309,11 @@
   z-index: auto !important;
 }
 
-/* Adjust spacing for HUD items */
 .tab-panel .flex.flex-col.items-end {
   align-items: stretch !important;
   padding: 16px;
 }
 
-/* Make music player take full width */
 .tab-panel .alien-music-player {
   width: 100% !important;
   max-width: 100% !important;
