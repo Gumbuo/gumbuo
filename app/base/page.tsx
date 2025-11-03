@@ -76,17 +76,48 @@ export default function BasePage() {
             if (success) {
               console.log('✅ Successfully awarded', pointsToAward, 'AP from', enemiesKilled, 'enemy kills');
 
+              // Track Invasion game stats
+              try {
+                await fetch('/api/user-data', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    wallet: address,
+                    statUpdates: {
+                      invasionGamesPlayed: 1,
+                      invasionTotalKills: enemiesKilled,
+                      invasionAPEarned: pointsToAward,
+                    },
+                  }),
+                });
+
+                // Also check and update high score for most enemies killed in one game
+                const userDataResponse = await fetch(`/api/user-data?wallet=${address}`);
+                const userData = await userDataResponse.json();
+                if (userData.success && userData.userData) {
+                  const currentHighScore = userData.userData.gameStats?.invasionHighScore || 0;
+                  if (enemiesKilled > currentHighScore) {
+                    await fetch('/api/user-data', {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        wallet: address,
+                        statUpdates: {
+                          invasionHighScore: enemiesKilled - currentHighScore,
+                        },
+                      }),
+                    });
+                  }
+                }
+              } catch (error) {
+                console.error('Failed to track invasion stats:', error);
+              }
+
               // Send success message to iframe
               iframe.contentWindow.postMessage({
                 type: 'INVASION_CLAIM_SUCCESS',
                 alienPoints: pointsToAward
               }, '*');
-
-              // Force reload the page to refresh the HUD
-              setTimeout(() => {
-                console.log('🔄 Reloading page...');
-                window.location.reload();
-              }, 2000);
             } else {
               console.error('❌ Failed to award points - addPoints returned false');
               // Send failure message to iframe
@@ -116,6 +147,8 @@ export default function BasePage() {
         console.log('📨 Received DUNGEON_CLAIM_AP message:', event.data);
         const pointsToAward = event.data.alienPoints || 0;
         const killsCount = event.data.kills || 0;
+        const currentFloor = event.data.floor || 1;
+        const goldCollected = event.data.gold || 0;
 
         // Check if wallet is connected
         if (!address) {
@@ -148,17 +181,49 @@ export default function BasePage() {
             if (success) {
               console.log('✅ Successfully awarded', pointsToAward, 'AP from', killsCount, 'kills');
 
+              // Track Dungeon Crawler game stats
+              try {
+                await fetch('/api/user-data', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    wallet: address,
+                    statUpdates: {
+                      dungeonGamesPlayed: 1,
+                      dungeonTotalKills: killsCount,
+                      dungeonAPEarned: pointsToAward,
+                      dungeonTotalGold: goldCollected,
+                    },
+                  }),
+                });
+
+                // Also check and update high score for highest floor (use POST to set it if higher)
+                const userDataResponse = await fetch(`/api/user-data?wallet=${address}`);
+                const userData = await userDataResponse.json();
+                if (userData.success && userData.userData) {
+                  const currentHighest = userData.userData.gameStats?.dungeonHighestFloor || 0;
+                  if (currentFloor > currentHighest) {
+                    await fetch('/api/user-data', {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        wallet: address,
+                        statUpdates: {
+                          dungeonHighestFloor: currentFloor - currentHighest,
+                        },
+                      }),
+                    });
+                  }
+                }
+              } catch (error) {
+                console.error('Failed to track dungeon stats:', error);
+              }
+
               // Send success message to iframe
               iframe.contentWindow.postMessage({
                 type: 'DUNGEON_CLAIM_SUCCESS',
                 alienPoints: pointsToAward
               }, '*');
-
-              // Force reload the page to refresh the HUD
-              setTimeout(() => {
-                console.log('🔄 Reloading page...');
-                window.location.reload();
-              }, 2000);
             } else {
               console.error('❌ Failed to award points - addPoints returned false');
               // Send failure message to iframe

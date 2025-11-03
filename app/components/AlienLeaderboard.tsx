@@ -24,6 +24,17 @@ interface GameStats {
   normalAttacksUsed?: number;
   powerAttacksUsed?: number;
   ultimateAttacksUsed?: number;
+  // Gumbuo Invasion
+  invasionGamesPlayed?: number;
+  invasionTotalKills?: number;
+  invasionAPEarned?: number;
+  invasionHighScore?: number;
+  // Dungeon Crawler
+  dungeonGamesPlayed?: number;
+  dungeonTotalKills?: number;
+  dungeonAPEarned?: number;
+  dungeonHighestFloor?: number;
+  dungeonTotalGold?: number;
 }
 
 interface APLeaderboardEntry {
@@ -696,6 +707,28 @@ export default function AlienLeaderboard() {
                                   <div className="flex justify-between">
                                     <span className="text-yellow-400">💥 Boss Damage:</span>
                                     <span className="text-yellow-300 font-mono">{(entry.gameStats?.bossDamageDealt || 0).toLocaleString()} HP</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-green-400">🚀 Invasion Games:</span>
+                                    <span className="text-green-300 font-mono">{entry.gameStats?.invasionGamesPlayed || 0} ({(entry.gameStats?.invasionTotalKills || 0).toLocaleString()} kills)</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-green-400">🏆 Invasion High Score:</span>
+                                    <span className="text-green-300 font-mono">{entry.gameStats?.invasionHighScore || 0} enemies</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-blue-400">🗡️ Dungeon Games:</span>
+                                    <span className="text-blue-300 font-mono">{entry.gameStats?.dungeonGamesPlayed || 0} (Floor {entry.gameStats?.dungeonHighestFloor || 0})</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-blue-400">💰 Dungeon Stats:</span>
+                                    <span className="text-blue-300 font-mono">{(entry.gameStats?.dungeonTotalKills || 0).toLocaleString()} kills | {(entry.gameStats?.dungeonTotalGold || 0).toLocaleString()} gold</span>
+                                  </div>
+                                  <div className="flex justify-between pt-2 border-t border-purple-400/30">
+                                    <span className="text-cyan-400 font-bold">Total AP Earned:</span>
+                                    <span className="text-cyan-300 font-bold font-mono">
+                                      {((entry.gameStats?.invasionAPEarned || 0) + (entry.gameStats?.dungeonAPEarned || 0)).toLocaleString()} AP
+                                    </span>
                                   </div>
                                   <div className="flex justify-between pt-2 border-t border-purple-400/30">
                                     <span className="text-cyan-400 font-bold">Total AP Spent:</span>

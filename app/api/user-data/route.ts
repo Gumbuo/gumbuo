@@ -71,6 +71,17 @@ interface GameStats {
   mazeHighestLevel: number;
   mazeTotalScore: number;
   mazeAPEarned: number;
+  // Gumbuo Invasion stats
+  invasionGamesPlayed: number;
+  invasionTotalKills: number;
+  invasionAPEarned: number;
+  invasionHighScore: number;
+  // Dungeon Crawler stats
+  dungeonGamesPlayed: number;
+  dungeonTotalKills: number;
+  dungeonAPEarned: number;
+  dungeonHighestFloor: number;
+  dungeonTotalGold: number;
 }
 
 interface MazeProgress {
@@ -128,6 +139,15 @@ const EMPTY_USER_DATA: UserGameData = {
     mazeHighestLevel: 0,
     mazeTotalScore: 0,
     mazeAPEarned: 0,
+    invasionGamesPlayed: 0,
+    invasionTotalKills: 0,
+    invasionAPEarned: 0,
+    invasionHighScore: 0,
+    dungeonGamesPlayed: 0,
+    dungeonTotalKills: 0,
+    dungeonAPEarned: 0,
+    dungeonHighestFloor: 0,
+    dungeonTotalGold: 0,
   },
   mazeProgress: {
     currentLevel: 1,
@@ -319,6 +339,15 @@ export async function PUT(request: NextRequest) {
         mazeHighestLevel: 0,
         mazeTotalScore: 0,
         mazeAPEarned: 0,
+        invasionGamesPlayed: 0,
+        invasionTotalKills: 0,
+        invasionAPEarned: 0,
+        invasionHighScore: 0,
+        dungeonGamesPlayed: 0,
+        dungeonTotalKills: 0,
+        dungeonAPEarned: 0,
+        dungeonHighestFloor: 0,
+        dungeonTotalGold: 0,
       };
     }
 
