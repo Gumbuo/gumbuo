@@ -311,7 +311,8 @@ wss.on('connection', (ws) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3001;
+// Railway provides PORT env var, use 8080 if not set (Railway default)
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
   console.log(`WebSocket server is running on port ${PORT}`);
 });
