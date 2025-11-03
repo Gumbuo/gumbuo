@@ -293,10 +293,11 @@ function GmbProgressBar() {
 
   // Staking tiers based on GMB holdings
   const tiers = [
-    { gmb: 10000, label: 'STARTER' },
-    { gmb: 50000, label: 'ADVANCED' },
-    { gmb: 100000, label: 'PRO' },
+    { gmb: 0, label: 'STARTER' },
+    { gmb: 100000, label: 'ADVANCED' },
+    { gmb: 250000, label: 'PRO' },
     { gmb: 500000, label: 'ELITE' },
+    { gmb: 750000, label: 'DIAMOND' },
     { gmb: 1000000, label: 'WHALE' }
   ];
 

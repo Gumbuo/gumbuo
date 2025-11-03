@@ -1016,10 +1016,10 @@ export default function AlienDripStation() {
                           textShadow: '0 0 20px rgba(155, 89, 182, 0.8), 0 0 40px rgba(155, 89, 182, 0.5)'
                         }}>
                           {stakingData.stakedAmount >= 1_000_000 ? "🏆 WHALE STAKER" :
-                           stakingData.stakedAmount >= 500_000 ? "💎 DIAMOND STAKER" :
-                           stakingData.stakedAmount >= 100_000 ? "🔥 ELITE STAKER" :
-                           stakingData.stakedAmount >= 50_000 ? "⭐ PRO STAKER" :
-                           stakingData.stakedAmount >= 10_000 ? "🌟 ADVANCED STAKER" :
+                           stakingData.stakedAmount >= 750_000 ? "💎 DIAMOND STAKER" :
+                           stakingData.stakedAmount >= 500_000 ? "🔥 ELITE STAKER" :
+                           stakingData.stakedAmount >= 250_000 ? "⭐ PRO STAKER" :
+                           stakingData.stakedAmount >= 100_000 ? "🌟 ADVANCED STAKER" :
                            "🌱 STARTER STAKER"}
                         </p>
                         <p className="text-2xl font-bold text-purple-400 mt-2 relative z-10">
@@ -1041,39 +1041,39 @@ export default function AlienDripStation() {
                         <span className="text-purple-400 font-bold">10,000 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 500_000 && stakingData.stakedAmount < 1_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 750_000 && stakingData.stakedAmount < 1_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
                       }`}>
                         <span className="text-cyan-400 font-bold">💎 DIAMOND STAKER</span>
-                        <span className="text-gray-400">500K - 1M GMB</span>
-                        <span className="text-purple-400 font-bold">5,000 - 10,000 AP/day</span>
+                        <span className="text-gray-400">750K - 1M GMB</span>
+                        <span className="text-purple-400 font-bold">7,500 - 10,000 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 100_000 && stakingData.stakedAmount < 500_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 500_000 && stakingData.stakedAmount < 750_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
                       }`}>
                         <span className="text-red-400 font-bold">🔥 ELITE STAKER</span>
-                        <span className="text-gray-400">100K - 500K GMB</span>
-                        <span className="text-purple-400 font-bold">1,000 - 5,000 AP/day</span>
+                        <span className="text-gray-400">500K - 750K GMB</span>
+                        <span className="text-purple-400 font-bold">5,000 - 7,500 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 50_000 && stakingData.stakedAmount < 100_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 250_000 && stakingData.stakedAmount < 500_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
                       }`}>
                         <span className="text-orange-400 font-bold">⭐ PRO STAKER</span>
-                        <span className="text-gray-400">50K - 100K GMB</span>
-                        <span className="text-purple-400 font-bold">500 - 1,000 AP/day</span>
+                        <span className="text-gray-400">250K - 500K GMB</span>
+                        <span className="text-purple-400 font-bold">2,500 - 5,000 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 10_000 && stakingData.stakedAmount < 50_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 100_000 && stakingData.stakedAmount < 250_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
                       }`}>
                         <span className="text-green-400 font-bold">🌟 ADVANCED STAKER</span>
-                        <span className="text-gray-400">10K - 50K GMB</span>
-                        <span className="text-purple-400 font-bold">100 - 500 AP/day</span>
+                        <span className="text-gray-400">100K - 250K GMB</span>
+                        <span className="text-purple-400 font-bold">1,000 - 2,500 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 100 && stakingData.stakedAmount < 10_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 0 && stakingData.stakedAmount < 100_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
                       }`}>
                         <span className="text-blue-400 font-bold">🌱 STARTER STAKER</span>
-                        <span className="text-gray-400">100 - 10K GMB</span>
-                        <span className="text-purple-400 font-bold">1 - 100 AP/day</span>
+                        <span className="text-gray-400">0 - 100K GMB</span>
+                        <span className="text-purple-400 font-bold">0 - 1,000 AP/day</span>
                       </div>
                     </div>
                 </div>
