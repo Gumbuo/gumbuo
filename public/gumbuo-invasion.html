@@ -153,6 +153,10 @@
         const alienImageFiles = ['nyx.png', 'zorb.png', 'baob.png', 'apelian.jpg', 'j3d1.jpg', 'zit.png'];
         let loadedImageCount = 0;
 
+        // Player image
+        let playerImage = null;
+        let playerImageLoaded = false;
+
         // Preload alien images
         function loadAlienImages() {
             alienImageFiles.forEach(filename => {
@@ -169,7 +173,7 @@
                     }
                 };
                 img.onerror = (e) => {
-                    console.error(`✗ Failed to load ${filename} from http://www.gumbuo.io/${filename}`);
+                    console.error(`✗ Failed to load ${filename} from /${filename}`);
                     loadedImageCount++;
                     if (loadedImageCount === alienImageFiles.length) {
                         imagesLoaded = true;
@@ -178,7 +182,7 @@
                     }
                 };
                 
-                img.src = `http://www.gumbuo.io/${filename}`;
+                img.src = `/${filename}`;
                 alienImages[filename] = img;
             });
         }
@@ -237,50 +241,67 @@
         let alienSpawnRate = 0.02;
         let frameCount = 0;
 
+        // Preload player image
+        function loadPlayerImage() {
+            playerImage = new Image();
+            playerImage.onload = () => {
+                console.log('✓ Loaded: muscle.png');
+                playerImageLoaded = true;
+            };
+            playerImage.onerror = () => {
+                console.error('✗ Failed to load muscle.png');
+                playerImageLoaded = false;
+            };
+            playerImage.src = '/muscle.png';
+        }
+
         // Load images on page load
         startBtn.disabled = true;
         startBtn.textContent = 'Loading...';
         loadAlienImages();
+        loadPlayerImage();
         createStars();
 
-        // Draw spaceship (triangle shape)
+        // Draw player character
         function drawPlayer() {
-            // Main ship body
-            ctx.fillStyle = '#00ffff';
-            ctx.beginPath();
-            ctx.moveTo(player.x + player.width / 2, player.y);
-            ctx.lineTo(player.x, player.y + player.height);
-            ctx.lineTo(player.x + player.width, player.y + player.height);
-            ctx.closePath();
-            ctx.fill();
+            if (playerImageLoaded && playerImage) {
+                // Calculate dimensions to fit the image within player bounds
+                const imgAspect = playerImage.width / playerImage.height;
+                const playerAspect = player.width / player.height;
 
-            // Ship wings
-            ctx.fillStyle = '#00cccc';
-            ctx.beginPath();
-            ctx.moveTo(player.x, player.y + player.height - 20);
-            ctx.lineTo(player.x - 15, player.y + player.height);
-            ctx.lineTo(player.x, player.y + player.height);
-            ctx.closePath();
-            ctx.fill();
+                let drawWidth = player.width;
+                let drawHeight = player.height;
+                let offsetX = 0;
+                let offsetY = 0;
 
-            ctx.beginPath();
-            ctx.moveTo(player.x + player.width, player.y + player.height - 20);
-            ctx.lineTo(player.x + player.width + 15, player.y + player.height);
-            ctx.lineTo(player.x + player.width, player.y + player.height);
-            ctx.closePath();
-            ctx.fill();
+                if (imgAspect > playerAspect) {
+                    drawHeight = player.width / imgAspect;
+                    offsetY = (player.height - drawHeight) / 2;
+                } else {
+                    drawWidth = player.height * imgAspect;
+                    offsetX = (player.width - drawWidth) / 2;
+                }
 
-            // Cockpit
-            ctx.fillStyle = '#ffff00';
-            ctx.beginPath();
-            ctx.arc(player.x + player.width / 2, player.y + 20, 8, 0, Math.PI * 2);
-            ctx.fill();
+                ctx.drawImage(playerImage,
+                    player.x + offsetX,
+                    player.y + offsetY,
+                    drawWidth,
+                    drawHeight);
 
-            // Engine glow
-            ctx.fillStyle = '#ff6600';
-            ctx.fillRect(player.x + player.width / 2 - 8, player.y + player.height, 16, 8);
-            ctx.fillStyle = '#ffff00';
-            ctx.fillRect(player.x + player.width / 2 - 5, player.y + player.height, 10, 12);
+                // Green border around player
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(player.x, player.y, player.width, player.height);
+            } else {
+                // Fallback: triangle spaceship
+                ctx.fillStyle = '#00ffff';
+                ctx.beginPath();
+                ctx.moveTo(player.x + player.width / 2, player.y);
+                ctx.lineTo(player.x, player.y + player.height);
+                ctx.lineTo(player.x + player.width, player.y + player.height);
+                ctx.closePath();
+                ctx.fill();
+            }
         }
 
         // Spawn alien enemies
@@ -327,11 +348,16 @@
                     offsetX = (alien.width - drawWidth) / 2;
                 }
                 
-                ctx.drawImage(alien.image, 
-                    alien.x + offsetX, 
-                    alien.y + offsetY, 
-                    drawWidth, 
+                ctx.drawImage(alien.image,
+                    alien.x + offsetX,
+                    alien.y + offsetY,
+                    drawWidth,
                     drawHeight);
+
+                // Red border around alien
+                ctx.strokeStyle = '#ff0000';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(alien.x, alien.y, alien.width, alien.height);
             } else {
                 // Fallback alien
                 ctx.fillStyle = '#ff00ff';
