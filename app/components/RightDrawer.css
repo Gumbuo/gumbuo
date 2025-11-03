@@ -1,0 +1,197 @@
+/* Right Drawer - Alien/UFO Theme */
+
+/* Toggle Button */
+.drawer-toggle {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 80px;
+  background: linear-gradient(90deg, #1a1a3e 0%, #0f0f2e 100%);
+  border: 2px solid #00ffff;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  cursor: pointer;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: -4px 0 16px rgba(0, 255, 255, 0.3);
+}
+
+.drawer-toggle:hover {
+  background: linear-gradient(90deg, #2a2a4e 0%, #1f1f3e 100%);
+  box-shadow: -6px 0 24px rgba(0, 255, 255, 0.5);
+}
+
+.drawer-toggle.open {
+  right: 400px;
+  border-left: 2px solid #00ffff;
+  border-radius: 0 12px 12px 0;
+}
+
+.toggle-icon {
+  font-size: 20px;
+  color: #00ffff;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Drawer Overlay */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9997;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Drawer Container */
+.right-drawer {
+  position: fixed;
+  right: -400px;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  background: rgba(20, 20, 40, 0.98);
+  border-left: 2px solid #00ffff;
+  box-shadow: -8px 0 32px rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+}
+
+.right-drawer.open {
+  right: 0;
+}
+
+/* Tabs */
+.drawer-tabs {
+  display: flex;
+  background: linear-gradient(135deg, #1a1a3e 0%, #0f0f2e 100%);
+  border-bottom: 2px solid #00ffff;
+  padding: 8px;
+  gap: 8px;
+}
+
+.tab-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #00ffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tab-button:hover {
+  background: rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+}
+
+.tab-button.active {
+  background: linear-gradient(135deg, #00ffff 0%, #00cc99 100%);
+  border-color: #00ffff;
+  color: #000;
+  box-shadow: 0 4px 16px rgba(0, 255, 255, 0.5);
+}
+
+.tab-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0, 255, 255, 0.5));
+}
+
+.tab-button.active .tab-icon {
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.tab-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tab Content */
+.drawer-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.tab-panel {
+  height: 100%;
+  width: 100%;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .right-drawer {
+    width: 100vw;
+    right: -100vw;
+  }
+
+  .drawer-toggle.open {
+    right: calc(100vw - 40px);
+  }
+}
+
+/* Make Global Chat fit inside the drawer */
+.tab-panel .global-chat {
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.tab-panel .global-chat .chat-header {
+  border-radius: 0 !important;
+}
+
+.tab-panel .global-chat .chat-footer {
+  border-radius: 0 !important;
+}

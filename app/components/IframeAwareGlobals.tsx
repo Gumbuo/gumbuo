@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
-const GlobalMusicPlayer = dynamic(() => import("./GlobalMusicPlayer"), { ssr: false });
-const GlobalChat = dynamic(() => import("./GlobalChat"), { ssr: false });
-const GlobalWalletHUD = dynamic(() => import("./GlobalWalletHUD"), { ssr: false });
+const RightDrawer = dynamic(() => import("./RightDrawer"), { ssr: false });
 const AutoChainSwitcher = dynamic(() => import("./AutoChainSwitcher"), { ssr: false });
 
 export default function IframeAwareGlobals() {
@@ -24,9 +22,7 @@ export default function IframeAwareGlobals() {
   return (
     <>
       <AutoChainSwitcher />
-      <GlobalMusicPlayer />
-      <GlobalChat />
-      <GlobalWalletHUD />
+      <RightDrawer />
     </>
   );
 }
