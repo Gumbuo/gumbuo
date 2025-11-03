@@ -186,7 +186,13 @@
 
 /* HUD Section - compact */
 .drawer-section-hud {
-  padding: 16px;
+  padding: 12px;
+  width: 100%;
+}
+
+.drawer-section-hud > div {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 /* Music Section - compact */
@@ -232,10 +238,24 @@
   right: auto !important;
   bottom: auto !important;
   z-index: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .drawer-section-hud .flex.flex-col.items-end {
   align-items: stretch !important;
+  width: 100% !important;
+}
+
+.drawer-section-hud .space-y-4 > div {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.drawer-section-hud .holographic-panel {
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* Global Music Player adjustments */
