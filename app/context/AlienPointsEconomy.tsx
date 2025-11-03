@@ -14,6 +14,7 @@ interface AlienPointsPool {
 
 interface AlienPointsContextType {
   pool: AlienPointsPool;
+  userBalances: Record<string, number>;
   getUserBalance: (address: string) => number;
   addPoints: (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss' | 'staking') => Promise<boolean>;
   spendPoints: (address: string, points: number, itemName: string) => Promise<boolean>;
@@ -87,6 +88,8 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
 
   const addPoints = async (address: string, points: number, source: 'wheel' | 'faucet' | 'arena' | 'boss' | 'staking'): Promise<boolean> => {
     try {
+      console.log('💰 [AlienPointsEconomy] addPoints called:', { address, points, source });
+
       const response = await fetch('/api/points', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,21 +97,32 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
       });
 
       const data = await response.json();
+      console.log('📦 [AlienPointsEconomy] API response:', data);
 
       if (data.success) {
+        console.log('✅ [AlienPointsEconomy] Updating userBalances:', {
+          address: address.toLowerCase(),
+          newBalance: data.userBalance,
+          previousBalance: userBalances[address.toLowerCase()]
+        });
+
         // Update local state
         setPool(data.pool);
-        setUserBalances(prev => ({
-          ...prev,
-          [address.toLowerCase()]: data.userBalance,
-        }));
+        setUserBalances(prev => {
+          const updated = {
+            ...prev,
+            [address.toLowerCase()]: data.userBalance,
+          };
+          console.log('🔄 [AlienPointsEconomy] UserBalances updated from', prev, 'to', updated);
+          return updated;
+        });
         return true;
       } else {
-        console.error("Failed to add points:", data.error);
+        console.error("❌ Failed to add points:", data.error);
         return false;
       }
     } catch (error) {
-      console.error("Error adding points:", error);
+      console.error("❌ Error adding points:", error);
       return false;
     }
   };
@@ -149,7 +163,7 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AlienPointsContext.Provider value={{ pool, getUserBalance, addPoints, spendPoints, getPoolRemaining, refreshPool }}>
+    <AlienPointsContext.Provider value={{ pool, userBalances, getUserBalance, addPoints, spendPoints, getPoolRemaining, refreshPool }}>
       {children}
     </AlienPointsContext.Provider>
   );

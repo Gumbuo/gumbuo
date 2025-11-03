@@ -2,7 +2,7 @@
 import { useAccount, useBalance } from "wagmi";
 import { useAlienPoints as useAlienPointsEconomy } from "../app/context/AlienPointsEconomy";
 import { useAlienPoints as useAlienPointsSimple } from "../app/context/AlienPointContext";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { base, blast, arbitrum } from "wagmi/chains";
 
 const GMB_TOKEN_ADDRESS_BASE = "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0";
@@ -60,21 +60,47 @@ export function AlienHUD() {
   //   token: GMB_TOKEN_ADDRESS_BLAST as `0x${string}`
   // });
 
-  const { getUserBalance } = useAlienPointsEconomy();
+  const { userBalances, getUserBalance } = useAlienPointsEconomy();
   const alienPointsSimple = useAlienPointsSimple();
-  const [alienPoints, setAlienPoints] = useState(0);
 
-  // Use simple context if available (for maze rewards), otherwise use economy context
+  // Log whenever userBalances changes
   useEffect(() => {
-    if (alienPointsSimple && alienPointsSimple.alienPoints !== undefined) {
-      console.log("HUD updating from simple context:", alienPointsSimple.alienPoints);
-      setAlienPoints(alienPointsSimple.alienPoints);
-    } else if (address) {
-      const balance = getUserBalance(address);
-      console.log("HUD updating from economy context:", balance);
-      setAlienPoints(balance);
+    console.log('📊 [HUD] userBalances changed:', userBalances);
+  }, [userBalances]);
+
+  // Compute alien points directly from state - no local state needed!
+  const alienPoints = React.useMemo(() => {
+    console.log('🔄 [HUD] useMemo recalculating...', {
+      address,
+      simplePoints: alienPointsSimple?.alienPoints,
+      userBalances,
+      addressBalance: address ? userBalances[address.toLowerCase()] : 'no address'
+    });
+
+    // PRIORITY 1: Use economy context if available (drip station, wheel, etc.)
+    if (address && userBalances[address.toLowerCase()] !== undefined) {
+      const balance = userBalances[address.toLowerCase()];
+      console.log("🎯 [HUD] Using economy context balance:", balance, "for", address);
+      return balance;
     }
-  }, [address, getUserBalance, alienPointsSimple?.alienPoints]); // Watch the actual value!
+
+    // PRIORITY 2: Fall back to simple context (maze game only)
+    if (alienPointsSimple && alienPointsSimple.alienPoints !== undefined) {
+      console.log("🎯 [HUD] Using simple context points (fallback):", alienPointsSimple.alienPoints);
+      return alienPointsSimple.alienPoints;
+    }
+
+    console.log("🎯 [HUD] Returning 0 (no context data)");
+    return 0;
+  }, [address, alienPointsSimple?.alienPoints, userBalances]);
+
+  // Fetch initial balance when address changes (triggers API call if not cached)
+  useEffect(() => {
+    if (address && userBalances[address.toLowerCase()] === undefined) {
+      console.log("📡 HUD: Fetching initial balance for", address);
+      getUserBalance(address);
+    }
+  }, [address, getUserBalance, userBalances]);
 
   useEffect(() => {
     console.log("Abstract Mainnet Balance:", ethBalanceAbstract);

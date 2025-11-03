@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useCosmicSound } from "./hooks/useCosmicSound";
 import { useAlienPoints } from "./context/AlienPointContext";
+import { useAlienPoints as useAlienPointsEconomy } from "./context/AlienPointsEconomy";
+import { useAccount, useBalance } from "wagmi";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
@@ -12,8 +14,22 @@ type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "social
 
 // Compact Alien Points Progress Bar for Left Panel
 function AlienProgressBar() {
+  const { address } = useAccount();
+  const { userBalances } = useAlienPointsEconomy();
   const alienPointContext = useAlienPoints();
-  const alienPoints = alienPointContext?.alienPoints || 0;
+
+  // Compute alien points with same priority as HUD: economy context first, then simple context
+  const alienPoints = (() => {
+    // PRIORITY 1: Use economy context if available
+    if (address && userBalances[address.toLowerCase()] !== undefined) {
+      return userBalances[address.toLowerCase()];
+    }
+    // PRIORITY 2: Fall back to simple context
+    if (alienPointContext && alienPointContext.alienPoints !== undefined) {
+      return alienPointContext.alienPoints;
+    }
+    return 0;
+  })();
 
   const goals = [
     { points: 10000, label: 'ROOKIE' },
@@ -248,6 +264,232 @@ function AlienProgressBar() {
           textAlign: 'center'
         }}>
           <p style={{ color: '#00ff99', fontSize: '0.45rem', fontWeight: 'bold' }}>250K</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// GMB Holdings Progress Bar for Right Panel
+function GmbProgressBar() {
+  const { address } = useAccount();
+
+  // Fetch GMB from Base chain
+  const { data: gmbBalanceBase } = useBalance({
+    address,
+    chainId: 8453, // Base chain ID
+    token: "0xeA80bCC8DcbD395EAf783DE20fb38903E4B26dc0" as `0x${string}`
+  });
+
+  // Fetch GMB from Abstract chain
+  const { data: gmbBalanceAbstract } = useBalance({
+    address,
+    chainId: 2741, // Abstract chain ID
+    token: "0x1660AA473D936029C7659e7d047F05EcF28D40c9" as `0x${string}`
+  });
+
+  // Calculate total GMB across both chains
+  const gmbHoldings = parseFloat(gmbBalanceBase?.formatted || '0') + parseFloat(gmbBalanceAbstract?.formatted || '0');
+
+  // Staking tiers based on GMB holdings
+  const tiers = [
+    { gmb: 10000, label: 'STARTER' },
+    { gmb: 50000, label: 'ADVANCED' },
+    { gmb: 100000, label: 'PRO' },
+    { gmb: 500000, label: 'ELITE' },
+    { gmb: 1000000, label: 'WHALE' }
+  ];
+
+  const maxGmb = 1000000;
+  const progressPercent = Math.min((gmbHoldings / maxGmb) * 100, 100);
+
+  return (
+    <div style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '80%',
+      height: '70%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      {/* Title */}
+      <div style={{
+        marginBottom: '15px',
+        textAlign: 'center'
+      }}>
+        <p style={{
+          color: '#FFD700',
+          fontSize: '0.65rem',
+          fontWeight: 'bold',
+          letterSpacing: '1px',
+          marginBottom: '5px'
+        }}>GMB HOLDINGS</p>
+        <p style={{
+          color: '#FFA500',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          textShadow: '0 0 10px rgba(255, 165, 0, 0.8)'
+        }}>{gmbHoldings.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+      </div>
+
+      {/* Progress Bar Container */}
+      <div style={{ position: 'relative', height: '400px', width: '60px', overflow: 'visible' }}>
+        {/* Vertical Progress Track */}
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '8px',
+          height: '100%',
+          background: 'linear-gradient(to top, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2))',
+          borderRadius: '4px',
+          border: '2px solid rgba(255, 215, 0, 0.3)',
+          overflow: 'hidden'
+        }}>
+          {/* Progress Fill */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: `${progressPercent}%`,
+            background: 'linear-gradient(to top, #FFA500, #FFD700, #FF8C00)',
+            borderRadius: '4px',
+            boxShadow: '0 0 15px rgba(255, 215, 0, 0.8)',
+            transition: 'height 1s ease-out'
+          }} />
+        </div>
+
+        {/* Tier Markers */}
+        {tiers.map((tier) => {
+          const tierPercent = (tier.gmb / maxGmb) * 100;
+          const isReached = gmbHoldings >= tier.gmb;
+
+          return (
+            <div
+              key={tier.gmb}
+              style={{
+                position: 'absolute',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                bottom: `${tierPercent}%`,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.5s'
+              }}
+            >
+              {/* Marker Circle */}
+              <div style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                border: `3px solid ${isReached ? '#FFD700' : '#666'}`,
+                background: isReached ? 'rgba(255, 215, 0, 0.2)' : 'rgba(102, 102, 102, 0.2)',
+                boxShadow: isReached ? '0 0 10px rgba(255, 215, 0, 0.6)' : 'none',
+                transition: 'all 0.5s',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {isReached && (
+                  <div style={{
+                    width: '6px',
+                    height: '6px',
+                    background: '#FFD700',
+                    borderRadius: '50%'
+                  }} />
+                )}
+              </div>
+
+              {/* Tier Label - On the RIGHT side */}
+              <div style={{
+                position: 'absolute',
+                right: '24px',
+                whiteSpace: 'nowrap',
+                background: isReached ? 'rgba(255, 215, 0, 0.2)' : 'rgba(50, 50, 80, 0.95)',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                border: `2px solid ${isReached ? '#FFD700' : '#666'}`,
+                boxShadow: isReached ? '0 0 10px rgba(255, 215, 0, 0.5)' : '0 0 5px rgba(100, 100, 150, 0.3)',
+                transition: 'all 0.5s'
+              }}>
+                <p style={{
+                  fontSize: '0.6rem',
+                  color: isReached ? '#FFD700' : '#ccc',
+                  fontWeight: 'bold',
+                  transition: 'all 0.5s',
+                  marginBottom: '2px',
+                  letterSpacing: '0.5px',
+                  textShadow: isReached ? '0 0 5px rgba(255, 215, 0, 0.5)' : 'none'
+                }}>{tier.label}</p>
+                <p style={{
+                  fontSize: '0.55rem',
+                  color: isReached ? '#FFA500' : '#bbb',
+                  transition: 'all 0.5s',
+                  fontWeight: 'bold',
+                  textShadow: isReached ? '0 0 5px rgba(255, 165, 0, 0.3)' : 'none'
+                }}>{tier.gmb.toLocaleString()} GMB</p>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Coin Stack Icon */}
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          bottom: `${progressPercent}%`,
+          transition: 'bottom 1s ease-out',
+          zIndex: 10
+        }}>
+          {/* Glow effect */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            filter: 'blur(15px)',
+            background: '#FFD700',
+            opacity: 0.5,
+            borderRadius: '50%',
+            transform: 'scale(1.5)'
+          }} />
+
+          {/* Coin Stack - 3 gold coins stacked */}
+          <div style={{ position: 'relative', animation: 'coinFloat 3s ease-in-out infinite' }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
+              border: '3px solid #FFD700',
+              boxShadow: '0 0 20px rgba(255, 215, 0, 0.8), inset 0 2px 10px rgba(255, 255, 255, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              color: '#000',
+              position: 'relative'
+            }}>
+              💰
+            </div>
+          </div>
+        </div>
+
+        {/* End Label */}
+        <div style={{
+          position: 'absolute',
+          top: '-30px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center'
+        }}>
+          <p style={{ color: '#FFD700', fontSize: '0.45rem', fontWeight: 'bold' }}>1M+</p>
         </div>
       </div>
     </div>
@@ -647,7 +889,7 @@ export default function MothershipPage() {
           <AlienProgressBar />
         </div>
 
-        {/* Right Side Panel with Buttons */}
+        {/* Right Side Panel with GMB Progress Bar */}
         <div className="right-panel steel-panel steel-brushed">
           <div className="rivet rivet-red" style={{top: '20px', left: '20px'}}></div>
           <div className="rivet rivet-red" style={{top: '18%', left: '28px'}}></div>
@@ -657,6 +899,9 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '25%', left: '18px'}}></div>
           <div className="rivet rivet-red" style={{bottom: '20px', left: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
+
+          {/* GMB Holdings Progress Bar */}
+          <GmbProgressBar />
         </div>
 
         {/* Front Console with MAIN CONTROLS */}
@@ -1281,6 +1526,11 @@ export default function MothershipPage() {
         @keyframes ufoFloat {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-5px); }
+        }
+
+        @keyframes coinFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(180deg); }
         }
 
         /* Scrollbar styling */

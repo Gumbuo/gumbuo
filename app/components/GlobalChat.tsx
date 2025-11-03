@@ -70,14 +70,19 @@ const GlobalChat = () => {
 
   // WebSocket connection
   useEffect(() => {
-    if (!isConnected || !address) return;
+    console.log('🔌 WebSocket useEffect triggered', { isConnected, address, nodeEnv: process.env.NODE_ENV });
+
+    if (!isConnected || !address) {
+      console.log('⚠️ Not connecting: isConnected=', isConnected, 'address=', address);
+      return;
+    }
 
     // WebSocket server URL - Railway production or local dev
     const WS_URL = process.env.NODE_ENV === 'production'
       ? (process.env.NEXT_PUBLIC_WS_URL || 'wss://gumbuo-production.up.railway.app')
       : 'ws://localhost:3001';
 
-    console.log('Attempting to connect to WebSocket:', WS_URL);
+    console.log('🚀 Attempting to connect to WebSocket:', WS_URL, 'NODE_ENV:', process.env.NODE_ENV);
     setConnectionStatus('connecting');
 
     const ws = new WebSocket(WS_URL);
@@ -131,11 +136,12 @@ const GlobalChat = () => {
     };
 
     return () => {
+      console.log('🧹 [Chat] Cleaning up WebSocket connection');
       if (ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
     };
-  }, [isConnected, address]);
+  }, [isConnected, address, displayName]);
 
   // Drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {

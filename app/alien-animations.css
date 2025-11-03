@@ -298,6 +298,15 @@
   }
 }
 
+@keyframes coinFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(180deg);
+  }
+}
+
 @keyframes cosmic-pulse {
   0%, 100% {
     box-shadow: 0 0 20px rgba(74, 222, 128, 0.5),
