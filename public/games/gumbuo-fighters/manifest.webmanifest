@@ -1,0 +1,12 @@
+{
+  "name": "FoxHole (Gumbuo Fighters)",
+  "short_name": "FoxHole (Gumbuo Fighters)",
+  "id": "com.example.gamename",
+  "description": "",
+  "orientation": "any",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "black",
+  "categories": ["games", "entertainment"],
+  "icons": []
+}

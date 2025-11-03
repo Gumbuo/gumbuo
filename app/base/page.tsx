@@ -6,6 +6,7 @@ import { useAlienPoints } from "../context/AlienPointContext";
 
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
 const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: false });
+const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 
 export default function BasePage() {
   const [selectedGame, setSelectedGame] = useState("boss");
@@ -40,6 +41,7 @@ export default function BasePage() {
 
   const games = {
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
+    fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters /> },
     chess: { title: "PvP Chess", component: <ChessWrapper /> },
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
@@ -105,7 +107,7 @@ export default function BasePage() {
         height: 'calc(100vh - 70px)',
         overflow: 'hidden'
       }}>
-        {(selectedGame === "boss" || selectedGame === "chess") ? (
+        {(selectedGame === "boss" || selectedGame === "chess" || selectedGame === "fighters") ? (
           <div style={{
             width: '100%',
             height: '100%',
@@ -117,7 +119,7 @@ export default function BasePage() {
             overflowX: 'hidden',
             padding: '20px 0'
           }}>
-            {selectedGame === "boss" ? games.boss.component : games.chess.component}
+            {selectedGame === "boss" ? games.boss.component : selectedGame === "fighters" ? games.fighters.component : games.chess.component}
           </div>
         ) : (
           <iframe
