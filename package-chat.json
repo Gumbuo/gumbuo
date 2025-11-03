@@ -1,0 +1,15 @@
+{
+  "name": "gumbuo-chat-server",
+  "version": "1.0.0",
+  "description": "WebSocket chat server for Gumbuo",
+  "main": "chat-server.js",
+  "scripts": {
+    "start": "node chat-server.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
