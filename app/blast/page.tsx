@@ -7,7 +7,7 @@ export default function BlastPage() {
 
   const games = {
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
-    duel: { title: "Gumbuo Alien Duel", src: "/gumbuo-alien-duel.html" },
+    fighters: { title: "Gumbuo Fighters", src: "/games/gumbuo-fighters/index.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     maze: { title: "Maze Game", src: "/maze" },
   };
