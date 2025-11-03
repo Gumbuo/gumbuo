@@ -234,6 +234,7 @@
         let animationId;
         let floor = 1;
         let kills = 0;
+        let floorCompleted = false;
 
         // Alien images
         const alienImages = {};
@@ -559,7 +560,8 @@
             });
 
             // Check for floor completion
-            if (enemies.length === 0) {
+            if (enemies.length === 0 && !floorCompleted) {
+                floorCompleted = true;
                 nextFloor();
             }
         }
@@ -746,6 +748,7 @@
 
         function closeShop() {
             shopDiv.classList.add('hidden');
+            floorCompleted = false; // Reset flag for next floor
             generateDungeon();
             updateHUD();
             gameRunning = true;
