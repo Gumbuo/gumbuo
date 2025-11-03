@@ -554,13 +554,14 @@ export default function AlienLeaderboard() {
             <div style={{
               borderRadius: '8px'
             }} className="w-full bg-black/60 overflow-hidden holographic-panel">
-              <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-3 gap-4 font-bold text-purple-400">
+              <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-4 gap-4 font-bold text-purple-400">
                 <div className="text-center">Rank</div>
                 <div className="text-center">Wallet</div>
                 <div className="text-center">Alien Points</div>
+                <div className="text-center">Details</div>
               </div>
 
-              <div className="max-h-[600px] overflow-y-auto">
+              <div>
                 {apLeaderboard.length === 0 ? (
                   <div className="p-12 text-center text-purple-400 opacity-50">
                     <p className="text-2xl mb-4">👽 No users yet! 👽</p>
@@ -576,7 +577,7 @@ export default function AlienLeaderboard() {
                             setExpandedWallet(isExpanded ? null : entry.wallet);
                             playSound('click');
                           }}
-                          className={`relative transition-all duration-200 cursor-pointer ${
+                          className={`transition-all duration-200 cursor-pointer ${
                             address && entry.wallet.toLowerCase() === address.toLowerCase()
                               ? 'bg-purple-400 bg-opacity-30 border-l-4 border-purple-400'
                               : 'hover:bg-purple-400 hover:bg-opacity-10'
@@ -584,7 +585,7 @@ export default function AlienLeaderboard() {
                             index < 3 ? 'text-yellow-400 font-bold' : 'text-purple-400'
                           }`}
                         >
-                          <div className="grid grid-cols-3 gap-4 p-4">
+                          <div className="grid grid-cols-4 gap-4 p-4">
                             <div className="text-center flex items-center justify-center text-xl">
                               {index === 0 && '🥇'}
                               {index === 1 && '🥈'}
@@ -600,31 +601,31 @@ export default function AlienLeaderboard() {
                             <div className="text-center flex items-center justify-center font-bold text-lg">
                               {entry.alienPoints.toLocaleString()}
                             </div>
-                          </div>
 
-                          {/* Compact View Details Button */}
-                          <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                            <button
-                              style={{
-                                background: isExpanded
-                                  ? 'linear-gradient(135deg, #0099ff, #0077cc)'
-                                  : 'linear-gradient(135deg, #0077cc, #005599)',
-                                color: isExpanded ? '#fff' : '#00ffff',
-                                textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
-                                border: '2px solid #0099ff',
-                                borderRadius: '6px',
-                                padding: '6px 8px',
-                                fontSize: '0.65rem',
-                                fontWeight: 'bold',
-                                boxShadow: isExpanded
-                                  ? '0 0 20px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                                transition: 'all 0.3s ease',
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              {isExpanded ? '📊 Hide' : '📊 Stats'}
-                            </button>
+                            {/* View Details Button as Grid Column */}
+                            <div className="text-center flex items-center justify-center">
+                              <button
+                                style={{
+                                  background: isExpanded
+                                    ? 'linear-gradient(135deg, #0099ff, #0077cc)'
+                                    : 'linear-gradient(135deg, #0077cc, #005599)',
+                                  color: isExpanded ? '#fff' : '#00ffff',
+                                  textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
+                                  border: '2px solid #0099ff',
+                                  borderRadius: '6px',
+                                  padding: '8px 12px',
+                                  fontSize: '0.7rem',
+                                  fontWeight: 'bold',
+                                  boxShadow: isExpanded
+                                    ? '0 0 20px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                                    : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                                  transition: 'all 0.3s ease',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {isExpanded ? '📊 Hide' : '📊 Stats'}
+                              </button>
+                            </div>
                           </div>
                         </div>
 
