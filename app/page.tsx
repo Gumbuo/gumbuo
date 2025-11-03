@@ -920,6 +920,11 @@ export default function MothershipPage() {
             left: '50%',
             transform: 'translateX(-50%)',
             width: '95%',
+            maxHeight: '40vh',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+          }}>
+          <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gridTemplateRows: 'repeat(3, 1fr)',
@@ -1094,6 +1099,7 @@ export default function MothershipPage() {
               <span className="btn-status"></span>
             </button>
             <div></div>
+          </div>
           </div>
         </div>
       </div>
@@ -1403,6 +1409,33 @@ export default function MothershipPage() {
             opacity: 0.3;
             box-shadow: 0 0 5px rgba(255, 0, 0, 0.3), 0 0 10px rgba(255, 0, 0, 0.2);
           }
+        }
+
+        /* Smooth scrolling for control panel on mobile */
+        .front-console > div:first-child {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(0, 255, 255, 0.5) rgba(0, 0, 0, 0.3);
+          scroll-behavior: smooth;
+        }
+
+        .front-console > div:first-child::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+
+        .front-console > div:first-child::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 4px;
+        }
+
+        .front-console > div:first-child::-webkit-scrollbar-thumb {
+          background: rgba(0, 255, 255, 0.5);
+          border-radius: 4px;
+          border: 2px solid rgba(0, 0, 0, 0.3);
+        }
+
+        .front-console > div:first-child::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 255, 255, 0.8);
         }
 
         /* Gauge Animations */
