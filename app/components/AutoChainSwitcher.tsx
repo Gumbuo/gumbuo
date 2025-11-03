@@ -3,18 +3,11 @@
 import { useEffect, useRef } from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
 import { usePathname } from 'next/navigation';
-import { base, blast, arbitrum } from 'wagmi/chains';
-
-// Chain ID mapping
-const ABSTRACT_MAINNET_ID = 2741;
-const ABSTRACT_TESTNET_ID = 11124;
+import { base } from 'wagmi/chains';
 
 // Route to Chain ID mapping
 const ROUTE_CHAIN_MAP: Record<string, number> = {
   '/base': base.id,
-  '/abstract': ABSTRACT_MAINNET_ID,
-  '/blast': blast.id,
-  '/arbitrum': arbitrum.id,
 };
 
 export default function AutoChainSwitcher() {

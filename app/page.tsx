@@ -3,11 +3,256 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useCosmicSound } from "./hooks/useCosmicSound";
+import { useAlienPoints } from "./context/AlienPointContext";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 
 type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
+
+// Compact Alien Points Progress Bar for Left Panel
+function AlienProgressBar() {
+  const alienPointContext = useAlienPoints();
+  const alienPoints = alienPointContext?.alienPoints || 0;
+
+  const goals = [
+    { points: 10000, label: 'ROOKIE' },
+    { points: 40000, label: 'EXPLORER' },
+    { points: 90000, label: 'VOYAGER' },
+    { points: 125000, label: 'COMMANDER' },
+    { points: 175000, label: 'SUPREME' }
+  ];
+
+  const progressPercent = (alienPoints / 175000) * 100;
+
+  return (
+    <div style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '80%',
+      height: '70%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      {/* Title */}
+      <div style={{
+        marginBottom: '15px',
+        textAlign: 'center'
+      }}>
+        <p style={{
+          color: '#00ffff',
+          fontSize: '0.65rem',
+          fontWeight: 'bold',
+          letterSpacing: '1px',
+          marginBottom: '5px'
+        }}>ALIEN POINTS</p>
+        <p style={{
+          color: '#00ff99',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          textShadow: '0 0 10px rgba(0, 255, 153, 0.8)'
+        }}>{alienPoints.toLocaleString()}</p>
+      </div>
+
+      {/* Progress Bar Container */}
+      <div style={{ position: 'relative', height: '400px', width: '60px', overflow: 'visible' }}>
+        {/* Vertical Progress Track */}
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '8px',
+          height: '100%',
+          background: 'linear-gradient(to top, rgba(0, 212, 255, 0.2), rgba(138, 43, 226, 0.2))',
+          borderRadius: '4px',
+          border: '2px solid rgba(0, 212, 255, 0.3)',
+          overflow: 'hidden'
+        }}>
+          {/* Progress Fill */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: `${progressPercent}%`,
+            background: 'linear-gradient(to top, #00ff99, #00ffff, #8a2be2)',
+            borderRadius: '4px',
+            boxShadow: '0 0 15px rgba(0, 255, 153, 0.8)',
+            transition: 'height 1s ease-out'
+          }} />
+        </div>
+
+        {/* Goal Markers */}
+        {goals.map((goal) => {
+          const goalPercent = (goal.points / 175000) * 100;
+          const isReached = alienPoints >= goal.points;
+
+          return (
+            <div
+              key={goal.points}
+              style={{
+                position: 'absolute',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                bottom: `${goalPercent}%`,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.5s'
+              }}
+            >
+              {/* Marker Circle */}
+              <div style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                border: `3px solid ${isReached ? '#00ff99' : '#666'}`,
+                background: isReached ? 'rgba(0, 255, 153, 0.2)' : 'rgba(102, 102, 102, 0.2)',
+                boxShadow: isReached ? '0 0 10px rgba(0, 255, 153, 0.6)' : 'none',
+                transition: 'all 0.5s',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {isReached && (
+                  <div style={{
+                    width: '6px',
+                    height: '6px',
+                    background: '#00ff99',
+                    borderRadius: '50%'
+                  }} />
+                )}
+              </div>
+
+              {/* Goal Label - Always Visible */}
+              <div style={{
+                position: 'absolute',
+                left: '24px',
+                whiteSpace: 'nowrap',
+                background: isReached ? 'rgba(0, 255, 255, 0.2)' : 'rgba(50, 50, 80, 0.95)',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                border: `2px solid ${isReached ? '#00ffff' : '#666'}`,
+                boxShadow: isReached ? '0 0 10px rgba(0, 255, 255, 0.5)' : '0 0 5px rgba(100, 100, 150, 0.3)',
+                transition: 'all 0.5s'
+              }}>
+                <p style={{
+                  fontSize: '0.6rem',
+                  color: isReached ? '#00ffff' : '#ccc',
+                  fontWeight: 'bold',
+                  transition: 'all 0.5s',
+                  marginBottom: '2px',
+                  letterSpacing: '0.5px',
+                  textShadow: isReached ? '0 0 5px rgba(0, 255, 255, 0.5)' : 'none'
+                }}>{goal.label}</p>
+                <p style={{
+                  fontSize: '0.55rem',
+                  color: isReached ? '#00ff99' : '#bbb',
+                  transition: 'all 0.5s',
+                  fontWeight: 'bold',
+                  textShadow: isReached ? '0 0 5px rgba(0, 255, 153, 0.3)' : 'none'
+                }}>{goal.points.toLocaleString()} AP</p>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* UFO Spaceship */}
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          bottom: `${progressPercent}%`,
+          transition: 'bottom 1s ease-out',
+          zIndex: 10
+        }}>
+          {/* Glow effect */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            filter: 'blur(15px)',
+            background: '#00ffff',
+            opacity: 0.5,
+            borderRadius: '50%',
+            transform: 'scale(1.5)'
+          }} />
+
+          {/* UFO SVG */}
+          <svg width="50" height="32" viewBox="0 0 80 50" style={{ position: 'relative', animation: 'ufoFloat 3s ease-in-out infinite' }}>
+            {/* Beam of light */}
+            {progressPercent > 0 && (
+              <>
+                <defs>
+                  <linearGradient id="beam-mothership" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style={{ stopColor: '#00ffff', stopOpacity: 0.6 }} />
+                    <stop offset="100%" style={{ stopColor: '#00ffff', stopOpacity: 0 }} />
+                  </linearGradient>
+                </defs>
+                <polygon
+                  points="30,35 50,35 45,100 35,100"
+                  fill="url(#beam-mothership)"
+                  style={{ animation: 'pulse 2s ease-in-out infinite' }}
+                />
+              </>
+            )}
+
+            {/* UFO Dome */}
+            <ellipse cx="40" cy="20" rx="20" ry="12" fill="#00ffff" opacity="0.8">
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+            </ellipse>
+
+            {/* UFO Base */}
+            <ellipse cx="40" cy="28" rx="35" ry="8" fill="#00ff99" opacity="0.9"/>
+            <ellipse cx="40" cy="26" rx="35" ry="8" fill="#00ffff" opacity="0.7"/>
+
+            {/* Windows */}
+            <circle cx="40" cy="20" r="4" fill="#000" opacity="0.5"/>
+            <circle cx="40" cy="19" r="2" fill="#fbbf24">
+              <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Lights */}
+            <circle cx="20" cy="28" r="2" fill="#f472b6">
+              <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="40" cy="30" r="2" fill="#fbbf24">
+              <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="60" cy="28" r="2" fill="#a78bfa">
+              <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+        </div>
+
+        {/* Start Label */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-30px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center'
+        }}>
+          <p style={{ color: '#00ffff', fontSize: '0.45rem', fontWeight: 'bold' }}>0</p>
+        </div>
+
+        {/* End Label */}
+        <div style={{
+          position: 'absolute',
+          top: '-30px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center'
+        }}>
+          <p style={{ color: '#00ff99', fontSize: '0.45rem', fontWeight: 'bold' }}>250K</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -99,7 +344,7 @@ export default function MothershipPage() {
                 </Link>
 
                 <Link
-                  href="/blast"
+                  href="/base"
                   className="portal-item"
                   style={{
                     background: 'linear-gradient(135deg, rgba(136, 136, 136, 0.2), rgba(102, 102, 102, 0.3))',
@@ -111,18 +356,18 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/greyportal.png"
-                    alt="Blast Chain"
+                    alt="Games"
                     className="portal-image"
                     style={{
                       borderColor: '#e0e0e0',
                       boxShadow: '0 0 25px rgba(224, 224, 224, 0.8)'
                     }}
                   />
-                  <div className="portal-label">BLAST</div>
+                  <div className="portal-label">GAMES</div>
                 </Link>
 
                 <Link
-                  href="/abstract"
+                  href="/base"
                   className="portal-item"
                   style={{
                     background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.2), rgba(0, 204, 122, 0.3))',
@@ -134,18 +379,18 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/greenportal.png"
-                    alt="Abstract Chain"
+                    alt="Games"
                     className="portal-image"
                     style={{
                       borderColor: '#00ff99',
                       boxShadow: '0 0 25px rgba(0, 255, 153, 0.8)'
                     }}
                   />
-                  <div className="portal-label">ABSTRACT</div>
+                  <div className="portal-label">GAMES</div>
                 </Link>
 
                 <Link
-                  href="/arbitrum"
+                  href="/base"
                   className="portal-item"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(204, 34, 34, 0.3))',
@@ -157,14 +402,14 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/redportal.png"
-                    alt="Arbitrum Chain"
+                    alt="Games"
                     className="portal-image"
                     style={{
                       borderColor: '#ff3366',
                       boxShadow: '0 0 25px rgba(255, 51, 102, 0.8)'
                     }}
                   />
-                  <div className="portal-label">ARBITRUM</div>
+                  <div className="portal-label">GAMES</div>
                 </Link>
               </div>
             </div>
@@ -387,7 +632,7 @@ export default function MothershipPage() {
           </div>
         </div>
 
-        {/* Left Side Panel with Support Button */}
+        {/* Left Side Panel with Progress Bar */}
         <div className="left-panel steel-panel steel-brushed">
           <div className="rivet rivet-red" style={{top: '20px', right: '20px'}}></div>
           <div className="rivet rivet-red" style={{top: '15%', right: '15px'}}></div>
@@ -398,41 +643,8 @@ export default function MothershipPage() {
           <div className="rivet rivet-red" style={{bottom: '20px', right: '20px'}}></div>
           <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
 
-          {/* Support Button - Centered to Viewport */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '80%',
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <button
-              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
-              onClick={() => showScene('support')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'support'
-                  ? 'linear-gradient(135deg, #ff8c00, #ff6500)'
-                  : 'linear-gradient(135deg, #ff6500, #cc5200)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
-                border: '3px solid #ff8c00',
-                borderRadius: '8px',
-                padding: '14px 16px',
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-                width: '100%',
-                boxShadow: activeScene === 'support'
-                  ? '0 0 25px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
-              }}
-            >
-              🔒 SUPPORT
-              <span className="btn-status"></span>
-            </button>
-          </div>
+          {/* Alien Points Progress Bar */}
+          <AlienProgressBar />
         </div>
 
         {/* Right Side Panel with Buttons */}
@@ -464,7 +676,7 @@ export default function MothershipPage() {
             width: '95%',
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gridTemplateRows: 'repeat(2, 1fr)',
+            gridTemplateRows: 'repeat(3, 1fr)',
             gap: '12px',
             padding: '0 20px'
           }}>
@@ -609,6 +821,33 @@ export default function MothershipPage() {
               🌐 SOCIALS
               <span className="btn-status"></span>
             </button>
+
+            {/* Row 3 - Support button centered above ALIEN DRIP */}
+            <div></div>
+            <button
+              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
+              onClick={() => showScene('support')}
+              onMouseEnter={() => playSound('hover')}
+              style={{
+                background: activeScene === 'support'
+                  ? 'linear-gradient(135deg, #ff8c00, #ff6500)'
+                  : 'linear-gradient(135deg, #ff6500, #cc5200)',
+                color: '#000',
+                textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
+                border: '3px solid #ff8c00',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                boxShadow: activeScene === 'support'
+                  ? '0 0 25px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
+                  : '0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+              }}
+            >
+              🔒 SUPPORT
+              <span className="btn-status"></span>
+            </button>
+            <div></div>
           </div>
         </div>
       </div>
@@ -1037,6 +1276,11 @@ export default function MothershipPage() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+
+        @keyframes ufoFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-5px); }
         }
 
         /* Scrollbar styling */

@@ -4,7 +4,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const AlienHUD = dynamic(() => import("@lib/hud").then(mod => mod.AlienHUD), { ssr: false });
 const AlienMarketAndArena = dynamic(() => import("../app/components/AlienMarketAndArena"), { ssr: false });
-const GumbuoBoss = dynamic(() => import("../app/components/GumbuoBoss"), { ssr: false });
 const StarfieldBackground = dynamic(() => import("../app/components/StarfieldBackground"), { ssr: false });
 
 interface HomeProps {
@@ -53,11 +52,6 @@ export default function Home({ chainType = "base", hideConnectButton = false }: 
         {/* Alien Market & Arena (Combined) */}
         <div className="flex justify-center mt-32">
           <AlienMarketAndArena />
-        </div>
-
-        {/* Gumbuo Boss Battle */}
-        <div className="flex justify-center mt-32 mb-24">
-          <GumbuoBoss />
         </div>
 
         {/* FoxHole Productions Credit */}

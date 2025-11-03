@@ -482,8 +482,6 @@ export default function AlienDripStation() {
               gmbHoldings: {
                 base: parseFloat(gmbBalanceBase?.formatted || '0'),
                 abstract: parseFloat(gmbBalanceAbstract?.formatted || '0'),
-                arbitrum: 0,
-                blast: 0,
                 total: gmbAmount,
                 lastUpdated: Date.now(),
               },
@@ -633,8 +631,6 @@ export default function AlienDripStation() {
             gmbHoldings: {
               base: parseFloat(gmbBalanceBase?.formatted || '0'),
               abstract: parseFloat(gmbBalanceAbstract?.formatted || '0'),
-              arbitrum: 0,
-              blast: 0,
               total: gmbAmount,
               lastUpdated: Date.now(),
             },

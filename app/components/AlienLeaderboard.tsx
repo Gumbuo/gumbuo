@@ -34,8 +34,6 @@ interface APLeaderboardEntry {
   gmbHoldings?: {
     base: number;
     abstract: number;
-    arbitrum: number;
-    blast: number;
     total: number;
   };
   stakedAmount?: number;
@@ -644,14 +642,6 @@ export default function AlienLeaderboard() {
                                   <div className="flex justify-between">
                                     <span className="text-purple-400">⚡ Abstract:</span>
                                     <span className="text-purple-300 font-mono">{(entry.gmbHoldings?.abstract || 0).toLocaleString()} GMB</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="text-orange-400">🔶 Arbitrum:</span>
-                                    <span className="text-gray-400 font-mono text-xs">Coming Soon</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="text-yellow-400">💥 Blast:</span>
-                                    <span className="text-gray-400 font-mono text-xs">Coming Soon</span>
                                   </div>
                                   <div className="flex justify-between pt-2 border-t border-purple-400/30">
                                     <span className="text-yellow-400 font-bold">TOTAL:</span>

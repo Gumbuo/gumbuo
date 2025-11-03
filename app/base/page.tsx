@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import BackToMothershipButton from "../components/BackToMothershipButton";
 import { useAlienPoints } from "../context/AlienPointContext";
 
+const Home = dynamic(() => import("@lib/Home"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
 const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: false });
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 
 export default function BasePage() {
-  const [selectedGame, setSelectedGame] = useState("boss");
+  const [selectedGame, setSelectedGame] = useState("arena");
   const alienPointContext = useAlienPoints();
 
   // Listen for alien points updates from maze iframe
@@ -40,6 +41,7 @@ export default function BasePage() {
   }, [alienPointContext]);
 
   const games = {
+    arena: { title: "AP Arena", component: <Home chainType="base" hideConnectButton={true} /> },
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
     fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters /> },
     chess: { title: "PvP Chess", component: <ChessWrapper /> },
@@ -57,7 +59,7 @@ export default function BasePage() {
         gap: '10px',
         padding: '15px',
         background: 'linear-gradient(to bottom, #1a1a2e, #0f0f1e)',
-        borderBottom: '2px solid #00ff99',
+        borderBottom: '2px solid #00d4ff',
         justifyContent: 'center',
         flexWrap: 'wrap'
       }}>
@@ -68,10 +70,10 @@ export default function BasePage() {
             style={{
               padding: '12px 24px',
               background: selectedGame === key
-                ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
-                : 'rgba(0, 255, 153, 0.1)',
-              color: selectedGame === key ? '#000' : '#00ff99',
-              border: `2px solid ${selectedGame === key ? '#00ff99' : '#00ff9944'}`,
+                ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
+                : 'rgba(0, 212, 255, 0.1)',
+              color: selectedGame === key ? '#000' : '#00d4ff',
+              border: `2px solid ${selectedGame === key ? '#00d4ff' : '#00d4ff44'}`,
               borderRadius: '8px',
               cursor: 'pointer',
               fontFamily: 'Orbitron, sans-serif',
@@ -80,19 +82,19 @@ export default function BasePage() {
               textTransform: 'uppercase',
               transition: 'all 0.3s ease',
               boxShadow: selectedGame === key
-                ? '0 0 20px rgba(0, 255, 153, 0.5)'
+                ? '0 0 20px rgba(0, 212, 255, 0.5)'
                 : 'none',
             }}
             onMouseEnter={(e) => {
               if (selectedGame !== key) {
-                e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
-                e.currentTarget.style.borderColor = '#00ff99';
+                e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
+                e.currentTarget.style.borderColor = '#00d4ff';
               }
             }}
             onMouseLeave={(e) => {
               if (selectedGame !== key) {
-                e.currentTarget.style.background = 'rgba(0, 255, 153, 0.1)';
-                e.currentTarget.style.borderColor = '#00ff9944';
+                e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
+                e.currentTarget.style.borderColor = '#00d4ff44';
               }
             }}
           >
@@ -107,7 +109,7 @@ export default function BasePage() {
         height: 'calc(100vh - 70px)',
         overflow: 'hidden'
       }}>
-        {(selectedGame === "boss" || selectedGame === "chess" || selectedGame === "fighters") ? (
+        {(selectedGame === "arena" || selectedGame === "boss" || selectedGame === "chess" || selectedGame === "fighters") ? (
           <div style={{
             width: '100%',
             height: '100%',
@@ -119,7 +121,7 @@ export default function BasePage() {
             overflowX: 'hidden',
             padding: '20px 0'
           }}>
-            {selectedGame === "boss" ? games.boss.component : selectedGame === "fighters" ? games.fighters.component : games.chess.component}
+            {selectedGame === "arena" ? games.arena.component : selectedGame === "boss" ? games.boss.component : selectedGame === "fighters" ? games.fighters.component : games.chess.component}
           </div>
         ) : (
           <iframe
