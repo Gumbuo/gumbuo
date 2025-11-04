@@ -48,11 +48,13 @@ function AlienProgressBar() {
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: '80%',
-      height: '70%',
+      maxHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'flex-start',
+      overflow: 'visible',
+      paddingTop: '10px'
     }}>
       {/* Title */}
       <div style={{
@@ -75,7 +77,7 @@ function AlienProgressBar() {
       </div>
 
       {/* Progress Bar Container */}
-      <div style={{ position: 'relative', height: '400px', width: '60px', overflow: 'visible' }}>
+      <div style={{ position: 'relative', height: '650px', width: '60px', overflow: 'visible' }}>
         {/* Vertical Progress Track */}
         <div style={{
           position: 'absolute',
@@ -311,11 +313,13 @@ function GmbProgressBar() {
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: '80%',
-      height: '70%',
+      maxHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'flex-start',
+      overflow: 'visible',
+      paddingTop: '10px'
     }}>
       {/* Title */}
       <div style={{
@@ -338,7 +342,7 @@ function GmbProgressBar() {
       </div>
 
       {/* Progress Bar Container */}
-      <div style={{ position: 'relative', height: '400px', width: '60px', overflow: 'visible' }}>
+      <div style={{ position: 'relative', height: '650px', width: '60px', overflow: 'visible' }}>
         {/* Vertical Progress Track */}
         <div style={{
           position: 'absolute',
@@ -842,67 +846,60 @@ export default function MothershipPage() {
           </div>
         </div>
 
-        {/* Overhead Panel */}
-        <div className="overhead-panel steel-panel steel-brushed">
-          <div className="rivet rivet-red" style={{top: '20px', left: '50px'}}></div>
-          <div className="rivet rivet-red" style={{top: '25px', left: '20%'}}></div>
-          <div className="rivet rivet-red" style={{top: '30px', left: '35%'}}></div>
-          <div className="rivet rivet-red" style={{top: '25px', right: '35%'}}></div>
-          <div className="rivet rivet-red" style={{top: '30px', right: '20%'}}></div>
-          <div className="rivet rivet-red" style={{top: '20px', right: '50px'}}></div>
-          <div className="circuit-line" style={{top: '50%', width: '80%', left: '10%'}}></div>
-
-          {/* Title */}
-          <div style={{
-            position: 'absolute',
-            top: '40%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center',
-            width: '100%'
-          }}>
-            <h1 style={{
-              fontFamily: 'Orbitron, sans-serif',
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              color: '#00ffff',
-              textShadow: '0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6)',
-              letterSpacing: '4px',
-              margin: 0
-            }}>
-              GUMBUO MOTHERSHIP
-            </h1>
-          </div>
-        </div>
-
         {/* Left Side Panel with Progress Bar */}
         <div className="left-panel steel-panel steel-brushed">
-          <div className="rivet rivet-red" style={{top: '20px', right: '20px'}}></div>
-          <div className="rivet rivet-red" style={{top: '15%', right: '15px'}}></div>
-          <div className="rivet rivet-red" style={{top: '35%', right: '25px'}}></div>
-          <div className="rivet rivet-red" style={{top: '50%', right: '20px'}}></div>
-          <div className="rivet rivet-red" style={{top: '60%', right: '30px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '30%', right: '18px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '20px', right: '20px'}}></div>
-          <div className="circuit-line" style={{top: '30%', width: '70%', right: '10%'}}></div>
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              zIndex: 0,
+              opacity: 0.3,
+              pointerEvents: 'none'
+            }}
+          >
+            <source src="/alien.mp4" type="video/mp4" />
+          </video>
 
           {/* Alien Points Progress Bar */}
-          <AlienProgressBar />
+          <div style={{position: 'relative', zIndex: 2, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflowY: 'auto', overflowX: 'hidden'}}>
+            <AlienProgressBar />
+          </div>
         </div>
 
         {/* Right Side Panel with GMB Progress Bar */}
         <div className="right-panel steel-panel steel-brushed">
-          <div className="rivet rivet-red" style={{top: '20px', left: '20px'}}></div>
-          <div className="rivet rivet-red" style={{top: '18%', left: '28px'}}></div>
-          <div className="rivet rivet-red" style={{top: '40%', left: '15px'}}></div>
-          <div className="rivet rivet-red" style={{top: '50%', left: '20px'}}></div>
-          <div className="rivet rivet-red" style={{top: '65%', left: '25px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '25%', left: '18px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '20px', left: '20px'}}></div>
-          <div className="circuit-line" style={{top: '30%', width: '70%', left: '10%'}}></div>
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              zIndex: 0,
+              opacity: 0.3,
+              pointerEvents: 'none'
+            }}
+          >
+            <source src="/alien.mp4" type="video/mp4" />
+          </video>
 
           {/* GMB Holdings Progress Bar */}
-          <GmbProgressBar />
+          <div style={{position: 'relative', zIndex: 2, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflowY: 'auto', overflowX: 'hidden'}}>
+            <GmbProgressBar />
+          </div>
         </div>
 
         {/* Front Console with ALIEN CONTROL PANEL */}
@@ -971,105 +968,112 @@ export default function MothershipPage() {
             {/* Control Grid - 4 columns to match mothership design */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '15px',
-              padding: '20px'
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '8px',
+              padding: '10px',
+              position: 'relative'
             }}>
-              {/* PORTALS Button */}
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  zIndex: 0,
+                  opacity: 0.3,
+                  pointerEvents: 'none',
+                  borderRadius: '8px'
+                }}
+              >
+                <source src="/alien.mp4" type="video/mp4" />
+              </video>
+              {/* Button 1 - Green Circle - PORTALS */}
               <button
-                className={`alien-control-btn ${activeScene === 'portals' ? 'active' : ''}`}
+                className={`control-button btn-1 ${activeScene === 'portals' ? 'active' : ''}`}
                 onClick={() => showScene('portals')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">🌀</span>
-                  <div className="btn-label">PORTALS</div>
-                  <div className={`btn-indicator ${activeScene === 'portals' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">🌀</span>
+                  <div className="button-label">Portals</div>
                 </div>
               </button>
 
-              {/* ALIEN DRIP Button */}
+              {/* Button 2 - Blue Circle - ALIEN DRIP */}
               <button
-                className={`alien-control-btn ${activeScene === 'drip' ? 'active' : ''}`}
+                className={`control-button btn-2 ${activeScene === 'drip' ? 'active' : ''}`}
                 onClick={() => showScene('drip')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">💧</span>
-                  <div className="btn-label">ALIEN DRIP</div>
-                  <div className={`btn-indicator ${activeScene === 'drip' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">💧</span>
+                  <div className="button-label">Alien Drip</div>
                 </div>
               </button>
 
-              {/* LEADERBOARD Button */}
+              {/* Button 3 - Red Square - LEADERBOARD */}
               <button
-                className={`alien-control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
+                className={`control-button btn-3 ${activeScene === 'leaderboard' ? 'active' : ''}`}
                 onClick={() => showScene('leaderboard')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">🏆</span>
-                  <div className="btn-label">LEADERBOARD</div>
-                  <div className={`btn-indicator ${activeScene === 'leaderboard' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">🏆</span>
+                  <div className="button-label">Leaderboard</div>
                 </div>
               </button>
 
-              {/* BUY GMB Button */}
+              {/* Button 4 - Purple Square - BUY GMB */}
               <button
-                className={`alien-control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
+                className={`control-button btn-4 ${activeScene === 'buygmb' ? 'active' : ''}`}
                 onClick={() => showScene('buygmb')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">💰</span>
-                  <div className="btn-label">BUY GMB</div>
-                  <div className={`btn-indicator ${activeScene === 'buygmb' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">💰</span>
+                  <div className="button-label">Buy GMB</div>
                 </div>
               </button>
 
-              {/* ALIEN GEAR Button */}
+              {/* Button 5 - Orange Square - ALIEN GEAR */}
               <button
-                className={`alien-control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
+                className={`control-button btn-5 ${activeScene === 'shopify' ? 'active' : ''}`}
                 onClick={() => showScene('shopify')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">🛒</span>
-                  <div className="btn-label">ALIEN GEAR</div>
-                  <div className={`btn-indicator ${activeScene === 'shopify' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">🛒</span>
+                  <div className="button-label">Alien Gear</div>
                 </div>
               </button>
 
-              {/* SOCIALS Button */}
+              {/* Button 6 - Cyan Circle - SOCIALS */}
               <button
-                className={`alien-control-btn ${activeScene === 'socials' ? 'active' : ''}`}
+                className={`control-button btn-6 ${activeScene === 'socials' ? 'active' : ''}`}
                 onClick={() => showScene('socials')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">🌐</span>
-                  <div className="btn-label">SOCIALS</div>
-                  <div className={`btn-indicator ${activeScene === 'socials' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">🌐</span>
+                  <div className="button-label">Socials</div>
                 </div>
               </button>
 
-              {/* SUPPORT Button */}
+              {/* Button 7 - Yellow Square - SUPPORT */}
               <button
-                className={`alien-control-btn ${activeScene === 'support' ? 'active' : ''}`}
+                className={`control-button btn-7 ${activeScene === 'support' ? 'active' : ''}`}
                 onClick={() => showScene('support')}
                 onMouseEnter={() => playSound('hover')}
               >
-                <div className="btn-glow"></div>
-                <div className="btn-content">
-                  <span className="btn-icon">🔒</span>
-                  <div className="btn-label">SUPPORT</div>
-                  <div className={`btn-indicator ${activeScene === 'support' ? 'active' : ''}`}></div>
+                <div className="button-content">
+                  <span className="button-icon">🔒</span>
+                  <div className="button-label">Support</div>
                 </div>
               </button>
             </div>
@@ -1113,11 +1117,11 @@ export default function MothershipPage() {
         /* Central Viewport */
         .main-viewport {
           position: absolute;
-          top: 8%;
+          top: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 50%;
-          height: 54%;
+          width: 40%;
+          height: 60%;
           background: #000;
           border: 12px solid #7a7a85;
           border-radius: 10px;
@@ -1307,7 +1311,7 @@ export default function MothershipPage() {
           position: absolute;
           left: 0;
           top: 0;
-          width: 20%;
+          width: 30%;
           height: 100%;
           transform-origin: right center;
           transform: perspective(800px) rotateY(25deg) translateX(-10%);
@@ -1321,7 +1325,7 @@ export default function MothershipPage() {
           position: absolute;
           right: 0;
           top: 0;
-          width: 20%;
+          width: 30%;
           height: 100%;
           transform-origin: left center;
           transform: perspective(800px) rotateY(-25deg) translateX(10%);
@@ -1330,26 +1334,12 @@ export default function MothershipPage() {
           z-index: 5;
         }
 
-        /* Overhead Panel */
-        .overhead-panel {
-          position: absolute;
-          top: 0;
-          left: 20%;
-          width: 60%;
-          height: 10%;
-          transform-origin: center bottom;
-          transform: perspective(800px) rotateX(-30deg) translateY(-20%);
-          border-bottom: 6px solid #5a5a65;
-          box-shadow: inset 0 -10px 30px rgba(0, 0, 0, 0.6), 0 15px 40px rgba(0, 0, 0, 0.7);
-          z-index: 4;
-        }
-
         /* Front Console */
         .front-console {
           position: absolute;
           bottom: 0;
-          left: 25%;
-          width: 50%;
+          left: 30%;
+          width: 40%;
           height: 36%;
           background: linear-gradient(180deg, #9a9aa5 0%, #6a6a75 50%, #5a5a65 100%);
           transform-origin: center top;
@@ -1487,112 +1477,63 @@ export default function MothershipPage() {
           box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
         }
 
-        /* Alien Control Buttons */
-        .alien-control-btn {
-          position: relative;
-          padding: 4px 6px;
-          background: linear-gradient(135deg, rgba(0, 40, 60, 0.9) 0%, rgba(0, 20, 40, 0.9) 100%);
-          border: 2px solid rgba(0, 255, 255, 0.3);
-          border-radius: 6px;
+        /* Control Buttons */
+        .control-button {
           cursor: pointer;
-          transition: all 0.3s ease;
-          overflow: hidden;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(0, 255, 255, 0.2);
-        }
-
-        .alien-control-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
-          opacity: 0;
-          transition: opacity 0.3s;
-        }
-
-        .alien-control-btn:hover::before {
-          opacity: 1;
-        }
-
-        .alien-control-btn:hover {
-          border-color: rgba(0, 255, 255, 0.6);
-          transform: translateY(-3px);
-          box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4), inset 0 1px 3px rgba(0, 255, 255, 0.3);
-        }
-
-        .alien-control-btn:active {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 10px rgba(0, 255, 255, 0.6), inset 0 2px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        .alien-control-btn.active {
-          background: linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 200, 200, 0.3) 100%);
-          border-color: rgba(0, 255, 255, 0.9);
-          box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 50px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.2);
-        }
-
-        .btn-glow {
-          position: absolute;
-          inset: -2px;
-          background: radial-gradient(circle at center, rgba(0, 255, 255, 0.4) 0%, transparent 70%);
-          opacity: 0;
-          transition: opacity 0.3s;
-          border-radius: 10px;
-          pointer-events: none;
-        }
-
-        .alien-control-btn.active .btn-glow {
-          opacity: 1;
-          animation: glowPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes glowPulse {
-          0%, 100% { opacity: 0.6; }
-          50% { opacity: 1; }
-        }
-
-        .btn-content {
-          position: relative;
           display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 2px;
-          z-index: 2;
+          justify-content: center;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+          padding: 12px 20px;
+          border: 2px solid rgba(0, 212, 255, 0.6);
+          background: linear-gradient(135deg, rgba(0, 153, 204, 0.8), rgba(0, 119, 153, 0.8));
+          border-radius: 8px;
+          min-width: 80px;
+          min-height: 60px;
+          z-index: 1;
         }
 
-        .btn-icon {
-          font-size: 1rem;
-          filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.6));
+        .control-button:hover {
+          transform: scale(1.05);
+          filter: brightness(1.5);
         }
 
-        .btn-label {
-          font-family: 'Orbitron', sans-serif;
-          font-size: 0.45rem;
+        .control-button.active {
+          animation: buttonPulse 1s infinite;
+        }
+
+        @keyframes buttonPulse {
+          0%, 100% {
+            filter: brightness(1.5);
+            box-shadow: 0 0 15px currentColor;
+          }
+          50% {
+            filter: brightness(2);
+            box-shadow: 0 0 25px currentColor;
+          }
+        }
+
+        .button-content {
+          text-align: center;
+          color: #fff;
+          text-shadow: 0 0 6px #000;
           font-weight: bold;
+        }
+
+        .button-icon {
+          font-size: 1.5rem;
+          display: block;
+          margin-bottom: 8px;
+        }
+
+        .button-label {
+          font-size: 0.75rem;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
-          color: #00ffff;
-          text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
-        }
-
-        .btn-indicator {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: rgba(100, 100, 100, 0.5);
-          border: 1px solid rgba(150, 150, 150, 0.3);
-          transition: all 0.3s;
-        }
-
-        .btn-indicator.active {
-          background: #00ff00;
-          border-color: #00ff00;
-          box-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);
-          animation: indicatorBlink 1.5s ease-in-out infinite;
-        }
-
-        @keyframes indicatorBlink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          letter-spacing: 1px;
+          font-family: 'Orbitron', sans-serif;
+          line-height: 1.2;
         }
 
         /* Warning Lights */

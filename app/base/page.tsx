@@ -261,7 +261,7 @@ export default function BasePage() {
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     maze: { title: "Maze Game", src: "/maze" },
-    catacombs: { title: "Alien Catacombs", src: "https://itch.io/embed/2381662" },
+    catacombs: { title: "Alien Catacombs", comingSoon: true },
   };
 
   return (
@@ -337,16 +337,45 @@ export default function BasePage() {
           }}>
             {selectedGame === "arena" ? games.arena.component : selectedGame === "boss" ? games.boss.component : selectedGame === "fighters" ? games.fighters.component : games.chess.component}
           </div>
+        ) : selectedGame === "catacombs" ? (
+          <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: '#000',
+            flexDirection: 'column',
+            gap: '20px'
+          }}>
+            <div style={{
+              fontSize: '3rem',
+              fontFamily: 'Orbitron, sans-serif',
+              color: '#00d4ff',
+              textShadow: '0 0 20px rgba(0, 212, 255, 0.8)',
+              letterSpacing: '4px'
+            }}>
+              COMING SOON
+            </div>
+            <div style={{
+              fontSize: '1.2rem',
+              fontFamily: 'Orbitron, sans-serif',
+              color: '#0099cc',
+              opacity: 0.8
+            }}>
+              Alien Catacombs
+            </div>
+          </div>
         ) : (
           <iframe
             key={selectedGame}
-            src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : selectedGame === "catacombs" ? games.catacombs.src : games.maze.src}
+            src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : games.maze.src}
             style={{
               width: '100%',
               height: '100%',
               border: 'none',
             }}
-            title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : selectedGame === "catacombs" ? games.catacombs.title : games.maze.title}
+            title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : games.maze.title}
           />
         )}
       </div>
