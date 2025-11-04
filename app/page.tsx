@@ -1111,7 +1111,7 @@ export default function MothershipPage() {
           top: 12%;
           left: 50%;
           transform: translateX(-50%);
-          width: 70%;
+          width: 50%;
           height: 42%;
           background: #000;
           border: 12px solid #7a7a85;
@@ -1343,8 +1343,8 @@ export default function MothershipPage() {
         .front-console {
           position: absolute;
           bottom: 0;
-          left: 20%;
-          width: 60%;
+          left: 25%;
+          width: 50%;
           height: 43%;
           background: linear-gradient(180deg, #9a9aa5 0%, #6a6a75 50%, #5a5a65 100%);
           transform-origin: center top;
