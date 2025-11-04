@@ -968,15 +968,14 @@ export default function MothershipPage() {
             overflowX: 'hidden',
             zIndex: 10
           }}>
-            {/* Control Grid */}
+            {/* Control Grid - 4 columns to match mothership design */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gridTemplateRows: 'repeat(3, 1fr)',
-              gap: '8px',
-              padding: '0 10px'
+              gap: '15px',
+              padding: '20px'
             }}>
-              {/* Row 1 */}
+              {/* PORTALS Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'portals' ? 'active' : ''}`}
                 onClick={() => showScene('portals')}
@@ -985,10 +984,12 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">🌀</span>
-                  <span className="btn-label">PORTALS</span>
+                  <div className="btn-label">PORTALS</div>
                   <div className={`btn-indicator ${activeScene === 'portals' ? 'active' : ''}`}></div>
                 </div>
               </button>
+
+              {/* ALIEN DRIP Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'drip' ? 'active' : ''}`}
                 onClick={() => showScene('drip')}
@@ -997,10 +998,12 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">💧</span>
-                  <span className="btn-label">ALIEN DRIP</span>
+                  <div className="btn-label">ALIEN DRIP</div>
                   <div className={`btn-indicator ${activeScene === 'drip' ? 'active' : ''}`}></div>
                 </div>
               </button>
+
+              {/* LEADERBOARD Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
                 onClick={() => showScene('leaderboard')}
@@ -1009,12 +1012,12 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">🏆</span>
-                  <span className="btn-label">LEADERBOARD</span>
+                  <div className="btn-label">LEADERBOARD</div>
                   <div className={`btn-indicator ${activeScene === 'leaderboard' ? 'active' : ''}`}></div>
                 </div>
               </button>
 
-              {/* Row 2 */}
+              {/* BUY GMB Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
                 onClick={() => showScene('buygmb')}
@@ -1023,10 +1026,12 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">💰</span>
-                  <span className="btn-label">BUY GMB</span>
+                  <div className="btn-label">BUY GMB</div>
                   <div className={`btn-indicator ${activeScene === 'buygmb' ? 'active' : ''}`}></div>
                 </div>
               </button>
+
+              {/* ALIEN GEAR Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
                 onClick={() => showScene('shopify')}
@@ -1035,10 +1040,12 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">🛒</span>
-                  <span className="btn-label">ALIEN GEAR</span>
+                  <div className="btn-label">ALIEN GEAR</div>
                   <div className={`btn-indicator ${activeScene === 'shopify' ? 'active' : ''}`}></div>
                 </div>
               </button>
+
+              {/* SOCIALS Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'socials' ? 'active' : ''}`}
                 onClick={() => showScene('socials')}
@@ -1047,13 +1054,12 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">🌐</span>
-                  <span className="btn-label">SOCIALS</span>
+                  <div className="btn-label">SOCIALS</div>
                   <div className={`btn-indicator ${activeScene === 'socials' ? 'active' : ''}`}></div>
                 </div>
               </button>
 
-              {/* Row 3 - Support button centered */}
-              <div></div>
+              {/* SUPPORT Button */}
               <button
                 className={`alien-control-btn ${activeScene === 'support' ? 'active' : ''}`}
                 onClick={() => showScene('support')}
@@ -1062,11 +1068,10 @@ export default function MothershipPage() {
                 <div className="btn-glow"></div>
                 <div className="btn-content">
                   <span className="btn-icon">🔒</span>
-                  <span className="btn-label">SUPPORT</span>
+                  <div className="btn-label">SUPPORT</div>
                   <div className={`btn-indicator ${activeScene === 'support' ? 'active' : ''}`}></div>
                 </div>
               </button>
-              <div></div>
             </div>
           </div>
         </div>
