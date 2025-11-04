@@ -1108,11 +1108,11 @@ export default function MothershipPage() {
         /* Central Viewport */
         .main-viewport {
           position: absolute;
-          top: 8%;
+          top: 10%;
           left: 50%;
           transform: translateX(-50%);
           width: 70%;
-          height: 68%;
+          height: 50%;
           background: #000;
           border: 12px solid #7a7a85;
           border-radius: 10px;
@@ -1345,7 +1345,7 @@ export default function MothershipPage() {
           bottom: 0;
           left: 15%;
           width: 70%;
-          height: 25%;
+          height: 38%;
           background: linear-gradient(180deg, #9a9aa5 0%, #6a6a75 50%, #5a5a65 100%);
           transform-origin: center top;
           transform: perspective(600px) rotateX(30deg);
