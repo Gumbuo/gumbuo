@@ -76,7 +76,7 @@ async function handleTicketCreate(interaction) {
     });
   }
 
-  await interaction.deferReply({ ephemeral: true });
+  await interaction.reply({ content: '🎫 Creating your ticket...', ephemeral: true });
 
   try {
     // Create ticket channel
@@ -166,7 +166,7 @@ async function handleTicketClose(interaction) {
     });
   }
 
-  await interaction.deferReply();
+  await interaction.reply({ content: '🔒 Closing ticket and saving transcript...' });
 
   try {
     // Fetch all messages for transcript
