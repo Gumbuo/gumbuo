@@ -1485,10 +1485,10 @@ export default function MothershipPage() {
         /* Alien Control Buttons */
         .alien-control-btn {
           position: relative;
-          padding: 6px 8px;
+          padding: 4px 6px;
           background: linear-gradient(135deg, rgba(0, 40, 60, 0.9) 0%, rgba(0, 20, 40, 0.9) 100%);
           border: 2px solid rgba(0, 255, 255, 0.3);
-          border-radius: 8px;
+          border-radius: 6px;
           cursor: pointer;
           transition: all 0.3s ease;
           overflow: hidden;
@@ -1550,18 +1550,18 @@ export default function MothershipPage() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 3px;
+          gap: 2px;
           z-index: 2;
         }
 
         .btn-icon {
-          font-size: 1.2rem;
+          font-size: 1rem;
           filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.6));
         }
 
         .btn-label {
           font-family: 'Orbitron', sans-serif;
-          font-size: 0.5rem;
+          font-size: 0.45rem;
           font-weight: bold;
           text-transform: uppercase;
           letter-spacing: 0.5px;
@@ -1570,8 +1570,8 @@ export default function MothershipPage() {
         }
 
         .btn-indicator {
-          width: 6px;
-          height: 6px;
+          width: 5px;
+          height: 5px;
           border-radius: 50%;
           background: rgba(100, 100, 100, 0.5);
           border: 1px solid rgba(150, 150, 150, 0.3);
