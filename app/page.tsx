@@ -504,6 +504,7 @@ function GmbProgressBar() {
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
   const [activeScene, setActiveScene] = useState<Scene>("portals");
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const { playSound } = useCosmicSound();
 
   useEffect(() => {
@@ -953,7 +954,7 @@ export default function MothershipPage() {
             <div className="holo-bracket" style={{bottom: '-2px', right: '-2px', transform: 'rotate(180deg)'}}></div>
           </div>
 
-          {/* ALIEN CONTROL INTERFACE */}
+          {/* DRAWER TRIGGER BUTTON */}
           <div style={{
             position: 'absolute',
             bottom: '8%',
@@ -965,121 +966,172 @@ export default function MothershipPage() {
             overflowX: 'hidden',
             zIndex: 10
           }}>
-            {/* Control Grid - 4 columns to match mothership design */}
             <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '8px',
-              padding: '10px',
-              position: 'relative'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '20px'
             }}>
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
+              <button
+                className="control-button drawer-trigger"
+                onClick={() => {
+                  playSound('click');
+                  setDrawerOpen(true);
+                }}
+                onMouseEnter={() => playSound('hover')}
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  zIndex: 0,
-                  opacity: 0.3,
-                  pointerEvents: 'none',
-                  borderRadius: '8px'
+                  padding: '20px 40px',
+                  fontSize: '1.2rem'
                 }}
               >
-                <source src="/alien.mp4" type="video/mp4" />
-              </video>
-              {/* Button 1 - Green Circle - PORTALS */}
-              <button
-                className={`control-button btn-1 ${activeScene === 'portals' ? 'active' : ''}`}
-                onClick={() => showScene('portals')}
-                onMouseEnter={() => playSound('hover')}
-              >
                 <div className="button-content">
-                  <span className="button-icon">🌀</span>
-                  <div className="button-label">Portals</div>
-                </div>
-              </button>
-
-              {/* Button 2 - Blue Circle - ALIEN DRIP */}
-              <button
-                className={`control-button btn-2 ${activeScene === 'drip' ? 'active' : ''}`}
-                onClick={() => showScene('drip')}
-                onMouseEnter={() => playSound('hover')}
-              >
-                <div className="button-content">
-                  <span className="button-icon">💧</span>
-                  <div className="button-label">Alien Drip</div>
-                </div>
-              </button>
-
-              {/* Button 3 - Red Square - LEADERBOARD */}
-              <button
-                className={`control-button btn-3 ${activeScene === 'leaderboard' ? 'active' : ''}`}
-                onClick={() => showScene('leaderboard')}
-                onMouseEnter={() => playSound('hover')}
-              >
-                <div className="button-content">
-                  <span className="button-icon">🏆</span>
-                  <div className="button-label">Leaderboard</div>
-                </div>
-              </button>
-
-              {/* Button 4 - Purple Square - BUY GMB */}
-              <button
-                className={`control-button btn-4 ${activeScene === 'buygmb' ? 'active' : ''}`}
-                onClick={() => showScene('buygmb')}
-                onMouseEnter={() => playSound('hover')}
-              >
-                <div className="button-content">
-                  <span className="button-icon">💰</span>
-                  <div className="button-label">Buy GMB</div>
-                </div>
-              </button>
-
-              {/* Button 5 - Orange Square - ALIEN GEAR */}
-              <button
-                className={`control-button btn-5 ${activeScene === 'shopify' ? 'active' : ''}`}
-                onClick={() => showScene('shopify')}
-                onMouseEnter={() => playSound('hover')}
-              >
-                <div className="button-content">
-                  <span className="button-icon">🛒</span>
-                  <div className="button-label">Alien Gear</div>
-                </div>
-              </button>
-
-              {/* Button 6 - Cyan Circle - SOCIALS */}
-              <button
-                className={`control-button btn-6 ${activeScene === 'socials' ? 'active' : ''}`}
-                onClick={() => showScene('socials')}
-                onMouseEnter={() => playSound('hover')}
-              >
-                <div className="button-content">
-                  <span className="button-icon">🌐</span>
-                  <div className="button-label">Socials</div>
-                </div>
-              </button>
-
-              {/* Button 7 - Yellow Square - SUPPORT */}
-              <button
-                className={`control-button btn-7 ${activeScene === 'support' ? 'active' : ''}`}
-                onClick={() => showScene('support')}
-                onMouseEnter={() => playSound('hover')}
-              >
-                <div className="button-content">
-                  <span className="button-icon">🔒</span>
-                  <div className="button-label">Support</div>
+                  <span className="button-icon" style={{fontSize: '2rem'}}>☰</span>
+                  <div className="button-label">ALIEN CONTROLS</div>
                 </div>
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* LEFT SIDE DRAWER */}
+      <div className={`control-drawer ${drawerOpen ? 'drawer-open' : ''}`}>
+        {/* Drawer Header */}
+        <div className="drawer-header">
+          <div style={{
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
+            color: '#00ffff',
+            textShadow: '0 0 10px rgba(0, 255, 255, 0.8)',
+            fontFamily: 'Orbitron, sans-serif',
+            letterSpacing: '2px'
+          }}>
+            ALIEN CONTROLS
+          </div>
+          <button
+            className="drawer-close-btn"
+            onClick={() => {
+              playSound('click');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Drawer Content - Buttons */}
+        <div className="drawer-content">
+          <button
+            className={`control-button ${activeScene === 'portals' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('portals');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">🌀</span>
+              <div className="button-label">Portals</div>
+            </div>
+          </button>
+
+          <button
+            className={`control-button ${activeScene === 'drip' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('drip');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">💧</span>
+              <div className="button-label">Alien Drip</div>
+            </div>
+          </button>
+
+          <button
+            className={`control-button ${activeScene === 'leaderboard' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('leaderboard');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">🏆</span>
+              <div className="button-label">Leaderboard</div>
+            </div>
+          </button>
+
+          <button
+            className={`control-button ${activeScene === 'buygmb' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('buygmb');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">💰</span>
+              <div className="button-label">Buy GMB</div>
+            </div>
+          </button>
+
+          <button
+            className={`control-button ${activeScene === 'shopify' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('shopify');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">🛒</span>
+              <div className="button-label">Alien Gear</div>
+            </div>
+          </button>
+
+          <button
+            className={`control-button ${activeScene === 'socials' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('socials');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">🌐</span>
+              <div className="button-label">Socials</div>
+            </div>
+          </button>
+
+          <button
+            className={`control-button ${activeScene === 'support' ? 'active' : ''}`}
+            onClick={() => {
+              showScene('support');
+              setDrawerOpen(false);
+            }}
+            onMouseEnter={() => playSound('hover')}
+          >
+            <div className="button-content">
+              <span className="button-icon">🔒</span>
+              <div className="button-label">Support</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Drawer Overlay */}
+      {drawerOpen && (
+        <div
+          className="drawer-overlay"
+          onClick={() => {
+            playSound('click');
+            setDrawerOpen(false);
+          }}
+        />
+      )}
 
       <style jsx>{`
         * {
@@ -1311,10 +1363,10 @@ export default function MothershipPage() {
           position: absolute;
           left: 0;
           top: 0;
-          width: 30%;
+          width: 32%;
           height: 100%;
           transform-origin: right center;
-          transform: perspective(800px) rotateY(25deg) translateX(-10%);
+          transform: perspective(800px) rotateY(25deg) translateX(-2%);
           border-right: 8px solid #5a5a65;
           box-shadow: inset -10px 0 30px rgba(0, 0, 0, 0.6), 10px 0 50px rgba(0, 0, 0, 0.7);
           z-index: 5;
@@ -1325,10 +1377,10 @@ export default function MothershipPage() {
           position: absolute;
           right: 0;
           top: 0;
-          width: 30%;
+          width: 32%;
           height: 100%;
           transform-origin: left center;
-          transform: perspective(800px) rotateY(-25deg) translateX(10%);
+          transform: perspective(800px) rotateY(-25deg) translateX(2%);
           border-left: 8px solid #5a5a65;
           box-shadow: inset 10px 0 30px rgba(0, 0, 0, 0.6), -10px 0 50px rgba(0, 0, 0, 0.7);
           z-index: 5;
@@ -1598,6 +1650,96 @@ export default function MothershipPage() {
 
         .content-scene::-webkit-scrollbar-thumb:hover {
           background: rgba(0, 255, 255, 0.5);
+        }
+
+        /* Control Drawer Styles */
+        .control-drawer {
+          position: fixed;
+          top: 0;
+          left: -350px;
+          width: 350px;
+          height: 100vh;
+          background: linear-gradient(135deg, #c0c0c8 0%, #8a8a95 25%, #c5c5d0 50%, #7a7a85 75%, #b5b5c0 100%);
+          box-shadow: 2px 0 20px rgba(0, 0, 0, 0.8);
+          z-index: 9999;
+          transition: left 0.3s ease-in-out;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+
+        .control-drawer.drawer-open {
+          left: 0;
+        }
+
+        .drawer-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 25px 20px;
+          background: linear-gradient(180deg, rgba(10, 10, 30, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+          border-bottom: 2px solid #00d4ff;
+        }
+
+        .drawer-close-btn {
+          background: rgba(255, 0, 0, 0.2);
+          border: 2px solid rgba(255, 0, 0, 0.6);
+          color: #ff0000;
+          font-size: 1.5rem;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .drawer-close-btn:hover {
+          background: rgba(255, 0, 0, 0.4);
+          box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+          transform: scale(1.1);
+        }
+
+        .drawer-content {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .drawer-content .control-button {
+          width: 100%;
+          padding: 20px;
+          min-height: auto;
+        }
+
+        .drawer-content .button-content {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .drawer-content .button-icon {
+          font-size: 2rem;
+          margin-bottom: 0;
+        }
+
+        .drawer-content .button-label {
+          font-size: 1rem;
+          text-align: left;
+        }
+
+        .drawer-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.7);
+          z-index: 9998;
+          cursor: pointer;
         }
 
         /* Responsive */
