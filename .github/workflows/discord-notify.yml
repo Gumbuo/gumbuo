@@ -20,35 +20,47 @@ jobs:
           COMMIT_MSG=$(git log -1 --pretty=%B)
           AUTHOR=$(git log -1 --pretty=%an)
           COMMIT_HASH=$(git log -1 --pretty=%h)
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          # Create Discord embed
+          # Create JSON payload using jq for proper escaping
+          PAYLOAD=$(jq -n \
+            --arg title "🚀 Gumbuo Deployed to Production" \
+            --arg description "New updates are live on gumbuo.io!" \
+            --arg commit "$COMMIT_MSG" \
+            --arg author "$AUTHOR" \
+            --arg hash "$COMMIT_HASH" \
+            --arg footer "gumbuo.io | ${{ github.ref_name }}" \
+            --arg timestamp "$TIMESTAMP" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $description,
+                color: 852223,
+                fields: [
+                  {
+                    name: "📝 Commit",
+                    value: $commit,
+                    inline: false
+                  },
+                  {
+                    name: "👤 Author",
+                    value: $author,
+                    inline: true
+                  },
+                  {
+                    name: "🔗 Hash",
+                    value: ("[`" + $hash + "`](https://github.com/Gumbuo/gumbuo/commit/" + $hash + ")"),
+                    inline: true
+                  }
+                ],
+                footer: {
+                  text: $footer
+                },
+                timestamp: $timestamp
+              }]
+            }')
+
+          # Send to Discord
           curl -H "Content-Type: application/json" \
-          -d '{
-            "embeds": [{
-              "title": "🚀 Gumbuo Deployed to Production",
-              "description": "New updates are live on gumbuo.io!",
-              "color": 852223,
-              "fields": [
-                {
-                  "name": "📝 Commit",
-                  "value": "'"$COMMIT_MSG"'",
-                  "inline": false
-                },
-                {
-                  "name": "👤 Author",
-                  "value": "'"$AUTHOR"'",
-                  "inline": true
-                },
-                {
-                  "name": "🔗 Hash",
-                  "value": "[`'"$COMMIT_HASH"'`](https://github.com/Gumbuo/gumbuo/commit/'"$COMMIT_HASH"')",
-                  "inline": true
-                }
-              ],
-              "footer": {
-                "text": "gumbuo.io | ${{ github.ref_name }}"
-              },
-              "timestamp": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"
-            }]
-          }' \
-          $DISCORD_WEBHOOK
+            -d "$PAYLOAD" \
+            $DISCORD_WEBHOOK
