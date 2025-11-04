@@ -956,6 +956,95 @@ export default function MothershipPage() {
             <div className="holo-bracket" style={{bottom: '-2px', right: '-2px', transform: 'rotate(180deg)'}}></div>
           </div>
 
+          {/* LEFT SIDE - Power Core & Shields */}
+          <div style={{position: 'absolute', left: '15px', top: '20px', pointerEvents: 'none'}}>
+            {/* Power Core Gauge */}
+            <div style={{marginBottom: '15px'}}>
+              <div style={{fontSize: '0.4rem', color: '#00ffff', marginBottom: '3px', fontWeight: 'bold'}}>POWER CORE</div>
+              <svg width="60" height="60" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0, 255, 255, 0.2)" strokeWidth="8"/>
+                <circle className="power-gauge" cx="50" cy="50" r="40" fill="none" stroke="#00ff00" strokeWidth="8" strokeDasharray="251" strokeDashoffset="62" transform="rotate(-90 50 50)"/>
+                <text x="50" y="55" textAnchor="middle" fill="#00ffff" fontSize="14" fontWeight="bold">92%</text>
+              </svg>
+            </div>
+            {/* Shields Gauge */}
+            <div>
+              <div style={{fontSize: '0.4rem', color: '#00ffff', marginBottom: '3px', fontWeight: 'bold'}}>SHIELDS</div>
+              <svg width="60" height="60" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0, 255, 255, 0.2)" strokeWidth="8"/>
+                <circle className="shield-gauge" cx="50" cy="50" r="40" fill="none" stroke="#0099ff" strokeWidth="8" strokeDasharray="251" strokeDashoffset="75" transform="rotate(-90 50 50)"/>
+                <text x="50" y="55" textAnchor="middle" fill="#00ffff" fontSize="14" fontWeight="bold">85%</text>
+              </svg>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE - Engine Temp & Frequency */}
+          <div style={{position: 'absolute', right: '15px', top: '20px', pointerEvents: 'none'}}>
+            {/* Engine Temp Dial */}
+            <div style={{marginBottom: '15px'}}>
+              <div style={{fontSize: '0.4rem', color: '#00ffff', marginBottom: '3px', fontWeight: 'bold'}}>ENGINE TEMP</div>
+              <svg width="60" height="60" viewBox="0 0 100 100">
+                <defs>
+                  <linearGradient id="tempGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style={{stopColor: '#00ff00', stopOpacity: 1}}/>
+                    <stop offset="50%" style={{stopColor: '#ffff00', stopOpacity: 1}}/>
+                    <stop offset="100%" style={{stopColor: '#ff0000', stopOpacity: 1}}/>
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0, 255, 255, 0.2)" strokeWidth="8"/>
+                <circle className="temp-gauge" cx="50" cy="50" r="40" fill="none" stroke="url(#tempGrad)" strokeWidth="8" strokeDasharray="251" strokeDashoffset="125" transform="rotate(-90 50 50)"/>
+                <line className="temp-needle" x1="50" y1="50" x2="50" y2="20" stroke="#ff6600" strokeWidth="3"/>
+                <circle cx="50" cy="50" r="5" fill="#ff6600"/>
+              </svg>
+            </div>
+            {/* Frequency Dial */}
+            <div>
+              <div style={{fontSize: '0.4rem', color: '#00ffff', marginBottom: '3px', fontWeight: 'bold'}}>FREQUENCY</div>
+              <svg width="60" height="60" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0, 255, 255, 0.2)" strokeWidth="8"/>
+                <circle className="freq-gauge" cx="50" cy="50" r="40" fill="none" stroke="#ff00ff" strokeWidth="8" strokeDasharray="251" strokeDashoffset="100" transform="rotate(-90 50 50)"/>
+                <text x="50" y="55" textAnchor="middle" fill="#ff00ff" fontSize="10" fontWeight="bold">7.89 Hz</text>
+              </svg>
+            </div>
+          </div>
+
+          {/* TOP CENTER - Toggle Switches */}
+          <div style={{position: 'absolute', top: '8px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '12px', pointerEvents: 'none'}}>
+            <div style={{textAlign: 'center'}}>
+              <div className="toggle-switch active"></div>
+              <div style={{fontSize: '0.35rem', color: '#00ff00', marginTop: '2px'}}>SCAN</div>
+            </div>
+            <div style={{textAlign: 'center'}}>
+              <div className="toggle-switch"></div>
+              <div style={{fontSize: '0.35rem', color: '#666', marginTop: '2px'}}>STEALTH</div>
+            </div>
+            <div style={{textAlign: 'center'}}>
+              <div className="toggle-switch active"></div>
+              <div style={{fontSize: '0.35rem', color: '#00ff00', marginTop: '2px'}}>DIAG</div>
+            </div>
+          </div>
+
+          {/* BOTTOM - Scanner & Diagnostics Display */}
+          <div style={{position: 'absolute', bottom: '3px', left: '50%', transform: 'translateX(-50%)', width: '60%', pointerEvents: 'none'}}>
+            <div style={{
+              background: 'rgba(0, 20, 30, 0.8)',
+              border: '1px solid rgba(0, 255, 255, 0.4)',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              fontSize: '0.35rem',
+              color: '#00ffff',
+              fontFamily: 'monospace',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div className="scanner-text">SCAN: ACTIVE</div>
+              <div style={{color: '#00ff00'}}>● SYS:OK</div>
+              <div style={{color: '#ffff00'}}>● TEMP:MED</div>
+              <div style={{color: '#00ff00'}}>● HULL:100%</div>
+            </div>
+          </div>
+
           {/* ALIEN CONTROL INTERFACE */}
           <div style={{
             position: 'absolute',
@@ -1588,6 +1677,84 @@ export default function MothershipPage() {
         @keyframes indicatorBlink {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+
+        /* Gauge Animations */
+        .power-gauge {
+          animation: gaugePulse 3s ease-in-out infinite;
+        }
+
+        .shield-gauge {
+          animation: gaugePulse 3.5s ease-in-out infinite;
+        }
+
+        .freq-gauge {
+          animation: gaugePulse 2.5s ease-in-out infinite;
+        }
+
+        .temp-gauge {
+          animation: gaugePulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gaugePulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+
+        .temp-needle {
+          transform-origin: 50px 50px;
+          animation: needleSwing 4s ease-in-out infinite;
+        }
+
+        @keyframes needleSwing {
+          0%, 100% { transform: rotate(-30deg); }
+          50% { transform: rotate(30deg); }
+        }
+
+        /* Toggle Switches */
+        .toggle-switch {
+          width: 20px;
+          height: 10px;
+          background: rgba(100, 100, 100, 0.5);
+          border: 2px solid rgba(150, 150, 150, 0.4);
+          border-radius: 10px;
+          position: relative;
+          margin: 0 auto;
+        }
+
+        .toggle-switch::after {
+          content: '';
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          background: #666;
+          border-radius: 50%;
+          top: -1px;
+          left: -1px;
+          transition: all 0.3s;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .toggle-switch.active {
+          background: rgba(0, 255, 0, 0.3);
+          border-color: #00ff00;
+          box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .toggle-switch.active::after {
+          background: #00ff00;
+          left: 10px;
+          box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        /* Scanner Text Animation */
+        .scanner-text {
+          animation: scannerBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes scannerBlink {
+          0%, 100% { opacity: 1; color: #00ffff; }
+          50% { opacity: 0.6; color: #00ff99; }
         }
 
         /* Warning Lights */
