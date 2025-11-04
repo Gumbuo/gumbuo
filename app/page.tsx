@@ -960,7 +960,6 @@ export default function MothershipPage() {
               playSound('click');
               setDrawerOpen(true);
             }}
-            onMouseEnter={() => playSound('hover')}
             style={{
               position: 'absolute',
               top: '50%',
