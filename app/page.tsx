@@ -905,212 +905,169 @@ export default function MothershipPage() {
           <GmbProgressBar />
         </div>
 
-        {/* Front Console with MAIN CONTROLS */}
+        {/* Front Console with ALIEN CONTROL PANEL */}
         <div className="front-console steel-brushed">
-          {/* 4 Corner Red Lights */}
-          <div className="rivet rivet-red" style={{top: '30px', left: '30px'}}></div>
-          <div className="rivet rivet-red" style={{top: '30px', right: '30px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '40px', left: '30px'}}></div>
-          <div className="rivet rivet-red" style={{bottom: '40px', right: '30px'}}></div>
-
-          {/* MOTHERSHIP CONTROL PANEL */}
+          {/* Alien Control Panel Background with Hexagonal Pattern */}
           <div style={{
             position: 'absolute',
-            bottom: '8%',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(10, 10, 30, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%)',
+            borderRadius: '20px 20px 0 0',
+            overflow: 'hidden'
+          }}>
+            {/* Animated Hexagonal Grid Pattern */}
+            <svg style={{position: 'absolute', width: '100%', height: '100%', opacity: 0.1}} xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="hexagons" x="0" y="0" width="60" height="52" patternUnits="userSpaceOnUse">
+                  <polygon points="30,0 52,15 52,37 30,52 8,37 8,15" fill="none" stroke="#00ffff" strokeWidth="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#hexagons)"/>
+            </svg>
+
+            {/* Scanning Line Animation */}
+            <div className="scan-line"></div>
+          </div>
+
+          {/* 4 Corner Power Indicators (Red Pulsing Orbs) */}
+          <div className="power-orb power-orb-tl" style={{top: '20px', left: '20px'}}></div>
+          <div className="power-orb power-orb-tr" style={{top: '20px', right: '20px'}}></div>
+          <div className="power-orb power-orb-bl" style={{bottom: '30px', left: '20px'}}></div>
+          <div className="power-orb power-orb-br" style={{bottom: '30px', right: '20px'}}></div>
+
+          {/* Central Holographic Display Frame */}
+          <div style={{
+            position: 'absolute',
+            top: '15px',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: '95%',
-            maxHeight: '40vh',
-            overflowY: 'auto',
-            overflowX: 'hidden'
+            width: '90%',
+            height: '85%',
+            border: '2px solid rgba(0, 255, 255, 0.3)',
+            borderRadius: '15px',
+            background: 'radial-gradient(ellipse at center, rgba(0, 255, 255, 0.05) 0%, transparent 70%)',
+            boxShadow: 'inset 0 0 30px rgba(0, 255, 255, 0.1), 0 0 20px rgba(0, 255, 255, 0.2)',
+            pointerEvents: 'none'
           }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gridTemplateRows: 'repeat(3, 1fr)',
-            gap: '12px',
-            padding: '0 20px'
-          }}>
-            {/* Row 1 */}
-            <button
-              className={`control-btn ${activeScene === 'portals' ? 'active' : ''}`}
-              onClick={() => showScene('portals')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'portals'
-                  ? 'linear-gradient(135deg, #00ffff, #00cccc)'
-                  : 'linear-gradient(135deg, #00cccc, #008b8b)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.5)',
-                border: '2px solid #00ffff',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'portals'
-                  ? '0 0 20px rgba(0, 255, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '4px'
-              }}
-            >
-              🌀 PORTALS
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'drip' ? 'active' : ''}`}
-              onClick={() => showScene('drip')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'drip'
-                  ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
-                  : 'linear-gradient(135deg, #00cc7a, #008855)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(0, 255, 153, 0.8), 0 0 20px rgba(0, 255, 153, 0.5)',
-                border: '2px solid #00ff99',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'drip'
-                  ? '0 0 20px rgba(0, 255, 153, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              💧 ALIEN DRIP
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
-              onClick={() => showScene('leaderboard')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'leaderboard'
-                  ? 'linear-gradient(135deg, #ffd700, #ffb700)'
-                  : 'linear-gradient(135deg, #ffb700, #cc9200)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5)',
-                border: '2px solid #ffd700',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'leaderboard'
-                  ? '0 0 20px rgba(255, 215, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              🏆 LEADERBOARD
-              <span className="btn-status"></span>
-            </button>
-
-            {/* Row 2 */}
-            <button
-              className={`control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
-              onClick={() => showScene('buygmb')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'buygmb'
-                  ? 'linear-gradient(135deg, #0099ff, #0077cc)'
-                  : 'linear-gradient(135deg, #0077cc, #005599)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(0, 153, 255, 0.8), 0 0 20px rgba(0, 153, 255, 0.5)',
-                border: '2px solid #0099ff',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'buygmb'
-                  ? '0 0 20px rgba(0, 153, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              💰 BUY GMB
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
-              onClick={() => showScene('shopify')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'shopify'
-                  ? 'linear-gradient(135deg, #a855f7, #8b5cf6)'
-                  : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.5)',
-                border: '2px solid #a855f7',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'shopify'
-                  ? '0 0 20px rgba(168, 85, 247, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              🛒 ALIEN GEAR
-              <span className="btn-status"></span>
-            </button>
-            <button
-              className={`control-btn ${activeScene === 'socials' ? 'active' : ''}`}
-              onClick={() => showScene('socials')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'socials'
-                  ? 'linear-gradient(135deg, #ff1493, #dc143c)'
-                  : 'linear-gradient(135deg, #dc143c, #c71585)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(255, 20, 147, 0.8), 0 0 20px rgba(255, 20, 147, 0.5)',
-                border: '2px solid #ff1493',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'socials'
-                  ? '0 0 20px rgba(255, 20, 147, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              🌐 SOCIALS
-              <span className="btn-status"></span>
-            </button>
-
-            {/* Row 3 - Support button centered above ALIEN DRIP */}
-            <div></div>
-            <button
-              className={`control-btn ${activeScene === 'support' ? 'active' : ''}`}
-              onClick={() => showScene('support')}
-              onMouseEnter={() => playSound('hover')}
-              style={{
-                background: activeScene === 'support'
-                  ? 'linear-gradient(135deg, #ff8c00, #ff6500)'
-                  : 'linear-gradient(135deg, #ff6500, #cc5200)',
-                color: '#000',
-                textShadow: '0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.5)',
-                border: '2px solid #ff8c00',
-                borderRadius: '6px',
-                padding: '8px 10px',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
-                boxShadow: activeScene === 'support'
-                  ? '0 0 20px rgba(255, 140, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5)'
-                  : '0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              🔒 SUPPORT
-              <span className="btn-status"></span>
-            </button>
-            <div></div>
+            {/* Corner Brackets */}
+            <div className="holo-bracket" style={{top: '-2px', left: '-2px'}}></div>
+            <div className="holo-bracket" style={{top: '-2px', right: '-2px', transform: 'rotate(90deg)'}}></div>
+            <div className="holo-bracket" style={{bottom: '-2px', left: '-2px', transform: 'rotate(-90deg)'}}></div>
+            <div className="holo-bracket" style={{bottom: '-2px', right: '-2px', transform: 'rotate(180deg)'}}></div>
           </div>
+
+          {/* ALIEN CONTROL INTERFACE */}
+          <div style={{
+            position: 'absolute',
+            bottom: '12%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '90%',
+            maxHeight: '35vh',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            zIndex: 10
+          }}>
+            {/* Control Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateRows: 'repeat(3, 1fr)',
+              gap: '15px',
+              padding: '0 15px'
+            }}>
+              {/* Row 1 */}
+              <button
+                className={`alien-control-btn ${activeScene === 'portals' ? 'active' : ''}`}
+                onClick={() => showScene('portals')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">🌀</span>
+                  <span className="btn-label">PORTALS</span>
+                  <div className={`btn-indicator ${activeScene === 'portals' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+              <button
+                className={`alien-control-btn ${activeScene === 'drip' ? 'active' : ''}`}
+                onClick={() => showScene('drip')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">💧</span>
+                  <span className="btn-label">ALIEN DRIP</span>
+                  <div className={`btn-indicator ${activeScene === 'drip' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+              <button
+                className={`alien-control-btn ${activeScene === 'leaderboard' ? 'active' : ''}`}
+                onClick={() => showScene('leaderboard')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">🏆</span>
+                  <span className="btn-label">LEADERBOARD</span>
+                  <div className={`btn-indicator ${activeScene === 'leaderboard' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+
+              {/* Row 2 */}
+              <button
+                className={`alien-control-btn ${activeScene === 'buygmb' ? 'active' : ''}`}
+                onClick={() => showScene('buygmb')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">💰</span>
+                  <span className="btn-label">BUY GMB</span>
+                  <div className={`btn-indicator ${activeScene === 'buygmb' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+              <button
+                className={`alien-control-btn ${activeScene === 'shopify' ? 'active' : ''}`}
+                onClick={() => showScene('shopify')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">🛒</span>
+                  <span className="btn-label">ALIEN GEAR</span>
+                  <div className={`btn-indicator ${activeScene === 'shopify' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+              <button
+                className={`alien-control-btn ${activeScene === 'socials' ? 'active' : ''}`}
+                onClick={() => showScene('socials')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">🌐</span>
+                  <span className="btn-label">SOCIALS</span>
+                  <div className={`btn-indicator ${activeScene === 'socials' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+
+              {/* Row 3 - Support button centered */}
+              <div></div>
+              <button
+                className={`alien-control-btn ${activeScene === 'support' ? 'active' : ''}`}
+                onClick={() => showScene('support')}
+                onMouseEnter={() => playSound('hover')}
+              >
+                <div className="btn-glow"></div>
+                <div className="btn-content">
+                  <span className="btn-icon">🔒</span>
+                  <span className="btn-label">SUPPORT</span>
+                  <div className={`btn-indicator ${activeScene === 'support' ? 'active' : ''}`}></div>
+                </div>
+              </button>
+              <div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1475,62 +1432,162 @@ export default function MothershipPage() {
           filter: drop-shadow(0 0 10px rgba(0, 255, 153, 0.5));
         }
 
-        /* Physical Control Buttons */
-        .control-btn {
-          padding: 8px 12px;
-          background: linear-gradient(180deg, #9a9aa5, #6a6a75);
-          border: none;
-          border-radius: 4px;
-          color: #000;
-          font-size: 0.75rem;
-          font-weight: bold;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+        /* Power Orbs (4 Corner Red Lights) */
+        .power-orb {
+          position: absolute;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #ff0000 0%, #cc0000 50%, #990000 100%);
+          box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(255, 100, 100, 0.6);
+          animation: powerPulse 1.5s ease-in-out infinite;
+          z-index: 20;
+        }
+
+        @keyframes powerPulse {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(255, 100, 100, 0.6);
+          }
+          50% {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 1), 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 150, 150, 0.8);
+          }
+        }
+
+        /* Scanning Line */
+        .scan-line {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+          background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.8) 50%, transparent 100%);
+          animation: scanDown 3s linear infinite;
+          box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        @keyframes scanDown {
+          0% { transform: translateY(0); opacity: 0.8; }
+          100% { transform: translateY(600px); opacity: 0; }
+        }
+
+        /* Holographic Brackets */
+        .holo-bracket {
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          border-top: 3px solid rgba(0, 255, 255, 0.6);
+          border-left: 3px solid rgba(0, 255, 255, 0.6);
+          box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        }
+
+        /* Alien Control Buttons */
+        .alien-control-btn {
+          position: relative;
+          padding: 12px 16px;
+          background: linear-gradient(135deg, rgba(0, 40, 60, 0.9) 0%, rgba(0, 20, 40, 0.9) 100%);
+          border: 2px solid rgba(0, 255, 255, 0.3);
+          border-radius: 10px;
           cursor: pointer;
-          transition: all 0.2s;
-          width: auto;
-          display: inline-flex;
+          transition: all 0.3s ease;
+          overflow: hidden;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(0, 255, 255, 0.2);
+        }
+
+        .alien-control-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
+          opacity: 0;
+          transition: opacity 0.3s;
+        }
+
+        .alien-control-btn:hover::before {
+          opacity: 1;
+        }
+
+        .alien-control-btn:hover {
+          border-color: rgba(0, 255, 255, 0.6);
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4), inset 0 1px 3px rgba(0, 255, 255, 0.3);
+        }
+
+        .alien-control-btn:active {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 10px rgba(0, 255, 255, 0.6), inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .alien-control-btn.active {
+          background: linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 200, 200, 0.3) 100%);
+          border-color: rgba(0, 255, 255, 0.9);
+          box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 50px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .btn-glow {
+          position: absolute;
+          inset: -2px;
+          background: radial-gradient(circle at center, rgba(0, 255, 255, 0.4) 0%, transparent 70%);
+          opacity: 0;
+          transition: opacity 0.3s;
+          border-radius: 10px;
+          pointer-events: none;
+        }
+
+        .alien-control-btn.active .btn-glow {
+          opacity: 1;
+          animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+
+        .btn-content {
+          position: relative;
+          display: flex;
+          flex-direction: column;
           align-items: center;
           gap: 6px;
-          margin: 6px 0;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-          position: relative;
-        }
-
-        .control-btn:hover {
-          background: linear-gradient(180deg, #aaaaaf, #7a7a85);
-          transform: translateY(-2px);
-          box-shadow: 0 5px 12px rgba(0, 255, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-        }
-
-        .control-btn:active {
-          transform: translateY(2px);
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .control-btn.active {
-          background: linear-gradient(180deg, #00ffff, #0099cc);
-          color: #000;
-          box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.5);
+          z-index: 2;
         }
 
         .btn-icon {
-          font-size: 1rem;
+          font-size: 1.8rem;
+          filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6));
         }
 
-        .btn-status {
-          width: 6px;
-          height: 6px;
-          background: #00ff00;
+        .btn-label {
+          font-family: 'Orbitron', sans-serif;
+          font-size: 0.65rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #00ffff;
+          text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .btn-indicator {
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
-          box-shadow: 0 0 6px rgba(0, 255, 0, 0.8);
-          animation: blink 2s infinite;
-          flex-shrink: 0;
+          background: rgba(100, 100, 100, 0.5);
+          border: 1px solid rgba(150, 150, 150, 0.3);
+          transition: all 0.3s;
         }
 
-        @keyframes blink {
+        .btn-indicator.active {
+          background: #00ff00;
+          border-color: #00ff00;
+          box-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);
+          animation: indicatorBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes indicatorBlink {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
+          50% { opacity: 0.5; }
         }
 
         /* Warning Lights */
