@@ -17,8 +17,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           # Get commit info
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          AUTHOR=$(git log -1 --pretty=%an)
+          COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
           COMMIT_HASH=$(git log -1 --pretty=%h)
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
@@ -27,7 +26,6 @@ jobs:
             --arg title "🚀 Gumbuo Deployed to Production" \
             --arg description "New updates are live on gumbuo.io!" \
             --arg commit "$COMMIT_MSG" \
-            --arg author "$AUTHOR" \
             --arg hash "$COMMIT_HASH" \
             --arg footer "gumbuo.io | ${{ github.ref_name }}" \
             --arg timestamp "$TIMESTAMP" \
@@ -38,19 +36,14 @@ jobs:
                 color: 852223,
                 fields: [
                   {
-                    name: "📝 Commit",
+                    name: "📝 Update",
                     value: $commit,
                     inline: false
                   },
                   {
-                    name: "👤 Author",
-                    value: $author,
-                    inline: true
-                  },
-                  {
-                    name: "🔗 Hash",
+                    name: "🔗 Commit",
                     value: ("[`" + $hash + "`](https://github.com/Gumbuo/gumbuo/commit/" + $hash + ")"),
-                    inline: true
+                    inline: false
                   }
                 ],
                 footer: {
