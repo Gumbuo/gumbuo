@@ -77,7 +77,7 @@ function AlienProgressBar() {
       </div>
 
       {/* Progress Bar Container */}
-      <div style={{ position: 'relative', height: '650px', width: '60px', overflow: 'visible' }}>
+      <div style={{ position: 'relative', height: '550px', width: '60px', overflow: 'visible' }}>
         {/* Vertical Progress Track */}
         <div style={{
           position: 'absolute',
@@ -342,7 +342,7 @@ function GmbProgressBar() {
       </div>
 
       {/* Progress Bar Container */}
-      <div style={{ position: 'relative', height: '650px', width: '60px', overflow: 'visible' }}>
+      <div style={{ position: 'relative', height: '550px', width: '60px', overflow: 'visible' }}>
         {/* Vertical Progress Track */}
         <div style={{
           position: 'absolute',
@@ -954,45 +954,37 @@ export default function MothershipPage() {
             <div className="holo-bracket" style={{bottom: '-2px', right: '-2px', transform: 'rotate(180deg)'}}></div>
           </div>
 
-          {/* DRAWER TRIGGER BUTTON */}
-          <div style={{
-            position: 'absolute',
-            bottom: '8%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '95%',
-            maxHeight: '70%',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            zIndex: 10
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '20px'
-            }}>
-              <button
-                className="control-button drawer-trigger"
-                onClick={() => {
-                  playSound('click');
-                  setDrawerOpen(true);
-                }}
-                onMouseEnter={() => playSound('hover')}
-                style={{
-                  padding: '20px 40px',
-                  fontSize: '1.2rem'
-                }}
-              >
-                <div className="button-content">
-                  <span className="button-icon" style={{fontSize: '2rem'}}>☰</span>
-                  <div className="button-label">ALIEN CONTROLS</div>
-                </div>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
+
+      {/* DRAWER TRIGGER TAB - Left Side */}
+      <button
+        className="drawer-tab"
+        onClick={() => {
+          playSound('click');
+          setDrawerOpen(true);
+        }}
+        onMouseEnter={() => playSound('hover')}
+      >
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
+        }}>
+          <span style={{fontSize: '1.5rem'}}>☰</span>
+          <div style={{
+            fontSize: '0.7rem',
+            fontWeight: 'bold',
+            letterSpacing: '1px',
+            textAlign: 'center',
+            lineHeight: '1.2'
+          }}>
+            ALIEN<br/>CONTROLS
+          </div>
+        </div>
+      </button>
 
       {/* LEFT SIDE DRAWER */}
       <div className={`control-drawer ${drawerOpen ? 'drawer-open' : ''}`}>
@@ -1740,6 +1732,35 @@ export default function MothershipPage() {
           background: rgba(0, 0, 0, 0.7);
           z-index: 9998;
           cursor: pointer;
+        }
+
+        /* Drawer Tab Trigger */
+        .drawer-tab {
+          position: fixed;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 60px;
+          height: 140px;
+          background: linear-gradient(135deg, rgba(0, 153, 204, 0.95), rgba(0, 119, 153, 0.95));
+          border: 2px solid rgba(0, 212, 255, 0.8);
+          border-left: none;
+          border-radius: 0 12px 12px 0;
+          color: #00ffff;
+          font-family: 'Orbitron', sans-serif;
+          cursor: pointer;
+          z-index: 9997;
+          box-shadow: 3px 0 15px rgba(0, 212, 255, 0.4);
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .drawer-tab:hover {
+          width: 70px;
+          background: linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95));
+          box-shadow: 3px 0 25px rgba(0, 212, 255, 0.7);
         }
 
         /* Responsive */
