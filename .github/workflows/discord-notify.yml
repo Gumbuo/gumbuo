@@ -1,0 +1,54 @@
+name: Discord Deployment Notification
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Send Discord Notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          # Get commit info
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          AUTHOR=$(git log -1 --pretty=%an)
+          COMMIT_HASH=$(git log -1 --pretty=%h)
+
+          # Create Discord embed
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "🚀 Gumbuo Deployed to Production",
+              "description": "New updates are live on gumbuo.io!",
+              "color": 852223,
+              "fields": [
+                {
+                  "name": "📝 Commit",
+                  "value": "'"$COMMIT_MSG"'",
+                  "inline": false
+                },
+                {
+                  "name": "👤 Author",
+                  "value": "'"$AUTHOR"'",
+                  "inline": true
+                },
+                {
+                  "name": "🔗 Hash",
+                  "value": "[`'"$COMMIT_HASH"'`](https://github.com/Gumbuo/gumbuo/commit/'"$COMMIT_HASH"')",
+                  "inline": true
+                }
+              ],
+              "footer": {
+                "text": "gumbuo.io | ${{ github.ref_name }}"
+              },
+              "timestamp": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"
+            }]
+          }' \
+          $DISCORD_WEBHOOK
