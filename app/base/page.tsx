@@ -261,6 +261,7 @@ export default function BasePage() {
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     maze: { title: "Maze Game", src: "/maze" },
+    catacombs: { title: "Alien Catacombs", src: "https://itch.io/embed/2381662" },
   };
 
   return (
@@ -339,13 +340,13 @@ export default function BasePage() {
         ) : (
           <iframe
             key={selectedGame}
-            src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : games.maze.src}
+            src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : selectedGame === "catacombs" ? games.catacombs.src : games.maze.src}
             style={{
               width: '100%',
               height: '100%',
               border: 'none',
             }}
-            title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : games.maze.title}
+            title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : selectedGame === "catacombs" ? games.catacombs.title : games.maze.title}
           />
         )}
       </div>
