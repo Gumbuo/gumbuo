@@ -959,11 +959,11 @@ export default function MothershipPage() {
           {/* ALIEN CONTROL INTERFACE */}
           <div style={{
             position: 'absolute',
-            bottom: '12%',
+            bottom: '8%',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: '90%',
-            maxHeight: '35vh',
+            width: '95%',
+            maxHeight: '70%',
             overflowY: 'auto',
             overflowX: 'hidden',
             zIndex: 10
@@ -973,8 +973,8 @@ export default function MothershipPage() {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
               gridTemplateRows: 'repeat(3, 1fr)',
-              gap: '15px',
-              padding: '0 15px'
+              gap: '8px',
+              padding: '0 10px'
             }}>
               {/* Row 1 */}
               <button
@@ -1485,10 +1485,10 @@ export default function MothershipPage() {
         /* Alien Control Buttons */
         .alien-control-btn {
           position: relative;
-          padding: 12px 16px;
+          padding: 6px 8px;
           background: linear-gradient(135deg, rgba(0, 40, 60, 0.9) 0%, rgba(0, 20, 40, 0.9) 100%);
           border: 2px solid rgba(0, 255, 255, 0.3);
-          border-radius: 10px;
+          border-radius: 8px;
           cursor: pointer;
           transition: all 0.3s ease;
           overflow: hidden;
@@ -1550,28 +1550,28 @@ export default function MothershipPage() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 6px;
+          gap: 3px;
           z-index: 2;
         }
 
         .btn-icon {
-          font-size: 1.8rem;
-          filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6));
+          font-size: 1.2rem;
+          filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.6));
         }
 
         .btn-label {
           font-family: 'Orbitron', sans-serif;
-          font-size: 0.65rem;
+          font-size: 0.5rem;
           font-weight: bold;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 0.5px;
           color: #00ffff;
-          text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+          text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
         }
 
         .btn-indicator {
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
           background: rgba(100, 100, 100, 0.5);
           border: 1px solid rgba(150, 150, 150, 0.3);
