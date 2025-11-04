@@ -954,37 +954,55 @@ export default function MothershipPage() {
             <div className="holo-bracket" style={{bottom: '-2px', right: '-2px', transform: 'rotate(180deg)'}}></div>
           </div>
 
+          {/* ALIEN CONTROLS BUTTON */}
+          <button
+            onClick={() => {
+              playSound('click');
+              setDrawerOpen(true);
+            }}
+            onMouseEnter={() => playSound('hover')}
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              padding: '20px 40px',
+              background: 'linear-gradient(135deg, rgba(0, 153, 204, 0.9), rgba(0, 119, 153, 0.9))',
+              border: '3px solid rgba(0, 212, 255, 0.8)',
+              borderRadius: '15px',
+              color: '#00ffff',
+              fontFamily: 'Orbitron, sans-serif',
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              cursor: 'pointer',
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+              boxShadow: '0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.1)',
+              transition: 'all 0.3s ease',
+              zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '10px'
+            }}
+            onMouseEnter={(e) => {
+              playSound('hover');
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))';
+              e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 212, 255, 0.8), inset 0 0 30px rgba(0, 255, 255, 0.2)';
+              e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 153, 204, 0.9), rgba(0, 119, 153, 0.9))';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.1)';
+              e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
+            }}
+          >
+            <span style={{fontSize: '2rem'}}>☰</span>
+            <span>Alien Controls</span>
+          </button>
+
         </div>
       </div>
-
-      {/* DRAWER TRIGGER TAB - Left Side */}
-      <button
-        className="drawer-tab"
-        onClick={() => {
-          playSound('click');
-          setDrawerOpen(true);
-        }}
-        onMouseEnter={() => playSound('hover')}
-      >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px'
-        }}>
-          <span style={{fontSize: '1.5rem'}}>☰</span>
-          <div style={{
-            fontSize: '0.7rem',
-            fontWeight: 'bold',
-            letterSpacing: '1px',
-            textAlign: 'center',
-            lineHeight: '1.2'
-          }}>
-            ALIEN<br/>CONTROLS
-          </div>
-        </div>
-      </button>
 
       {/* LEFT SIDE DRAWER */}
       <div className={`control-drawer ${drawerOpen ? 'drawer-open' : ''}`}>
@@ -1732,35 +1750,6 @@ export default function MothershipPage() {
           background: rgba(0, 0, 0, 0.7);
           z-index: 9998;
           cursor: pointer;
-        }
-
-        /* Drawer Tab Trigger */
-        .drawer-tab {
-          position: fixed;
-          left: 0;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 60px;
-          height: 140px;
-          background: linear-gradient(135deg, rgba(0, 153, 204, 0.95), rgba(0, 119, 153, 0.95));
-          border: 2px solid rgba(0, 212, 255, 0.8);
-          border-left: none;
-          border-radius: 0 12px 12px 0;
-          color: #00ffff;
-          font-family: 'Orbitron', sans-serif;
-          cursor: pointer;
-          z-index: 9997;
-          box-shadow: 3px 0 15px rgba(0, 212, 255, 0.4);
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .drawer-tab:hover {
-          width: 70px;
-          background: linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95));
-          box-shadow: 3px 0 25px rgba(0, 212, 255, 0.7);
         }
 
         /* Responsive */
