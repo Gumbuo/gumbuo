@@ -1,0 +1,130 @@
+{
+  "exportTimestamp": "2025-11-03T23-40-04",
+  "bodyType": "female",
+  "standardAnimations": {
+    "exported": {
+      "spellcast": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "thrust": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "walk": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "slash": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "shoot": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "hurt": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "climb": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "idle": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "jump": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "sit": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "emote": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "run": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "combat_idle": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "backslash": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ],
+      "halfslash": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png"
+      ]
+    },
+    "failed": {}
+  },
+  "customAnimations": {
+    "exported": {
+      "tool_whip": [
+        "009 hair bunches adult bg blue.png",
+        "010 body bodies female pale_green.png",
+        "100 head heads alien adult pale_green.png",
+        "120 hair bunches adult fg blue.png",
+        "009 tools whip background whip.png",
+        "150 tools whip whip.png"
+      ]
+    },
+    "failed": {}
+  },
+  "frameSize": 64,
+  "frameCounts": {
+    "spellcast": 7,
+    "thrust": 8,
+    "walk": 9,
+    "slash": 6,
+    "shoot": 13,
+    "hurt": 6,
+    "climb": 6,
+    "idle": 2,
+    "jump": 5,
+    "sit": 3,
+    "emote": 3,
+    "run": 8,
+    "combat_idle": 2,
+    "backslash": 13,
+    "halfslash": 7
+  }
+}

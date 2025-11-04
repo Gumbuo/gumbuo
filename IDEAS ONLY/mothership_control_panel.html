@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mothership Control Panel - Gumbuo.io</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0ff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated starfield */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Main control panel container */
+        .control-panel {
+            position: relative;
+            z-index: 1;
+            width: 95%;
+            max-width: 1400px;
+            background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+            border: 4px solid #0ff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.5),
+                inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Header */
+        .panel-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #0ff;
+            padding-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 2.8em;
+            color: #0ff;
+            text-shadow: 0 0 20px #0ff;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .alien-symbols {
+            font-size: 1.2em;
+            color: #f0f;
+            letter-spacing: 5px;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; text-shadow: 2px 0 #f0f, -2px 0 #0ff; }
+        }
+
+        /* Main layout grid */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* LEFT PANEL - Toggle switches and dials */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-title {
+            color: #0ff;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid #0ff;
+            padding-bottom: 5px;
+        }
+
+        /* Toggle Switches */
+        .toggle-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #0ff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .toggle-switches {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+        }
+
+        .toggle-switch {
+            width: 60px;
+            height: 100px;
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 3px solid #555;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch:hover {
+            border-color: #0ff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .toggle-lever {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 35px;
+            background: #ff0000;
+            border-radius: 5px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+        }
+
+        .toggle-switch.active .toggle-lever {
+            top: 50px;
+            background: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+        }
+
+        .toggle-label {
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.6em;
+            color: #0ff;
+        }
+
+
+        /* CENTER SECTION - Buttons and viewport */
+        .center-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 7 UNIQUE BUTTONS */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #0ff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        /* BUTTON 1 - Circular Green */
+        .btn-1 {
+            background: radial-gradient(circle, #00ff00, #006600);
+            border: 4px solid #00ff00;
+            border-radius: 50%;
+            aspect-ratio: 1;
+        }
+
+        /* BUTTON 2 - Circle Blue */
+        .btn-2 {
+            background: radial-gradient(circle, #0099ff, #003366);
+            border: 4px solid #0099ff;
+            border-radius: 50%;
+            aspect-ratio: 1;
+        }
+
+        /* BUTTON 3 - Square Red */
+        .btn-3 {
+            background: linear-gradient(145deg, #ff0000, #660000);
+            border: 4px solid #ff0000;
+            border-radius: 10px;
+        }
+
+        /* BUTTON 4 - Square Purple */
+        .btn-4 {
+            background: linear-gradient(145deg, #ff00ff, #660066);
+            border: 4px solid #ff00ff;
+            border-radius: 10px;
+        }
+
+        /* BUTTON 5 - Square Orange */
+        .btn-5 {
+            background: linear-gradient(145deg, #ff9900, #663300);
+            border: 4px solid #ff9900;
+            border-radius: 10px;
+        }
+
+        /* BUTTON 6 - Circle Cyan */
+        .btn-6 {
+            background: radial-gradient(circle, #00ffff, #006666);
+            border: 4px solid #00ffff;
+            border-radius: 50%;
+            aspect-ratio: 1;
+        }
+
+        /* BUTTON 7 - Square Yellow */
+        .btn-7 {
+            background: linear-gradient(145deg, #ffff00, #666600);
+            border: 4px solid #ffff00;
+            border-radius: 10px;
+        }
+
+        /* Common button styles */
+        .control-button {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+        }
+
+        .control-button:hover {
+            transform: scale(1.1);
+            filter: brightness(1.5);
+        }
+
+        .control-button.active {
+            animation: buttonPulse 1s infinite;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { 
+                filter: brightness(1.5);
+                box-shadow: 0 0 30px currentColor;
+            }
+            50% { 
+                filter: brightness(2);
+                box-shadow: 0 0 50px currentColor;
+            }
+        }
+
+        .button-content {
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px #000;
+            font-weight: bold;
+        }
+
+        .button-icon {
+            font-size: 2.5em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .button-label {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .button-code {
+            font-size: 0.7em;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+
+        /* VIEWPORT - Ship Communications */
+        .viewport {
+            background: #000;
+            border: 3px solid #0ff;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 250px;
+            box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viewport-title {
+            color: #0ff;
+            font-size: 1em;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 1px solid #0ff;
+            padding-bottom: 10px;
+        }
+
+        .communications-log {
+            height: 180px;
+            overflow-y: auto;
+            font-size: 0.85em;
+            line-height: 1.8;
+            color: #0f0;
+        }
+
+        .communications-log::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .communications-log::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .communications-log::-webkit-scrollbar-thumb {
+            background: #0ff;
+            border-radius: 4px;
+        }
+
+        .comm-message {
+            margin-bottom: 8px;
+            animation: fadeInMessage 0.5s ease;
+        }
+
+        @keyframes fadeInMessage {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .comm-time {
+            color: #0ff;
+            margin-right: 10px;
+        }
+
+        .comm-from {
+            color: #f0f;
+            margin-right: 10px;
+        }
+
+        .comm-text {
+            color: #0f0;
+        }
+
+        .comm-alert {
+            color: #ff0;
+        }
+
+        .comm-error {
+            color: #f00;
+        }
+
+        /* RIGHT PANEL - Diagnostics */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .diagnostic-panel {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .diagnostic-title {
+            color: #0f0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 5px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .status-led {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            animation: ledBlink 2s infinite;
+        }
+
+        .status-led.green {
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .status-led.yellow {
+            background: #ff0;
+            box-shadow: 0 0 10px #ff0;
+        }
+
+        .status-led.red {
+            background: #f00;
+            box-shadow: 0 0 10px #f00;
+        }
+
+        @keyframes ledBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .status-text {
+            flex: 1;
+            color: #0f0;
+            font-size: 0.85em;
+        }
+
+        /* Meters */
+        .meter-container {
+            margin-bottom: 15px;
+        }
+
+        .meter-label {
+            color: #0f0;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .meter-bar {
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0f0, #0ff);
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px #0f0;
+            position: relative;
+        }
+
+        .meter-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-panel, .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .button-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .panel-title {
+                font-size: 1.8em;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Starfield -->
+    <div class="stars" id="starfield"></div>
+
+    <!-- Main Control Panel -->
+    <div class="control-panel">
+        <!-- Header -->
+        <div class="panel-header">
+            <div class="panel-title">◬ MOTHERSHIP COMMAND ◭</div>
+            <div class="alien-symbols">⟁⟐⟁ GUMBUO.IO CONTROL INTERFACE ⟁⟐⟁</div>
+        </div>
+
+        <!-- Main Layout Grid -->
+        <div class="main-layout">
+            
+            <!-- LEFT PANEL: Toggle Switches & Dials -->
+            <div class="left-panel">
+                
+                <!-- Toggle Switches -->
+                <div class="toggle-container">
+                    <div class="section-title">⚡ Power Toggles</div>
+                    <div class="toggle-switches">
+                        <div class="toggle-switch" onclick="toggleSwitch(this, 0)">
+                            <div class="toggle-lever"></div>
+                            <div class="toggle-label">AUX-1</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this, 1)">
+                            <div class="toggle-lever"></div>
+                            <div class="toggle-label">AUX-2</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this, 2)">
+                            <div class="toggle-lever"></div>
+                            <div class="toggle-label">AUX-3</div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- CENTER SECTION: 7 Buttons & Viewport -->
+            <div class="center-section">
+                
+                <!-- 7 Unique Control Buttons -->
+                <div class="button-grid">
+                    <div class="control-button btn-1" onclick="activateButton(this, 0)">
+                        <div class="button-content">
+                            <span class="button-icon">🚀</span>
+                            <div class="button-label">Launch</div>
+                            <div class="button-code">SYS-01</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-button btn-2" onclick="activateButton(this, 1)">
+                        <div class="button-content">
+                            <span class="button-icon">🛡️</span>
+                            <div class="button-label">Shields</div>
+                            <div class="button-code">SYS-02</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-button btn-3" onclick="activateButton(this, 2)">
+                        <div class="button-content">
+                            <span class="button-icon">⚡</span>
+                            <div class="button-label">Weapons</div>
+                            <div class="button-code">SYS-03</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-button btn-4" onclick="activateButton(this, 3)">
+                        <div class="button-content">
+                            <span class="button-icon">📡</span>
+                            <div class="button-label">Comms</div>
+                            <div class="button-code">SYS-04</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-button btn-5" onclick="activateButton(this, 4)">
+                        <div class="button-content">
+                            <span class="button-icon">🎯</span>
+                            <div class="button-label">Navigate</div>
+                            <div class="button-code">SYS-05</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-button btn-6" onclick="activateButton(this, 5)">
+                        <div class="button-content">
+                            <span class="button-icon">🔧</span>
+                            <div class="button-label">Systems</div>
+                            <div class="button-code">SYS-06</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-button btn-7" onclick="activateButton(this, 6)">
+                        <div class="button-content">
+                            <span class="button-icon">⚠️</span>
+                            <div class="button-label">Alert</div>
+                            <div class="button-code">SYS-07</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viewport - Ship Communications -->
+                <div class="viewport">
+                    <div class="viewport-title">◬ Ship Communications ◭</div>
+                    <div class="communications-log" id="comms-log">
+                        <div class="comm-message">
+                            <span class="comm-time">[14:32:01]</span>
+                            <span class="comm-from">&lt;BRIDGE&gt;</span>
+                            <span class="comm-text">All systems online. Awaiting command...</span>
+                        </div>
+                        <div class="comm-message">
+                            <span class="comm-time">[14:32:15]</span>
+                            <span class="comm-from">&lt;NAV&gt;</span>
+                            <span class="comm-text">Coordinates locked. Ready for jump.</span>
+                        </div>
+                        <div class="comm-message">
+                            <span class="comm-time">[14:32:28]</span>
+                            <span class="comm-from">&lt;ENG&gt;</span>
+                            <span class="comm-alert">Warning: Reactor core at 89% capacity</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT PANEL: Diagnostics -->
+            <div class="right-panel">
+                
+                <!-- System Status -->
+                <div class="diagnostic-panel">
+                    <div class="diagnostic-title">📊 System Status</div>
+                    
+                    <div class="system-status">
+                        <div class="status-led green"></div>
+                        <div class="status-text">Life Support: ACTIVE</div>
+                    </div>
+                    
+                    <div class="system-status">
+                        <div class="status-led green"></div>
+                        <div class="status-text">Propulsion: ONLINE</div>
+                    </div>
+                    
+                    <div class="system-status">
+                        <div class="status-led yellow"></div>
+                        <div class="status-text">Navigation: STANDBY</div>
+                    </div>
+                    
+                    <div class="system-status">
+                        <div class="status-led red"></div>
+                        <div class="status-text">Port Thruster: ERROR</div>
+                    </div>
+                </div>
+
+                <!-- Power Meters -->
+                <div class="diagnostic-panel">
+                    <div class="diagnostic-title">⚡ Power Levels</div>
+                    
+                    <div class="meter-container">
+                        <div class="meter-label">
+                            <span>Core Power</span>
+                            <span id="power-val">87%</span>
+                        </div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" id="power-meter" style="width: 87%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="meter-container">
+                        <div class="meter-label">
+                            <span>Shield Array</span>
+                            <span id="shield-val">92%</span>
+                        </div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" id="shield-meter" style="width: 92%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="meter-container">
+                        <div class="meter-label">
+                            <span>Fuel Reserves</span>
+                            <span id="fuel-val">74%</span>
+                        </div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" id="fuel-meter" style="width: 74%"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Generate starfield
+        const starfield = document.getElementById('starfield');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starfield.appendChild(star);
+        }
+
+        // Button labels
+        const buttonNames = ['Launch', 'Shields', 'Weapons', 'Comms', 'Navigate', 'Systems', 'Alert'];
+
+        // Activate button
+        function activateButton(btn, index) {
+            btn.classList.toggle('active');
+            
+            const status = btn.classList.contains('active') ? 'ACTIVATED' : 'DEACTIVATED';
+            addCommMessage('COMMAND', `${buttonNames[index]} system ${status}`, 'text');
+            
+            // Update meters
+            updateMeters();
+        }
+
+        // Toggle switch (visual only)
+        function toggleSwitch(toggle, index) {
+            toggle.classList.toggle('active');
+        }
+
+
+        // Add communication message
+        function addCommMessage(from, text, type = 'text') {
+            const log = document.getElementById('comms-log');
+            const time = new Date().toLocaleTimeString();
+            
+            const msg = document.createElement('div');
+            msg.className = 'comm-message';
+            msg.innerHTML = `
+                <span class="comm-time">[${time}]</span>
+                <span class="comm-from">&lt;${from}&gt;</span>
+                <span class="comm-${type}">${text}</span>
+            `;
+            
+            log.appendChild(msg);
+            log.scrollTop = log.scrollHeight;
+            
+            // Keep only last 20 messages
+            while (log.children.length > 20) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        // Update power meters
+        function updateMeters() {
+            const power = Math.floor(Math.random() * 20 + 75);
+            const shield = Math.floor(Math.random() * 20 + 80);
+            const fuel = Math.floor(Math.random() * 30 + 60);
+            
+            document.getElementById('power-meter').style.width = power + '%';
+            document.getElementById('power-val').textContent = power + '%';
+            
+            document.getElementById('shield-meter').style.width = shield + '%';
+            document.getElementById('shield-val').textContent = shield + '%';
+            
+            document.getElementById('fuel-meter').style.width = fuel + '%';
+            document.getElementById('fuel-val').textContent = fuel + '%';
+        }
+
+        // Random system messages
+        const systemMessages = [
+            ['SENSORS', 'Scanning nearby sectors...', 'text'],
+            ['NAV', 'Course correction complete', 'text'],
+            ['ENG', 'Coolant levels optimal', 'text'],
+            ['DEFENSE', 'Weapon systems armed', 'alert'],
+            ['MEDICAL', 'Crew health: nominal', 'text'],
+            ['CARGO', 'Bay pressure stable', 'text'],
+            ['COMMS', 'Receiving distant signal...', 'alert'],
+            ['AI', 'Background processes complete', 'text']
+        ];
+
+        setInterval(() => {
+            if (Math.random() > 0.6) {
+                const msg = systemMessages[Math.floor(Math.random() * systemMessages.length)];
+                addCommMessage(msg[0], msg[1], msg[2]);
+            }
+        }, 5000);
+
+        // Slowly vary meters
+        setInterval(() => {
+            if (Math.random() > 0.5) {
+                updateMeters();
+            }
+        }, 4000);
+    </script>
+</body>
+</html>
