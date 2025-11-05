@@ -261,7 +261,7 @@ export default function BasePage() {
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     maze: { title: "Maze Game", src: "/maze" },
-    catacombs: { title: "Alien Catacombs", comingSoon: true },
+    catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
   };
 
   return (
@@ -337,46 +337,43 @@ export default function BasePage() {
           }}>
             {selectedGame === "arena" ? games.arena.component : selectedGame === "boss" ? games.boss.component : selectedGame === "fighters" ? games.fighters.component : games.chess.component}
           </div>
-        ) : selectedGame === "catacombs" ? (
-          <div style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            background: '#000',
-            flexDirection: 'column',
-            gap: '20px'
-          }}>
-            <div style={{
-              fontSize: '3rem',
-              fontFamily: 'Orbitron, sans-serif',
-              color: '#00d4ff',
-              textShadow: '0 0 20px rgba(0, 212, 255, 0.8)',
-              letterSpacing: '4px'
-            }}>
-              COMING SOON
-            </div>
-            <div style={{
-              fontSize: '1.2rem',
-              fontFamily: 'Orbitron, sans-serif',
-              color: '#0099cc',
-              opacity: 0.8
-            }}>
-              Alien Catacombs
-            </div>
-          </div>
         ) : (
-          <iframe
-            key={selectedGame}
-            src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : games.maze.src}
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none',
-            }}
-            title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : games.maze.title}
-          />
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            {/* Daily Build Notice for Catacombs */}
+            {selectedGame === "catacombs" && (
+              <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                zIndex: 1000,
+                background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))',
+                padding: '12px 20px',
+                borderRadius: '8px',
+                border: '2px solid #00d4ff',
+                boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
+                fontFamily: 'Orbitron, sans-serif',
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                textAlign: 'center',
+                lineHeight: '1.4',
+                maxWidth: '250px'
+              }}>
+                <div style={{ fontSize: '16px', marginBottom: '4px' }}>⚠️ ALPHA BUILD</div>
+                <div style={{ fontSize: '12px', opacity: 0.9 }}>This build changes daily</div>
+              </div>
+            )}
+            <iframe
+              key={selectedGame}
+              src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : selectedGame === "catacombs" ? games.catacombs.src : games.maze.src}
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+              }}
+              title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : selectedGame === "catacombs" ? games.catacombs.title : games.maze.title}
+            />
+          </div>
         )}
       </div>
     </div>
