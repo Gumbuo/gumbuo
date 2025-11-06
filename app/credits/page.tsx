@@ -1,9 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useCosmicSound } from "../hooks/useCosmicSound";
 
 export default function CreditsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { playSound } = useCosmicSound();
 
   // Credits data - you can add more as you purchase more assets
   const credits = {
@@ -113,6 +115,7 @@ export default function CreditsPage() {
           gap: '8px'
         }}
         onMouseEnter={(e) => {
+          playSound('hover');
           e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))';
           e.currentTarget.style.transform = 'scale(1.05)';
         }}
@@ -184,6 +187,7 @@ export default function CreditsPage() {
                 transform: selectedCategory === category ? 'scale(1.02)' : 'scale(1)',
               }}
               onMouseEnter={(e) => {
+                playSound('hover');
                 e.currentTarget.style.transform = 'scale(1.05)';
                 e.currentTarget.style.boxShadow = `0 0 30px ${data.color}`;
               }}
@@ -267,6 +271,7 @@ export default function CreditsPage() {
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
+                    playSound('hover');
                     e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
                     e.currentTarget.style.borderColor = 'rgba(0, 212, 255, 0.6)';
                     e.currentTarget.style.transform = 'translateX(10px)';
@@ -321,6 +326,7 @@ export default function CreditsPage() {
                         boxShadow: '0 0 15px rgba(0, 255, 255, 0.4)'
                       }}
                       onMouseEnter={(e) => {
+                        playSound('hover');
                         e.currentTarget.style.transform = 'scale(1.05)';
                         e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 255, 0.8)';
                       }}

@@ -5,6 +5,7 @@ import BackToMothershipButton from "../components/BackToMothershipButton";
 import { useAlienPoints } from "../context/AlienPointContext";
 import { useAlienPoints as useAlienPointsEconomy } from "../context/AlienPointsEconomy";
 import { useAccount } from "wagmi";
+import { useCosmicSound } from "../hooks/useCosmicSound";
 
 const Home = dynamic(() => import("@lib/Home"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
@@ -17,6 +18,7 @@ export default function BasePage() {
   const alienPointContext = useAlienPoints();
   const { addPoints } = useAlienPointsEconomy();
   const { address } = useAccount();
+  const { playSound } = useCosmicSound();
 
   // Listen for alien points updates from maze iframe and invasion game
   useEffect(() => {
@@ -310,6 +312,7 @@ export default function BasePage() {
                   : 'none',
               }}
               onMouseEnter={(e) => {
+                playSound('hover');
                 if (selectedGame !== key) {
                   e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
                   e.currentTarget.style.borderColor = '#00d4ff';
@@ -361,6 +364,7 @@ export default function BasePage() {
                     : 'none',
                 }}
                 onMouseEnter={(e) => {
+                  playSound('hover');
                   if (selectedOldGame !== key) {
                     e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
                     e.currentTarget.style.borderColor = '#00ff99';

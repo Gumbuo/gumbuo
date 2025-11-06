@@ -573,6 +573,7 @@ export default function MothershipPage() {
                 <Link
                   href="/base"
                   className="portal-item"
+                  onMouseEnter={() => playSound('hover')}
                   style={{
                     background: 'linear-gradient(135deg, rgba(0, 153, 255, 0.2), rgba(0, 119, 204, 0.3))',
                     padding: '20px',
@@ -596,6 +597,7 @@ export default function MothershipPage() {
                 <Link
                   href="/base"
                   className="portal-item"
+                  onMouseEnter={() => playSound('hover')}
                   style={{
                     background: 'linear-gradient(135deg, rgba(136, 136, 136, 0.2), rgba(102, 102, 102, 0.3))',
                     padding: '20px',
@@ -619,6 +621,7 @@ export default function MothershipPage() {
                 <Link
                   href="/base"
                   className="portal-item"
+                  onMouseEnter={() => playSound('hover')}
                   style={{
                     background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.2), rgba(0, 204, 122, 0.3))',
                     padding: '20px',
@@ -642,6 +645,7 @@ export default function MothershipPage() {
                 <Link
                   href="/credits"
                   className="portal-item"
+                  onMouseEnter={() => playSound('hover')}
                   style={{
                     background: 'linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(204, 34, 34, 0.3))',
                     padding: '20px',
