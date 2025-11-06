@@ -638,7 +638,7 @@ export default function MothershipPage() {
                 </Link>
 
                 <Link
-                  href="/base"
+                  href="/credits"
                   className="portal-item"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(204, 34, 34, 0.3))',
@@ -650,14 +650,14 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/redportal.png"
-                    alt="Games"
+                    alt="Credits"
                     className="portal-image"
                     style={{
                       borderColor: '#ff3366',
                       boxShadow: '0 0 25px rgba(255, 51, 102, 0.8)'
                     }}
                   />
-                  <div className="portal-label">GAMES</div>
+                  <div className="portal-label">CREDITS</div>
                 </Link>
               </div>
             </div>
