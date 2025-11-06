@@ -32,31 +32,30 @@ __meta__ = {
 }
 
 [node name="v_box_container" type="VBoxContainer" parent="center_container"]
-margin_left = 133.0
-margin_top = 26.0
-margin_right = 379.0
-margin_bottom = 262.0
+margin_left = 135.0
+margin_right = 376.0
+margin_bottom = 292.0
 custom_constants/separation = 24
 
 [node name="title" type="Label" parent="center_container/v_box_container"]
-margin_right = 246.0
-margin_bottom = 22.0
+margin_right = 241.0
+margin_bottom = 20.0
+custom_colors/font_color = Color( 0, 1, 0.690196, 1 )
 custom_fonts/font = ExtResource( 7 )
-custom_colors/font_color = Color( 0, 0.831373, 1, 1 )
 text = "ALIEN CATACOMBS"
 align = 1
 valign = 1
 
 [node name="spacer" type="Control" parent="center_container/v_box_container"]
-margin_top = 46.0
-margin_right = 246.0
-margin_bottom = 66.0
+margin_top = 44.0
+margin_right = 241.0
+margin_bottom = 64.0
 rect_min_size = Vector2( 0, 20 )
 
 [node name="button_start" type="TextureButton" parent="center_container/v_box_container"]
-margin_top = 90.0
-margin_right = 246.0
-margin_bottom = 142.0
+margin_top = 88.0
+margin_right = 241.0
+margin_bottom = 140.0
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 4 )
 texture_hover = ExtResource( 5 )
@@ -67,18 +66,19 @@ stretch_mode = 2
 [node name="label" type="Label" parent="center_container/v_box_container/button_start"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = -3.0
+margin_top = 1.0
+margin_right = -3.0
+margin_bottom = 1.0
 custom_fonts/font = ExtResource( 7 )
 text = "Start Game"
 align = 1
 valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="button_settings" type="TextureButton" parent="center_container/v_box_container"]
-margin_top = 166.0
-margin_right = 246.0
-margin_bottom = 218.0
+margin_top = 164.0
+margin_right = 241.0
+margin_bottom = 216.0
 toggle_mode = true
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 4 )
@@ -99,9 +99,9 @@ __meta__ = {
 }
 
 [node name="button_quit" type="TextureButton" parent="center_container/v_box_container"]
-margin_top = 242.0
-margin_right = 246.0
-margin_bottom = 294.0
+margin_top = 240.0
+margin_right = 241.0
+margin_bottom = 292.0
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 4 )
 texture_hover = ExtResource( 5 )

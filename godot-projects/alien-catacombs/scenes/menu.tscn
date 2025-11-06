@@ -115,9 +115,8 @@ __meta__ = {
 }
 
 [node name="button_resume" type="TextureButton" parent="menu/cont"]
-margin_left = -248.0
 margin_top = 50.0
-margin_right = -7.0
+margin_right = 241.0
 margin_bottom = 102.0
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 4 )
@@ -138,9 +137,8 @@ __meta__ = {
 }
 
 [node name="button_settings" type="TextureButton" parent="menu/cont"]
-margin_left = -248.0
 margin_top = 118.0
-margin_right = -7.0
+margin_right = 241.0
 margin_bottom = 170.0
 toggle_mode = true
 texture_normal = ExtResource( 2 )
@@ -162,9 +160,8 @@ __meta__ = {
 }
 
 [node name="button_quit" type="TextureButton" parent="menu/cont"]
-margin_left = -248.0
 margin_top = 186.0
-margin_right = -7.0
+margin_right = 241.0
 margin_bottom = 238.0
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 4 )
