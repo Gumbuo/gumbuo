@@ -12,7 +12,7 @@ const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: f
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 
 export default function BasePage() {
-  const [selectedGame, setSelectedGame] = useState("fighters");
+  const [selectedGame, setSelectedGame] = useState("catacombs");
   const [selectedOldGame, setSelectedOldGame] = useState("arena");
   const alienPointContext = useAlienPoints();
   const { addPoints } = useAlienPointsEconomy();
