@@ -1,0 +1,107 @@
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://scenes/components/hitbox.gd" type="Script" id=1]
+[ext_resource path="res://scenes/components/hurtbox.gd" type="Script" id=2]
+[ext_resource path="res://scenes/entity/enemy.gd" type="Script" id=3]
+[ext_resource path="res://scenes/components/Health.gd" type="Script" id=4]
+
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_1.png" type="Texture" id=10]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_2.png" type="Texture" id=11]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_3.png" type="Texture" id=12]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_4.png" type="Texture" id=13]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_5.png" type="Texture" id=14]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_6.png" type="Texture" id=15]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_7.png" type="Texture" id=16]
+[ext_resource path="res://asset/characters/enemy1/enemy1_idle_8.png" type="Texture" id=17]
+
+[ext_resource path="res://asset/characters/enemy1/enemy1_punch_1.png" type="Texture" id=20]
+[ext_resource path="res://asset/characters/enemy1/enemy1_punch_2.png" type="Texture" id=21]
+[ext_resource path="res://asset/characters/enemy1/enemy1_punch_3.png" type="Texture" id=22]
+[ext_resource path="res://asset/characters/enemy1/enemy1_punch_4.png" type="Texture" id=23]
+
+[ext_resource path="res://asset/characters/enemy1/enemy1_hurt_1.png" type="Texture" id=30]
+[ext_resource path="res://asset/characters/enemy1/enemy1_hurt_2.png" type="Texture" id=31]
+[ext_resource path="res://asset/characters/enemy1/enemy1_hurt_3.png" type="Texture" id=32]
+[ext_resource path="res://asset/characters/enemy1/enemy1_hurt_4.png" type="Texture" id=33]
+
+[ext_resource path="res://asset/characters/enemy1/enemy1_dead_1.png" type="Texture" id=40]
+[ext_resource path="res://asset/characters/enemy1/enemy1_dead_2.png" type="Texture" id=41]
+
+[sub_resource type="SpriteFrames" id=5]
+animations = [ {
+"frames": [ ExtResource( 40 ), ExtResource( 41 ) ],
+"loop": false,
+"name": "dead",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 30 ), ExtResource( 31 ), ExtResource( 32 ), ExtResource( 33 ) ],
+"loop": false,
+"name": "hurt",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ) ],
+"loop": true,
+"name": "idle",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ) ],
+"loop": false,
+"name": "punch",
+"speed": 12.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 10.0
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 15, 10 )
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 150.0
+
+[node name="Enemy" type="KinematicBody2D"]
+script = ExtResource( 3 )
+
+[node name="sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 5 )
+animation = "idle"
+playing = true
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource( 4 )
+max_health = 50
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 8
+script = ExtResource( 2 )
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource( 2 )
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
+monitoring = false
+script = ExtResource( 1 )
+damage = 15
+knockback_force = 100
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="AttackHitbox"]
+position = Vector2( 20, 0 )
+shape = SubResource( 3 )
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource( 4 )
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true

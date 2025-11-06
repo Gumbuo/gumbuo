@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/1568f91b242dbf39890e1e35d09cb2c4e4e6c2a43b23215a68ee221a8ab15335-Punch2.ogg-0bc7f255554f9f249d60247dddaefe0e.oggstr"
+
+[deps]
+
+source_file="res://asset/sounds/1568f91b242dbf39890e1e35d09cb2c4e4e6c2a43b23215a68ee221a8ab15335-Punch2.ogg"
+dest_files=[ "res://.import/1568f91b242dbf39890e1e35d09cb2c4e4e6c2a43b23215a68ee221a8ab15335-Punch2.ogg-0bc7f255554f9f249d60247dddaefe0e.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

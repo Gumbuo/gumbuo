@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/82ff97716325c2ef6954c8b869eec3f9aab676413b2973df6ac7962780e17daf-EnemyDeath2.ogg-b6fb2d62e3ef85266b14b4997992614b.oggstr"
+
+[deps]
+
+source_file="res://asset/sounds/82ff97716325c2ef6954c8b869eec3f9aab676413b2973df6ac7962780e17daf-EnemyDeath2.ogg"
+dest_files=[ "res://.import/82ff97716325c2ef6954c8b869eec3f9aab676413b2973df6ac7962780e17daf-EnemyDeath2.ogg-b6fb2d62e3ef85266b14b4997992614b.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

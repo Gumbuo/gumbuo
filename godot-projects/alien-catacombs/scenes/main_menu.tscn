@@ -1,0 +1,125 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/main_menu.gd" type="Script" id=1]
+[ext_resource path="res://asset/ui/button_big/bouton_normal.png" type="Texture" id=2]
+[ext_resource path="res://asset/ui/button_big/bouton_focused.png" type="Texture" id=3]
+[ext_resource path="res://asset/ui/button_big/bouton_pressed.png" type="Texture" id=4]
+[ext_resource path="res://asset/ui/button_big/bouton_hover.png" type="Texture" id=5]
+[ext_resource path="res://asset/ui/button_big/bouton_disabled.png" type="Texture" id=6]
+[ext_resource path="res://fonts/font_big.tres" type="DynamicFont" id=7]
+
+[node name="main_menu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0784314, 0.0784314, 0.121569, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="center_container" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="v_box_container" type="VBoxContainer" parent="center_container"]
+margin_left = 133.0
+margin_top = 26.0
+margin_right = 379.0
+margin_bottom = 262.0
+custom_constants/separation = 24
+
+[node name="title" type="Label" parent="center_container/v_box_container"]
+margin_right = 246.0
+margin_bottom = 22.0
+custom_fonts/font = ExtResource( 7 )
+custom_colors/font_color = Color( 0, 0.831373, 1, 1 )
+text = "ALIEN CATACOMBS"
+align = 1
+valign = 1
+
+[node name="spacer" type="Control" parent="center_container/v_box_container"]
+margin_top = 46.0
+margin_right = 246.0
+margin_bottom = 66.0
+rect_min_size = Vector2( 0, 20 )
+
+[node name="button_start" type="TextureButton" parent="center_container/v_box_container"]
+margin_top = 90.0
+margin_right = 246.0
+margin_bottom = 142.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 5 )
+texture_disabled = ExtResource( 6 )
+texture_focused = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="label" type="Label" parent="center_container/v_box_container/button_start"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = ExtResource( 7 )
+text = "Start Game"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="button_settings" type="TextureButton" parent="center_container/v_box_container"]
+margin_top = 166.0
+margin_right = 246.0
+margin_bottom = 218.0
+toggle_mode = true
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 5 )
+texture_disabled = ExtResource( 6 )
+texture_focused = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="label" type="Label" parent="center_container/v_box_container/button_settings"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = ExtResource( 7 )
+text = "Settings"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="button_quit" type="TextureButton" parent="center_container/v_box_container"]
+margin_top = 242.0
+margin_right = 246.0
+margin_bottom = 294.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 5 )
+texture_disabled = ExtResource( 6 )
+texture_focused = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="label" type="Label" parent="center_container/v_box_container/button_quit"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = ExtResource( 7 )
+text = "Quit"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="center_container/v_box_container/button_start" to="." method="_on_button_start_pressed"]
+[connection signal="pressed" from="center_container/v_box_container/button_settings" to="." method="_on_button_settings_pressed"]
+[connection signal="pressed" from="center_container/v_box_container/button_quit" to="." method="_on_button_quit_pressed"]

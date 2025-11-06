@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/0989b53bb47e5aa49e45669c5b3fa2d8607836fe7d797e30ee035f2d56d3ab3e-EnemyKnocked.ogg-087d5609904a8859bc3be621e64d26ad.oggstr"
+
+[deps]
+
+source_file="res://asset/sounds/0989b53bb47e5aa49e45669c5b3fa2d8607836fe7d797e30ee035f2d56d3ab3e-EnemyKnocked.ogg"
+dest_files=[ "res://.import/0989b53bb47e5aa49e45669c5b3fa2d8607836fe7d797e30ee035f2d56d3ab3e-EnemyKnocked.ogg-087d5609904a8859bc3be621e64d26ad.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
