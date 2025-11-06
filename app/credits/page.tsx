@@ -16,6 +16,12 @@ export default function CreditsPage() {
           creator: "Deakcor",
           url: "https://deakcor.itch.io/",
           description: "Complete tileset and sprites used in Alien Catacombs, including dungeon floors, walls, decorations, and character sprites. Follow on Twitter: @deakcor"
+        },
+        {
+          name: "LPC Character Sprites",
+          creator: "bluecarrot16, JaidynReiman, Benjamin K. Smith, Evert, Eliza Wyatt, TheraHedwig, MuffinElZangano, Durrani, Johannes Sjölund, Stephen Challener & OpenGameArt Community",
+          url: "https://opengameart.org/content/lpc-character-bases",
+          description: "Liberated Pixel Cup (LPC) character base assets and sprite sheets used for player and enemy characters. Licensed under OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0"
         }
       ]
     },
