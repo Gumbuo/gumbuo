@@ -392,7 +392,7 @@ export default function BasePage() {
             const game = oldGames[selectedOldGame as keyof typeof oldGames];
 
             // Old games with components (arena, boss)
-            if (game.component) {
+            if ('component' in game && game.component) {
               return (
                 <div style={{
                   width: '100%',
@@ -411,7 +411,7 @@ export default function BasePage() {
             }
 
             // Old games with iframes (maze)
-            if (game.src) {
+            if ('src' in game && game.src) {
               return (
                 <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                   <iframe
@@ -431,12 +431,12 @@ export default function BasePage() {
 
           // Handle current games
           const game = games[selectedGame as keyof typeof games];
-          if (!game || game.isCategory) {
+          if (!game || ('isCategory' in game && game.isCategory)) {
             return null;
           }
 
           // Games with components (fighters, chess)
-          if (game.component) {
+          if ('component' in game && game.component) {
             return (
               <div style={{
                 width: '100%',
@@ -455,7 +455,7 @@ export default function BasePage() {
           }
 
           // Games with iframes (invasion, dungeon, catacombs)
-          if (game.src) {
+          if ('src' in game && game.src) {
             return (
               <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                 {/* Daily Build Notice for Catacombs */}
