@@ -123,7 +123,7 @@
         <button id="startBtn">Start Game</button>
         <button id="claimBtn" class="hidden">💰 CLAIM ALIEN POINTS</button>
         <div id="instructions">
-            🎮 Use ARROW KEYS or A/D to move | SPACE to shoot | Destroy the Gumbuo aliens!
+            🎮 Use ARROW KEYS or A/D to move | LEFT CLICK or SPACE to shoot | Destroy the Gumbuo aliens!
         </div>
     </div>
 
@@ -692,6 +692,19 @@
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 player.moveRight = false;
             }
+        });
+
+        // Mouse click to shoot
+        canvas.addEventListener('click', (e) => {
+            if (!gameRunning) return;
+
+            bullets.push({
+                x: player.x + player.width / 2 - 2,
+                y: player.y,
+                width: 4,
+                height: 15,
+                fromPlayer: true
+            });
         });
 
         // Button event listeners
