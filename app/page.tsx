@@ -1182,7 +1182,7 @@ export default function MothershipPage() {
           left: 50%;
           transform: translateX(-50%);
           width: 40%;
-          height: 60%;
+          height: 64%;
           background: #000;
           border: 12px solid #7a7a85;
           border-radius: 10px;
