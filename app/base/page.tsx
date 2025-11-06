@@ -257,12 +257,12 @@ export default function BasePage() {
   const oldGames = {
     arena: { title: "AP Arena", component: <Home chainType="base" hideConnectButton={true} /> },
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
+    chess: { title: "PvP Chess", component: <ChessWrapper /> },
     maze: { title: "Maze Game", src: "/maze" },
   };
 
   const games = {
     fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters /> },
-    chess: { title: "PvP Chess", component: <ChessWrapper /> },
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
