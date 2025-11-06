@@ -3,6 +3,7 @@ extends Area2D
 export var speed = 200
 var direction = Vector2.RIGHT
 var damage = 10
+var is_enemy_bullet = false  # If true, damages player. If false, damages enemies
 
 # Audio
 var hit_sound = AudioStreamPlayer.new()
@@ -30,33 +31,60 @@ func _physics_process(delta):
 func _on_body_entered(body):
 	print("Bullet hit: ", body.name, " Type: ", body.get_class())
 
-	# Ignore player
-	if body.is_in_group("player") or body.name == "player":
-		print("Ignoring player")
+	# Enemy bullets damage players only
+	if is_enemy_bullet:
+		# Check if hit player
+		if body.is_in_group("player") or body.name == "player":
+			print("Enemy bullet hit player!")
+			if body.has_node("Health"):
+				var health = body.get_node("Health")
+				if health.has_method("take_damage"):
+					print("Dealing ", damage, " damage to player")
+					health.take_damage(damage)
+					# Play hit sound
+					hit_sound.play()
+					# Hide bullet visually but keep it alive for sound
+					$ColorRect.visible = false
+					set_physics_process(false)
+					# Destroy after sound plays
+					yield(get_tree().create_timer(0.3), "timeout")
+					queue_free()
+		# Hit a wall
+		elif body is TileMap or body is StaticBody2D:
+			print("Hit wall, destroying bullet")
+			queue_free()
+		# Ignore other enemies
 		return
 
-	# Check if hit an enemy (enemies have a health node and are NOT the player)
-	if body.has_node("Health"):
-		print("Found Health node!")
-		var health = body.get_node("Health")
-		if health.has_method("take_damage"):
-			print("Dealing ", damage, " damage to enemy")
-			health.take_damage(damage)
-			# Play hit sound
-			hit_sound.play()
-			# Hide bullet visually but keep it alive for sound
-			$ColorRect.visible = false
-			set_physics_process(false)
-			# Destroy after sound plays
-			yield(get_tree().create_timer(0.3), "timeout")
-			queue_free()
-	# Hit a wall
-	elif body is TileMap or body is StaticBody2D:
-		print("Hit wall, destroying bullet")
-		# Don't play sound for walls, just destroy
-		queue_free()
+	# Player bullets damage enemies only
 	else:
-		print("Hit unknown object: ", body)
+		# Ignore player
+		if body.is_in_group("player") or body.name == "player":
+			print("Ignoring player")
+			return
+
+		# Check if hit an enemy (enemies have a health node and are NOT the player)
+		if body.has_node("Health"):
+			print("Found Health node!")
+			var health = body.get_node("Health")
+			if health.has_method("take_damage"):
+				print("Dealing ", damage, " damage to enemy")
+				health.take_damage(damage)
+				# Play hit sound
+				hit_sound.play()
+				# Hide bullet visually but keep it alive for sound
+				$ColorRect.visible = false
+				set_physics_process(false)
+				# Destroy after sound plays
+				yield(get_tree().create_timer(0.3), "timeout")
+				queue_free()
+		# Hit a wall
+		elif body is TileMap or body is StaticBody2D:
+			print("Hit wall, destroying bullet")
+			# Don't play sound for walls, just destroy
+			queue_free()
+		else:
+			print("Hit unknown object: ", body)
 
 func _on_timeout():
 	queue_free()

@@ -10,21 +10,19 @@ var current_state = State.IDLE
 
 # AI Parameters
 export var detection_range := 150.0
-export var attack_range := 40.0
 export var patrol_points := []
 var current_patrol_index := 0
 
-# Combat
-export var attack_damage := 15
-export var attack_cooldown := 1.5
-var can_attack := true
+# Shooting attack (all enemies shoot now)
+export var shoot_range := 120.0  # Distance from which enemy starts shooting
+var bullet_scene = preload("res://scenes/entity/bullet.tscn")
+var shoot_cooldown := 1.0
+var can_shoot := true
 
 # References
 onready var health = $Health
 onready var hurtbox = $Hurtbox
-onready var attack_hitbox = $AttackHitbox
 onready var detection_area = $DetectionArea
-onready var attack_timer = $AttackTimer
 
 var target: Player = null
 
@@ -37,11 +35,6 @@ func _ready():
 
 	# Connect hurtbox
 	hurtbox.connect("hit_received", self, "_on_hit_received")
-
-	# Setup attack timer
-	attack_timer.wait_time = attack_cooldown
-	attack_timer.one_shot = true
-	attack_timer.connect("timeout", self, "_on_attack_cooldown_finished")
 
 func animation():
 	# Don't override attack/hurt/dead animations
@@ -115,45 +108,30 @@ func _state_chase():
 		current_state = State.IDLE
 		return
 
-	# Close enough to attack
-	if distance_to_target <= attack_range and can_attack:
+	# Keep distance and shoot
+	if distance_to_target <= shoot_range and can_shoot:
+		velocity_direction = Vector2.ZERO
 		current_state = State.ATTACK
 		return
-
-	# Stop moving when within attack range to prevent collision freeze
-	# This gives a small buffer zone to avoid physics conflicts
-	if distance_to_target <= attack_range + 10:
+	# Move closer if too far
+	elif distance_to_target > shoot_range:
+		var direction = (target.global_position - global_position).normalized()
+		velocity_direction = direction
+		update_look_direction()
+	# Maintain distance
+	else:
 		velocity_direction = Vector2.ZERO
 		update_look_direction()
-		return
-
-	# Chase towards player
-	var direction = (target.global_position - global_position).normalized()
-	velocity_direction = direction
-	update_look_direction()
 
 func _state_attack():
 	velocity_direction = Vector2.ZERO
 
-	if not can_attack:
+	# Shoot at player
+	if not can_shoot:
 		current_state = State.CHASE
 		return
 
-	# Perform attack
-	can_attack = false
-	attack_timer.start()
-
-	# Play attack animation
-	sprite.play("punch")  # or "kick" randomly
-
-	# Activate hitbox
-	yield(get_tree().create_timer(0.2), "timeout")
-	attack_hitbox.damage = attack_damage
-	attack_hitbox.activate()
-
-	yield(get_tree().create_timer(0.3), "timeout")
-	attack_hitbox.deactivate()
-
+	shoot_at_player()
 	current_state = State.CHASE
 
 func _state_hurt():
@@ -206,8 +184,32 @@ func _on_died():
 	yield(sprite, "animation_finished")
 	queue_free()
 
-func _on_attack_cooldown_finished():
-	can_attack = true
+# Shooting function for all enemies
+func shoot_at_player():
+	if not target:
+		return
+
+	can_shoot = false
+
+	# Create bullet
+	var bullet = bullet_scene.instance()
+
+	# Set bullet position
+	bullet.global_position = global_position
+
+	# Shoot toward player
+	var shoot_direction = (target.global_position - global_position).normalized()
+	bullet.direction = shoot_direction
+
+	# Make bullet hostile to player (set to enemy team)
+	bullet.is_enemy_bullet = true
+
+	# Add bullet to scene
+	get_parent().add_child(bullet)
+
+	# Start cooldown
+	yield(get_tree().create_timer(shoot_cooldown), "timeout")
+	can_shoot = true
 
 # Helper to set patrol waypoints
 func set_patrol_waypoints(waypoints: Array):
