@@ -564,7 +564,7 @@ export default function MothershipPage() {
               </video>
 
               {/* Header */}
-              <h1 className="portals-header" style={{ position: 'relative', zIndex: 10 }}>Gumbuo's Blockchain Portals</h1>
+              <h1 className="portals-header" style={{ position: 'relative', zIndex: 10 }}>Mothership Portals</h1>
 
               {/* Centered Portal Grid */}
               <div className="portals-grid" style={{ position: 'relative', zIndex: 10 }}>
