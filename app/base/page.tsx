@@ -15,7 +15,7 @@ const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 
 export default function BasePage() {
   const searchParams = useSearchParams();
-  const gameParam = searchParams.get('game');
+  const gameParam = searchParams?.get('game');
 
   const [selectedGame, setSelectedGame] = useState(gameParam || "catacombs");
   const [selectedOldGame, setSelectedOldGame] = useState("arena");
