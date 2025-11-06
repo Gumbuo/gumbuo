@@ -11,5 +11,5 @@ dest_files=[ "res://.import/7f15794c712fa02ecaf70e0037e2b5678dc500111c7713bc055b
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0
