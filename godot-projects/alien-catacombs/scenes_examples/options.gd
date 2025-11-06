@@ -2,7 +2,7 @@ extends CanvasLayer
 
 signal close()
 
-var timer_text:Array=["MENU_NONE","MENU_LEVEL","MENU_BOTH"]
+var timer_text:Array=["None","Level","Both"]
 onready var button_langue:Button=get_node("reglage/Button_langue")
 onready var button_chrono:Button=get_node("reglage/Button_chrono")
 onready var button_text:Button=get_node("reglage/Button_text")
@@ -112,13 +112,13 @@ func _on_Button_text_pressed():
 
 func refresh_textspeed():
 	if global.textspeed==0.01:
-		button_text.set_text("MENU_FAST")
+		button_text.set_text("Fast")
 	elif global.textspeed==0.1:
-		button_text.set_text("MENU_SLOW")
+		button_text.set_text("Slow")
 	elif global.textspeed==0:
-		button_text.set_text("MENU_INSTANT")
+		button_text.set_text("Instant")
 	else:
-		button_text.set_text("MENU_MED")
+		button_text.set_text("Medium")
 		
 		
 
