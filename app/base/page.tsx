@@ -12,7 +12,8 @@ const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: f
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 
 export default function BasePage() {
-  const [selectedGame, setSelectedGame] = useState("arena");
+  const [selectedGame, setSelectedGame] = useState("fighters");
+  const [selectedOldGame, setSelectedOldGame] = useState("arena");
   const alienPointContext = useAlienPoints();
   const { addPoints } = useAlienPointsEconomy();
   const { address } = useAccount();
@@ -253,68 +254,130 @@ export default function BasePage() {
     return () => window.removeEventListener('message', handleMessage);
   }, [alienPointContext, address, addPoints]);
 
-  const games = {
+  const oldGames = {
     arena: { title: "AP Arena", component: <Home chainType="base" hideConnectButton={true} /> },
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
+    maze: { title: "Maze Game", src: "/maze" },
+  };
+
+  const games = {
     fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters /> },
     chess: { title: "PvP Chess", component: <ChessWrapper /> },
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
-    maze: { title: "Maze Game", src: "/maze" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
+    oldGames: { title: "Old Games", isCategory: true },
   };
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#000' }}>
       <BackToMothershipButton />
-      {/* Game Selector */}
+      {/* Main Game Selector */}
       <div style={{
         display: 'flex',
-        gap: '10px',
-        padding: '15px',
+        flexDirection: 'column',
         background: 'linear-gradient(to bottom, #1a1a2e, #0f0f1e)',
         borderBottom: '2px solid #00d4ff',
-        justifyContent: 'center',
-        flexWrap: 'wrap'
       }}>
-        {Object.entries(games).map(([key, game]) => (
-          <button
-            key={key}
-            onClick={() => setSelectedGame(key)}
-            style={{
-              padding: '12px 24px',
-              background: selectedGame === key
-                ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
-                : 'rgba(0, 212, 255, 0.1)',
-              color: selectedGame === key ? '#000' : '#00d4ff',
-              border: `2px solid ${selectedGame === key ? '#00d4ff' : '#00d4ff44'}`,
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontFamily: 'Orbitron, sans-serif',
-              fontWeight: 'bold',
-              fontSize: '14px',
-              textTransform: 'uppercase',
-              transition: 'all 0.3s ease',
-              boxShadow: selectedGame === key
-                ? '0 0 20px rgba(0, 212, 255, 0.5)'
-                : 'none',
-            }}
-            onMouseEnter={(e) => {
-              if (selectedGame !== key) {
-                e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
-                e.currentTarget.style.borderColor = '#00d4ff';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (selectedGame !== key) {
-                e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
-                e.currentTarget.style.borderColor = '#00d4ff44';
-              }
-            }}
-          >
-            {game.title}
-          </button>
-        ))}
+        {/* Main Tabs */}
+        <div style={{
+          display: 'flex',
+          gap: '10px',
+          padding: '15px',
+          justifyContent: 'center',
+          flexWrap: 'wrap'
+        }}>
+          {Object.entries(games).map(([key, game]) => (
+            <button
+              key={key}
+              onClick={() => setSelectedGame(key)}
+              style={{
+                padding: '12px 24px',
+                background: selectedGame === key
+                  ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
+                  : 'rgba(0, 212, 255, 0.1)',
+                color: selectedGame === key ? '#000' : '#00d4ff',
+                border: `2px solid ${selectedGame === key ? '#00d4ff' : '#00d4ff44'}`,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                textTransform: 'uppercase',
+                transition: 'all 0.3s ease',
+                boxShadow: selectedGame === key
+                  ? '0 0 20px rgba(0, 212, 255, 0.5)'
+                  : 'none',
+              }}
+              onMouseEnter={(e) => {
+                if (selectedGame !== key) {
+                  e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
+                  e.currentTarget.style.borderColor = '#00d4ff';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedGame !== key) {
+                  e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
+                  e.currentTarget.style.borderColor = '#00d4ff44';
+                }
+              }}
+            >
+              {game.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Old Games Sub-Tabs */}
+        {selectedGame === "oldGames" && (
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            padding: '10px 15px',
+            paddingTop: '0',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            borderTop: '1px solid rgba(0, 212, 255, 0.3)',
+          }}>
+            {Object.entries(oldGames).map(([key, game]) => (
+              <button
+                key={key}
+                onClick={() => setSelectedOldGame(key)}
+                style={{
+                  padding: '8px 16px',
+                  background: selectedOldGame === key
+                    ? 'linear-gradient(135deg, #00ff99, #00cc77)'
+                    : 'rgba(0, 255, 153, 0.1)',
+                  color: selectedOldGame === key ? '#000' : '#00ff99',
+                  border: `2px solid ${selectedOldGame === key ? '#00ff99' : '#00ff9944'}`,
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  transition: 'all 0.3s ease',
+                  boxShadow: selectedOldGame === key
+                    ? '0 0 15px rgba(0, 255, 153, 0.4)'
+                    : 'none',
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedOldGame !== key) {
+                    e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
+                    e.currentTarget.style.borderColor = '#00ff99';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedOldGame !== key) {
+                    e.currentTarget.style.background = 'rgba(0, 255, 153, 0.1)';
+                    e.currentTarget.style.borderColor = '#00ff9944';
+                  }
+                }}
+              >
+                {game.title}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Game Display */}
@@ -323,58 +386,118 @@ export default function BasePage() {
         height: 'calc(100vh - 70px)',
         overflow: 'hidden'
       }}>
-        {(selectedGame === "arena" || selectedGame === "boss" || selectedGame === "chess" || selectedGame === "fighters") ? (
-          <div style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            background: '#000',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            padding: '20px 0'
-          }}>
-            {selectedGame === "arena" ? games.arena.component : selectedGame === "boss" ? games.boss.component : selectedGame === "fighters" ? games.fighters.component : games.chess.component}
-          </div>
-        ) : (
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            {/* Daily Build Notice for Catacombs */}
-            {selectedGame === "catacombs" && (
+        {(() => {
+          // Handle Old Games category
+          if (selectedGame === "oldGames") {
+            const game = oldGames[selectedOldGame as keyof typeof oldGames];
+
+            // Old games with components (arena, boss)
+            if (game.component) {
+              return (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  background: '#000',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                  padding: '20px 0'
+                }}>
+                  {game.component}
+                </div>
+              );
+            }
+
+            // Old games with iframes (maze)
+            if (game.src) {
+              return (
+                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                  <iframe
+                    key={selectedOldGame}
+                    src={game.src}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                    }}
+                    title={game.title}
+                  />
+                </div>
+              );
+            }
+          }
+
+          // Handle current games
+          const game = games[selectedGame as keyof typeof games];
+          if (!game || game.isCategory) {
+            return null;
+          }
+
+          // Games with components (fighters, chess)
+          if (game.component) {
+            return (
               <div style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                zIndex: 1000,
-                background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))',
-                padding: '12px 20px',
-                borderRadius: '8px',
-                border: '2px solid #00d4ff',
-                boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
-                fontFamily: 'Orbitron, sans-serif',
-                color: '#000',
-                fontWeight: 'bold',
-                fontSize: '14px',
-                textAlign: 'center',
-                lineHeight: '1.4',
-                maxWidth: '250px'
-              }}>
-                <div style={{ fontSize: '16px', marginBottom: '4px' }}>⚠️ ALPHA BUILD</div>
-                <div style={{ fontSize: '12px', opacity: 0.9 }}>This build changes daily</div>
-              </div>
-            )}
-            <iframe
-              key={selectedGame}
-              src={selectedGame === "invasion" ? games.invasion.src : selectedGame === "dungeon" ? games.dungeon.src : selectedGame === "catacombs" ? games.catacombs.src : games.maze.src}
-              style={{
                 width: '100%',
                 height: '100%',
-                border: 'none',
-              }}
-              title={selectedGame === "invasion" ? games.invasion.title : selectedGame === "dungeon" ? games.dungeon.title : selectedGame === "catacombs" ? games.catacombs.title : games.maze.title}
-            />
-          </div>
-        )}
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                background: '#000',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                padding: '20px 0'
+              }}>
+                {game.component}
+              </div>
+            );
+          }
+
+          // Games with iframes (invasion, dungeon, catacombs)
+          if (game.src) {
+            return (
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                {/* Daily Build Notice for Catacombs */}
+                {selectedGame === "catacombs" && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 1000,
+                    background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))',
+                    padding: '12px 20px',
+                    borderRadius: '8px',
+                    border: '2px solid #00d4ff',
+                    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
+                    fontFamily: 'Orbitron, sans-serif',
+                    color: '#000',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    textAlign: 'center',
+                    lineHeight: '1.4',
+                    maxWidth: '250px'
+                  }}>
+                    <div style={{ fontSize: '16px', marginBottom: '4px' }}>⚠️ ALPHA BUILD</div>
+                    <div style={{ fontSize: '12px', opacity: 0.9 }}>This build changes daily</div>
+                  </div>
+                )}
+                <iframe
+                  key={selectedGame}
+                  src={game.src}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                  }}
+                  title={game.title}
+                />
+              </div>
+            );
+          }
+
+          return null;
+        })()}
       </div>
     </div>
   );
