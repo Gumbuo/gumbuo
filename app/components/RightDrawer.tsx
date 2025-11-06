@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useRightDrawer } from "../context/RightDrawerContext";
 import "./RightDrawer.css";
 
 const GlobalMusicPlayer = dynamic(() => import("./GlobalMusicPlayer"), { ssr: false });
@@ -9,7 +9,7 @@ const GlobalChat = dynamic(() => import("./GlobalChat"), { ssr: false });
 const GlobalWalletHUD = dynamic(() => import("./GlobalWalletHUD"), { ssr: false });
 
 export default function RightDrawer() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useRightDrawer();
 
   return (
     <>

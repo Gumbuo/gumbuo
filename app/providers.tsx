@@ -7,6 +7,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AlienPointsProvider } from "./context/AlienPointsEconomy";
 import { AlienPointProvider } from "./context/AlienPointContext";
+import { RightDrawerProvider } from "./context/RightDrawerContext";
 import { config } from "./wagmi";
 import AlienLoader from "./components/AlienLoader";
 
@@ -29,8 +30,10 @@ export function Providers({ children }: { children: ReactNode }) {
         <RainbowKitProvider showRecentTransactions={true}>
           <AlienPointsProvider>
             <AlienPointProvider>
-              {isLoading && <AlienLoader />}
-              {children}
+              <RightDrawerProvider>
+                {isLoading && <AlienLoader />}
+                {children}
+              </RightDrawerProvider>
             </AlienPointProvider>
           </AlienPointsProvider>
         </RainbowKitProvider>
