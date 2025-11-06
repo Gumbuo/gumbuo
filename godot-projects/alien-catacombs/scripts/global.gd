@@ -15,7 +15,7 @@ var textspeed:=0.0
 const CONFIG_FILE:String = "user://options.cfg"
 const INPUT_FILE:String = "user://input.cfg"
 const DEFAULT_INPUT_FILE:String = "user://default_input.cfg"
-const INPUT_ACTIONS:Array = ["move_up_ow","move_down_ow","move_right_ow","move_left_ow","interaction"]
+const INPUT_ACTIONS:Array = ["move_up","move_down","move_left","move_right","attack_punch","attack_kick","shoot"]
 var default_input_actions:Dictionary = {}
 
 func _ready():

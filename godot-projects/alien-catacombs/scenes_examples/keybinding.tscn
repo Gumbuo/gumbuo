@@ -298,23 +298,47 @@ align = 2
 valign = 1
 autowrap = true
 
-[node name="interactiontxt" type="Label" parent="reglage/touche_monde"]
+[node name="punchtxt" type="Label" parent="reglage/touche_monde"]
 margin_left = 256.0
 margin_top = 192.0
 margin_right = 336.0
 margin_bottom = 224.0
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 4 )
-text = "Interact"
+text = "Punch"
 align = 2
 valign = 1
 autowrap = true
 
-[node name="move_up_ow" type="Control" parent="reglage/touche_monde"]
+[node name="kicktxt" type="Label" parent="reglage/touche_monde"]
+margin_left = 256.0
+margin_top = 224.0
+margin_right = 336.0
+margin_bottom = 256.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 4 )
+text = "Kick"
+align = 2
+valign = 1
+autowrap = true
+
+[node name="shoottxt" type="Label" parent="reglage/touche_monde"]
+margin_left = 256.0
+margin_top = 256.0
+margin_right = 336.0
+margin_bottom = 288.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 4 )
+text = "Shoot"
+align = 2
+valign = 1
+autowrap = true
+
+[node name="move_up" type="Control" parent="reglage/touche_monde"]
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="Button2" type="Button" parent="reglage/touche_monde/move_up_ow" groups=["keybinding"]]
+[node name="Button2" type="Button" parent="reglage/touche_monde/move_up" groups=["keybinding"]]
 margin_left = 432.0
 margin_top = 64.0
 margin_right = 496.0
@@ -338,12 +362,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_up_ow/Button2"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_up/Button2"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="Button" type="Button" parent="reglage/touche_monde/move_up_ow" groups=["keybinding"]]
+[node name="Button" type="Button" parent="reglage/touche_monde/move_up" groups=["keybinding"]]
 margin_left = 352.0
 margin_top = 64.0
 margin_right = 416.0
@@ -367,16 +391,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_up_ow/Button"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_up/Button"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="move_left_ow" type="Control" parent="reglage/touche_monde"]
+[node name="move_left" type="Control" parent="reglage/touche_monde"]
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="Button2" type="Button" parent="reglage/touche_monde/move_left_ow" groups=["keybinding"]]
+[node name="Button2" type="Button" parent="reglage/touche_monde/move_left" groups=["keybinding"]]
 margin_left = 432.0
 margin_top = 96.0
 margin_right = 496.0
@@ -397,12 +421,12 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_left_ow/Button2"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_left/Button2"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="Button" type="Button" parent="reglage/touche_monde/move_left_ow" groups=["keybinding"]]
+[node name="Button" type="Button" parent="reglage/touche_monde/move_left" groups=["keybinding"]]
 margin_left = 352.0
 margin_top = 96.0
 margin_right = 416.0
@@ -423,16 +447,16 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_left_ow/Button"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_left/Button"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="move_down_ow" type="Control" parent="reglage/touche_monde"]
+[node name="move_down" type="Control" parent="reglage/touche_monde"]
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="Button2" type="Button" parent="reglage/touche_monde/move_down_ow" groups=["keybinding"]]
+[node name="Button2" type="Button" parent="reglage/touche_monde/move_down" groups=["keybinding"]]
 margin_left = 432.0
 margin_top = 128.0
 margin_right = 496.0
@@ -453,12 +477,12 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_down_ow/Button2"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_down/Button2"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="Button" type="Button" parent="reglage/touche_monde/move_down_ow" groups=["keybinding"]]
+[node name="Button" type="Button" parent="reglage/touche_monde/move_down" groups=["keybinding"]]
 margin_left = 352.0
 margin_top = 128.0
 margin_right = 416.0
@@ -479,16 +503,16 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_down_ow/Button"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_down/Button"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="move_right_ow" type="Control" parent="reglage/touche_monde"]
+[node name="move_right" type="Control" parent="reglage/touche_monde"]
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="Button2" type="Button" parent="reglage/touche_monde/move_right_ow" groups=["keybinding"]]
+[node name="Button2" type="Button" parent="reglage/touche_monde/move_right" groups=["keybinding"]]
 margin_left = 432.0
 margin_top = 160.0
 margin_right = 496.0
@@ -509,12 +533,12 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_right_ow/Button2"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_right/Button2"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="Button" type="Button" parent="reglage/touche_monde/move_right_ow" groups=["keybinding"]]
+[node name="Button" type="Button" parent="reglage/touche_monde/move_right" groups=["keybinding"]]
 margin_left = 352.0
 margin_top = 160.0
 margin_right = 416.0
@@ -535,16 +559,16 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_right_ow/Button"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/move_right/Button"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="interaction" type="Control" parent="reglage/touche_monde"]
+[node name="attack_punch" type="Control" parent="reglage/touche_monde"]
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="Button2" type="Button" parent="reglage/touche_monde/interaction" groups=["keybinding"]]
+[node name="Button2" type="Button" parent="reglage/touche_monde/attack_punch" groups=["keybinding"]]
 margin_left = 432.0
 margin_top = 192.0
 margin_right = 496.0
@@ -565,12 +589,12 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/interaction/Button2"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/attack_punch/Button2"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
 
-[node name="Button" type="Button" parent="reglage/touche_monde/interaction" groups=["keybinding"]]
+[node name="Button" type="Button" parent="reglage/touche_monde/attack_punch" groups=["keybinding"]]
 margin_left = 352.0
 margin_top = 192.0
 margin_right = 416.0
@@ -591,7 +615,119 @@ custom_styles/normal = SubResource( 5 )
 toggle_mode = true
 text = "test"
 
-[node name="texture" type="TextureRect" parent="reglage/touche_monde/interaction/Button"]
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/attack_punch/Button"]
+margin_right = 64.0
+margin_bottom = 32.0
+stretch_mode = 4
+
+[node name="attack_kick" type="Control" parent="reglage/touche_monde"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Button2" type="Button" parent="reglage/touche_monde/attack_kick" groups=["keybinding"]]
+margin_left = 432.0
+margin_top = 224.0
+margin_right = 496.0
+margin_bottom = 256.0
+focus_neighbour_left = NodePath("../Button")
+focus_neighbour_top = NodePath("../../attack_punch/Button2")
+focus_neighbour_right = NodePath("../../shoot/Button")
+focus_neighbour_bottom = NodePath("../../shoot/Button2")
+focus_next = NodePath("../../shoot/Button")
+focus_previous = NodePath("../Button")
+custom_colors/font_color_pressed = Color( 0.254902, 0.952941, 0.988235, 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+toggle_mode = true
+text = "test"
+
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/attack_kick/Button2"]
+margin_right = 64.0
+margin_bottom = 32.0
+stretch_mode = 4
+
+[node name="Button" type="Button" parent="reglage/touche_monde/attack_kick" groups=["keybinding"]]
+margin_left = 352.0
+margin_top = 224.0
+margin_right = 416.0
+margin_bottom = 256.0
+focus_neighbour_left = NodePath("../../Button_reset")
+focus_neighbour_top = NodePath("../../attack_punch/Button")
+focus_neighbour_right = NodePath("../Button2")
+focus_neighbour_bottom = NodePath("../../shoot/Button")
+focus_next = NodePath("../Button2")
+focus_previous = NodePath("../../Button_reset")
+custom_colors/font_color_pressed = Color( 0.254902, 0.952941, 0.988235, 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+toggle_mode = true
+text = "test"
+
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/attack_kick/Button"]
+margin_right = 64.0
+margin_bottom = 32.0
+stretch_mode = 4
+
+[node name="shoot" type="Control" parent="reglage/touche_monde"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Button2" type="Button" parent="reglage/touche_monde/shoot" groups=["keybinding"]]
+margin_left = 432.0
+margin_top = 256.0
+margin_right = 496.0
+margin_bottom = 288.0
+focus_neighbour_left = NodePath("../Button")
+focus_neighbour_top = NodePath("../../attack_kick/Button2")
+focus_neighbour_right = NodePath("../../Button_back")
+focus_neighbour_bottom = NodePath("../../move_up/Button2")
+focus_next = NodePath("../../Button_back")
+focus_previous = NodePath("../Button")
+custom_colors/font_color_pressed = Color( 0.254902, 0.952941, 0.988235, 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+toggle_mode = true
+text = "test"
+
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/shoot/Button2"]
+margin_right = 64.0
+margin_bottom = 32.0
+stretch_mode = 4
+
+[node name="Button" type="Button" parent="reglage/touche_monde/shoot" groups=["keybinding"]]
+margin_left = 352.0
+margin_top = 256.0
+margin_right = 416.0
+margin_bottom = 288.0
+focus_neighbour_left = NodePath("../../Button_reset")
+focus_neighbour_top = NodePath("../../attack_kick/Button")
+focus_neighbour_right = NodePath("../Button2")
+focus_neighbour_bottom = NodePath("../../move_up/Button")
+focus_next = NodePath("../Button2")
+focus_previous = NodePath("../../Button_reset")
+custom_colors/font_color_pressed = Color( 0.254902, 0.952941, 0.988235, 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+toggle_mode = true
+text = "test"
+
+[node name="texture" type="TextureRect" parent="reglage/touche_monde/shoot/Button"]
 margin_right = 64.0
 margin_bottom = 32.0
 stretch_mode = 4
