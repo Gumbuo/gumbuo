@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import BackToMothershipButton from "../components/BackToMothershipButton";
 import { useAlienPoints } from "../context/AlienPointContext";
 import { useAlienPoints as useAlienPointsEconomy } from "../context/AlienPointsEconomy";
@@ -13,12 +14,22 @@ const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: f
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 
 export default function BasePage() {
-  const [selectedGame, setSelectedGame] = useState("catacombs");
+  const searchParams = useSearchParams();
+  const gameParam = searchParams.get('game');
+
+  const [selectedGame, setSelectedGame] = useState(gameParam || "catacombs");
   const [selectedOldGame, setSelectedOldGame] = useState("arena");
   const alienPointContext = useAlienPoints();
   const { addPoints } = useAlienPointsEconomy();
   const { address } = useAccount();
   const { playSound } = useCosmicSound();
+
+  // Update selected game when URL parameter changes
+  useEffect(() => {
+    if (gameParam) {
+      setSelectedGame(gameParam);
+    }
+  }, [gameParam]);
 
   // Listen for alien points updates from maze iframe and invasion game
   useEffect(() => {

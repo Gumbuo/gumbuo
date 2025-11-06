@@ -591,11 +591,11 @@ export default function MothershipPage() {
                       boxShadow: '0 0 25px rgba(0, 212, 255, 0.8)'
                     }}
                   />
-                  <div className="portal-label">BASE</div>
+                  <div className="portal-label">BASE GAMES</div>
                 </Link>
 
                 <Link
-                  href="/base"
+                  href="/base?game=catacombs"
                   className="portal-item"
                   onMouseEnter={() => playSound('hover')}
                   style={{
@@ -608,18 +608,18 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/greyportal.png"
-                    alt="Games"
+                    alt="Alien Catacombs"
                     className="portal-image"
                     style={{
                       borderColor: '#e0e0e0',
                       boxShadow: '0 0 25px rgba(224, 224, 224, 0.8)'
                     }}
                   />
-                  <div className="portal-label">GAMES</div>
+                  <div className="portal-label">ALIEN CATACOMBS</div>
                 </Link>
 
                 <Link
-                  href="/base"
+                  href="/base?game=fighters"
                   className="portal-item"
                   onMouseEnter={() => playSound('hover')}
                   style={{
@@ -632,14 +632,14 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/greenportal.png"
-                    alt="Games"
+                    alt="Gumbuo Fighters"
                     className="portal-image"
                     style={{
                       borderColor: '#00ff99',
                       boxShadow: '0 0 25px rgba(0, 255, 153, 0.8)'
                     }}
                   />
-                  <div className="portal-label">GAMES</div>
+                  <div className="portal-label">GUMBUO FIGHTERS</div>
                 </Link>
 
                 <Link
