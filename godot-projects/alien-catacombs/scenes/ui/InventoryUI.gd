@@ -4,7 +4,7 @@ extends CanvasLayer
 # Displays items in a grid with equipment slots
 
 onready var panel = $Panel
-onready var grid = $Panel/MarginContainer/VBoxContainer/GridContainer
+onready var grid = $Panel/MarginContainer/VBoxContainer/ScrollContainer/GridContainer
 onready var title = $Panel/MarginContainer/VBoxContainer/Title
 
 var inventory = null

@@ -69,11 +69,15 @@ text = "INVENTORY (0/20)"
 align = 1
 valign = 1
 
-[node name="GridContainer" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer/VBoxContainer"]
 margin_top = 30.0
 margin_right = 380.0
 margin_bottom = 374.0
 size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="Panel/MarginContainer/VBoxContainer/ScrollContainer"]
+margin_right = 380.0
+size_flags_horizontal = 3
 custom_constants/vseparation = 5
 custom_constants/hseparation = 5
 columns = 5

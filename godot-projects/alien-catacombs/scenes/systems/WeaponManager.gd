@@ -7,7 +7,7 @@ signal weapon_switched(weapon_type)
 
 # Weapon counts - how many of each collected
 var weapon_counts = {
-	"weapon_pistol": 0,
+	"weapon_pistol": 1,  # Start with 1 pistol
 	"weapon_rifle": 0,
 	"weapon_shotgun": 0
 }
