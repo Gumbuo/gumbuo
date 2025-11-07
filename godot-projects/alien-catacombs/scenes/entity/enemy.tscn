@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://scenes/components/hitbox.gd" type="Script" id=1]
 [ext_resource path="res://scenes/components/hurtbox.gd" type="Script" id=2]
 [ext_resource path="res://scenes/entity/enemy.gd" type="Script" id=3]
 [ext_resource path="res://scenes/components/Health.gd" type="Script" id=4]
+[ext_resource path="res://scenes/components/HealthBar.tscn" type="PackedScene" id=5]
 [ext_resource path="res://asset/characters/enemy1/enemy1_idle_1.png" type="Texture" id=10]
 [ext_resource path="res://asset/characters/enemy1/enemy1_idle_2.png" type="Texture" id=11]
 [ext_resource path="res://asset/characters/enemy1/enemy1_idle_3.png" type="Texture" id=12]
@@ -100,3 +101,5 @@ shape = SubResource( 4 )
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 1.5
 one_shot = true
+
+[node name="HealthBar" parent="." instance=ExtResource( 5 )]

@@ -12,6 +12,7 @@ var current_state = State.IDLE
 export var detection_range := 150.0
 export var patrol_points := []
 var current_patrol_index := 0
+export var is_stationary := false  # Stationary enemies don't move, only shoot
 
 # Shooting attack (all enemies shoot now)
 export var shoot_range := 120.0  # Distance from which enemy starts shooting
@@ -69,7 +70,7 @@ func _state_idle():
 	# Look for player
 	if _can_see_player():
 		current_state = State.CHASE
-	elif patrol_points.size() > 0:
+	elif patrol_points.size() > 0 and not is_stationary:
 		current_state = State.PATROL
 
 func _state_patrol():
@@ -106,6 +107,14 @@ func _state_chase():
 	if distance_to_target > detection_range * 1.5:
 		target = null
 		current_state = State.IDLE
+		return
+
+	# Stationary enemies don't move, just shoot when in range
+	if is_stationary:
+		velocity_direction = Vector2.ZERO
+		update_look_direction()
+		if distance_to_target <= shoot_range and can_shoot:
+			current_state = State.ATTACK
 		return
 
 	# Keep distance and shoot
