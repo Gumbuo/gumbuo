@@ -59,6 +59,9 @@ config/icon="res://icon.png"
 global="*res://scripts/global.gd"
 Inventory="*res://scenes/systems/Inventory.tscn"
 WeaponManager="*res://scenes/systems/WeaponManager.tscn"
+EquipmentManager="*res://scenes/systems/EquipmentManager.gd"
+ItemDatabase="*res://scenes/systems/ItemDatabase.gd"
+CoinManager="*res://scenes/systems/CoinManager.gd"
 
 [display]
 
@@ -147,6 +150,11 @@ weapon_2={
 weapon_3={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":51,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_codex={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":67,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=2]
+[gd_scene load_steps=70 format=2]
 
 [ext_resource path="res://asset/map/tileset.png" type="Texture" id=1]
 [ext_resource path="res://scenes/entity/player.tscn" type="PackedScene" id=2]
@@ -29,6 +29,12 @@
 [ext_resource path="res://scenes/items/ShotgunPickup.tscn" type="PackedScene" id=27]
 [ext_resource path="res://scenes/ui/WeaponHUD.tscn" type="PackedScene" id=28]
 [ext_resource path="res://scenes/ui/PauseMenu.tscn" type="PackedScene" id=29]
+[ext_resource path="res://scenes/ui/ItemCodex.tscn" type="PackedScene" id=30]
+[ext_resource path="res://scenes/items/PistolPickup.tscn" type="PackedScene" id=31]
+[ext_resource path="res://scenes/items/Coin1.tscn" type="PackedScene" id=32]
+[ext_resource path="res://scenes/ui/CoinHUD.tscn" type="PackedScene" id=33]
+[ext_resource path="res://scenes/items/Coin3.tscn" type="PackedScene" id=34]
+[ext_resource path="res://scenes/items/Coin2.tscn" type="PackedScene" id=35]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
@@ -1147,21 +1153,32 @@ position = Vector2( 1141, 427 )
 
 [node name="InventoryUI" parent="." instance=ExtResource( 24 )]
 
-[node name="Coin" parent="." instance=ExtResource( 25 )]
-position = Vector2( 587, 940 )
+[node name="ItemCodex" parent="InventoryUI" instance=ExtResource( 30 )]
 
-[node name="Coin2" parent="." instance=ExtResource( 25 )]
-position = Vector2( 651, 919 )
-
-[node name="Coin3" parent="." instance=ExtResource( 25 )]
-position = Vector2( 575, 972 )
+[node name="PauseMenu" parent="InventoryUI" instance=ExtResource( 29 )]
 
 [node name="WeaponHUD" parent="." instance=ExtResource( 28 )]
 
-[node name="RiflePickup" parent="WeaponHUD" instance=ExtResource( 26 )]
-position = Vector2( 578, 1017 )
+[node name="Items" type="Node2D" parent="."]
 
-[node name="ShotgunPickup" parent="WeaponHUD" instance=ExtResource( 27 )]
+[node name="PistolPickup" parent="Items" instance=ExtResource( 31 )]
+
+[node name="ShotgunPickup" parent="Items" instance=ExtResource( 27 )]
 position = Vector2( 622, 967 )
 
-[node name="PauseMenu" parent="." instance=ExtResource( 29 )]
+[node name="RiflePickup" parent="Items" instance=ExtResource( 26 )]
+position = Vector2( 578, 1017 )
+
+[node name="Coin" parent="Items" instance=ExtResource( 25 )]
+
+[node name="Coin1" parent="Items/Coin" instance=ExtResource( 32 )]
+
+[node name="Coin2" parent="Items" instance=ExtResource( 25 )]
+
+[node name="Coin2" parent="Items/Coin2" instance=ExtResource( 35 )]
+
+[node name="Coin3" parent="Items" instance=ExtResource( 25 )]
+
+[node name="Coin3" parent="Items/Coin3" instance=ExtResource( 34 )]
+
+[node name="CoinHUD" parent="." instance=ExtResource( 33 )]

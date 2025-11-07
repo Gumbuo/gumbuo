@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/items/WeaponPickup.gd" type="Script" id=1]
-[ext_resource path="res://asset/items/item10.png" type="Texture" id=2]
+[ext_resource path="res://asset/weapons/M15.png" type="Texture" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 10.0
@@ -27,11 +27,7 @@ tracks/0/keys = {
 collision_layer = 0
 collision_mask = 1
 script = ExtResource( 1 )
-weapon_name = "Rifle"
-weapon_type = "rifle"
-damage = 15
-fire_rate = 0.4
-bullet_speed = 400
+item_id = "weapon_rifle"
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
