@@ -24,6 +24,18 @@ export default function CreditsPage() {
           creator: "bluecarrot16, JaidynReiman, Benjamin K. Smith, Evert, Eliza Wyatt, TheraHedwig, MuffinElZangano, Durrani, Johannes Sjölund, Stephen Challener & OpenGameArt Community",
           url: "https://opengameart.org/content/lpc-character-bases",
           description: "Liberated Pixel Cup (LPC) character base assets and sprite sheets used for player and enemy characters. Licensed under OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0"
+        },
+        {
+          name: "Godot Pixel Mobs",
+          creator: "rakkarage / HenrySoftware",
+          url: "https://henrysoftware.itch.io/godot-pixel-mobs",
+          description: "80 pixel-perfect animated monsters with idle, walk, and attack animations. CC0 Public Domain license - no attribution required but greatly appreciated!"
+        },
+        {
+          name: "Dungeon Gathering Asset Pack",
+          creator: "Jose Javier (SnowHex)",
+          url: "https://snowhex.itch.io/dungeon-gathering",
+          description: "Comprehensive dungeon crawler asset collection including 1000+ tiles, items, UI elements, character sprites, torches, chests, doors, and multiple themed expansions (Fire Zone, Knight, Monsters). Twitter: @SnowHexArt"
         }
       ]
     },
