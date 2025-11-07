@@ -44,10 +44,10 @@ export default function CreditsPage() {
       color: "#00ff99",
       assets: [
         {
-          name: "Fighter Sprites",
-          creator: "TBD",
-          url: "",
-          description: "Character sprites for all fighters"
+          name: "LPC Character Sprites",
+          creator: "bluecarrot16, JaidynReiman, Benjamin K. Smith, Evert, Eliza Wyatt, TheraHedwig, MuffinElZangano, Durrani, Johannes Sjölund, Stephen Challener & OpenGameArt Community",
+          url: "https://opengameart.org/content/lpc-character-bases",
+          description: "Liberated Pixel Cup (LPC) character base assets and sprite sheets used for all fighter characters with various animations (punch, kick, run, idle). Licensed under OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0"
         }
       ]
     },
