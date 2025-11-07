@@ -33,9 +33,9 @@ func _pickup(player):
 	# Mark as discovered
 	item_database.discover_item(item_id)
 
-	# Try to add weapon
-	if weapon_manager.add_weapon(weapon_data):
-		print("Picked up: " + weapon_data.name)
-		queue_free()  # Remove from scene
-	else:
-		print("Already have this weapon or inventory full!")
+	# Add weapon (always succeeds, adds to count)
+	weapon_manager.add_weapon(item_id)
+	print("Picked up: " + weapon_data.name)
+
+	# Remove from scene
+	queue_free()
