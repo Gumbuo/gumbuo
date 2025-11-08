@@ -14,6 +14,16 @@ func _ready():
 	hit_sound.volume_db = -3
 	add_child(hit_sound)
 
+	# Make sprite visible
+	$Sprite.visible = true
+
+	# DEBUG
+	print("Bullet created at position: ", global_position)
+	print("Bullet direction: ", direction)
+	print("Bullet z_index: ", z_index)
+	print("Bullet Sprite visible: ", $Sprite.visible)
+	print("Bullet Sprite texture: ", $Sprite.texture)
+
 	# Auto-destroy bullet after 2 seconds if it doesn't hit anything
 	var timer = Timer.new()
 	timer.wait_time = 2.0
@@ -44,7 +54,7 @@ func _on_body_entered(body):
 					# Play hit sound
 					hit_sound.play()
 					# Hide bullet visually but keep it alive for sound
-					$ColorRect.visible = false
+					$Sprite.visible = false
 					set_physics_process(false)
 					# Destroy after sound plays
 					yield(get_tree().create_timer(0.3), "timeout")
@@ -73,7 +83,7 @@ func _on_body_entered(body):
 				# Play hit sound
 				hit_sound.play()
 				# Hide bullet visually but keep it alive for sound
-				$ColorRect.visible = false
+				$Sprite.visible = false
 				set_physics_process(false)
 				# Destroy after sound plays
 				yield(get_tree().create_timer(0.3), "timeout")
@@ -87,4 +97,8 @@ func _on_body_entered(body):
 			print("Hit unknown object: ", body)
 
 func _on_timeout():
+	print("Bullet destroyed by timeout")
 	queue_free()
+
+func _exit_tree():
+	print("Bullet removed from scene at position: ", global_position)

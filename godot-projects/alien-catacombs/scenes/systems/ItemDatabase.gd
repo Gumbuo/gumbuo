@@ -165,7 +165,7 @@ func _initialize_items():
 		"name": "Health Potion",
 		"type": "consumable",
 		"category": "Potions",
-		"sprite": "res://asset/items/item30.png",
+		"sprite": "res://asset/items/PotionH.png",
 		"description": "Restores 50 health points."
 	})
 
@@ -173,7 +173,7 @@ func _initialize_items():
 		"name": "Mana Potion",
 		"type": "consumable",
 		"category": "Potions",
-		"sprite": "res://asset/items/item31.png",
+		"sprite": "res://asset/items/PotionK.png",
 		"description": "Restores 50 mana points."
 	})
 
@@ -181,33 +181,8 @@ func _initialize_items():
 		"name": "Speed Potion",
 		"type": "consumable",
 		"category": "Potions",
-		"sprite": "res://asset/items/item32.png",
+		"sprite": "res://asset/items/PotionL.png",
 		"description": "Increases movement speed for 30 seconds."
-	})
-
-	# TREASURES
-	add_item("treasure_coin", {
-		"name": "Gold Coin",
-		"type": "treasure",
-		"category": "Treasures",
-		"sprite": "res://asset/items/item40.png",
-		"description": "A shiny gold coin. Worth 10 gold."
-	})
-
-	add_item("treasure_gem", {
-		"name": "Ruby Gem",
-		"type": "treasure",
-		"category": "Treasures",
-		"sprite": "res://asset/items/item41.png",
-		"description": "A precious ruby. Worth 100 gold."
-	})
-
-	add_item("treasure_chest", {
-		"name": "Treasure Chest",
-		"type": "treasure",
-		"category": "Treasures",
-		"sprite": "res://asset/items/item42.png",
-		"description": "A chest full of riches!"
 	})
 
 func add_item(item_id: String, item_data: Dictionary):

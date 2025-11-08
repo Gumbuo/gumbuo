@@ -20,6 +20,7 @@ skew = 4.37114e-08
 [node name="collision_shape_2d" type="CollisionShape2D" parent="static_body_2d"]
 position = Vector2( 48, 16 )
 shape = SubResource( 1 )
+disabled = true
 
 [node name="sprite" type="Sprite" parent="."]
 skew = 4.37114e-08
