@@ -13,7 +13,7 @@ var bullet_shotgun = preload("res://scenes/entity/bullet_shotgun.tscn")
 
 # Shooting variables
 var can_shoot = true
-var shoot_cooldown = 0.3  # Seconds between shots
+var is_shooting = false  # Track if mouse button is held down
 
 # Audio
 onready var shoot_sound = AudioStreamPlayer.new()
@@ -65,9 +65,18 @@ func _input(event):
 
 	# Shooting input
 	if event.is_action_pressed("shoot"):
+		is_shooting = true
 		shoot()
+	elif event.is_action_released("shoot"):
+		is_shooting = false
 
 	update_look_direction()
+
+func _physics_process(delta):
+	# Continuous fire for rifle when mouse is held
+	if is_shooting and current_weapon == Weapon.RIFLE and can_shoot:
+		shoot()
+
 func animation():
 #	match look_direction:
 #		Vector2.UP:
@@ -93,33 +102,54 @@ func shoot():
 		shoot_sound.stop()
 	shoot_sound.play()
 
-	# Select correct bullet scene based on current weapon
+	# Get mouse position and base direction
+	var mouse_position = get_global_mouse_position()
+	var shoot_direction = (mouse_position - global_position).normalized()
+
+	# Select correct bullet scene and cooldown based on current weapon
 	var bullet_scene
+	var cooldown
+	var pellet_count = 1  # Number of bullets to spawn
+	var spread_angle = 0.0  # Spread angle in degrees
+
 	match current_weapon:
 		Weapon.PISTOL:
 			bullet_scene = bullet_pistol
+			cooldown = 0.3
 		Weapon.RIFLE:
 			bullet_scene = bullet_rifle
+			cooldown = 0.1  # Fast fire rate for rapid shooting
 		Weapon.SHOTGUN:
 			bullet_scene = bullet_shotgun
+			cooldown = 0.5  # Slower reload for shotgun
+			pellet_count = 5  # Fire 5 pellets
+			spread_angle = 30.0  # 30 degree spread
 
-	# Create bullet
-	var bullet = bullet_scene.instance()
-	print("Bullet created for weapon: ", current_weapon)
+	# Create bullets (single for pistol/rifle, multiple for shotgun)
+	for i in range(pellet_count):
+		var bullet = bullet_scene.instance()
+		bullet.position = position
 
-	# Set bullet position to player position
-	bullet.position = position
+		# Calculate spread for shotgun
+		if pellet_count > 1:
+			# Spread pellets evenly across the spread angle
+			var angle_offset = -spread_angle/2 + (spread_angle / (pellet_count - 1)) * i
+			var angle_rad = deg2rad(angle_offset)
 
-	# Shoot in the direction of the mouse cursor
-	var mouse_position = get_global_mouse_position()
-	var shoot_direction = (mouse_position - global_position).normalized()
-	bullet.direction = shoot_direction
-	print("Shooting toward mouse at: ", mouse_position, " direction: ", shoot_direction)
+			# Rotate the shoot direction by the angle offset
+			var rotated_dir = Vector2(
+				shoot_direction.x * cos(angle_rad) - shoot_direction.y * sin(angle_rad),
+				shoot_direction.x * sin(angle_rad) + shoot_direction.y * cos(angle_rad)
+			)
+			bullet.direction = rotated_dir
+		else:
+			bullet.direction = shoot_direction
 
-	# Add bullet to y_sort (same parent as player)
-	get_parent().call_deferred("add_child", bullet)
-	print("Bullet added to y_sort")
+		# Add bullet to y_sort (same parent as player)
+		get_parent().call_deferred("add_child", bullet)
 
-	# Start cooldown timer
-	yield(get_tree().create_timer(shoot_cooldown), "timeout")
+	print("Bullet(s) created for weapon: ", current_weapon)
+
+	# Start cooldown timer with weapon-specific cooldown
+	yield(get_tree().create_timer(cooldown), "timeout")
 	can_shoot = true
