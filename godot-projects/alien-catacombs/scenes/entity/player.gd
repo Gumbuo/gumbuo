@@ -128,6 +128,9 @@ func shoot():
 	# Create bullets (single for pistol/rifle, multiple for shotgun)
 	for i in range(pellet_count):
 		var bullet = bullet_scene.instance()
+		# Track shot for stats
+		if GameStats:
+			GameStats.add_shot_fired()
 		bullet.position = position
 
 		# Calculate spread for shotgun

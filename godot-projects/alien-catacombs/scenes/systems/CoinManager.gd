@@ -22,6 +22,9 @@ func add_coin(coin_type: String):
 			orange_coins += 1
 			emit_signal("coins_changed", "orange", orange_coins)
 			print("Orange coin collected! Total: ", orange_coins)
+n	# Notify GameStats for leaderboard tracking
+	if GameStats:
+		GameStats.add_coin(coin_type)
 
 func get_coin_count(coin_type: String) -> int:
 	match coin_type:
