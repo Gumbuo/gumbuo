@@ -22,7 +22,7 @@ func _ready():
 	load_config()
 	load_input(DEFAULT_INPUT_FILE)
 	load_input(INPUT_FILE)
-tapply_audio_settings()
+	apply_audio_settings()
 
 func save_to_config(section, key, value):
 	"""Helper function to redefine a parameter in the settings file"""
