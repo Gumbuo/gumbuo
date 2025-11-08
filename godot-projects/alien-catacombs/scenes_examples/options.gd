@@ -126,11 +126,13 @@ func _on_musique_value_changed(value:int):
 	text_music.set_text(str(value))
 	global.music_volume=value
 	global.save_to_config("reglage","music_volume",global.music_volume)
+tglobal.apply_audio_settings()
 
 func _on_son_value_changed(value:int):
 	text_son.set_text(str(value))
 	global.sound_volume=value
 	global.save_to_config("reglage","sound_volume",global.sound_volume)
+tglobal.apply_audio_settings()
 
 
 func _on_Button_input_pressed():

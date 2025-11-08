@@ -22,6 +22,7 @@ func _ready():
 	load_config()
 	load_input(DEFAULT_INPUT_FILE)
 	load_input(INPUT_FILE)
+tapply_audio_settings()
 
 func save_to_config(section, key, value):
 	"""Helper function to redefine a parameter in the settings file"""
@@ -96,3 +97,15 @@ func switch_quality():
 	global.save_to_config("reglage","high_quality",global.high_quality)
 #	for obj in get_tree().get_nodes_in_group("lightsetting"):
 #		obj.reset()
+
+# Apply audio settings to AudioServer
+func apply_audio_settings():
+	# Convert volume (0-100) to decibels (-80 to 0)
+	# When volume is 0, mute completely
+	var music_db = -80.0 if music_volume == 0 else linear2db(music_volume / 100.0)
+	var sound_db = -80.0 if sound_volume == 0 else linear2db(sound_volume / 100.0)
+	
+	# Apply to Master bus (all audio)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), sound_db)
+	
+	print("Audio settings applied - Music: ", music_volume, "% Sound: ", sound_volume, "%")

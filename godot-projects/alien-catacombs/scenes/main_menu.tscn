@@ -24,6 +24,8 @@ __meta__ = {
 [node name="center_container" type="CenterContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_top = 20.0
+margin_bottom = -20.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -32,7 +34,7 @@ __meta__ = {
 margin_left = 135.0
 margin_right = 376.0
 margin_bottom = 292.0
-custom_constants/separation = 24
+custom_constants/separation = 16
 
 [node name="title" type="Label" parent="center_container/v_box_container"]
 margin_right = 241.0
