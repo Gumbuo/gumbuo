@@ -65,6 +65,10 @@ func _refresh_codex():
 
 	# Display items by category
 	for category in categories:
+		# Skip weapon category
+		if category == "weapon":
+			continue
+		
 		# Category header
 		var category_label = Label.new()
 		category_label.text = "=== " + category.to_upper() + " ==="

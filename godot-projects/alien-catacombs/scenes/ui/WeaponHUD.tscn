@@ -44,7 +44,7 @@ margin_left = 21.0
 margin_top = 1.0
 margin_right = 72.0
 margin_bottom = 15.0
-text = "Luger: 0"
+text = "Luger [1]"
 
 [node name="RifleRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/WeaponsList"]
 margin_top = 20.0
@@ -63,7 +63,7 @@ margin_left = 21.0
 margin_top = 1.0
 margin_right = 65.0
 margin_bottom = 15.0
-text = "M15: 0"
+text = "M15 [2]"
 
 [node name="ShotgunRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/WeaponsList"]
 margin_top = 40.0
@@ -82,7 +82,7 @@ margin_left = 21.0
 margin_top = 1.0
 margin_right = 88.0
 margin_bottom = 15.0
-text = "Shotgun: 0"
+text = "Shotgun [3]"
 
 [node name="EquippedItems" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 61.0
