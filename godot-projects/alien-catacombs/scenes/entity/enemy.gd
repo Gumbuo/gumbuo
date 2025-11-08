@@ -191,7 +191,7 @@ func _on_died():
 
 	# Remove after death animation
 	yield(sprite, "animation_finished")
-t# Notify GameStats for leaderboard tracking
+	# Notify GameStats for leaderboard tracking
 	if GameStats:
 		GameStats.add_kill()
 	queue_free()

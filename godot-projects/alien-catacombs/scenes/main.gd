@@ -26,7 +26,7 @@ func _ready():
 	# Mark starting room as visited
 	var room_key = Vector2(int(initial_cam_pos.x / vp_size.x), int(initial_cam_pos.y / vp_size.y))
 	visited_rooms.append(room_key)
-t# Notify GameStats for leaderboard tracking
+	# Notify GameStats for leaderboard tracking
 	if GameStats:
 		GameStats.add_room()
 
@@ -80,7 +80,7 @@ func spawn_enemies_in_room(room_pos: Vector2):
 
 	# Mark room as visited
 	visited_rooms.append(room_key)
-t# Notify GameStats for leaderboard tracking
+	# Notify GameStats for leaderboard tracking
 	if GameStats:
 		GameStats.add_room()
 
