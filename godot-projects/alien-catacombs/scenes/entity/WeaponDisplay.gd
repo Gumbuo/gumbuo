@@ -23,7 +23,7 @@ func _ready():
 		_update_weapon_display()
 
 func _process(delta):
-	# Rotate weapon to point at mouse
+	# Rotate weapon to point at mouse and orbit around player
 	if weapon_sprite and weapon_sprite.visible:
 		var mouse_pos = get_global_mouse_position()
 		var player_pos = get_parent().global_position
@@ -31,19 +31,17 @@ func _process(delta):
 		# Calculate angle to mouse
 		var angle_to_mouse = (mouse_pos - player_pos).angle()
 
-		# Check if mouse is on the left side (flip weapon)
-		var facing_left = abs(angle_to_mouse) > PI / 2
+		# Position weapon in a circle around player at the angle toward mouse
+		var weapon_distance = 10.0  # Distance from player center
+		var orbit_position = Vector2(cos(angle_to_mouse), sin(angle_to_mouse)) * weapon_distance
+		weapon_sprite.position = orbit_position
 
-		# Apply rotation
+		# Rotate weapon sprite to point at mouse
 		weapon_sprite.rotation = angle_to_mouse
 
 		# Flip weapon vertically when aiming left to prevent upside-down appearance
-		if facing_left:
-			weapon_sprite.flip_v = true
-			weapon_sprite.position = Vector2(-8, -4)
-		else:
-			weapon_sprite.flip_v = false
-			weapon_sprite.position = Vector2(8, -4)
+		var facing_left = abs(angle_to_mouse) > PI / 2
+		weapon_sprite.flip_v = facing_left
 
 func _on_weapon_switched(weapon_type):
 	_update_weapon_display()

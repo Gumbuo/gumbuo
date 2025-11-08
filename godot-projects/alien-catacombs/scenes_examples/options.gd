@@ -115,7 +115,7 @@ func refresh_textspeed():
 		button_text.set_text("Fast")
 	elif global.textspeed==0.1:
 		button_text.set_text("Slow")
-	elif global.textspeed==0:
+	elif global.textspeed==0:w
 		button_text.set_text("Instant")
 	else:
 		button_text.set_text("Medium")
