@@ -28,12 +28,11 @@ func _ready()->void:
 		get_node("reglage/button_particle").pressed=true
 	if OS.get_name()=="Android":
 		button_fullscreen.disabled=true
-
 func _input(event:InputEvent)->void:
 	if event.is_action("menu_special"):
 		keybinding()
 	if (event.is_action("menu") or event.is_action("ui_cancel")) and not varkeybinding:
-		get_parent().option("options")
+		close()
 func close()->void:
 	if not $anim.is_playing():
 		get_node("anim").play("close")
