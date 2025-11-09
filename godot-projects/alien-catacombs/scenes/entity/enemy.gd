@@ -201,9 +201,6 @@ func shoot_at_player():
 	# Create bullet
 	var bullet = bullet_scene.instance()
 
-	# Set bullet position
-	bullet.global_position = global_position
-
 	# Shoot toward player
 	var shoot_direction = (target.global_position - global_position).normalized()
 	bullet.direction = shoot_direction
@@ -211,8 +208,13 @@ func shoot_at_player():
 	# Make bullet hostile to player (set to enemy team)
 	bullet.is_enemy_bullet = true
 
-	# Add bullet to scene
+	# Add bullet to scene FIRST (before setting position)
 	get_parent().add_child(bullet)
+
+	# Set bullet position AFTER adding to scene (this ensures global_position works correctly)
+	bullet.global_position = global_position
+
+	print("Bullet spawned at: ", bullet.global_position, " enemy at: ", global_position)
 
 	# Start cooldown
 	yield(get_tree().create_timer(shoot_cooldown), "timeout")
