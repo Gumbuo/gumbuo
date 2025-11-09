@@ -123,7 +123,7 @@
         <button id="startBtn">Start Game</button>
         <button id="claimBtn" class="hidden">💰 CLAIM ALIEN POINTS</button>
         <div id="instructions">
-            🎮 Use ARROW KEYS or A/D to move | LEFT CLICK or SPACE to shoot | Destroy the Gumbuo aliens!
+            🎮 Use ARROW KEYS or WASD to fly around | LEFT CLICK or SPACE to shoot | Destroy the Gumbuo aliens!
         </div>
     </div>
 
@@ -226,7 +226,9 @@
             height: 60,
             speed: 6,
             moveLeft: false,
-            moveRight: false
+            moveRight: false,
+            moveUp: false,
+            moveDown: false
         };
 
         // Arrays for game objects
@@ -285,11 +287,6 @@
                 );
 
                 ctx.restore();
-
-                // Green border around player
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(player.x, player.y, player.width, player.height);
             } else {
                 // Fallback: triangle spaceship
                 ctx.fillStyle = '#00ffff';
@@ -432,6 +429,12 @@
             }
             if (player.moveRight && player.x < canvas.width - player.width) {
                 player.x += player.speed;
+            }
+            if (player.moveUp && player.y > 0) {
+                player.y -= player.speed;
+            }
+            if (player.moveDown && player.y < canvas.height - player.height) {
+                player.y += player.speed;
             }
         }
 
@@ -691,6 +694,12 @@
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 player.moveRight = true;
             }
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                player.moveUp = true;
+            }
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                player.moveDown = true;
+            }
             if (e.key === ' ' || e.key === 'Spacebar') {
                 e.preventDefault();
                 bullets.push({
@@ -709,6 +718,12 @@
             }
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 player.moveRight = false;
+            }
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                player.moveUp = false;
+            }
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                player.moveDown = false;
             }
         });
 
