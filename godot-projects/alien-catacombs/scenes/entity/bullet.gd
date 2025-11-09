@@ -43,6 +43,11 @@ func _on_body_entered(body):
 
 	# Enemy bullets damage players only
 	if is_enemy_bullet:
+		# Ignore enemies (don't hit the shooter or other enemies)
+		if body.is_in_group("enemy") or body.get_class() == "KinematicBody2D" and not body.is_in_group("player"):
+			print("Enemy bullet ignoring enemy")
+			return
+
 		# Check if hit player
 		if body.is_in_group("player") or body.name == "player":
 			print("Enemy bullet hit player!")
@@ -59,11 +64,13 @@ func _on_body_entered(body):
 					# Destroy after sound plays
 					yield(get_tree().create_timer(0.3), "timeout")
 					queue_free()
+					return
 		# Hit a wall
 		elif body is TileMap or body is StaticBody2D:
 			print("Hit wall, destroying bullet")
 			queue_free()
-		# Ignore other enemies
+			return
+		# Ignore everything else
 		return
 
 	# Player bullets damage enemies only

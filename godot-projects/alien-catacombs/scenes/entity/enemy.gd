@@ -195,6 +195,7 @@ func shoot_at_player():
 	if not target:
 		return
 
+	print("Enemy ", name, " shooting at player from position: ", global_position)
 	can_shoot = false
 
 	# Create bullet
