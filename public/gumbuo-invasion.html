@@ -245,14 +245,14 @@
         function loadPlayerImage() {
             playerImage = new Image();
             playerImage.onload = () => {
-                console.log('✓ Loaded: muscle.png');
+                console.log('✓ Loaded: spacepack-5-original.png');
                 playerImageLoaded = true;
             };
             playerImage.onerror = () => {
-                console.error('✗ Failed to load muscle.png');
+                console.error('✗ Failed to load spacepack-5-original.png');
                 playerImageLoaded = false;
             };
-            playerImage.src = '/muscle.png';
+            playerImage.src = '/spacepack-5-original.png';
         }
 
         // Load images on page load
@@ -265,28 +265,26 @@
         // Draw player character
         function drawPlayer() {
             if (playerImageLoaded && playerImage) {
-                // Calculate dimensions to fit the image within player bounds
-                const imgAspect = playerImage.width / playerImage.height;
-                const playerAspect = player.width / player.height;
+                // Extract top spaceship from Spacepack 5.png
+                // The top ship is in the upper portion of the image
+                const shipSrcX = 0;
+                const shipSrcY = 0;
+                const shipSrcWidth = playerImage.width;
+                const shipSrcHeight = playerImage.height / 3; // Top third contains the ship
 
-                let drawWidth = player.width;
-                let drawHeight = player.height;
-                let offsetX = 0;
-                let offsetY = 0;
+                // Save context and rotate for vertical orientation
+                ctx.save();
+                ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+                ctx.rotate(-Math.PI / 2); // Rotate 90 degrees counter-clockwise to point up
 
-                if (imgAspect > playerAspect) {
-                    drawHeight = player.width / imgAspect;
-                    offsetY = (player.height - drawHeight) / 2;
-                } else {
-                    drawWidth = player.height * imgAspect;
-                    offsetX = (player.width - drawWidth) / 2;
-                }
+                // Draw the ship centered and rotated
+                ctx.drawImage(
+                    playerImage,
+                    shipSrcX, shipSrcY, shipSrcWidth, shipSrcHeight,
+                    -player.height / 2, -player.width / 2, player.height, player.width
+                );
 
-                ctx.drawImage(playerImage,
-                    player.x + offsetX,
-                    player.y + offsetY,
-                    drawWidth,
-                    drawHeight);
+                ctx.restore();
 
                 // Green border around player
                 ctx.strokeStyle = '#00ff00';
@@ -370,11 +368,31 @@
 
         // Draw bullet
         function drawBullet(bullet) {
-            ctx.fillStyle = bullet.fromPlayer ? '#00ffff' : '#ff0000';
-            ctx.shadowBlur = bullet.fromPlayer ? 10 : 5;
-            ctx.shadowColor = bullet.fromPlayer ? '#00ffff' : '#ff0000';
-            ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
-            ctx.shadowBlur = 0;
+            if (bullet.fromPlayer && playerImageLoaded && playerImage) {
+                // Extract bullet sprite from middle section of Spacepack 5.png
+                const bulletSrcX = 0;
+                const bulletSrcY = playerImage.height / 3; // Middle third contains the bullet
+                const bulletSrcWidth = playerImage.width;
+                const bulletSrcHeight = playerImage.height / 3;
+
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ff6600';
+                ctx.drawImage(
+                    playerImage,
+                    bulletSrcX, bulletSrcY, bulletSrcWidth, bulletSrcHeight,
+                    bullet.x - bullet.width, bullet.y - bullet.height / 2,
+                    bullet.width * 3, bullet.height * 2
+                );
+                ctx.restore();
+            } else {
+                // Alien bullets remain as red rectangles
+                ctx.fillStyle = '#ff0000';
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#ff0000';
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+                ctx.shadowBlur = 0;
+            }
         }
 
         // Create explosion effect
