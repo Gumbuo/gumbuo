@@ -6,9 +6,9 @@ extends Enemy
 func _ready():
 	._ready()
 	# Lurker is EXTREMELY DANGEROUS
-	shoot_range = 130.0  # Longer range
+	shoot_range = 160.0  # Very long range - shoots from far away
 	shoot_cooldown = 0.3  # INSANE fire rate!
-	speed = 65  # Fastest enemy by far!
+	speed = 60  # Fast but won't overshoot player
 	detection_range = 200.0  # Tracks you from very far away
 
 # Override animation - Lurker uses Sprite not AnimatedSprite

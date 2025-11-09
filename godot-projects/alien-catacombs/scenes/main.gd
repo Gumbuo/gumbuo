@@ -111,6 +111,28 @@ func spawn_enemies_in_room(room_pos: Vector2):
 		if distance_to_player < 150:
 			continue
 
+		# Check if spawn position has collision (wall) or no tile (hole/pit)
+		var tile_pos = tile_map.world_to_map(spawn_pos)
+		var tile_id = tile_map.get_cellv(tile_pos)
+
+		# Skip if there's no tile (hole/pit)
+		if tile_id == -1:
+			continue
+
+		# Use physics query to check if position is blocked by walls
+		var space_state = get_world_2d().direct_space_state
+		var query = Physics2DShapeQueryParameters.new()
+		var shape = CircleShape2D.new()
+		shape.radius = 8  # Small radius to test spawn point
+		query.set_shape(shape)
+		query.transform = Transform2D(0, spawn_pos)
+		query.collision_layer = 1  # Check layer 1 (walls/obstacles)
+		var result = space_state.intersect_shape(query, 1)
+
+		# Skip if there's a collision at this position
+		if result.size() > 0:
+			continue
+
 		# Spawn the enemy - randomly select from available enemy types
 		var random_enemy_scene = enemy_scenes[randi() % enemy_scenes.size()]
 		var enemy = random_enemy_scene.instance()

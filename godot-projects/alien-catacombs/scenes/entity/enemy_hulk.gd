@@ -5,11 +5,11 @@ extends Enemy
 
 func _ready():
 	._ready()
-	# Hulk is a heavy ranged attacker
-	shoot_range = 100.0
-	shoot_cooldown = 0.6  # Much faster fire rate
-	speed = 35  # Slower movement
-	detection_range = 180.0  # Better detection
+	# Hulk is EXTREMELY DANGEROUS (same as Lurker)
+	shoot_range = 160.0  # Very long range - shoots from far away
+	shoot_cooldown = 0.3  # INSANE fire rate!
+	speed = 60  # Fast but won't overshoot player
+	detection_range = 200.0  # Tracks you from very far away
 
 # Override animation - Hulk uses Sprite not AnimatedSprite
 func animation():
