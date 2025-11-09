@@ -8,6 +8,9 @@ enum CombatState { NONE, PUNCHING, KICKING }
 var combat_state = CombatState.NONE
 var can_attack := true
 
+# Track last facing direction to prevent spinning
+var last_facing_right := true
+
 # References
 onready var health = $Health
 onready var hurtbox = $Hurtbox
@@ -28,18 +31,47 @@ func _ready():
 	punch_hitbox.connect("hit_landed", self, "_on_punch_landed")
 	kick_hitbox.connect("hit_landed", self, "_on_kick_landed")
 
+	# Set initial idle state to prevent spinning at start
+	sprite.animation = "idle"
+	sprite.frame = 0
+	sprite.stop()
+	sprite.flip_h = true  # Start facing right
+
 func animation():
 	# Don't override attack/hurt/dead animations
 	if combat_state != CombatState.NONE:
 		return
 
-	# Play idle or move animation
-	if velocity_direction.length() > 0:
-		if sprite.animation != "move":
+	# Determine if we're moving
+	var is_moving = velocity_direction.length() > 0
+
+	# Update facing direction based on actual input direction
+	# Check input instead of velocity to avoid flipping during movement
+	var moving_right = Input.is_action_pressed("move_right")
+	var moving_left = Input.is_action_pressed("move_left")
+
+	# Only change facing if there's clear directional input
+	if moving_right and not moving_left:
+		sprite.flip_h = true  # Face right
+		last_facing_right = true
+	elif moving_left and not moving_right:
+		sprite.flip_h = false  # Face left
+		last_facing_right = false
+	# If both or neither are pressed, keep current facing
+
+	# Handle animations
+	if is_moving:
+		# Play move animation only once when starting to move
+		if sprite.animation != "move" or not sprite.playing:
+			sprite.animation = "move"
+			sprite.frame = 0
 			sprite.play("move")
 	else:
-		if sprite.animation != "idle":
-			sprite.play("idle")
+		# Use static idle frame to prevent spinning
+		if sprite.animation != "idle" or sprite.playing:
+			sprite.animation = "idle"
+			sprite.frame = 0
+			sprite.stop()
 
 func _input(event):
 	._input(event)  # Call parent input handling

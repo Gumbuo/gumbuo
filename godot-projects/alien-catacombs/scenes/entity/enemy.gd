@@ -76,7 +76,7 @@ func _state_idle():
 func _state_patrol():
 	# Patrol between waypoints
 	if patrol_points.size() == 0:
-		current_state = State.IDLE
+		current_state = State.IDLEd
 		return
 
 	# Check if player is nearby

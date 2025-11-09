@@ -97,9 +97,7 @@ func shoot():
 
 	can_shoot = false
 
-	# Stop any previous sound and play shoot sound
-	if shoot_sound.is_playing():
-		shoot_sound.stop()
+	# Play shoot sound (don't stop - let it finish naturally to avoid echo)
 	shoot_sound.play()
 
 	# Get mouse position and base direction
