@@ -453,18 +453,44 @@ export default function BasePage() {
           // Games with components (fighters, chess)
           if ('component' in game && game.component) {
             return (
-              <div style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                background: '#000',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                padding: '20px 0'
-              }}>
-                {game.component}
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                {/* Alpha Build Notice for Gumbuo Fighters */}
+                {selectedGame === "fighters" && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 1000,
+                    background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))',
+                    padding: '12px 20px',
+                    borderRadius: '8px',
+                    border: '2px solid #00d4ff',
+                    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
+                    fontFamily: 'Orbitron, sans-serif',
+                    color: '#000',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    textAlign: 'center',
+                    lineHeight: '1.4',
+                    maxWidth: '250px'
+                  }}>
+                    <div style={{ fontSize: '16px', marginBottom: '4px' }}>⚠️ ALPHA BUILD</div>
+                    <div style={{ fontSize: '12px', opacity: 0.9 }}>This build changes daily</div>
+                  </div>
+                )}
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  background: '#000',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                  padding: '20px 0'
+                }}>
+                  {game.component}
+                </div>
               </div>
             );
           }
@@ -473,7 +499,7 @@ export default function BasePage() {
           if ('src' in game && game.src) {
             return (
               <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                {/* Daily Build Notice for Catacombs */}
+                {/* Alpha Build Notice for Catacombs */}
                 {selectedGame === "catacombs" && (
                   <div style={{
                     position: 'absolute',
@@ -495,6 +521,31 @@ export default function BasePage() {
                   }}>
                     <div style={{ fontSize: '16px', marginBottom: '4px' }}>⚠️ ALPHA BUILD</div>
                     <div style={{ fontSize: '12px', opacity: 0.9 }}>This build changes daily</div>
+                  </div>
+                )}
+                {/* User Request Notice for Invasion and Dungeon Crawler */}
+                {(selectedGame === "invasion" || selectedGame === "dungeon") && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 1000,
+                    background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.95), rgba(0, 204, 119, 0.95))',
+                    padding: '12px 20px',
+                    borderRadius: '8px',
+                    border: '2px solid #00ff99',
+                    boxShadow: '0 0 20px rgba(0, 255, 153, 0.6)',
+                    fontFamily: 'Orbitron, sans-serif',
+                    color: '#000',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    textAlign: 'center',
+                    lineHeight: '1.4',
+                    maxWidth: '280px'
+                  }}>
+                    <div style={{ fontSize: '16px', marginBottom: '4px' }}>💬 COMMUNITY DRIVEN</div>
+                    <div style={{ fontSize: '12px', opacity: 0.9 }}>Updates upon user requests</div>
+                    <div style={{ fontSize: '11px', opacity: 0.85, marginTop: '4px' }}>Make requests in Discord!</div>
                   </div>
                 )}
                 <iframe
