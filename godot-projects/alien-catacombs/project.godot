@@ -56,6 +56,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
+NetworkManager="*res://scripts/NetworkManager.gd"
 global="*res://scripts/global.gd"
 Inventory="*res://scenes/systems/Inventory.tscn"
 WeaponManager="*res://scenes/systems/WeaponManager.tscn"

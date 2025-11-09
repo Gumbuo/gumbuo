@@ -32,9 +32,8 @@ __meta__ = {
 
 [node name="v_box_container" type="VBoxContainer" parent="center_container"]
 margin_left = 135.0
-margin_top = 28.0
 margin_right = 376.0
-margin_bottom = 220.0
+margin_bottom = 260.0
 custom_constants/separation = 16
 
 [node name="title" type="Label" parent="center_container/v_box_container"]
@@ -75,10 +74,33 @@ text = "Start Game"
 align = 1
 valign = 1
 
-[node name="button_settings" type="TextureButton" parent="center_container/v_box_container"]
+[node name="button_multiplayer" type="TextureButton" parent="center_container/v_box_container"]
 margin_top = 140.0
 margin_right = 241.0
 margin_bottom = 192.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 4 )
+texture_hover = ExtResource( 5 )
+texture_disabled = ExtResource( 6 )
+texture_focused = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="label" type="Label" parent="center_container/v_box_container/button_multiplayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -3.0
+margin_top = 1.0
+margin_right = -3.0
+margin_bottom = 1.0
+custom_fonts/font = ExtResource( 7 )
+text = "Multiplayer"
+align = 1
+valign = 1
+
+[node name="button_settings" type="TextureButton" parent="center_container/v_box_container"]
+margin_top = 208.0
+margin_right = 241.0
+margin_bottom = 260.0
 toggle_mode = true
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 4 )
@@ -99,4 +121,5 @@ __meta__ = {
 }
 
 [connection signal="pressed" from="center_container/v_box_container/button_start" to="." method="_on_button_start_pressed"]
+[connection signal="pressed" from="center_container/v_box_container/button_multiplayer" to="." method="_on_button_multiplayer_pressed"]
 [connection signal="pressed" from="center_container/v_box_container/button_settings" to="." method="_on_button_settings_pressed"]
