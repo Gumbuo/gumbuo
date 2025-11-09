@@ -24,16 +24,16 @@ func set_buttons():
 
 				var currbutton=get_node("reglage/"+levelouow+"/"+action_name+"/Button")
 				currbutton.set_text("")
-				currbutton.get_node("texture").set_texture(load("res://assets/icons/keybinding/mouse"+str(this_event.get_button_index())+".png"))
+				currbutton.get_node("texture").set_texture(load("res://asset/ui/icons/keybinding/mouse"+str(this_event.get_button_index())+".png"))
 			if this_event is InputEventJoypadMotion:
 				var currbutton=get_node("reglage/"+levelouow+"/"+action_name+"/Button2")
 				currbutton.set_text("")
-				currbutton.get_node("texture").set_texture(load("res://assets/icons/keybinding/axis"+str(this_event.axis)+str(this_event.axis_value)+".png"))
+				currbutton.get_node("texture").set_texture(load("res://asset/ui/icons/keybinding/axis"+str(this_event.axis)+str(this_event.axis_value)+".png"))
 
 			if this_event is InputEventJoypadButton:
 				var currbutton=get_node("reglage/"+levelouow+"/"+action_name+"/Button2")
 				currbutton.set_text("")
-				currbutton.get_node("texture").set_texture(load("res://assets/icons/keybinding/button"+str(this_event.get_button_index())+".png"))
+				currbutton.get_node("texture").set_texture(load("res://asset/ui/icons/keybinding/button"+str(this_event.get_button_index())+".png"))
 	
 
 func _input(event):
@@ -46,7 +46,7 @@ func _input(event):
 			if abs(event.get_axis_value())==1:
 				var actionname=buttonactive.get_parent().name
 				buttonactive.set_text("")
-				buttonactive.get_node("texture").set_texture(load("res://assets/icons/keybinding/axis"+str(event.axis)+str(event.axis_value)+".png"))
+				buttonactive.get_node("texture").set_texture(load("res://asset/ui/icons/keybinding/axis"+str(event.axis)+str(event.axis_value)+".png"))
 				erase_action(actionname,true)
 				InputMap.action_add_event(actionname, event)
 				buttonactive.pressed=false
@@ -56,7 +56,7 @@ func _input(event):
 		elif event is InputEventJoypadButton and buttonactive.name=="Button2":
 			var actionname=buttonactive.get_parent().name
 			buttonactive.set_text("")
-			buttonactive.get_node("texture").set_texture(load("res://assets/icons/keybinding/button"+str(event.get_button_index())+".png"))
+			buttonactive.get_node("texture").set_texture(load("res://asset/ui/icons/keybinding/button"+str(event.get_button_index())+".png"))
 			erase_action(actionname,true)
 			InputMap.action_add_event(actionname, event)
 			buttonactive.pressed=false
@@ -69,7 +69,7 @@ func _input(event):
 		elif event is InputEventMouseButton and buttonactive.name=="Button" and OS.get_name()!="Android":
 			var actionname=buttonactive.get_parent().name
 			buttonactive.set_text("")
-			buttonactive.get_node("texture").set_texture(load("res://assets/icons/keybinding/mouse"+str(event.get_button_index())+".png"))
+			buttonactive.get_node("texture").set_texture(load("res://asset/ui/icons/keybinding/mouse"+str(event.get_button_index())+".png"))
 			erase_action(actionname,false)
 			InputMap.action_add_event(actionname, event)
 			buttonactive.pressed=false

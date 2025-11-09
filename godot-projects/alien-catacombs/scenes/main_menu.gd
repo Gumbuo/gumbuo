@@ -18,11 +18,19 @@ func _on_button_multiplayer_pressed():
 	get_tree().change_scene("res://scenes/ui/MultiplayerLobby.tscn")
 
 func _on_button_settings_pressed():
-	# Settings disabled due to missing theme files
-	print("Settings menu temporarily disabled")
-	# TODO: Create new settings menu
-	pass
+	# Load and show settings menu
+	if options_menu == null:
+		var options_scene = load("res://scenes_examples/options.tscn")
+		options_menu = options_scene.instance()
+		options_menu.connect("close", self, "_on_options_closed")
+		add_child(options_menu)
+	else:
+		# If already exists, just show it
+		options_menu.visible = true
 
 func _on_options_closed():
-	pass
+	if options_menu:
+		options_menu.queue_free()
+		options_menu = null
+	button_settings.grab_focus()
 

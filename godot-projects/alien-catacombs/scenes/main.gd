@@ -10,8 +10,18 @@ onready var tween=$tween
 onready var y_sort=$y_sort
 onready var tile_map=$tile_map
 
-# Enemy spawning
-var enemy_scene = preload("res://scenes/entity/enemy.tscn")
+# Enemy spawning - Multiple enemy types (9 total - all animated!)
+var enemy_scenes = [
+	preload("res://scenes/entity/enemy.tscn"),
+	preload("res://scenes/entity/enemy_klackon_b.tscn"),
+	preload("res://scenes/entity/enemy_klackon_c.tscn"),
+	preload("res://scenes/entity/enemy_phantom.tscn"),
+	preload("res://scenes/entity/enemy_zombie_green.tscn"),
+	preload("res://scenes/entity/enemy_zombie_orange.tscn"),
+	preload("res://scenes/entity/enemy_worm.tscn"),
+	preload("res://scenes/entity/enemy_lurker.tscn"),
+	preload("res://scenes/entity/enemy_hulk.tscn")
+]
 var visited_rooms = []  # Track which rooms have been visited
 
 func _ready():
@@ -101,8 +111,9 @@ func spawn_enemies_in_room(room_pos: Vector2):
 		if distance_to_player < 150:
 			continue
 
-		# Spawn the enemy
-		var enemy = enemy_scene.instance()
+		# Spawn the enemy - randomly select from available enemy types
+		var random_enemy_scene = enemy_scenes[randi() % enemy_scenes.size()]
+		var enemy = random_enemy_scene.instance()
 		enemy.position = spawn_pos
 		y_sort.add_child(enemy)
 

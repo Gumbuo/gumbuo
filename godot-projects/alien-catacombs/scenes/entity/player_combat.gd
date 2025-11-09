@@ -109,8 +109,14 @@ func _on_hit_received(damage: int, knockback_force: float, attacker_position: Ve
 	var knockback_direction = (global_position - attacker_position).normalized()
 	velocity_direction = knockback_direction
 
-	# Play hurt animation
+	# Play hurt animation briefly, then allow movement again
 	sprite.play("hurt")
+	yield(get_tree().create_timer(0.3), "timeout")
+	# Reset to normal animation
+	if velocity_direction.length() > 0:
+		sprite.play("move")
+	else:
+		sprite.play("idle")
 
 func _on_damaged(amount):
 	# Flash sprite or other visual feedback

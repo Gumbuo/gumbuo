@@ -1,0 +1,3 @@
+[gd_scene format=2]
+
+[node name="tile_map_decor" type="Node2D"]

@@ -136,16 +136,15 @@ func _on_son_value_changed(value:int):
 
 func _on_Button_input_pressed():
 	keybinding()
+
 func keybinding():
-	if not $anim.is_playing() and not varkeybinding:
-		varkeybinding=true
-		var menu
-		menu=preload("res://scenes_examples/keybinding.tscn")
-		var menu_instance=menu.instance()
-		menu_instance.connect("hide_parent",self,"hide_reglage")
-		menu_instance.connect("show_parent",self,"show_reglage")
-		menu_instance.connect("disable_keybinding",self,"disable_keybinding")
-		add_child(menu_instance)
+	if not self.has_node("keybinding"):
+		var keybinding_scene = load("res://scenes_examples/keybinding.tscn")
+		if keybinding_scene:
+			var keybinding_instance = keybinding_scene.instance()
+			add_child(keybinding_instance)
+			hide_reglage()
+			varkeybinding = true
 
 func hide_reglage():
 	$reglage.hide()
