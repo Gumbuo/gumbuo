@@ -114,23 +114,17 @@ func _state_chase():
 		velocity_direction = Vector2.ZERO
 		update_look_direction()
 		if distance_to_target <= shoot_range and can_shoot:
-			current_state = State.ATTACK
+			shoot_at_player()  # Shoot directly without changing state
 		return
 
-	# Keep distance and shoot
+	# Always chase the player
+	var direction = (target.global_position - global_position).normalized()
+	velocity_direction = direction
+	update_look_direction()
+
+	# Shoot while chasing if in range
 	if distance_to_target <= shoot_range and can_shoot:
-		velocity_direction = Vector2.ZERO
-		current_state = State.ATTACK
-		return
-	# Move closer if too far
-	elif distance_to_target > shoot_range:
-		var direction = (target.global_position - global_position).normalized()
-		velocity_direction = direction
-		update_look_direction()
-	# Maintain distance
-	else:
-		velocity_direction = Vector2.ZERO
-		update_look_direction()
+		shoot_at_player()  # Shoot while moving, don't stop
 
 func _state_attack():
 	velocity_direction = Vector2.ZERO
