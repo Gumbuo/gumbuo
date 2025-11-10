@@ -232,6 +232,71 @@ export default function ReferralSceneContent() {
             </div>
           </div>
 
+          {/* Eligible Referrals */}
+          {stats.eligibleReferrals && stats.eligibleReferrals.length > 0 && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.05), rgba(142, 68, 173, 0.05))',
+              border: '2px solid rgba(0, 255, 153, 0.3)',
+              borderRadius: '1rem',
+              padding: '30px',
+            }}>
+              <h3 style={{
+                color: '#00ff99',
+                fontSize: '1.3rem',
+                marginBottom: '15px',
+                fontWeight: 'bold',
+                fontFamily: "'Orbitron', sans-serif",
+              }}>
+                ✅ Eligible Referrals ({stats.eligibleReferrals.length})
+              </h3>
+              <p style={{ color: '#ddd', fontSize: '0.95rem', marginBottom: '20px', lineHeight: '1.6' }}>
+                These users have reached 25,000 AP and count as valid referrals:
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxHeight: '400px', overflowY: 'auto' }}>
+                {stats.eligibleReferrals.map((referral: any) => {
+                  const walletShort = `${referral.referredWallet.slice(0, 6)}...${referral.referredWallet.slice(-4)}`;
+                  const userAP = userBalances[referral.referredWallet.toLowerCase()] || 0;
+
+                  return (
+                    <div
+                      key={referral.referredWallet}
+                      style={{
+                        padding: '20px',
+                        background: 'rgba(0, 255, 153, 0.1)',
+                        border: '2px solid #00ff99',
+                        borderRadius: '0.75rem',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <p style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem', fontFamily: 'monospace' }}>
+                            {walletShort}
+                          </p>
+                          <p style={{ color: '#888', fontSize: '0.85rem', marginTop: '5px' }}>
+                            Joined {new Date(referral.timestamp).toLocaleDateString()}
+                          </p>
+                          {referral.eligibleAt && (
+                            <p style={{ color: '#00ff99', fontSize: '0.8rem', marginTop: '3px' }}>
+                              ✓ Eligible since {new Date(referral.eligibleAt).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <p style={{ color: '#00ff99', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                            {userAP.toLocaleString()}
+                          </p>
+                          <p style={{ color: '#888', fontSize: '0.85rem' }}>
+                            Alien Points
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Pending Referrals */}
           {stats.pendingReferrals && stats.pendingReferrals.length > 0 && (
             <div style={{
