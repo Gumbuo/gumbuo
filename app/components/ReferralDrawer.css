@@ -1,0 +1,170 @@
+/* Referral Drawer - Gold/Orange Theme */
+
+/* Toggle Button */
+.referral-drawer-toggle {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 80px;
+  background: linear-gradient(90deg, #0f0f2e 0%, #1a1a3e 100%);
+  border: 2px solid #ffd700;
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  cursor: pointer;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 4px 0 16px rgba(255, 215, 0, 0.3);
+}
+
+.referral-drawer-toggle:hover {
+  background: linear-gradient(90deg, #1f1f3e 0%, #2a2a4e 100%);
+  box-shadow: 6px 0 24px rgba(255, 215, 0, 0.5);
+}
+
+.referral-drawer-toggle.open {
+  left: 500px;
+  border-right: 2px solid #ffd700;
+  border-radius: 12px 0 0 12px;
+}
+
+.referral-drawer-toggle .toggle-icon {
+  font-size: 20px;
+  color: #ffd700;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Drawer Overlay */
+.referral-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9997;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Drawer Container */
+.referral-drawer {
+  position: fixed;
+  left: -500px;
+  top: 0;
+  bottom: 0;
+  width: 500px;
+  background: rgba(20, 20, 40, 0.98);
+  border-right: 2px solid #ffd700;
+  box-shadow: 8px 0 32px rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
+}
+
+.referral-drawer.open {
+  left: 0;
+}
+
+/* Drawer Header */
+.referral-drawer-header {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.2) 100%);
+  border-bottom: 2px solid #ffd700;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.header-title {
+  color: #ffd700;
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  margin: 0;
+}
+
+/* Drawer Content */
+.referral-drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Scrollbar styling */
+.referral-drawer-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.referral-drawer-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.referral-drawer-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ffd700, #ffa500);
+  border-radius: 4px;
+}
+
+.referral-drawer-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ffed4e, #ffb733);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .referral-drawer {
+    width: 100vw;
+    left: -100vw;
+  }
+
+  .referral-drawer-toggle.open {
+    left: calc(100vw - 40px);
+  }
+}
+
+/* Content positioning overrides */
+.referral-drawer-content > div {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}

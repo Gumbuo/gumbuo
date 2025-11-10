@@ -7,9 +7,12 @@ import { useAlienPoints } from "./context/AlienPointContext";
 import { useAlienPoints as useAlienPointsEconomy } from "./context/AlienPointsEconomy";
 import { useRightDrawer } from "./context/RightDrawerContext";
 import { useAccount, useBalance } from "wagmi";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
+const ReferralDrawer = dynamic(() => import("./components/ReferralDrawer"), { ssr: false });
 
 type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
 
@@ -506,13 +509,54 @@ export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
   const [activeScene, setActiveScene] = useState<Scene>("portals");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [referralDrawerOpen, setReferralDrawerOpen] = useState(false);
   const { playSound } = useCosmicSound();
   const { setIsOpen: setRightDrawerOpen } = useRightDrawer();
+  const { address, isConnected } = useAccount();
+  const searchParams = useSearchParams();
+  const [referralRecorded, setReferralRecorded] = useState(false);
+  const [showUnauthorized, setShowUnauthorized] = useState(false);
+  const router = useRouter();
+
+  // Admin wallet check
+  const ADMIN_WALLETS = [
+    "0xb374735cbe89a552421ddb4aad80380ae40f67a7",
+  ];
+  const isAdmin = address && ADMIN_WALLETS.includes(address.toLowerCase());
 
   useEffect(() => {
     setMounted(true);
     createStars();
   }, []);
+
+  // Record referral when wallet connects
+  useEffect(() => {
+    const referrer = searchParams?.get("ref");
+
+    if (isConnected && address && referrer && !referralRecorded) {
+      recordReferral(address, referrer);
+    }
+  }, [isConnected, address, searchParams, referralRecorded]);
+
+  const recordReferral = async (referredWallet: string, referrerWallet: string) => {
+    try {
+      const res = await fetch("/api/referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          referrerWallet,
+          referredWallet,
+        }),
+      });
+
+      if (res.ok) {
+        setReferralRecorded(true);
+        console.log("Referral recorded successfully!");
+      }
+    } catch (error) {
+      console.error("Error recording referral:", error);
+    }
+  };
 
   const createStars = () => {
     const space = document.getElementById('space-scene');
@@ -533,6 +577,23 @@ export default function MothershipPage() {
   const showScene = (scene: Scene) => {
     playSound('click');
     setActiveScene(scene);
+  };
+
+  const handleAdminClick = () => {
+    if (!isConnected) {
+      alert("Please connect your wallet first");
+      return;
+    }
+
+    if (!isAdmin) {
+      setShowUnauthorized(true);
+      setTimeout(() => setShowUnauthorized(false), 3000);
+      return;
+    }
+
+    // If admin, navigate to admin panel
+    router.push('/admin');
+    setDrawerOpen(false);
   };
 
   if (!mounted) return null;
@@ -1052,6 +1113,48 @@ export default function MothershipPage() {
               <span style={{fontSize: '2rem'}}>🎵</span>
               <span>Wallet & Music</span>
             </button>
+
+            {/* REFERRALS BUTTON */}
+            <button
+              onClick={() => {
+                playSound('click');
+                setReferralDrawerOpen(true);
+              }}
+              style={{
+                padding: '20px 40px',
+                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9))',
+                border: '3px solid rgba(255, 215, 0, 0.8)',
+                borderRadius: '15px',
+                color: '#000',
+                fontFamily: 'Orbitron, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                boxShadow: '0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.1)',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '10px',
+                textDecoration: 'none'
+              }}
+              onMouseEnter={(e) => {
+                playSound('hover');
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 165, 0, 0.95))';
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 30px rgba(255, 215, 0, 0.2)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9))';
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.1)';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <span style={{fontSize: '2rem'}}>🎁</span>
+              <span>Referrals</span>
+            </button>
           </div>
 
         </div>
@@ -1182,6 +1285,43 @@ export default function MothershipPage() {
               <div className="button-label">Support</div>
             </div>
           </button>
+
+          {/* Admin Panel Button */}
+          <button
+            className={`control-button ${isAdmin ? 'admin-authorized' : 'admin-unauthorized'}`}
+            onClick={handleAdminClick}
+            onMouseEnter={() => playSound('hover')}
+            style={{
+              background: isAdmin
+                ? 'linear-gradient(135deg, rgba(0, 255, 153, 0.2), rgba(0, 204, 122, 0.3))'
+                : 'linear-gradient(135deg, rgba(68, 68, 68, 0.2), rgba(51, 51, 51, 0.3))',
+              borderColor: isAdmin ? '#00ff99' : '#444',
+              color: isAdmin ? '#00ff99' : '#888',
+            }}
+          >
+            <div className="button-content">
+              <span className="button-icon">{isAdmin ? '🛸' : '🔒'}</span>
+              <div className="button-label">{isAdmin ? 'Admin Panel' : 'Admin Access'}</div>
+            </div>
+          </button>
+
+          {/* Unauthorized Message */}
+          {showUnauthorized && (
+            <div style={{
+              marginTop: '15px',
+              padding: '15px',
+              background: 'rgba(255, 71, 87, 0.2)',
+              border: '2px solid #ff4757',
+              borderRadius: '0.75rem',
+              color: '#ff4757',
+              fontSize: '1rem',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              animation: 'fadeIn 0.3s ease',
+            }}>
+              ❌ UNAUTHORIZED
+            </div>
+          )}
         </div>
       </div>
 
@@ -1817,6 +1957,9 @@ export default function MothershipPage() {
           .portal-label { font-size: 0.55rem; bottom: -20px; padding: 2px 6px; }
         }
       `}</style>
+
+      {/* Referral Drawer */}
+      {mounted && <ReferralDrawer isOpen={referralDrawerOpen} setIsOpen={setReferralDrawerOpen} />}
     </>
   );
 }
