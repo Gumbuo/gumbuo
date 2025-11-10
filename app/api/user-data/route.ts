@@ -354,9 +354,11 @@ export async function PUT(request: NextRequest) {
     // Update stats by incrementing
     const updatedStats = { ...currentData.gameStats };
     for (const [key, value] of Object.entries(statUpdates)) {
-      if (key in updatedStats) {
-        updatedStats[key as keyof GameStats] += value as number;
+      // Initialize field to 0 if it doesn't exist yet
+      if (!(key in updatedStats)) {
+        (updatedStats as any)[key] = 0;
       }
+      updatedStats[key as keyof GameStats] += value as number;
     }
 
     const updatedData: UserGameData = {

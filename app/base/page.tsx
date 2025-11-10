@@ -34,6 +34,7 @@ export default function BasePage() {
   // Listen for alien points updates from maze iframe and invasion game
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
+
       // Handle alien points claimed in iframe (maze game)
       if (event.data.type === 'ALIEN_POINTS_CLAIMED' && alienPointContext) {
         console.log('Iframe claimed alien points:', event.data.claimed, 'New total:', event.data.alienPoints);

@@ -774,6 +774,23 @@ export default function AlienLeaderboard() {
                   <p className="text-purple-400 font-bold mb-2">💧 Faucet Claims</p>
                   <p className="text-purple-300 text-sm">Claim daily rewards based on your GMB holdings</p>
                 </div>
+                <div className="bg-green-900/40 rounded-lg p-4 border border-green-400/30">
+                  <p className="text-green-400 font-bold mb-2">🎮 Gumbuo Invasion</p>
+                  <p className="text-green-300 text-sm">Earn 10 AP per enemy defeated</p>
+                </div>
+                <div className="bg-blue-900/40 rounded-lg p-4 border border-blue-400/30">
+                  <p className="text-blue-400 font-bold mb-2">🗡️ Dungeon Crawler</p>
+                  <p className="text-blue-300 text-sm">Earn 10 AP per monster slain</p>
+                </div>
+              </div>
+
+              {/* Important Notice */}
+              <div className="mt-6 bg-yellow-900/30 border-2 border-yellow-400/50 rounded-lg p-4 max-w-3xl mx-auto">
+                <p className="text-yellow-400 font-bold text-lg mb-2">⚠️ Important: Game Stats Recording</p>
+                <p className="text-yellow-300 text-sm">
+                  <strong>You MUST claim your Alien Points</strong> at the end of each game for your stats to be recorded on the leaderboard!
+                  Stats are only saved when you successfully claim your earned AP.
+                </p>
               </div>
             </div>
           </>

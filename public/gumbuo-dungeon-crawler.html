@@ -211,7 +211,14 @@
                 <h2 style="color: #ff0000; font-size: 2.5em;">💀 YOU DIED 💀</h2>
                 <p style="font-size: 1.3em; margin: 20px;">Floor Reached: <span id="finalFloor">0</span></p>
                 <p style="font-size: 1.3em; margin: 20px;">Enemies Defeated: <span id="finalKills">0</span></p>
-                <button onclick="location.reload()">New Run</button>
+                <p style="color: #00ffff; font-size: 1.4em; margin: 20px;">Claimable AP: <span id="gameOverClaimableAP">0</span></p>
+                <button id="gameOverClaimBtn" onclick="claimAlienPoints()" style="padding: 15px 40px; margin: 10px; font-size: 1.2em; background: linear-gradient(135deg, #00ffff, #00cccc); color: #000; border: 2px solid #00ffff; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); transition: all 0.3s;">
+                    💰 CLAIM ALIEN POINTS
+                </button>
+                <p style="color: #ffff00; font-weight: bold; margin: 10px; font-size: 0.9em;">
+                    ⚠️ Claim your AP to record your stats on the leaderboard!
+                </p>
+                <button onclick="location.reload()" style="margin-top: 10px;">New Run</button>
             </div>
 
             <div id="message" class="hidden"></div>
@@ -788,8 +795,14 @@
             }
 
             const claimBtn = document.getElementById('claimBtn');
+            const gameOverClaimBtn = document.getElementById('gameOverClaimBtn');
+
             claimBtn.disabled = true;
             claimBtn.textContent = 'CLAIMING...';
+            if (gameOverClaimBtn) {
+                gameOverClaimBtn.disabled = true;
+                gameOverClaimBtn.textContent = 'CLAIMING...';
+            }
 
             console.log('🎮 Dungeon Crawler claim! Awarding', claimableAP, 'AP | Kills:', kills);
 
@@ -817,6 +830,11 @@
 
                     claimBtn.disabled = false;
                     claimBtn.textContent = 'CLAIM ALIEN POINTS';
+                    if (gameOverClaimBtn) {
+                        gameOverClaimBtn.disabled = false;
+                        gameOverClaimBtn.textContent = '💰 CLAIM ALIEN POINTS';
+                        gameOverClaimBtn.style.display = 'none'; // Hide since AP is now 0
+                    }
                 } else if (event.data.type === 'DUNGEON_CLAIM_FAILED') {
                     clearTimeout(timeout);
                     window.removeEventListener('message', messageHandler);
@@ -825,6 +843,10 @@
 
                     claimBtn.disabled = false;
                     claimBtn.textContent = 'CLAIM ALIEN POINTS';
+                    if (gameOverClaimBtn) {
+                        gameOverClaimBtn.disabled = false;
+                        gameOverClaimBtn.textContent = '💰 CLAIM ALIEN POINTS';
+                    }
                 }
             };
 
@@ -836,6 +858,10 @@
                 alert('⏰ Claim timed out. Please try again.');
                 claimBtn.disabled = false;
                 claimBtn.textContent = 'CLAIM ALIEN POINTS';
+                if (gameOverClaimBtn) {
+                    gameOverClaimBtn.disabled = false;
+                    gameOverClaimBtn.textContent = '💰 CLAIM ALIEN POINTS';
+                }
             }, 10000);
         }
 
@@ -863,6 +889,19 @@
             cancelAnimationFrame(animationId);
             document.getElementById('finalFloor').textContent = floor;
             document.getElementById('finalKills').textContent = kills;
+
+            // Update claimable AP on game over screen
+            const claimableAP = kills * 10;
+            document.getElementById('gameOverClaimableAP').textContent = claimableAP;
+
+            // Show/hide claim button based on if there's AP to claim
+            const gameOverClaimBtn = document.getElementById('gameOverClaimBtn');
+            if (claimableAP > 0) {
+                gameOverClaimBtn.style.display = 'inline-block';
+            } else {
+                gameOverClaimBtn.style.display = 'none';
+            }
+
             gameOverDiv.classList.remove('hidden');
         }
 
