@@ -6,8 +6,9 @@ export interface Referral {
   referredWallet: string; // Who signed up via the link
   timestamp: number;
   ipAddress?: string; // For fraud detection
-  status: "pending" | "eligible"; // pending = hasn't reached 25k AP, eligible = has reached 25k AP
+  status: "pending" | "eligible"; // pending = hasn't met requirements, eligible = has met all requirements
   eligibleAt?: number; // Timestamp when they became eligible
+  dripClaimCount?: number; // Number of drip claims made (for tracking progress)
 }
 
 export interface ReferralReward {
@@ -23,6 +24,7 @@ export interface ReferralReward {
 
 // Constants
 const MIN_ALIEN_POINTS_FOR_ELIGIBILITY = 25000;
+const MIN_DRIP_CLAIMS_FOR_ELIGIBILITY = 3;
 
 // Keys
 const REFERRAL_KEY = (referrerWallet: string) => `referral:by:${referrerWallet.toLowerCase()}`;
@@ -93,10 +95,29 @@ export async function getReferralCount(referrerWallet: string): Promise<number> 
   return eligibleCount;
 }
 
-// Check and update referral eligibility when user reaches 25k AP
+// Helper function to get drip claim count from user data
+async function getDripClaimCount(walletAddress: string): Promise<number> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://gumbuo.io'}/api/user-data?wallet=${walletAddress}`);
+    if (!response.ok) return 0;
+
+    const data = await response.json();
+    if (!data.success || !data.userData || !data.userData.claimHistory) return 0;
+
+    // Count faucet claims in claim history
+    const faucetClaims = data.userData.claimHistory.filter((claim: any) => claim.type === 'faucet');
+    return faucetClaims.length;
+  } catch (error) {
+    console.error('Error fetching drip claim count:', error);
+    return 0;
+  }
+}
+
+// Check and update referral eligibility when user reaches 25k AP AND 3 drip claims
 export async function checkAndUpdateReferralEligibility(
   walletAddress: string,
-  alienPoints: number
+  alienPoints: number,
+  dripClaimCount?: number
 ): Promise<boolean> {
   const wallet = walletAddress.toLowerCase();
 
@@ -108,8 +129,17 @@ export async function checkAndUpdateReferralEligibility(
     return false;
   }
 
-  // Check if they've reached the minimum
-  if (alienPoints >= MIN_ALIEN_POINTS_FOR_ELIGIBILITY) {
+  // Fetch drip claim count if not provided
+  const claimCount = dripClaimCount !== undefined ? dripClaimCount : await getDripClaimCount(wallet);
+
+  // Update the drip claim count in referral data for tracking
+  referralData.dripClaimCount = claimCount;
+
+  // Check if they've met BOTH requirements
+  const hasEnoughAP = alienPoints >= MIN_ALIEN_POINTS_FOR_ELIGIBILITY;
+  const hasEnoughClaims = claimCount >= MIN_DRIP_CLAIMS_FOR_ELIGIBILITY;
+
+  if (hasEnoughAP && hasEnoughClaims) {
     referralData.status = "eligible";
     referralData.eligibleAt = Date.now();
 
@@ -118,6 +148,9 @@ export async function checkAndUpdateReferralEligibility(
 
     return true; // Became eligible
   }
+
+  // Still pending - update the drip claim count anyway
+  await kv.set(REFERRAL_DATA_KEY(wallet), referralData);
 
   return false;
 }

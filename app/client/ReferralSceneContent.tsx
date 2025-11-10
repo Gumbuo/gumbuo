@@ -20,6 +20,9 @@ export default function ReferralSceneContent() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [dripClaimCounts, setDripClaimCounts] = useState<Record<string, number>>({});
+  const [myReferralStatus, setMyReferralStatus] = useState<any>(null);
+  const [myDripClaims, setMyDripClaims] = useState(0);
 
   // Get alien points for the current user
   const alienPoints = address && userBalances[address.toLowerCase()] !== undefined
@@ -59,6 +62,55 @@ export default function ReferralSceneContent() {
       if (res.ok) {
         const data = await res.json();
         setStats(data);
+
+        // Fetch drip claim counts for all referrals
+        if (data.pendingReferrals || data.eligibleReferrals) {
+          const allReferrals = [...(data.pendingReferrals || []), ...(data.eligibleReferrals || [])];
+          const counts: Record<string, number> = {};
+
+          await Promise.all(
+            allReferrals.map(async (referral: any) => {
+              try {
+                const userDataRes = await fetch(`/api/user-data?wallet=${referral.referredWallet}`);
+                if (userDataRes.ok) {
+                  const userData = await userDataRes.json();
+                  if (userData.success && userData.userData && userData.userData.claimHistory) {
+                    const faucetClaims = userData.userData.claimHistory.filter((claim: any) => claim.type === 'faucet');
+                    counts[referral.referredWallet.toLowerCase()] = faucetClaims.length;
+                  }
+                }
+              } catch (error) {
+                console.error(`Error fetching drip claims for ${referral.referredWallet}:`, error);
+                counts[referral.referredWallet.toLowerCase()] = 0;
+              }
+            })
+          );
+
+          setDripClaimCounts(counts);
+        }
+      }
+
+      // Check if current user was referred by someone
+      try {
+        const myStatusRes = await fetch(`/api/referral/my-status?wallet=${address}`);
+        if (myStatusRes.ok) {
+          const myStatus = await myStatusRes.json();
+          if (myStatus.success && myStatus.wasReferred) {
+            setMyReferralStatus(myStatus.referralData);
+
+            // Fetch my drip claim count
+            const myUserDataRes = await fetch(`/api/user-data?wallet=${address}`);
+            if (myUserDataRes.ok) {
+              const myUserData = await myUserDataRes.json();
+              if (myUserData.success && myUserData.userData && myUserData.userData.claimHistory) {
+                const myFaucetClaims = myUserData.userData.claimHistory.filter((claim: any) => claim.type === 'faucet');
+                setMyDripClaims(myFaucetClaims.length);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error checking my referral status:", error);
       }
     } catch (error) {
       console.error("Error loading referral stats:", error);
@@ -96,6 +148,136 @@ export default function ReferralSceneContent() {
       maxWidth: '800px',
       padding: '20px',
     }}>
+      {/* My Referral Progress (if I was referred) */}
+      {myReferralStatus && (
+        <div style={{
+          marginBottom: '30px',
+          background: 'linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(75, 0, 130, 0.1))',
+          border: myReferralStatus.status === 'eligible' ? '2px solid #00ff99' : '2px solid #8b00ff',
+          borderRadius: '1rem',
+          padding: '30px',
+        }}>
+          <h3 style={{
+            color: myReferralStatus.status === 'eligible' ? '#00ff99' : '#8b00ff',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            marginBottom: '15px',
+            fontFamily: "'Orbitron', sans-serif",
+            textAlign: 'center',
+          }}>
+            {myReferralStatus.status === 'eligible' ? '✅ You Are Eligible!' : '🎯 Your Eligibility Progress'}
+          </h3>
+
+          {myReferralStatus.status === 'pending' ? (
+            <>
+              <p style={{ color: '#ddd', fontSize: '1rem', marginBottom: '20px', textAlign: 'center' }}>
+                Complete these requirements to help your referrer earn rewards:
+              </p>
+
+              {/* Alien Points Progress */}
+              <div style={{
+                marginBottom: '20px',
+                padding: '20px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                borderRadius: '0.75rem',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <span style={{ color: '#00ff99', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    💎 Alien Points
+                  </span>
+                  <span style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    {alienPoints.toLocaleString()} / 25,000
+                  </span>
+                </div>
+                <div style={{
+                  width: '100%',
+                  height: '16px',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                }}>
+                  <div style={{
+                    width: `${Math.min((alienPoints / 25000) * 100, 100)}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #00ff99, #00cc7a)',
+                    borderRadius: '8px',
+                    transition: 'width 0.3s ease',
+                  }} />
+                </div>
+                <p style={{ color: '#888', fontSize: '0.85rem', marginTop: '8px', textAlign: 'center' }}>
+                  {alienPoints >= 25000 ? '✅ Requirement Met!' : `${(25000 - alienPoints).toLocaleString()} more to go`}
+                </p>
+              </div>
+
+              {/* Drip Claims Progress */}
+              <div style={{
+                padding: '20px',
+                background: 'rgba(0, 0, 0, 0.3)',
+                borderRadius: '0.75rem',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <span style={{ color: '#ffd700', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    💧 Drip Claims
+                  </span>
+                  <span style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    {myDripClaims} / 3
+                  </span>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  gap: '10px',
+                  justifyContent: 'center',
+                }}>
+                  {[1, 2, 3].map((num) => (
+                    <div
+                      key={num}
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        borderRadius: '50%',
+                        background: myDripClaims >= num
+                          ? 'linear-gradient(135deg, #ffd700, #ffa500)'
+                          : 'rgba(128, 128, 128, 0.3)',
+                        border: `3px solid ${myDripClaims >= num ? '#ffd700' : '#666'}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '2rem',
+                        transition: 'all 0.3s ease',
+                      }}
+                    >
+                      {myDripClaims >= num ? '✓' : '💧'}
+                    </div>
+                  ))}
+                </div>
+                <p style={{ color: '#888', fontSize: '0.85rem', marginTop: '12px', textAlign: 'center' }}>
+                  {myDripClaims >= 3 ? '✅ Requirement Met!' : `Claim ${3 - myDripClaims} more time${3 - myDripClaims > 1 ? 's' : ''} from the free drip faucet`}
+                </p>
+              </div>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <p style={{ color: '#00ff99', fontSize: '1.3rem', fontWeight: 'bold', marginBottom: '10px' }}>
+                🎉 Congratulations!
+              </p>
+              <p style={{ color: '#ddd', fontSize: '1rem' }}>
+                You've met all requirements and count as an eligible referral!
+              </p>
+              <div style={{ marginTop: '20px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
+                <div>
+                  <p style={{ color: '#00ff99', fontSize: '2rem' }}>✓</p>
+                  <p style={{ color: '#888', fontSize: '0.9rem' }}>25,000 AP</p>
+                </div>
+                <div>
+                  <p style={{ color: '#ffd700', fontSize: '2rem' }}>✓</p>
+                  <p style={{ color: '#888', fontSize: '0.9rem' }}>3 Drip Claims</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Referral Link Section */}
       <div style={{
         marginBottom: '30px',
@@ -167,10 +349,17 @@ export default function ReferralSceneContent() {
           marginTop: '15px',
         }}>
           <p style={{ color: '#ffd700', fontSize: '0.95rem', fontWeight: 'bold', marginBottom: '5px' }}>
-            ⚠️ Eligibility Requirement
+            ⚠️ Eligibility Requirements
           </p>
           <p style={{ color: '#ddd', fontSize: '0.9rem', lineHeight: '1.6' }}>
-            Each person you refer must earn <strong style={{ color: '#00ff99' }}>25,000 Alien Points</strong> to count as an eligible referral. This prevents bot activity and ensures genuine participation.
+            To count as an eligible referral, each person must:
+          </p>
+          <ul style={{ color: '#ddd', fontSize: '0.9rem', lineHeight: '1.8', marginTop: '8px', paddingLeft: '20px' }}>
+            <li>Earn <strong style={{ color: '#00ff99' }}>25,000 Alien Points</strong></li>
+            <li>Claim from the <strong style={{ color: '#00ff99' }}>Free Drip Faucet 3 times</strong></li>
+          </ul>
+          <p style={{ color: '#888', fontSize: '0.85rem', marginTop: '8px', fontStyle: 'italic' }}>
+            This prevents bot activity and ensures genuine participation.
           </p>
         </div>
       </div>
@@ -315,13 +504,14 @@ export default function ReferralSceneContent() {
                 ⏳ Pending Referrals ({stats.pendingReferrals.length})
               </h3>
               <p style={{ color: '#ddd', fontSize: '0.95rem', marginBottom: '20px', lineHeight: '1.6' }}>
-                These users signed up via your link but haven't reached 25,000 AP yet:
+                These users signed up via your link but haven't met all requirements yet:
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxHeight: '400px', overflowY: 'auto' }}>
                 {stats.pendingReferrals.map((referral: any) => {
                   const walletShort = `${referral.referredWallet.slice(0, 6)}...${referral.referredWallet.slice(-4)}`;
                   const userAP = userBalances[referral.referredWallet.toLowerCase()] || 0;
-                  const progress = Math.min((userAP / 25000) * 100, 100);
+                  const apProgress = Math.min((userAP / 25000) * 100, 100);
+                  const dripClaims = dripClaimCounts[referral.referredWallet.toLowerCase()] || 0;
 
                   return (
                     <div
@@ -342,36 +532,72 @@ export default function ReferralSceneContent() {
                             Joined {new Date(referral.timestamp).toLocaleDateString()}
                           </p>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <p style={{ color: '#ffd700', fontSize: '1.3rem', fontWeight: 'bold' }}>
-                            {userAP.toLocaleString()}
-                          </p>
-                          <p style={{ color: '#888', fontSize: '0.85rem' }}>
-                            / 25,000 AP
-                          </p>
-                        </div>
                       </div>
 
-                      {/* Progress Bar */}
-                      <div style={{
-                        width: '100%',
-                        height: '12px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        borderRadius: '6px',
-                        overflow: 'hidden',
-                        position: 'relative',
-                      }}>
+                      {/* AP Progress */}
+                      <div style={{ marginBottom: '15px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                          <span style={{ color: '#00ff99', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            💎 Alien Points
+                          </span>
+                          <span style={{ color: '#ffd700', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            {userAP.toLocaleString()} / 25,000
+                          </span>
+                        </div>
                         <div style={{
-                          width: `${progress}%`,
-                          height: '100%',
-                          background: 'linear-gradient(90deg, #ffd700, #ffed4e)',
+                          width: '100%',
+                          height: '12px',
+                          background: 'rgba(0, 0, 0, 0.3)',
                           borderRadius: '6px',
-                          transition: 'width 0.3s ease',
-                        }} />
+                          overflow: 'hidden',
+                          position: 'relative',
+                        }}>
+                          <div style={{
+                            width: `${apProgress}%`,
+                            height: '100%',
+                            background: 'linear-gradient(90deg, #00ff99, #00cc7a)',
+                            borderRadius: '6px',
+                            transition: 'width 0.3s ease',
+                          }} />
+                        </div>
+                        <p style={{ color: '#888', fontSize: '0.75rem', marginTop: '5px', textAlign: 'right' }}>
+                          {apProgress.toFixed(1)}% {userAP >= 25000 ? '✅' : ''}
+                        </p>
                       </div>
-                      <p style={{ color: '#888', fontSize: '0.8rem', marginTop: '8px', textAlign: 'center' }}>
-                        {progress.toFixed(1)}% Complete
-                      </p>
+
+                      {/* Drip Claims Progress */}
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                          <span style={{ color: '#ffd700', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            💧 Drip Claims
+                          </span>
+                          <span style={{ color: '#ffd700', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            {dripClaims} / 3
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                          {[1, 2, 3].map((num) => (
+                            <div
+                              key={num}
+                              style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: dripClaims >= num
+                                  ? 'linear-gradient(135deg, #ffd700, #ffa500)'
+                                  : 'rgba(128, 128, 128, 0.3)',
+                                border: `2px solid ${dripClaims >= num ? '#ffd700' : '#666'}`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '1.2rem',
+                              }}
+                            >
+                              {dripClaims >= num ? '✓' : '💧'}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
