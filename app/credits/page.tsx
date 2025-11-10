@@ -68,39 +68,25 @@ export default function CreditsPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0a0a1a 100%)',
+      backgroundImage: 'url(/foxholeproductions.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
       padding: '40px 20px',
       position: 'relative',
       overflow: 'auto'
     }}>
-      {/* Animated Background Stars */}
+      {/* Dark overlay for better text readability */}
       <div style={{
         position: 'fixed',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
+        background: 'rgba(0, 0, 0, 0.6)',
         zIndex: 0,
-        pointerEvents: 'none',
-        opacity: 0.3
-      }}>
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 3 + 1}px`,
-              height: `${Math.random() * 3 + 1}px`,
-              background: 'white',
-              borderRadius: '50%',
-              animation: `starTwinkle ${Math.random() * 3 + 2}s infinite`,
-              animationDelay: `${Math.random() * 3}s`
-            }}
-          />
-        ))}
-      </div>
+        pointerEvents: 'none'
+      }} />
 
       {/* Back Button */}
       <Link
@@ -381,11 +367,6 @@ export default function CreditsPage() {
       </div>
 
       <style jsx>{`
-        @keyframes starTwinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-
         @keyframes pulse {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.9; transform: scale(1.02); }
