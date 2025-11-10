@@ -92,7 +92,17 @@ export default function BasePage() {
 
               // Track Invasion game stats
               try {
-                await fetch('/api/user-data', {
+                // First, get current high score before updating
+                const userDataResponse = await fetch(`/api/user-data?wallet=${address}`);
+                const userData = await userDataResponse.json();
+                const currentHighScore = userData.success && userData.userData?.gameStats?.invasionHighScore || 0;
+
+                // Determine if this is a new high score
+                const isNewHighScore = enemiesKilled > currentHighScore;
+                const highScoreIncrement = isNewHighScore ? (enemiesKilled - currentHighScore) : 0;
+
+                // Update all stats in one call
+                const statUpdateResponse = await fetch('/api/user-data', {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
@@ -101,27 +111,14 @@ export default function BasePage() {
                       invasionGamesPlayed: 1,
                       invasionTotalKills: enemiesKilled,
                       invasionAPEarned: pointsToAward,
+                      invasionHighScore: highScoreIncrement,
                     },
                   }),
                 });
 
-                // Also check and update high score for most enemies killed in one game
-                const userDataResponse = await fetch(`/api/user-data?wallet=${address}`);
-                const userData = await userDataResponse.json();
-                if (userData.success && userData.userData) {
-                  const currentHighScore = userData.userData.gameStats?.invasionHighScore || 0;
-                  if (enemiesKilled > currentHighScore) {
-                    await fetch('/api/user-data', {
-                      method: 'PUT',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        wallet: address,
-                        statUpdates: {
-                          invasionHighScore: enemiesKilled - currentHighScore,
-                        },
-                      }),
-                    });
-                  }
+                const statUpdateResult = await statUpdateResponse.json();
+                if (!statUpdateResult.success) {
+                  console.error('Failed to update invasion stats:', statUpdateResult);
                 }
               } catch (error) {
                 console.error('Failed to track invasion stats:', error);
@@ -197,7 +194,17 @@ export default function BasePage() {
 
               // Track Dungeon Crawler game stats
               try {
-                await fetch('/api/user-data', {
+                // First, get current highest floor before updating
+                const userDataResponse = await fetch(`/api/user-data?wallet=${address}`);
+                const userData = await userDataResponse.json();
+                const currentHighestFloor = userData.success && userData.userData?.gameStats?.dungeonHighestFloor || 0;
+
+                // Determine if this is a new highest floor
+                const isNewHighestFloor = currentFloor > currentHighestFloor;
+                const highestFloorIncrement = isNewHighestFloor ? (currentFloor - currentHighestFloor) : 0;
+
+                // Update all stats in one call
+                const statUpdateResponse = await fetch('/api/user-data', {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
@@ -207,27 +214,14 @@ export default function BasePage() {
                       dungeonTotalKills: killsCount,
                       dungeonAPEarned: pointsToAward,
                       dungeonTotalGold: goldCollected,
+                      dungeonHighestFloor: highestFloorIncrement,
                     },
                   }),
                 });
 
-                // Also check and update high score for highest floor (use POST to set it if higher)
-                const userDataResponse = await fetch(`/api/user-data?wallet=${address}`);
-                const userData = await userDataResponse.json();
-                if (userData.success && userData.userData) {
-                  const currentHighest = userData.userData.gameStats?.dungeonHighestFloor || 0;
-                  if (currentFloor > currentHighest) {
-                    await fetch('/api/user-data', {
-                      method: 'PUT',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        wallet: address,
-                        statUpdates: {
-                          dungeonHighestFloor: currentFloor - currentHighest,
-                        },
-                      }),
-                    });
-                  }
+                const statUpdateResult = await statUpdateResponse.json();
+                if (!statUpdateResult.success) {
+                  console.error('Failed to update dungeon stats:', statUpdateResult);
                 }
               } catch (error) {
                 console.error('Failed to track dungeon stats:', error);
