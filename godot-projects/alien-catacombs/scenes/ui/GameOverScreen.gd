@@ -44,12 +44,20 @@ func set_pause_mode_recursive(node):
 
 func _on_Restart_pressed():
 	print("RESTART BUTTON CLICKED!")
-	# Unpause and reload the scene
+	# Hide the game over screen first
+	visible = false
+	# Unpause the game
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	print("Game unpaused, reloading scene...")
+	# Use call_deferred to safely reload the scene
+	get_tree().call_deferred("reload_current_scene")
 
 func _on_MainMenu_pressed():
 	print("MAIN MENU BUTTON CLICKED!")
-	# Unpause and return to main menu
+	# Hide the game over screen first
+	visible = false
+	# Unpause the game
 	get_tree().paused = false
-	get_tree().change_scene("res://scenes/main_menu.tscn")
+	print("Game unpaused, changing to main menu...")
+	# Use call_deferred to safely change scenes
+	get_tree().call_deferred("change_scene", "res://scenes/main_menu.tscn")

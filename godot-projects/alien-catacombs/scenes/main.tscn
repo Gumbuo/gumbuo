@@ -1198,17 +1198,17 @@ color = Color( 0, 0, 0, 0.666667 )
 
 [node name="v_box_container" type="VBoxContainer" parent="GameOverScreen/color_rect"]
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.05
 anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -200.0
-margin_top = -150.0
+anchor_bottom = 0.05
+margin_left = -70.0
+margin_top = 90.0
+margin_bottom = -17.056
 alignment = 1
 
 [node name="TitleLabel" type="Label" parent="GameOverScreen/color_rect/v_box_container"]
-margin_top = 41.0
-margin_right = 200.0
-margin_bottom = 42.0
+margin_right = 100.0
+margin_bottom = 1.0
 custom_colors/font_color = Color( 0.952941, 0.0352941, 0.0352941, 1 )
 custom_fonts/font = SubResource( 35 )
 text = "YOU DIED NOOB l   "
@@ -1216,23 +1216,23 @@ align = 1
 valign = 1
 
 [node name="MessageLabel" type="Label" parent="GameOverScreen/color_rect/v_box_container"]
-margin_top = 46.0
-margin_right = 200.0
-margin_bottom = 60.0
+margin_top = 5.0
+margin_right = 100.0
+margin_bottom = 19.0
 text = "IDIOT GET GUD"
 align = 1
 valign = 1
 
 [node name="Restart" type="Button" parent="GameOverScreen/color_rect/v_box_container"]
-margin_top = 64.0
-margin_right = 200.0
-margin_bottom = 84.0
+margin_top = 23.0
+margin_right = 100.0
+margin_bottom = 43.0
 text = "RESTART"
 
 [node name="MainMenu" type="Button" parent="GameOverScreen/color_rect/v_box_container"]
-margin_top = 88.0
-margin_right = 200.0
-margin_bottom = 108.0
+margin_top = 47.0
+margin_right = 100.0
+margin_bottom = 67.0
 text = "Main Menu "
 
 [connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/Restart" to="GameOverScreen" method="_on_Restart_pressed"]
