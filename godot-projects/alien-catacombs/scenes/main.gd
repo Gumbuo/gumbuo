@@ -9,6 +9,7 @@ onready var camera=$camera
 onready var tween=$tween
 onready var y_sort=$y_sort
 onready var tile_map=$tile_map
+onready var game_over_screen=$GameOverScreen
 
 # Enemy spawning - Multiple enemy types (9 total - all animated!)
 var enemy_scenes = [
@@ -49,6 +50,18 @@ func _ready():
 
 	# Wall collision re-enabled - user will work within camera bounds
 	print("TileMap collision enabled - walls are solid")
+
+	# Connect to player's Health component death signal
+	var player_health = player.get_node_or_null("Health")
+	if player_health:
+		player_health.connect("died", self, "_on_player_died")
+		print("Connected to player health - death handler ready")
+	else:
+		print("Warning: Player has no Health component!")
+
+	# Hide game over screen initially
+	if game_over_screen:
+		game_over_screen.visible = false
 
 func _process(delta):
 	move_camera()
@@ -141,3 +154,21 @@ func spawn_enemies_in_room(room_pos: Vector2):
 
 		spawned_count += 1
 		print("Spawned enemy at: ", enemy.position, " (distance from player: ", int(distance_to_player), ")")
+
+func _on_player_died():
+	print("Player died! Showing game over screen...")
+
+	# Disable player movement and input
+	player.set_physics_process(false)
+	player.set_process_input(false)
+
+	# Show game over screen
+	if game_over_screen:
+		game_over_screen.visible = true
+
+	# Optionally pause enemies (make them stop attacking)
+	get_tree().paused = true
+
+
+func _on_Restart_pressed():
+	pass # Replace with function body.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=2]
+[gd_scene load_steps=65 format=2]
 
 [ext_resource path="res://asset/map/tileset.png" type="Texture" id=1]
 [ext_resource path="res://scenes/entity/player.tscn" type="PackedScene" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://asset/map/objects/server.png" type="Texture" id=13]
 [ext_resource path="res://asset/map/objects/base_normalmap.png" type="Texture" id=14]
 [ext_resource path="res://asset/map/key/key0.png" type="Texture" id=15]
+[ext_resource path="res://scenes/GameOverScreen.gd" type="Script" id=16]
 [ext_resource path="res://asset/map/objects/container_disabled.png" type="Texture" id=18]
 [ext_resource path="res://asset/map/objects/container.png" type="Texture" id=19]
 [ext_resource path="res://asset/map/objects/digicode.png" type="Texture" id=20]
@@ -655,6 +656,9 @@ points = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
 } ]
 6/z_index = 0
 
+[sub_resource type="DynamicFont" id=35]
+size = 48
+
 [node name="main" type="Node2D"]
 position = Vector2( 1196, 696 )
 script = ExtResource( 3 )
@@ -1181,3 +1185,55 @@ position = Vector2( 1923, 206 )
 position = Vector2( 2293, 207 )
 
 [node name="CoinHUD" parent="." instance=ExtResource( 33 )]
+
+[node name="GameOverScreen" type="CanvasLayer" parent="."]
+script = ExtResource( 16 )
+
+[node name="color_rect" type="ColorRect" parent="GameOverScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 40.0
+margin_bottom = 40.0
+color = Color( 0, 0, 0, 0.666667 )
+
+[node name="v_box_container" type="VBoxContainer" parent="GameOverScreen/color_rect"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -150.0
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="GameOverScreen/color_rect/v_box_container"]
+margin_top = 41.0
+margin_right = 200.0
+margin_bottom = 42.0
+custom_colors/font_color = Color( 0.952941, 0.0352941, 0.0352941, 1 )
+custom_fonts/font = SubResource( 35 )
+text = "YOU DIED NOOB l   "
+align = 1
+valign = 1
+
+[node name="MessageLabel" type="Label" parent="GameOverScreen/color_rect/v_box_container"]
+margin_top = 46.0
+margin_right = 200.0
+margin_bottom = 60.0
+text = "IDIOT GET GUD"
+align = 1
+valign = 1
+
+[node name="Restart" type="Button" parent="GameOverScreen/color_rect/v_box_container"]
+margin_top = 64.0
+margin_right = 200.0
+margin_bottom = 84.0
+text = "RESTART"
+
+[node name="MainMenu" type="Button" parent="GameOverScreen/color_rect/v_box_container"]
+margin_top = 88.0
+margin_right = 200.0
+margin_bottom = 108.0
+text = "Main Menu "
+
+[connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/Restart" to="GameOverScreen" method="_on_Restart_pressed"]
+[connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/MainMenu" to="GameOverScreen" method="_on_MainMenu_pressed"]
