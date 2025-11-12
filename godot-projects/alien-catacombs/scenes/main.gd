@@ -111,12 +111,14 @@ func spawn_enemies_in_room(room_pos: Vector2):
 	var spawn_attempts = 0
 	var spawned_count = 0
 
-	while spawned_count < 2 and spawn_attempts < 50:
+	print("Attempting to spawn enemies in room: ", room_key)
+
+	while spawned_count < 2 and spawn_attempts < 100:  # Increased attempts from 50 to 100
 		spawn_attempts += 1
 
-		# Generate random position in open areas (center of room, away from edges)
-		var random_x = room_pos.x + rand_range(vp_size.x * 0.3, vp_size.x * 0.7)
-		var random_y = room_pos.y + rand_range(vp_size.y * 0.3, vp_size.y * 0.7)
+		# Generate random position in open areas (more centered, further from edges)
+		var random_x = room_pos.x + rand_range(vp_size.x * 0.35, vp_size.x * 0.65)
+		var random_y = room_pos.y + rand_range(vp_size.y * 0.35, vp_size.y * 0.65)
 		var spawn_pos = Vector2(random_x, random_y)
 
 		# Don't spawn too close to player (minimum 150 pixels away)
@@ -132,20 +134,32 @@ func spawn_enemies_in_room(room_pos: Vector2):
 		if tile_id == -1:
 			continue
 
-		# Use physics query to check if position is blocked by walls
-		var space_state = get_world_2d().direct_space_state
-		var query = Physics2DShapeQueryParameters.new()
-		var shape = CircleShape2D.new()
-		shape.radius = 8  # Small radius to test spawn point
-		query.set_shape(shape)
-		query.transform = Transform2D(0, spawn_pos)
-		query.collision_layer = 1  # Check layer 1 (walls/obstacles)
-		var result = space_state.intersect_shape(query, 1)
-
-		# Skip if there's a collision at this position
-		if result.size() > 0:
+		# Check if this tile is a wall (has collision shape) - only spawn on floor tiles
+		var tile_set = tile_map.tile_set
+		if tile_set.tile_get_shape_count(tile_id) > 0:
+			# This tile has collision shapes, it's a wall - skip it
 			continue
 
+		# Also check surrounding tiles to ensure enough clearance (4 cardinal directions)
+		var valid_surroundings = true
+		for offset in [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]:
+			var check_pos = tile_pos + offset
+			var check_tile = tile_map.get_cellv(check_pos)
+
+			# Skip if adjacent tile is a hole
+			if check_tile == -1:
+				valid_surroundings = false
+				break
+
+			# Skip if adjacent tile is a wall (has collision)
+			if tile_set.tile_get_shape_count(check_tile) > 0:
+				valid_surroundings = false
+				break
+
+		if not valid_surroundings:
+			continue
+
+		# All checks passed - this is a valid floor tile to spawn on!
 		# Spawn the enemy - randomly select from available enemy types
 		var random_enemy_scene = enemy_scenes[randi() % enemy_scenes.size()]
 		var enemy = random_enemy_scene.instance()
@@ -154,6 +168,10 @@ func spawn_enemies_in_room(room_pos: Vector2):
 
 		spawned_count += 1
 		print("Spawned enemy at: ", enemy.position, " (distance from player: ", int(distance_to_player), ")")
+
+	# Report spawn results
+	if spawned_count < 2:
+		print("WARNING: Only spawned ", spawned_count, "/2 enemies after ", spawn_attempts, " attempts in room ", room_key)
 
 func _on_player_died():
 	print("Player died! Showing game over screen...")

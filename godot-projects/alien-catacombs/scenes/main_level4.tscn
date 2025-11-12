@@ -664,6 +664,7 @@ position = Vector2( 1196, 696 )
 script = ExtResource( 3 )
 
 [node name="tile_map" type="TileMap" parent="."]
+modulate = Color( 0.8, 0.6, 1.4, 1 )
 tile_set = SubResource( 18 )
 cell_size = Vector2( 32, 32 )
 format = 1

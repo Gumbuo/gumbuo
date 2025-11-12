@@ -5,10 +5,10 @@ extends Enemy
 
 func _ready():
 	._ready()
-	# Lurker is EXTREMELY DANGEROUS
+	# Lurker is a slow tank - powerful but sluggish
 	shoot_range = 160.0  # Very long range - shoots from far away
-	shoot_cooldown = 0.3  # INSANE fire rate!
-	speed = 60  # Fast but won't overshoot player
+	shoot_cooldown = 0.6  # Slower fire rate for tank
+	speed = 24  # Very slow tank movement - struggles to chase
 	detection_range = 200.0  # Tracks you from very far away
 
 # Override animation - Lurker uses Sprite not AnimatedSprite
