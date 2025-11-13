@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
 const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 const ReferralDrawer = dynamic(() => import("./components/ReferralDrawer"), { ssr: false });
+const GlobalMusicPlayer = dynamic(() => import("./components/GlobalMusicPlayer"), { ssr: false });
 
 type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support";
 
@@ -655,8 +656,11 @@ export default function MothershipPage() {
                   <div className="portal-label">BASE GAMES</div>
                 </Link>
 
-                <Link
-                  href="/base?game=catacombs"
+                <div
+                  onClick={() => {
+                    playSound('click');
+                    showScene('drip');
+                  }}
                   className="portal-item"
                   onMouseEnter={() => playSound('hover')}
                   style={{
@@ -669,18 +673,27 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/greyportal.png"
-                    alt="Alien Catacombs"
+                    alt="Alien Drip"
                     className="portal-image"
                     style={{
                       borderColor: '#e0e0e0',
                       boxShadow: '0 0 25px rgba(224, 224, 224, 0.8)'
                     }}
                   />
-                  <div className="portal-label">ALIEN CATACOMBS</div>
-                </Link>
+                  <div className="portal-label" style={{
+                    background: '#00ffff',
+                    color: '#000',
+                    border: '2px solid #000',
+                    boxShadow: '0 0 25px #000',
+                    textDecoration: 'underline'
+                  }}>ALIEN DRIP</div>
+                </div>
 
-                <Link
-                  href="/base?game=fighters"
+                <div
+                  onClick={() => {
+                    playSound('click');
+                    showScene('leaderboard');
+                  }}
                   className="portal-item"
                   onMouseEnter={() => playSound('hover')}
                   style={{
@@ -693,15 +706,21 @@ export default function MothershipPage() {
                 >
                   <img
                     src="/greenportal.png"
-                    alt="Gumbuo Fighters"
+                    alt="Leaderboard"
                     className="portal-image"
                     style={{
                       borderColor: '#00ff99',
                       boxShadow: '0 0 25px rgba(0, 255, 153, 0.8)'
                     }}
                   />
-                  <div className="portal-label">GUMBUO FIGHTERS</div>
-                </Link>
+                  <div className="portal-label" style={{
+                    background: '#00ffff',
+                    color: '#000',
+                    border: '2px solid #000',
+                    boxShadow: '0 0 25px #000',
+                    textDecoration: 'underline'
+                  }}>LEADERBOARD</div>
+                </div>
 
                 <Link
                   href="/credits"
@@ -727,12 +746,57 @@ export default function MothershipPage() {
                   <div className="portal-label">CREDITS</div>
                 </Link>
               </div>
+
+              {/* Music Player centered under portals */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '40px',
+                position: 'relative',
+                zIndex: 10
+              }}>
+                <GlobalMusicPlayer />
+              </div>
             </div>
           </div>
 
           {/* Scene 2: Drip Claim */}
           <div id="scene-drip" className={`viewport-scene ${activeScene !== 'drip' ? 'hidden' : ''}`}>
             <div className="content-scene">
+              <button
+                onClick={() => {
+                  playSound('click');
+                  showScene('portals');
+                }}
+                onMouseEnter={() => playSound('hover')}
+                style={{
+                  position: 'absolute',
+                  top: '20px',
+                  left: '20px',
+                  padding: '10px 20px',
+                  background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 153, 204, 0.9))',
+                  border: '2px solid #00d4ff',
+                  borderRadius: '8px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  boxShadow: '0 0 15px rgba(0, 212, 255, 0.5)',
+                  transition: 'all 0.3s ease',
+                  zIndex: 100
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 212, 255, 0.8)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.5)';
+                }}
+              >
+                ← Back to Portals
+              </button>
               <h2 className="scene-title">💧 Drip Station 💧</h2>
               <div className="scene-subtitle">Claim all drips here - free and earned</div>
               <AlienDripStation />
@@ -742,6 +806,40 @@ export default function MothershipPage() {
           {/* Scene 3: Leaderboard */}
           <div id="scene-leaderboard" className={`viewport-scene ${activeScene !== 'leaderboard' ? 'hidden' : ''}`}>
             <div className="content-scene">
+              <button
+                onClick={() => {
+                  playSound('click');
+                  showScene('portals');
+                }}
+                onMouseEnter={() => playSound('hover')}
+                style={{
+                  position: 'absolute',
+                  top: '20px',
+                  left: '20px',
+                  padding: '10px 20px',
+                  background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 153, 204, 0.9))',
+                  border: '2px solid #00d4ff',
+                  borderRadius: '8px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  fontFamily: 'Orbitron, sans-serif',
+                  boxShadow: '0 0 15px rgba(0, 212, 255, 0.5)',
+                  transition: 'all 0.3s ease',
+                  zIndex: 100
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 212, 255, 0.8)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.5)';
+                }}
+              >
+                ← Back to Portals
+              </button>
               <h2 className="scene-title">🏆 First Timer Leaderboard 🏆</h2>
               <AlienLeaderboard />
             </div>
@@ -1110,8 +1208,8 @@ export default function MothershipPage() {
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             >
-              <span style={{fontSize: '2rem'}}>🎵</span>
-              <span>Wallet & Music</span>
+              <span style={{fontSize: '2rem'}}>💼</span>
+              <span>Wallet</span>
             </button>
 
             {/* REFERRALS BUTTON */}

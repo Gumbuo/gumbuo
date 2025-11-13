@@ -31,11 +31,6 @@ export default function RightDrawer() {
             <GlobalWalletHUD />
           </div>
 
-          {/* Music Player */}
-          <div className="drawer-section drawer-section-music">
-            <GlobalMusicPlayer />
-          </div>
-
           {/* Chat */}
           <div className="drawer-section drawer-section-chat">
             <GlobalChat />
