@@ -11,17 +11,17 @@ onready var y_sort=$y_sort
 onready var tile_map=$tile_map
 onready var game_over_screen=$GameOverScreen
 
-# Enemy spawning - Multiple enemy types (9 total - all animated!)
+# Enemy spawning - Multiple enemy types (9 total - NEW PixelLab enemies!)
 var enemy_scenes = [
-	preload("res://scenes/entity/enemy.tscn"),
-	preload("res://scenes/entity/enemy_klackon_b.tscn"),
-	preload("res://scenes/entity/enemy_klackon_c.tscn"),
-	preload("res://scenes/entity/enemy_phantom.tscn"),
-	preload("res://scenes/entity/enemy_zombie_green.tscn"),
-	preload("res://scenes/entity/enemy_zombie_orange.tscn"),
-	preload("res://scenes/entity/enemy_worm.tscn"),
-	preload("res://scenes/entity/enemy_lurker.tscn"),
-	preload("res://scenes/entity/enemy_hulk.tscn")
+	preload("res://scenes/entity/enemy.tscn"),  # Keep enemy1 as requested
+	preload("res://scenes/entity/enemy_jellyfish.tscn"),
+	preload("res://scenes/entity/enemy_drone.tscn"),
+	preload("res://scenes/entity/enemy_crawler.tscn"),
+	preload("res://scenes/entity/enemy_turret_new.tscn"),
+	preload("res://scenes/entity/enemy_slug.tscn"),
+	preload("res://scenes/entity/enemy_ufo.tscn"),
+	preload("res://scenes/entity/enemy_red_soldier.tscn"),
+	preload("res://scenes/entity/enemy_boss_overlord.tscn")
 ]
 var visited_rooms = []  # Track which rooms have been visited
 

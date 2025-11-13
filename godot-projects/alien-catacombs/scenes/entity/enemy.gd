@@ -20,6 +20,10 @@ var bullet_scene = preload("res://scenes/entity/bullet.tscn")
 var shoot_cooldown := 1.0
 var can_shoot := true
 
+# Knockback system
+var knockback_velocity := Vector2.ZERO
+var knockback_decay := 0.9  # How quickly knockback fades (0.9 = 10% loss per frame)
+
 # References
 onready var health = $Health
 onready var hurtbox = $Hurtbox
@@ -62,7 +66,13 @@ func _physics_process(delta):
 		State.HURT:
 			_state_hurt()
 
-	._physics_process(delta)  # Call parent movement
+	# Apply knockback velocity before normal movement
+	if knockback_velocity.length() > 0.1:
+		move_and_slide(knockback_velocity)
+		knockback_velocity *= knockback_decay
+	else:
+		knockback_velocity = Vector2.ZERO
+		._physics_process(delta)  # Call parent movement only if no knockback
 
 func _state_idle():
 	velocity_direction = Vector2.ZERO
@@ -159,9 +169,9 @@ func _on_hit_received(damage: int, knockback_force: float, attacker_position: Ve
 
 	health.take_damage(damage)
 
-	# Apply knockback
+	# Apply knockback as actual velocity (not just direction)
 	var knockback_direction = (global_position - attacker_position).normalized()
-	velocity_direction = knockback_direction * 2
+	knockback_velocity = knockback_direction * knockback_force
 
 	# Play hurt animation and enter hurt state
 	sprite.play("hurt")

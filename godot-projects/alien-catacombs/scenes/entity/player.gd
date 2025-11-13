@@ -3,11 +3,10 @@ extends Entity
 class_name Player
 
 # Weapon system
-enum Weapon {PISTOL, RIFLE, SHOTGUN}
-var current_weapon = Weapon.PISTOL
+enum Weapon {RIFLE, SHOTGUN}
+var current_weapon = Weapon.RIFLE
 
 # Bullet scenes for each weapon
-var bullet_pistol = preload("res://scenes/entity/bullet.tscn")
 var bullet_rifle = preload("res://scenes/entity/bullet_rifle.tscn")
 var bullet_shotgun = preload("res://scenes/entity/bullet_shotgun.tscn")
 
@@ -54,12 +53,9 @@ func _input(event):
 
 	# Weapon switching
 	if event.is_action_pressed("ui_1") or (event is InputEventKey and event.scancode == KEY_1 and event.pressed):
-		current_weapon = Weapon.PISTOL
-		print("Switched to PISTOL")
-	elif event.is_action_pressed("ui_2") or (event is InputEventKey and event.scancode == KEY_2 and event.pressed):
 		current_weapon = Weapon.RIFLE
 		print("Switched to RIFLE")
-	elif event.is_action_pressed("ui_3") or (event is InputEventKey and event.scancode == KEY_3 and event.pressed):
+	elif event.is_action_pressed("ui_2") or (event is InputEventKey and event.scancode == KEY_2 and event.pressed):
 		current_weapon = Weapon.SHOTGUN
 		print("Switched to SHOTGUN")
 
@@ -111,9 +107,6 @@ func shoot():
 	var spread_angle = 0.0  # Spread angle in degrees
 
 	match current_weapon:
-		Weapon.PISTOL:
-			bullet_scene = bullet_pistol
-			cooldown = 0.3
 		Weapon.RIFLE:
 			bullet_scene = bullet_rifle
 			cooldown = 0.1  # Fast fire rate for rapid shooting

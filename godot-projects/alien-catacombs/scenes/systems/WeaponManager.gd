@@ -7,13 +7,12 @@ signal weapon_switched(weapon_type)
 
 # Weapon counts - how many of each collected
 var weapon_counts = {
-	"weapon_pistol": 1,  # Start with pistol
 	"weapon_rifle": 1,   # Start with rifle
 	"weapon_shotgun": 1  # Start with shotgun
 }
 
 # Current active weapon
-var active_weapon = "weapon_pistol"
+var active_weapon = "weapon_rifle"
 
 # Weapon data from ItemDatabase
 var item_database = null
@@ -23,12 +22,10 @@ func _ready():
 	item_database = get_node_or_null("/root/ItemDatabase")
 
 func _input(event):
-	# Switch weapons with number keys 1, 2, 3
+	# Switch weapons with number keys 1, 2
 	if event.is_action_pressed("weapon_1"):
-		switch_weapon("weapon_pistol")
-	elif event.is_action_pressed("weapon_2"):
 		switch_weapon("weapon_rifle")
-	elif event.is_action_pressed("weapon_3"):
+	elif event.is_action_pressed("weapon_2"):
 		switch_weapon("weapon_shotgun")
 
 func add_weapon(weapon_type: String):

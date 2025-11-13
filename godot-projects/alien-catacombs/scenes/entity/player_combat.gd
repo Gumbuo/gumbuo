@@ -98,6 +98,13 @@ func perform_punch():
 	# Play punch animation
 	sprite.play("punch")
 
+	# Flip hitbox position based on facing direction
+	var punch_collision = punch_hitbox.get_node("collision_shape_2d")
+	if sprite.flip_h:  # Facing right
+		punch_collision.position.x = 20
+	else:  # Facing left
+		punch_collision.position.x = -20
+
 	# Activate hitbox after a short delay (punch windup)
 	yield(get_tree().create_timer(0.1), "timeout")
 	punch_hitbox.activate()
@@ -120,6 +127,13 @@ func perform_kick():
 
 	# Play kick animation
 	sprite.play("kick")
+
+	# Flip hitbox position based on facing direction
+	var kick_collision = kick_hitbox.get_node("collision_shape_2d")
+	if sprite.flip_h:  # Facing right
+		kick_collision.position.x = 25
+	else:  # Facing left
+		kick_collision.position.x = -25
 
 	# Activate hitbox after a short delay (kick windup)
 	yield(get_tree().create_timer(0.15), "timeout")

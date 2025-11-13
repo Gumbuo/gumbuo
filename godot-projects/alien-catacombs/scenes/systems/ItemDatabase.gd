@@ -16,17 +16,6 @@ func _ready():
 
 func _initialize_items():
 	# WEAPONS
-	add_item("weapon_pistol", {
-		"name": "Luger",
-		"type": "weapon",
-		"category": "Weapons",
-		"sprite": "res://asset/weapons/Luger.png",
-		"description": "German semi-automatic pistol. Fast fire rate.",
-		"damage": 10,
-		"fire_rate": 0.3,
-		"bullet_speed": 400
-	})
-
 	add_item("weapon_rifle", {
 		"name": "M15",
 		"type": "weapon",

@@ -21,9 +21,9 @@ func _on_hit_received(damage: int, knockback_force: float, attacker_position: Ve
 
 	health.take_damage(damage)
 
-	# Apply knockback
+	# Apply knockback as actual velocity (not just direction)
 	var knockback_direction = (global_position - attacker_position).normalized()
-	velocity_direction = knockback_direction * 2
+	knockback_velocity = knockback_direction * knockback_force
 
 	# No animation for Sprite - just enter hurt state
 	current_state = State.HURT

@@ -2,10 +2,6 @@ extends CanvasLayer
 
 # Weapon HUD that displays all weapons with hotkeys and equipped items
 
-onready var pistol_row = $MarginContainer/VBoxContainer/WeaponsList/PistolRow
-onready var pistol_icon = $MarginContainer/VBoxContainer/WeaponsList/PistolRow/Icon
-onready var pistol_label = $MarginContainer/VBoxContainer/WeaponsList/PistolRow/Label
-
 onready var rifle_row = $MarginContainer/VBoxContainer/WeaponsList/RifleRow
 onready var rifle_icon = $MarginContainer/VBoxContainer/WeaponsList/RifleRow/Icon
 onready var rifle_label = $MarginContainer/VBoxContainer/WeaponsList/RifleRow/Label
@@ -50,17 +46,13 @@ func _update_weapons_display():
 
 	var active = weapon_manager.get_active_weapon()
 
-	# Update Pistol
-	var pistol_count = weapon_manager.get_weapon_count("weapon_pistol")
-	_update_weapon_row(pistol_row, pistol_label, pistol_icon, "Luger", pistol_count, active == "weapon_pistol", "weapon_pistol", "1")
-
 	# Update Rifle
 	var rifle_count = weapon_manager.get_weapon_count("weapon_rifle")
-	_update_weapon_row(rifle_row, rifle_label, rifle_icon, "M15", rifle_count, active == "weapon_rifle", "weapon_rifle", "2")
+	_update_weapon_row(rifle_row, rifle_label, rifle_icon, "M15", rifle_count, active == "weapon_rifle", "weapon_rifle", "1")
 
 	# Update Shotgun
 	var shotgun_count = weapon_manager.get_weapon_count("weapon_shotgun")
-	_update_weapon_row(shotgun_row, shotgun_label, shotgun_icon, "Shotgun", shotgun_count, active == "weapon_shotgun", "weapon_shotgun", "3")
+	_update_weapon_row(shotgun_row, shotgun_label, shotgun_icon, "Shotgun", shotgun_count, active == "weapon_shotgun", "weapon_shotgun", "2")
 
 func _update_weapon_row(row_node, label_node, icon_node, name: String, count: int, is_active: bool, weapon_id: String, hotkey: String):
 	if not label_node:
