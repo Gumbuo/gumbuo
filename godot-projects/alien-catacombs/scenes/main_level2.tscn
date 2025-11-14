@@ -11,7 +11,7 @@
 [ext_resource path="res://asset/fx/light_red_v2.png" type="Texture" id=9]
 [ext_resource path="res://asset/fx/light_blue_v2.png" type="Texture" id=10]
 [ext_resource path="res://scenes/entity/chest.tscn" type="PackedScene" id=11]
-[ext_resource path="res://scenes/entity/enemy_turret.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/entity/PortalBlue.tscn" type="PackedScene" id=12]
 [ext_resource path="res://asset/map/objects/server.png" type="Texture" id=13]
 [ext_resource path="res://asset/map/objects/base_normalmap.png" type="Texture" id=14]
 [ext_resource path="res://asset/map/key/key0.png" type="Texture" id=15]
@@ -748,7 +748,7 @@ position = Vector2( 796, 1099 )
 position = Vector2( 868, 1779 )
 
 [node name="EnemyBoss" parent="canvas_modulate" instance=ExtResource( 38 )]
-position = Vector2( 53, 1676 )
+position = Vector2( 1693, 2943 )
 
 [node name="EnemyCrawler" parent="canvas_modulate" instance=ExtResource( 39 )]
 position = Vector2( 300, 1400 )
@@ -1278,6 +1278,9 @@ margin_top = 47.0
 margin_right = 87.0
 margin_bottom = 67.0
 text = "Main Menu "
+
+[node name="Portal" parent="." instance=ExtResource( 12 )]
+position = Vector2( 1882, 2950 )
 
 [connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/Restart" to="GameOverScreen" method="_on_Restart_pressed"]
 [connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/MainMenu" to="GameOverScreen" method="_on_MainMenu_pressed"]

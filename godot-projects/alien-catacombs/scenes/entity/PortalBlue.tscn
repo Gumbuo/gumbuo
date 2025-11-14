@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/entity/Portal.tscn" type="PackedScene" id=1]
+[ext_resource path="res://asset/map-objects/pixellab/portal_blue.png" type="Texture" id=2]
+
+[node name="Portal" instance=ExtResource( 1 )]
+target_level = "res://scenes/main_level3.tscn"
+portal_color = Color( 0.2, 0.5, 1, 1 )
+
+[node name="Sprite" parent="." index="0"]
+texture = ExtResource( 2 )
+
+[node name="Light2D" parent="." index="2"]
+color = Color( 0.2, 0.5, 1, 1 )

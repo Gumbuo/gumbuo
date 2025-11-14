@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=2]
+[gd_scene load_steps=73 format=2]
 
 [ext_resource path="res://asset/map/tileset.png" type="Texture" id=1]
 [ext_resource path="res://scenes/entity/player.tscn" type="PackedScene" id=2]
@@ -11,7 +11,6 @@
 [ext_resource path="res://asset/fx/light_red_v2.png" type="Texture" id=9]
 [ext_resource path="res://asset/fx/light_blue_v2.png" type="Texture" id=10]
 [ext_resource path="res://scenes/entity/chest.tscn" type="PackedScene" id=11]
-[ext_resource path="res://scenes/entity/enemy_turret.tscn" type="PackedScene" id=12]
 [ext_resource path="res://asset/map/objects/server.png" type="Texture" id=13]
 [ext_resource path="res://asset/map/objects/base_normalmap.png" type="Texture" id=14]
 [ext_resource path="res://asset/map/key/key0.png" type="Texture" id=15]

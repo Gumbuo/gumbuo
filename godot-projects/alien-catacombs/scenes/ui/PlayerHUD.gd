@@ -34,10 +34,10 @@ func _update_health_display(current, max_health):
 	health_bar.value = percent
 	health_label.text = str(current) + "/" + str(max_health)
 
-	# Color based on health percentage
+	# Alien tech color theme - glowing green to red
 	if percent > 60:
-		health_bar.modulate = Color(0.2, 1.0, 0.2)  # Green
+		health_bar.modulate = Color(0.0, 1.0, 0.4)  # Bright glowing green (alien tech)
 	elif percent > 30:
-		health_bar.modulate = Color(1.0, 0.8, 0.2)  # Yellow
+		health_bar.modulate = Color(0.9, 1.0, 0.0)  # Glowing yellow-green warning
 	else:
-		health_bar.modulate = Color(1.0, 0.2, 0.2)  # Red
+		health_bar.modulate = Color(1.0, 0.1, 0.1)  # Critical red alert

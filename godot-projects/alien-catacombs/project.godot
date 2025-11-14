@@ -76,6 +76,7 @@ EquipmentManager="*res://scenes/systems/EquipmentManager.gd"
 ItemDatabase="*res://scenes/systems/ItemDatabase.gd"
 CoinManager="*res://scenes/systems/CoinManager.gd"
 GameStats="*res://scenes/systems/GameStats.gd"
+CrystalManager="*res://scenes/systems/CrystalManager.gd"
 
 [display]
 
