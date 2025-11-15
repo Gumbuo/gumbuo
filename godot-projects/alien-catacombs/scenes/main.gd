@@ -11,7 +11,7 @@ onready var y_sort=$y_sort
 onready var tile_map=$tile_map
 onready var game_over_screen=$GameOverScreen
 
-# Enemy spawning - Multiple enemy types (9 total - NEW PixelLab enemies!)
+# Enemy spawning - Multiple enemy types (8 regular enemies - boss excluded from random spawns)
 var enemy_scenes = [
 	preload("res://scenes/entity/enemy.tscn"),  # Keep enemy1 as requested
 	preload("res://scenes/entity/enemy_jellyfish.tscn"),
@@ -20,8 +20,8 @@ var enemy_scenes = [
 	preload("res://scenes/entity/enemy_turret_new.tscn"),
 	preload("res://scenes/entity/enemy_slug.tscn"),
 	preload("res://scenes/entity/enemy_ufo.tscn"),
-	preload("res://scenes/entity/enemy_red_soldier.tscn"),
-	preload("res://scenes/entity/enemy_boss_overlord.tscn")
+	preload("res://scenes/entity/enemy_red_soldier.tscn")
+	# Boss Overlord removed - only spawns at manually placed nodes
 ]
 var visited_rooms = []  # Track which rooms have been visited
 

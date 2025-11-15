@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/ui/CoinHUD.gd" type="Script" id=1]
-[ext_resource path="res://asset/items/item330.png" type="Texture" id=2]
-[ext_resource path="res://asset/items/item328.png" type="Texture" id=3]
-[ext_resource path="res://asset/items/item327.png" type="Texture" id=4]
+[ext_resource path="res://asset/map-objects/pixellab/blue_crystal.png" type="Texture" id=2]
+[ext_resource path="res://asset/map-objects/pixellab/green_crystal.png" type="Texture" id=3]
+[ext_resource path="res://asset/map-objects/pixellab/purple_crystal_new.png" type="Texture" id=4]
 
 [node name="CoinHUD" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -66,13 +66,13 @@ custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
 text = "0"
 valign = 1
 
-[node name="OrangeRow" type="HBoxContainer" parent="HBoxContainer"]
+[node name="PurpleRow" type="HBoxContainer" parent="HBoxContainer"]
 margin_left = 110.0
 margin_right = 155.0
 margin_bottom = 20.0
 custom_constants/separation = 3
 
-[node name="OrangeIcon" type="TextureRect" parent="HBoxContainer/OrangeRow"]
+[node name="PurpleIcon" type="TextureRect" parent="HBoxContainer/PurpleRow"]
 margin_right = 18.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 18, 18 )
@@ -80,7 +80,7 @@ texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
 
-[node name="OrangeLabel" type="Label" parent="HBoxContainer/OrangeRow"]
+[node name="PurpleLabel" type="Label" parent="HBoxContainer/PurpleRow"]
 margin_left = 21.0
 margin_top = 3.0
 margin_right = 45.0

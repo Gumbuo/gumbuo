@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/components/hitbox.gd" type="Script" id=1]
 [ext_resource path="res://scenes/components/hurtbox.gd" type="Script" id=2]

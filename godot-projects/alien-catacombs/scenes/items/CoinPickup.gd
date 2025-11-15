@@ -1,10 +1,12 @@
 extends Area2D
 
-# Coin pickup - adds to coin counter by type (blue, green, orange)
+# Crystal pickup - adds to crystal counter by type (blue, green, purple)
 
-export(String, "blue", "green", "orange") var coin_type := "blue"
+export(String, "blue", "green", "purple") var coin_type := "blue"
+export(AudioStream) var pickup_sound  # Assign in editor
 
 var coin_manager = null
+onready var audio_player = $AudioStreamPlayer2D if has_node("AudioStreamPlayer2D") else null
 
 func _ready():
 	# Wait for scene tree to be ready
@@ -24,10 +26,17 @@ func _pickup(player):
 		queue_free()
 		return
 
-	# Add coin to counter by type
+	# Add crystal to counter by type
 	coin_manager.add_coin(coin_type)
 
-	# TODO: Play coin pickup sound/animation
+	# Play pickup sound if available
+	if pickup_sound and audio_player:
+		audio_player.stream = pickup_sound
+		audio_player.play()
+		# Hide sprite but wait for sound to finish
+		$Sprite.visible = false
+		$CollisionShape2D.set_deferred("disabled", true)
+		yield(audio_player, "finished")
 
-	# Remove coin from scene
+	# Remove crystal from scene
 	queue_free()
