@@ -5,7 +5,7 @@
 [ext_resource path="res://scenes/entity/enemy_boss_overlord.gd" type="Script" id=3]
 [ext_resource path="res://scenes/components/Health.gd" type="Script" id=4]
 [ext_resource path="res://scenes/components/HealthBar.tscn" type="PackedScene" id=5]
-[ext_resource path="res://asset/characters/pixellab/boss_alien_overlord/rotations/south.png" type="Texture" id=6]
+[ext_resource path="res://asset/characters/pixellab/boss_alien_overlord/boss_animations.tres" type="SpriteFrames" id=6]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 16.0
@@ -20,12 +20,14 @@ extents = Vector2( 25, 20 )
 [sub_resource type="CircleShape2D" id=4]
 radius = 200.0
 
-[node name="EnemyBossOverlord" type="KinematicBody2D"]
+[node name="EnemyBossOverlord" groups=["boss"] type="KinematicBody2D"]
 script = ExtResource( 3 )
 
-[node name="sprite" type="Sprite" parent="."]
+[node name="sprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 2, 2 )
-texture = ExtResource( 6 )
+frames = ExtResource( 6 )
+animation = "walk_south"
+playing = true
 
 [node name="collision_shape" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )

@@ -23,6 +23,7 @@ export var shoot_range := 120.0  # Distance from which enemy starts shooting (RA
 export var melee_range := 16.0   # Distance for melee attacks (MELEE only)
 export var contact_damage := 5   # Damage per second for contact enemies (CONTACT only)
 export var melee_damage := 10    # Damage per melee hit (MELEE only)
+export var bullet_texture_path := ""  # Path to custom bullet texture (leave empty for default)
 
 var bullet_scene = preload("res://scenes/entity/bullet.tscn")
 var shoot_cooldown := 1.0
@@ -223,10 +224,16 @@ func _on_hit_received(damage: int, knockback_force: float, attacker_position: Ve
 	var knockback_direction = (global_position - attacker_position).normalized()
 	knockback_velocity = knockback_direction * knockback_force
 
-	# Play hurt animation and enter hurt state
-	if sprite and sprite is AnimatedSprite and sprite.frames.has_animation("hurt"):
-		sprite.play("hurt")
+	# Enter hurt state and trigger animation
 	current_state = State.HURT
+
+	# Call animation() to play directional hurt animation if available
+	animation()
+
+	# Fallback to basic hurt animation for non-directional enemies
+	if sprite and sprite is AnimatedSprite and sprite.frames.has_animation("hurt"):
+		if not sprite.playing or sprite.animation != "hurt":
+			sprite.play("hurt")
 
 func _on_damaged(amount):
 	# Visual feedback - flash red
@@ -271,8 +278,27 @@ func shoot_at_player():
 	print("Enemy ", name, " shooting at player from position: ", global_position)
 	can_shoot = false
 
+	# Play attack animation if using AnimatedSprite
+	if sprite and sprite is AnimatedSprite:
+		# Calculate direction to player for directional animation
+		var angle = (target.global_position - global_position).angle()
+		var dir_suffix = _angle_to_direction_string(angle)
+		var attack_anim = "attack_" + dir_suffix
+
+		# Try to play attack animation if it exists, otherwise skip animation
+		if sprite.frames.has_animation(attack_anim):
+			sprite.play(attack_anim)
+			# Wait for animation to reach halfway point before spawning bullet
+			yield(get_tree().create_timer(0.15), "timeout")
+
 	# Create bullet
 	var bullet = bullet_scene.instance()
+
+	# Load custom bullet texture if specified
+	if bullet_texture_path != "":
+		var custom_texture = load(bullet_texture_path)
+		if custom_texture:
+			bullet.bullet_texture = custom_texture
 
 	# Shoot toward player
 	var shoot_direction = (target.global_position - global_position).normalized()
@@ -383,3 +409,29 @@ func update_look_direction():
 		7: current_direction = Direction.SOUTH_EAST
 
 	_update_directional_sprite()
+
+# Convert angle to direction string (for attack animations)
+func _angle_to_direction_string(angle: float) -> String:
+	# Normalize angle to 0-2PI
+	angle = wrapf(angle, 0, TAU)
+
+	# Convert to degrees for easier comparison
+	var degrees = rad2deg(angle)
+
+	# 8-direction mapping (45 degree segments)
+	if degrees >= 337.5 or degrees < 22.5:
+		return "east"
+	elif degrees >= 22.5 and degrees < 67.5:
+		return "south_east"
+	elif degrees >= 67.5 and degrees < 112.5:
+		return "south"
+	elif degrees >= 112.5 and degrees < 157.5:
+		return "south_west"
+	elif degrees >= 157.5 and degrees < 202.5:
+		return "west"
+	elif degrees >= 202.5 and degrees < 247.5:
+		return "north_west"
+	elif degrees >= 247.5 and degrees < 292.5:
+		return "north"
+	else:  # 292.5 to 337.5
+		return "north_east"

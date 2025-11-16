@@ -4,6 +4,7 @@ export var speed = 200
 var direction = Vector2.RIGHT
 var damage = 10
 var is_enemy_bullet = false  # If true, damages player. If false, damages enemies
+var bullet_texture: Texture = null  # Custom texture for this bullet
 
 # Audio
 var hit_sound = AudioStreamPlayer.new()
@@ -13,6 +14,10 @@ func _ready():
 	hit_sound.stream = load("res://asset/sounds/0989b53bb47e5aa49e45669c5b3fa2d8607836fe7d797e30ee035f2d56d3ab3e-EnemyKnocked.ogg")
 	hit_sound.volume_db = -3
 	add_child(hit_sound)
+
+	# Use custom texture if provided
+	if bullet_texture:
+		$Sprite.texture = bullet_texture
 
 	# Make sprite visible
 	$Sprite.visible = true
@@ -83,18 +88,31 @@ func _on_body_entered(body):
 		# Check if hit an enemy (enemies have a health node and are NOT the player)
 		if body.has_node("Health"):
 			print("Found Health node!")
+
+			# Trigger hurt state/animation via hurtbox if available
+			if body.has_node("Hurtbox"):
+				var hurtbox = body.get_node("Hurtbox")
+				if hurtbox.has_method("_on_area_entered"):
+					# Create a temporary area to trigger the hurtbox
+					# This triggers the full hurt system including animation
+					print("Triggering hurtbox hurt state")
+					if body.has_method("_on_hit_received"):
+						body._on_hit_received(damage, 200, global_position)
+
+			# Also damage health directly as fallback
 			var health = body.get_node("Health")
 			if health.has_method("take_damage"):
 				print("Dealing ", damage, " damage to enemy")
 				health.take_damage(damage)
-				# Play hit sound
-				hit_sound.play()
-				# Hide bullet visually but keep it alive for sound
-				$Sprite.visible = false
-				set_physics_process(false)
-				# Destroy after sound plays
-				yield(get_tree().create_timer(0.3), "timeout")
-				queue_free()
+
+			# Play hit sound
+			hit_sound.play()
+			# Hide bullet visually but keep it alive for sound
+			$Sprite.visible = false
+			set_physics_process(false)
+			# Destroy after sound plays
+			yield(get_tree().create_timer(0.3), "timeout")
+			queue_free()
 		# Hit a wall
 		elif body is TileMap or body is StaticBody2D:
 			print("Hit wall, destroying bullet")

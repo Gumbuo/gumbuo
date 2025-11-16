@@ -13,15 +13,11 @@ onready var game_over_screen=$GameOverScreen
 
 # Enemy spawning - Multiple enemy types (8 regular enemies - boss excluded from random spawns)
 var enemy_scenes = [
-	preload("res://scenes/entity/enemy.tscn"),  # Keep enemy1 as requested
-	preload("res://scenes/entity/enemy_jellyfish.tscn"),
-	preload("res://scenes/entity/enemy_drone.tscn"),
+	preload("res://scenes/entity/enemy.tscn"),
 	preload("res://scenes/entity/enemy_crawler.tscn"),
-	preload("res://scenes/entity/enemy_turret_new.tscn"),
-	preload("res://scenes/entity/enemy_slug.tscn"),
-	preload("res://scenes/entity/enemy_ufo.tscn"),
-	preload("res://scenes/entity/enemy_red_soldier.tscn")
-	# Boss Overlord removed - only spawns at manually placed nodes
+	preload("res://scenes/entity/enemy_phantom.tscn"),
+	preload("res://scenes/entity/enemy_lurker.tscn"),
+	# PixelLab enemies - use PIXELLAB_SPRITE_SHEET_GUIDE.md to add them manually
 ]
 var visited_rooms = []  # Track which rooms have been visited
 
@@ -100,6 +96,15 @@ func spawn_enemies_in_room(room_pos: Vector2):
 
 	if room_key in visited_rooms:
 		return  # Already spawned enemies here
+
+	# Check if this room has a boss - if so, DON'T spawn other enemies
+	var bosses = get_tree().get_nodes_in_group("boss")
+	if bosses.size() > 0:
+		var boss_room_key = Vector2(int(bosses[0].position.x / vp_size.x), int(bosses[0].position.y / vp_size.y))
+		if boss_room_key == room_key:
+			print("Boss room detected - skipping regular enemy spawns")
+			visited_rooms.append(room_key)
+			return  # Don't spawn regular enemies in boss room
 
 	# Mark room as visited
 	visited_rooms.append(room_key)

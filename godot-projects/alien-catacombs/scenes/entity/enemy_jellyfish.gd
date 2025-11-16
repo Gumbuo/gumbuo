@@ -7,9 +7,9 @@ var contact_timer := 0.0
 const CONTACT_DAMAGE_INTERVAL = 0.5  # Damage every 0.5 seconds while touching
 
 func _ready():
-	# Enable directional sprites
-	use_directional_sprites = true
-	sprite_base_path = "res://asset/characters/pixellab/jellyfish_alien/rotations/"
+	# Using AnimatedSprite now, not directional sprites
+	# use_directional_sprites = true
+	# sprite_base_path = "res://asset/characters/pixellab/jellyfish_alien/rotations/"
 
 	._ready()
 
@@ -22,7 +22,7 @@ func _ready():
 	speed = 45  # Medium speed floater
 
 	# Set up contact damage detection via Hitbox
-	var hitbox = get_node_or_null("Hitbox")
+	var hitbox = get_node_or_null("hitbox")
 	if hitbox:
 		hitbox.connect("body_entered", self, "_on_player_contacted")
 		hitbox.connect("body_exited", self, "_on_player_left")

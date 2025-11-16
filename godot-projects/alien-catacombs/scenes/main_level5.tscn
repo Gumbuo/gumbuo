@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=2]
+[gd_scene load_steps=66 format=2]
 
 [ext_resource path="res://asset/map/tileset.png" type="Texture" id=1]
 [ext_resource path="res://scenes/entity/player.tscn" type="PackedScene" id=2]
@@ -30,15 +30,8 @@
 [ext_resource path="res://scenes/ui/CoinHUD.tscn" type="PackedScene" id=33]
 [ext_resource path="res://scenes/items/Coin3.tscn" type="PackedScene" id=34]
 [ext_resource path="res://scenes/items/Coin2.tscn" type="PackedScene" id=35]
-[ext_resource path="res://scenes/entity/enemy_jellyfish.tscn" type="PackedScene" id=36]
-[ext_resource path="res://scenes/entity/enemy_drone.tscn" type="PackedScene" id=37]
 [ext_resource path="res://scenes/entity/enemy_boss_overlord.tscn" type="PackedScene" id=38]
 [ext_resource path="res://scenes/entity/enemy_crawler.tscn" type="PackedScene" id=39]
-[ext_resource path="res://scenes/entity/enemy_turret_new.tscn" type="PackedScene" id=40]
-[ext_resource path="res://scenes/entity/enemy_slug.tscn" type="PackedScene" id=41]
-[ext_resource path="res://scenes/entity/enemy_ufo.tscn" type="PackedScene" id=42]
-[ext_resource path="res://scenes/entity/enemy_red_soldier.tscn" type="PackedScene" id=43]
-[ext_resource path="res://scenes/entity/enemy_blue_warrior.tscn" type="PackedScene" id=44]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
@@ -740,32 +733,11 @@ position = Vector2( 912, 648 )
 [node name="canvas_modulate" type="CanvasModulate" parent="."]
 color = Color( 0.4, 0.4, 0.4, 1 )
 
-[node name="EnemyJellyfish" parent="canvas_modulate" instance=ExtResource( 36 )]
-position = Vector2( 796, 1099 )
-
-[node name="EnemyDrone" parent="canvas_modulate" instance=ExtResource( 37 )]
-position = Vector2( 868, 1779 )
-
 [node name="EnemyBoss" parent="canvas_modulate" instance=ExtResource( 38 )]
 position = Vector2( 53, 1676 )
 
 [node name="EnemyCrawler" parent="canvas_modulate" instance=ExtResource( 39 )]
 position = Vector2( 300, 1400 )
-
-[node name="EnemyTurret" parent="canvas_modulate" instance=ExtResource( 40 )]
-position = Vector2( 600, 1600 )
-
-[node name="EnemySlug" parent="canvas_modulate" instance=ExtResource( 41 )]
-position = Vector2( 400, 1200 )
-
-[node name="EnemyUFO" parent="canvas_modulate" instance=ExtResource( 42 )]
-position = Vector2( 700, 1300 )
-
-[node name="EnemyRedSoldier" parent="canvas_modulate" instance=ExtResource( 43 )]
-position = Vector2( 500, 1500 )
-
-[node name="EnemyBlueWarrior" parent="canvas_modulate" instance=ExtResource( 44 )]
-position = Vector2( 200, 1100 )
 
 [node name="door" parent="." instance=ExtResource( 6 )]
 position = Vector2( 160, 288 )

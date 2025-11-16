@@ -5,8 +5,9 @@ extends Enemy
 
 func _ready():
 	# Enable directional sprites
-	use_directional_sprites = true
-	sprite_base_path = "res://asset/characters/pixellab/red_alien_soldier/rotations/"
+	# Using AnimatedSprite now, not directional sprites
+	# use_directional_sprites = true
+	# sprite_base_path = "..."
 
 	._ready()
 

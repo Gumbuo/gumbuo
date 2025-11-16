@@ -99,10 +99,10 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id=3]
 
 [sub_resource type="RectangleShape2D" id=6]
-extents = Vector2( 15, 10 )
+extents = Vector2( 30, 12 )
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 20, 12 )
+extents = Vector2( 40, 15 )
 
 [node name="player" groups=["player"] instance=ExtResource( 1 )]
 script = ExtResource( 5 )
