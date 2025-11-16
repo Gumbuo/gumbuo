@@ -1,8 +1,8 @@
 extends Node
 
 
-var music_volume:=0
-var sound_volume:=0
+var music_volume:=50
+var sound_volume:=50
 var lang:="en"
 var localisation:="world"
 var high_quality:=false
