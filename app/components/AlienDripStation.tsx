@@ -654,19 +654,28 @@ export default function AlienDripStation() {
 
   return (
     <div style={{
-      borderRadius: '8px'
-    }} className="flex flex-col items-center space-y-6 p-8 holographic-panel max-w-6xl relative overflow-visible">
+      borderRadius: '8px',
+      border: '2px solid #00d4ff',
+      boxShadow: '0 0 40px rgba(0, 212, 255, 0.3)',
+      background: 'linear-gradient(to bottom, #0f0f1e, #1a1a2e)'
+    }} className="flex flex-col items-center space-y-6 p-8 max-w-6xl relative overflow-visible">
       <div className="corner-glow corner-glow-tl"></div>
       <div className="corner-glow corner-glow-tr"></div>
       <div className="corner-glow corner-glow-bl"></div>
       <div className="corner-glow corner-glow-br"></div>
 
-      <div className="absolute top-0 left-1/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0s'}}></div>
-      <div className="absolute top-0 left-1/2 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0.5s'}}></div>
-      <div className="absolute top-0 left-3/4 w-1 h-1 bg-green-400 rounded-full blur-sm animate-drip" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-0 left-1/4 w-1 h-1 bg-cyan-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0s'}}></div>
+      <div className="absolute top-0 left-1/2 w-1 h-1 bg-cyan-400 rounded-full blur-sm animate-drip" style={{animationDelay: '0.5s'}}></div>
+      <div className="absolute top-0 left-3/4 w-1 h-1 bg-cyan-400 rounded-full blur-sm animate-drip" style={{animationDelay: '1s'}}></div>
 
       {/* Header */}
-      <h2 className="font-alien font-bold holographic-text tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10 alien-glyph-text" style={{fontSize: '4rem'}}>
+      <h2 className="font-alien font-bold tracking-wider flex items-center justify-center space-x-2 drop-shadow-lg relative z-10" style={{
+        fontSize: '4rem',
+        background: 'linear-gradient(90deg, #00d4ff, #00ff99)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
+      }}>
         <span className="animate-glow">💧 Alien Drip Station 💧</span>
       </h2>
 
@@ -677,10 +686,10 @@ export default function AlienDripStation() {
           style={{
             padding: '12px 24px',
             background: activeTab === "staking"
-              ? 'linear-gradient(135deg, #9B59B6, #8e44ad)'
-              : 'rgba(155, 89, 182, 0.1)',
-            color: activeTab === "staking" ? '#fff' : '#9B59B6',
-            border: `2px solid ${activeTab === "staking" ? '#9B59B6' : '#9B59B644'}`,
+              ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
+              : 'rgba(0, 212, 255, 0.1)',
+            color: activeTab === "staking" ? '#000' : '#00d4ff',
+            border: `2px solid ${activeTab === "staking" ? '#00d4ff' : '#00d4ff44'}`,
             borderRadius: '8px',
             cursor: 'pointer',
             fontFamily: 'Orbitron, sans-serif',
@@ -689,19 +698,19 @@ export default function AlienDripStation() {
             textTransform: 'uppercase',
             transition: 'all 0.3s ease',
             boxShadow: activeTab === "staking"
-              ? '0 0 20px rgba(155, 89, 182, 0.5)'
+              ? '0 0 20px rgba(0, 212, 255, 0.5)'
               : 'none',
           }}
           onMouseEnter={(e) => {
             if (activeTab !== "staking") {
-              e.currentTarget.style.background = 'rgba(155, 89, 182, 0.2)';
-              e.currentTarget.style.borderColor = '#9B59B6';
+              e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
+              e.currentTarget.style.borderColor = '#00d4ff';
             }
           }}
           onMouseLeave={(e) => {
             if (activeTab !== "staking") {
-              e.currentTarget.style.background = 'rgba(155, 89, 182, 0.1)';
-              e.currentTarget.style.borderColor = '#9B59B644';
+              e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
+              e.currentTarget.style.borderColor = '#00d4ff44';
             }
           }}
         >
@@ -712,10 +721,10 @@ export default function AlienDripStation() {
           style={{
             padding: '12px 24px',
             background: activeTab === "faucet"
-              ? 'linear-gradient(135deg, #00ff99, #00cc7a)'
-              : 'rgba(0, 255, 153, 0.1)',
-            color: activeTab === "faucet" ? '#000' : '#00ff99',
-            border: `2px solid ${activeTab === "faucet" ? '#00ff99' : '#00ff9944'}`,
+              ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
+              : 'rgba(0, 212, 255, 0.1)',
+            color: activeTab === "faucet" ? '#000' : '#00d4ff',
+            border: `2px solid ${activeTab === "faucet" ? '#00d4ff' : '#00d4ff44'}`,
             borderRadius: '8px',
             cursor: 'pointer',
             fontFamily: 'Orbitron, sans-serif',
@@ -724,19 +733,19 @@ export default function AlienDripStation() {
             textTransform: 'uppercase',
             transition: 'all 0.3s ease',
             boxShadow: activeTab === "faucet"
-              ? '0 0 20px rgba(0, 255, 153, 0.5)'
+              ? '0 0 20px rgba(0, 212, 255, 0.5)'
               : 'none',
           }}
           onMouseEnter={(e) => {
             if (activeTab !== "faucet") {
-              e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
-              e.currentTarget.style.borderColor = '#00ff99';
+              e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
+              e.currentTarget.style.borderColor = '#00d4ff';
             }
           }}
           onMouseLeave={(e) => {
             if (activeTab !== "faucet") {
-              e.currentTarget.style.background = 'rgba(0, 255, 153, 0.1)';
-              e.currentTarget.style.borderColor = '#00ff9944';
+              e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
+              e.currentTarget.style.borderColor = '#00d4ff44';
             }
           }}
         >
@@ -747,10 +756,10 @@ export default function AlienDripStation() {
           style={{
             padding: '12px 24px',
             background: activeTab === "nft"
-              ? 'linear-gradient(135deg, #ff6b6b, #ee5a52)'
-              : 'rgba(255, 107, 107, 0.1)',
-            color: activeTab === "nft" ? '#fff' : '#ff6b6b',
-            border: `2px solid ${activeTab === "nft" ? '#ff6b6b' : '#ff6b6b44'}`,
+              ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
+              : 'rgba(0, 212, 255, 0.1)',
+            color: activeTab === "nft" ? '#000' : '#00d4ff',
+            border: `2px solid ${activeTab === "nft" ? '#00d4ff' : '#00d4ff44'}`,
             borderRadius: '8px',
             cursor: 'pointer',
             fontFamily: 'Orbitron, sans-serif',
@@ -759,19 +768,19 @@ export default function AlienDripStation() {
             textTransform: 'uppercase',
             transition: 'all 0.3s ease',
             boxShadow: activeTab === "nft"
-              ? '0 0 20px rgba(255, 107, 107, 0.5)'
+              ? '0 0 20px rgba(0, 212, 255, 0.5)'
               : 'none',
           }}
           onMouseEnter={(e) => {
             if (activeTab !== "nft") {
-              e.currentTarget.style.background = 'rgba(255, 107, 107, 0.2)';
-              e.currentTarget.style.borderColor = '#ff6b6b';
+              e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
+              e.currentTarget.style.borderColor = '#00d4ff';
             }
           }}
           onMouseLeave={(e) => {
             if (activeTab !== "nft") {
-              e.currentTarget.style.background = 'rgba(255, 107, 107, 0.1)';
-              e.currentTarget.style.borderColor = '#ff6b6b44';
+              e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
+              e.currentTarget.style.borderColor = '#00d4ff44';
             }
           }}
         >
@@ -862,10 +871,10 @@ export default function AlienDripStation() {
                 style={{
                   padding: '12px 24px',
                   background: gmbAmount >= 100
-                    ? 'linear-gradient(135deg, #9B59B6, #8e44ad)'
+                    ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
                     : 'rgba(128, 128, 128, 0.3)',
-                  color: gmbAmount >= 100 ? '#fff' : '#666',
-                  border: `2px solid ${gmbAmount >= 100 ? '#9B59B6' : '#666'}`,
+                  color: gmbAmount >= 100 ? '#000' : '#666',
+                  border: `2px solid ${gmbAmount >= 100 ? '#00d4ff' : '#666'}`,
                   borderRadius: '8px',
                   cursor: gmbAmount >= 100 ? 'pointer' : 'not-allowed',
                   fontFamily: 'Orbitron, sans-serif',
@@ -874,7 +883,7 @@ export default function AlienDripStation() {
                   textTransform: 'uppercase',
                   transition: 'all 0.3s ease',
                   boxShadow: gmbAmount >= 100
-                    ? '0 0 20px rgba(155, 89, 182, 0.5)'
+                    ? '0 0 20px rgba(0, 212, 255, 0.5)'
                     : 'none',
                 }}
                 onMouseEnter={(e) => {
@@ -892,7 +901,7 @@ export default function AlienDripStation() {
             )}
           </div>
 
-          <div className="text-center text-purple-400 relative z-10 mb-4">
+          <div className="text-center text-cyan-400 relative z-10 mb-4">
             <p className="text-xl mb-2 font-electro alien-brackets">🔒 No-Lock GMB Staking 🔒</p>
             <p className="text-sm opacity-75 font-mono alien-code">Stake GMB with no lockup period - earn AP continuously!</p>
           </div>
@@ -900,13 +909,13 @@ export default function AlienDripStation() {
           {/* STAKING CONTENT */}
           <div style={{
             borderRadius: '8px'
-          }} className="holographic-panel relative p-6 bg-gradient-to-br from-purple-500/10 via-green-500/10 to-purple-500/10">
+          }} className="holographic-panel relative p-6 bg-gradient-to-br from-cyan-500/10 via-teal-500/10 to-cyan-500/10">
             <div className="corner-glow corner-glow-tl"></div>
             <div className="corner-glow corner-glow-tr"></div>
             <div className="corner-glow corner-glow-bl"></div>
             <div className="corner-glow corner-glow-br"></div>
             <h3 className="text-4xl font-bold text-center mb-6 holographic-text relative z-10">
-              <span className="text-purple-400">🔒</span> STAKING REWARDS <span className="text-purple-400">🔒</span>
+              <span className="text-cyan-400">🔒</span> STAKING REWARDS <span className="text-cyan-400">🔒</span>
             </h3>
 
             <div className="space-y-6 relative z-10">
@@ -938,12 +947,12 @@ export default function AlienDripStation() {
               <div className="space-y-4">
                   {stakingData.isStaking ? (
                     <>
-                  <div className="glass-panel rounded-xl p-4 bg-green-500/10 border-2 border-green-500/30">
-                    <p className="text-green-400 font-bold text-center text-xl mb-2 animate-pulse">✅ NO-LOCK STAKING ACTIVE</p>
+                  <div className="glass-panel rounded-xl p-4 bg-cyan-500/10 border-2 border-cyan-500/30">
+                    <p className="text-cyan-400 font-bold text-center text-xl mb-2 animate-pulse">✅ NO-LOCK STAKING ACTIVE</p>
                     <p className="text-center text-white">
-                      Staked Amount: <span className="font-bold text-2xl text-green-400">{stakingData.stakedAmount.toFixed(2)} GMB</span>
+                      Staked Amount: <span className="font-bold text-2xl text-teal-400">{stakingData.stakedAmount.toFixed(2)} GMB</span>
                     </p>
-                    <p className="text-center text-purple-400 text-sm mt-2">
+                    <p className="text-center text-cyan-400 text-sm mt-2">
                       Time Staked: {timeStaked}
                     </p>
                   </div>
@@ -983,8 +992,8 @@ export default function AlienDripStation() {
               ) : (
                 <>
                   {/* Start Staking Info */}
-                  <div className="glass-panel rounded-xl p-4 border-2 border-purple-500/30">
-                    <p className="text-center text-purple-400 mb-2 font-bold">📖 How Staking Works:</p>
+                  <div className="glass-panel rounded-xl p-4 border-2 border-cyan-500/30">
+                    <p className="text-center text-cyan-400 mb-2 font-bold">📖 How Staking Works:</p>
                     <ul className="text-sm text-gray-300 space-y-1 list-disc list-inside">
                       <li>No lock-in period - sell anytime</li>
                       <li>Earn continuous AP based on GMB held</li>
@@ -1001,19 +1010,19 @@ export default function AlienDripStation() {
               <div className="glass-panel rounded-xl p-6">
                 <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 STAKING TIERS 💎</p>
                 <div className="space-y-3">
-                    <p className="text-purple-400 font-bold text-center text-lg">🔒 Staking Rewards by Tier</p>
-                    <div className="bg-purple-400 bg-opacity-20 p-3 rounded-lg text-center mb-3">
+                    <p className="text-cyan-400 font-bold text-center text-lg">🔒 Staking Rewards by Tier</p>
+                    <div className="bg-cyan-400 bg-opacity-20 p-3 rounded-lg text-center mb-3">
                       <p className="text-yellow-400 font-bold">Max 10,000 AP/day</p>
                       <p className="text-gray-400 text-xs mt-1">Scales with GMB held (up to 1M+ GMB) • No lock-up period</p>
                     </div>
 
                     {/* Current Tier Display (if staking) */}
                     {stakingData.isStaking && currentStakingRewards && (
-                      <div className="glass-panel rounded-xl p-4 text-center border-2 border-purple-500/30 relative overflow-hidden mb-4">
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-purple-500/0 animate-pulse"></div>
+                      <div className="glass-panel rounded-xl p-4 text-center border-2 border-cyan-500/30 relative overflow-hidden mb-4">
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-cyan-500/0 animate-pulse"></div>
                         <p className="text-sm opacity-75 mb-1 relative z-10">Your Staking Tier:</p>
-                        <p className="text-2xl font-bold tracking-wider relative z-10 animate-pulse text-purple-400" style={{
-                          textShadow: '0 0 20px rgba(155, 89, 182, 0.8), 0 0 40px rgba(155, 89, 182, 0.5)'
+                        <p className="text-2xl font-bold tracking-wider relative z-10 animate-pulse text-cyan-400" style={{
+                          textShadow: '0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.5)'
                         }}>
                           {stakingData.stakedAmount >= 1_000_000 ? "🏆 WHALE STAKER" :
                            stakingData.stakedAmount >= 750_000 ? "💎 DIAMOND STAKER" :
@@ -1022,10 +1031,10 @@ export default function AlienDripStation() {
                            stakingData.stakedAmount >= 100_000 ? "🌟 ADVANCED STAKER" :
                            "🌱 STARTER STAKER"}
                         </p>
-                        <p className="text-2xl font-bold text-purple-400 mt-2 relative z-10">
+                        <p className="text-2xl font-bold text-cyan-400 mt-2 relative z-10">
                           🔒 {currentStakingRewards.apPerDay.toFixed(2)} AP/day
                         </p>
-                        <p className="text-sm text-purple-300 mt-1 relative z-10">
+                        <p className="text-sm text-cyan-300 mt-1 relative z-10">
                           ({currentStakingRewards.apPerHour.toFixed(2)} AP/hr)
                         </p>
                       </div>
@@ -1034,46 +1043,46 @@ export default function AlienDripStation() {
                     {/* Tier Breakdown */}
                     <div className="space-y-1 text-xs">
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 1_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 1_000_000 ? 'bg-cyan-400 bg-opacity-20 border border-cyan-400' : ''
                       }`}>
                         <span className="text-yellow-400 font-bold">🏆 WHALE STAKER</span>
                         <span className="text-gray-400">1M+ GMB</span>
-                        <span className="text-purple-400 font-bold">10,000 AP/day</span>
+                        <span className="text-cyan-400 font-bold">10,000 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 750_000 && stakingData.stakedAmount < 1_000_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 750_000 && stakingData.stakedAmount < 1_000_000 ? 'bg-cyan-400 bg-opacity-20 border border-cyan-400' : ''
                       }`}>
                         <span className="text-cyan-400 font-bold">💎 DIAMOND STAKER</span>
                         <span className="text-gray-400">750K - 1M GMB</span>
-                        <span className="text-purple-400 font-bold">7,500 - 10,000 AP/day</span>
+                        <span className="text-cyan-400 font-bold">7,500 - 10,000 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 500_000 && stakingData.stakedAmount < 750_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 500_000 && stakingData.stakedAmount < 750_000 ? 'bg-cyan-400 bg-opacity-20 border border-cyan-400' : ''
                       }`}>
                         <span className="text-red-400 font-bold">🔥 ELITE STAKER</span>
                         <span className="text-gray-400">500K - 750K GMB</span>
-                        <span className="text-purple-400 font-bold">5,000 - 7,500 AP/day</span>
+                        <span className="text-cyan-400 font-bold">5,000 - 7,500 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 250_000 && stakingData.stakedAmount < 500_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 250_000 && stakingData.stakedAmount < 500_000 ? 'bg-cyan-400 bg-opacity-20 border border-cyan-400' : ''
                       }`}>
                         <span className="text-orange-400 font-bold">⭐ PRO STAKER</span>
                         <span className="text-gray-400">250K - 500K GMB</span>
-                        <span className="text-purple-400 font-bold">2,500 - 5,000 AP/day</span>
+                        <span className="text-cyan-400 font-bold">2,500 - 5,000 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 100_000 && stakingData.stakedAmount < 250_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 100_000 && stakingData.stakedAmount < 250_000 ? 'bg-cyan-400 bg-opacity-20 border border-cyan-400' : ''
                       }`}>
-                        <span className="text-green-400 font-bold">🌟 ADVANCED STAKER</span>
+                        <span className="text-teal-400 font-bold">🌟 ADVANCED STAKER</span>
                         <span className="text-gray-400">100K - 250K GMB</span>
-                        <span className="text-purple-400 font-bold">1,000 - 2,500 AP/day</span>
+                        <span className="text-cyan-400 font-bold">1,000 - 2,500 AP/day</span>
                       </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
-                        stakingData.isStaking && stakingData.stakedAmount >= 0 && stakingData.stakedAmount < 100_000 ? 'bg-purple-400 bg-opacity-20 border border-purple-400' : ''
+                        stakingData.isStaking && stakingData.stakedAmount >= 0 && stakingData.stakedAmount < 100_000 ? 'bg-cyan-400 bg-opacity-20 border border-cyan-400' : ''
                       }`}>
                         <span className="text-blue-400 font-bold">🌱 STARTER STAKER</span>
                         <span className="text-gray-400">0 - 100K GMB</span>
-                        <span className="text-purple-400 font-bold">0 - 1,000 AP/day</span>
+                        <span className="text-cyan-400 font-bold">0 - 1,000 AP/day</span>
                       </div>
                     </div>
                 </div>
@@ -1129,7 +1138,7 @@ export default function AlienDripStation() {
             </button>
           </div>
 
-          <div className="text-center text-green-400 relative z-10 mb-4">
+          <div className="text-center text-cyan-400 relative z-10 mb-4">
             <p className="text-xl mb-2 font-electro alien-brackets">💧 Daily Faucet Claims 💧</p>
             <p className="text-sm opacity-75 font-mono alien-code">Claim daily rewards based on your GMB holdings!</p>
           </div>
@@ -1137,13 +1146,13 @@ export default function AlienDripStation() {
           {/* FAUCET CONTENT */}
           <div style={{
             borderRadius: '8px'
-          }} className="holographic-panel relative p-6 bg-gradient-to-br from-green-500/10 via-yellow-500/10 to-green-500/10">
+          }} className="holographic-panel relative p-6 bg-gradient-to-br from-teal-500/10 via-cyan-500/10 to-teal-500/10">
             <div className="corner-glow corner-glow-tl"></div>
             <div className="corner-glow corner-glow-tr"></div>
             <div className="corner-glow corner-glow-bl"></div>
             <div className="corner-glow corner-glow-br"></div>
             <h3 className="text-4xl font-bold text-center mb-6 holographic-text relative z-10">
-              <span className="text-green-400">💧</span> DRIP REWARDS <span className="text-green-400">💧</span>
+              <span className="text-teal-400">💧</span> DRIP REWARDS <span className="text-teal-400">💧</span>
             </h3>
 
             <div className="space-y-6 relative z-10">
@@ -1167,7 +1176,7 @@ export default function AlienDripStation() {
                   <div className="corner-glow corner-glow-bl"></div>
                   <div className="corner-glow corner-glow-br"></div>
                   <p className="text-gray-400 text-sm mb-1 relative z-10">Your Alien Points</p>
-                  <p className="text-green-400 font-bold text-3xl relative z-10">{userPoints.toLocaleString()}</p>
+                  <p className="text-teal-400 font-bold text-3xl relative z-10">{userPoints.toLocaleString()}</p>
                 </div>
               </div>
 
@@ -1175,8 +1184,8 @@ export default function AlienDripStation() {
               <div className="space-y-4">
                 {/* Current Tier Display */}
                 {currentTier ? (
-                  <div className="glass-panel rounded-xl p-4 text-center border-2 border-green-500/30 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 animate-pulse"></div>
+                  <div className="glass-panel rounded-xl p-4 text-center border-2 border-teal-500/30 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-500/0 via-teal-500/20 to-teal-500/0 animate-pulse"></div>
                     <p className="text-sm opacity-75 mb-1 relative z-10">Your Tier:</p>
                     <p className="text-2xl font-bold tracking-wider relative z-10 animate-pulse" style={{
                       color: currentTier.color,
@@ -1184,7 +1193,7 @@ export default function AlienDripStation() {
                     }}>
                       {currentTier.name}
                     </p>
-                    <p className="text-2xl font-bold text-green-400 mt-2 relative z-10">
+                    <p className="text-2xl font-bold text-teal-400 mt-2 relative z-10">
                       💧 {currentTier.points} AP / Day
                     </p>
                   </div>
@@ -1206,13 +1215,13 @@ export default function AlienDripStation() {
               <div className="glass-panel rounded-xl p-6">
                 <p className="text-center font-bold text-2xl mb-4 holographic-text">💎 DRIP TIERS 💎</p>
                 <div className="space-y-3">
-                  <p className="text-green-400 font-bold text-center text-lg">💧 Daily Claim Tiers</p>
+                  <p className="text-teal-400 font-bold text-center text-lg">💧 Daily Claim Tiers</p>
                   <div className="space-y-1 text-xs">
                     {DRIP_TIERS.map((tier, idx) => (
                       <div
                         key={idx}
                         className={`flex justify-between items-center p-1.5 rounded ${
-                          currentTier?.name === tier.name ? 'bg-green-400 bg-opacity-20' : ''
+                          currentTier?.name === tier.name ? 'bg-teal-400 bg-opacity-20' : ''
                         }`}
                       >
                         <span style={{color: tier.color}} className="font-bold text-xs">{tier.name}</span>
@@ -1225,7 +1234,7 @@ export default function AlienDripStation() {
                             {tier.maxGMB === Infinity ? '∞' : tier.maxGMB >= 1000 ? `${(tier.maxGMB/1000).toFixed(0)}K` : tier.maxGMB}
                           </span>
                         </span>
-                        <span className="text-green-400 font-bold text-xs">{tier.points} AP</span>
+                        <span className="text-teal-400 font-bold text-xs">{tier.points} AP</span>
                       </div>
                     ))}
                   </div>
@@ -1245,7 +1254,7 @@ export default function AlienDripStation() {
           <div className="corner-glow corner-glow-tr"></div>
           <div className="corner-glow corner-glow-bl"></div>
           <div className="corner-glow corner-glow-br"></div>
-          <div className="text-center text-red-400 relative z-10 mb-4">
+          <div className="text-center text-cyan-400 relative z-10 mb-4">
             <p className="text-xl mb-2 font-electro alien-brackets">🖼️ NFT Staking Coming Soon 🖼️</p>
             <p className="text-sm opacity-75 font-mono alien-code">Stake your NFTs and earn exclusive rewards!</p>
           </div>
@@ -1253,13 +1262,13 @@ export default function AlienDripStation() {
           {/* NFT CONTENT */}
           <div style={{
             borderRadius: '8px'
-          }} className="holographic-panel relative p-6 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-red-500/10">
+          }} className="holographic-panel relative p-6 bg-gradient-to-br from-cyan-500/10 via-teal-500/10 to-cyan-500/10">
             <div className="corner-glow corner-glow-tl"></div>
             <div className="corner-glow corner-glow-tr"></div>
             <div className="corner-glow corner-glow-bl"></div>
             <div className="corner-glow corner-glow-br"></div>
             <h3 className="text-4xl font-bold text-center mb-6 holographic-text relative z-10">
-              <span className="text-red-400">🖼️</span> NFT STAKING <span className="text-red-400">🖼️</span>
+              <span className="text-cyan-400">🖼️</span> NFT STAKING <span className="text-cyan-400">🖼️</span>
             </h3>
 
             <div className="space-y-6 text-center relative z-10">

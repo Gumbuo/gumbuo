@@ -65,7 +65,7 @@ export default function AlienLeaderboard() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [spotsRemaining, setSpotsRemaining] = useState(MAX_FIRST_TIMERS);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOGExpanded, setIsOGExpanded] = useState(false); // Collapsed by default
+  const [isOGModalOpen, setIsOGModalOpen] = useState(false); // Modal closed by default
 
   // New AP Leaderboard state
   const [apLeaderboard, setAPLeaderboard] = useState<APLeaderboardEntry[]>([]);
@@ -296,26 +296,30 @@ export default function AlienLeaderboard() {
       <div style={{
         borderRadius: '8px'
       }} className="w-full bg-gradient-to-br from-yellow-900/20 to-orange-900/20 backdrop-blur-sm holographic-panel">
-        <button
-          onClick={() => {
-            setIsOGExpanded(!isOGExpanded);
-            playSound('click');
-          }}
-          className="w-full p-4 flex items-center justify-between hover:bg-yellow-400/10 transition-all"
-        >
-          <h3 className="font-alien font-bold text-yellow-400 tracking-wider flex items-center gap-3" style={{fontSize: '2rem'}}>
-            <span>👑</span>
-            <span>First 50 OGs - LEGENDARY STATUS</span>
-            <span>👑</span>
-          </h3>
-          <span className="text-yellow-400 text-3xl transition-transform" style={{
-            transform: isOGExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
-          }}>
-            ▼
-          </span>
-        </button>
+        <div className="flex justify-center w-full p-4">
+          <button
+            onClick={() => {
+              setIsOGModalOpen(true);
+              playSound('click');
+            }}
+            onMouseEnter={() => playSound('hover')}
+            style={{
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2))',
+              border: '2px solid #fbbf24',
+              boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)',
+              padding: '16px 32px',
+              transition: 'all 0.3s ease',
+            }}
+            className="font-alien font-bold text-yellow-400 tracking-wider flex items-center gap-3 hover:bg-yellow-400/10"
+          >
+            <span style={{ fontSize: '2rem' }}>👑</span>
+            <span style={{ fontSize: '1.5rem' }}>First 50 OGs</span>
+            <span style={{ fontSize: '2rem' }}>👑</span>
+          </button>
+        </div>
 
-        {isOGExpanded && (
+        {false && (
           <div className="p-6 space-y-6">
             <p className="text-center text-yellow-300 text-lg">
               🏆 The legendary first 50 wallets - Forever remembered in Gumbuo history! 🏆
@@ -796,6 +800,264 @@ export default function AlienLeaderboard() {
           </>
         )}
       </div>
+
+      {/* First 50 OGs Modal */}
+      {isOGModalOpen && (
+        <div
+          onClick={() => {
+            setIsOGModalOpen(false);
+            playSound('click');
+          }}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.9)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            overflow: 'auto',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(135deg, #1a1a2e, #0f0f1e)',
+              border: '2px solid #fbbf24',
+              borderRadius: '12px',
+              maxWidth: '900px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflow: 'auto',
+              position: 'relative',
+              boxShadow: '0 0 40px rgba(251, 191, 36, 0.6)',
+            }}
+            className="holographic-panel"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                setIsOGModalOpen(false);
+                playSound('click');
+              }}
+              onMouseEnter={() => playSound('hover')}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'rgba(255, 0, 0, 0.3)',
+                border: '2px solid #ff0000',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                fontSize: '1.5rem',
+                color: '#ff0000',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                zIndex: 10000,
+              }}
+              className="hover:bg-red-500 hover:text-white"
+            >
+              ✕
+            </button>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Header */}
+              <h3 className="font-alien font-bold text-yellow-400 tracking-wider text-center flex items-center justify-center gap-3" style={{ fontSize: '2rem' }}>
+                <span>👑</span>
+                <span>First 50 OGs - LEGENDARY STATUS</span>
+                <span>👑</span>
+              </h3>
+
+              <p className="text-center text-yellow-300 text-lg">
+                🏆 The legendary first 50 wallets - Forever remembered in Gumbuo history! 🏆
+              </p>
+
+              {/* Progress Bar */}
+              <div style={{ borderRadius: '8px' }} className="w-full bg-black/60 p-4 holographic-panel">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-purple-400 text-lg">
+                    📊 Progress: <span className="font-bold text-xl">{leaderboard.length}</span> / {MAX_FIRST_TIMERS}
+                  </p>
+                  <p className={`text-lg font-bold ${spotsRemaining <= 10 ? 'text-red-400' : 'text-pink-400'}`}>
+                    {spotsRemaining} spots left!
+                  </p>
+                </div>
+                <div className="w-full bg-gray-900 rounded-full h-6">
+                  <div
+                    className="bg-gradient-to-r from-purple-500 to-pink-400 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${getProgressPercentage()}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* User Status - Only show if registered */}
+              {isConnected && address && isRegistered && (
+                <div style={{ borderRadius: '8px' }} className="w-full bg-black/60 p-4 holographic-panel">
+                  <div className="text-center">
+                    <p className="text-purple-400 text-lg font-bold">✅ You're Registered!</p>
+                    <p className="text-purple-400 text-base mt-1">
+                      Your Rank: <span className="text-2xl font-bold">#{userRank}</span>
+                    </p>
+                    <p className="text-purple-400 text-sm mt-2">You'll receive a GMB airdrop when we reach 50 members! 🎉</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Register Button */}
+              {!isRegistered && (
+                <button
+                  onClick={handleRegister}
+                  onMouseEnter={() => leaderboard.length < MAX_FIRST_TIMERS && playSound('hover')}
+                  disabled={leaderboard.length >= MAX_FIRST_TIMERS}
+                  style={{ borderRadius: '8px' }}
+                  className={`px-12 py-4 text-xl font-bold tracking-wider transition-all duration-200 holographic-panel ${
+                    leaderboard.length >= MAX_FIRST_TIMERS
+                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                      : 'bg-purple-500 text-white hover:bg-purple-600'
+                  }`}
+                >
+                  {!isConnected
+                    ? 'Connect Wallet to Register'
+                    : leaderboard.length >= MAX_FIRST_TIMERS
+                    ? 'All Spots Claimed! 😢'
+                    : 'REGISTER NOW! 🚀'}
+                </button>
+              )}
+
+              {/* Leaderboard Table */}
+              <div style={{ borderRadius: '8px' }} className="w-full bg-black/60 overflow-hidden holographic-panel">
+                <div className="bg-purple-400 bg-opacity-20 p-3 grid grid-cols-5 gap-2 font-bold text-purple-400">
+                  <div className="text-center">Rank</div>
+                  <div className="text-center">Wallet</div>
+                  <div className="text-center">AP</div>
+                  <div className="text-center">Reward</div>
+                  <div className="text-center">Joined</div>
+                </div>
+
+                <div className="max-h-96 overflow-y-auto">
+                  {leaderboard.length === 0 ? (
+                    <div className="p-8 text-center text-purple-400 opacity-50">
+                      <p className="text-xl">👽 No one registered yet! Be the first! 👽</p>
+                    </div>
+                  ) : (
+                    leaderboard.map((entry, index) => (
+                      <div
+                        key={entry.wallet}
+                        className={`grid grid-cols-5 gap-2 p-3 transition-colors ${
+                          address && entry.wallet.toLowerCase() === address.toLowerCase()
+                            ? 'bg-purple-400 bg-opacity-30'
+                            : 'hover:bg-purple-400 hover:bg-opacity-10'
+                        } ${index < 3 ? 'text-yellow-400 font-bold' : 'text-purple-400'}`}
+                      >
+                        <div className="text-center flex items-center justify-center">
+                          {index === 0 && '🥇'}
+                          {index === 1 && '🥈'}
+                          {index === 2 && '🥉'}
+                          {index > 2 && `#${entry.rank}`}
+                        </div>
+                        <div className="text-center font-mono text-xs flex items-center justify-center">
+                          {formatWallet(entry.wallet)}
+                        </div>
+                        <div className="text-center flex items-center justify-center text-sm">
+                          {entry.alienPoints.toLocaleString()}
+                        </div>
+                        <div className="text-center flex items-center justify-center">
+                          <div className="text-xs leading-tight">
+                            <div className="text-yellow-400 font-bold">2M GMB</div>
+                            <div className="text-[10px] text-green-400">1M⛓️ + 1M⚡</div>
+                          </div>
+                        </div>
+                        <div className="text-center text-[10px] flex items-center justify-center opacity-75">
+                          {formatDate(entry.joinedAt)}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Goal Reached Banner with Rewards */}
+              {leaderboard.length >= MAX_FIRST_TIMERS && (
+                <div className="w-full space-y-4">
+                  <div style={{ borderRadius: '8px' }} className="w-full bg-black/60 p-6 text-center animate-pulse holographic-panel">
+                    <p className="text-yellow-400 text-3xl font-bold">🎉 GOAL REACHED! 🎉</p>
+                    <p className="text-yellow-400 text-lg mt-2">All 50 spots filled! Check your rewards below! 👽</p>
+                  </div>
+
+                  {/* Rewards Section */}
+                  <div style={{ borderRadius: '8px' }} className="w-full bg-gradient-to-br from-purple-900/40 to-pink-900/40 p-6 holographic-panel">
+                    <h3 className="text-yellow-400 text-3xl font-bold text-center mb-2">🎁 LEGENDARY AIRDROP REWARDS 🎁</h3>
+                    <p className="text-center text-purple-300 text-lg mb-6">Each wallet receives LEGENDARY rank status! 👑</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      {/* Base Chain Reward */}
+                      <div className="bg-black/60 rounded-xl p-4 border-2 border-blue-400/50 hover:border-blue-400 transition-all">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <span className="text-3xl">⛓️</span>
+                          <h4 className="text-blue-300 text-xl font-bold">BASE CHAIN</h4>
+                        </div>
+                        <p className="text-center text-yellow-400 text-3xl font-bold">1,000,000 GMB</p>
+                        <p className="text-center text-blue-300 text-base mt-1 font-bold">per wallet</p>
+                        <p className="text-center text-blue-400 text-sm mt-2">50,000,000 GMB total pool</p>
+                      </div>
+
+                      {/* Abstract Chain Reward */}
+                      <div className="bg-black/60 rounded-xl p-4 border-2 border-purple-400/50 hover:border-purple-400 transition-all">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <span className="text-3xl">⚡</span>
+                          <h4 className="text-purple-300 text-xl font-bold">ABSTRACT CHAIN</h4>
+                        </div>
+                        <p className="text-center text-yellow-400 text-3xl font-bold">1,000,000 GMB</p>
+                        <p className="text-center text-purple-300 text-base mt-1 font-bold">per wallet</p>
+                        <p className="text-center text-purple-400 text-sm mt-2">50,000,000 GMB total pool</p>
+                      </div>
+                    </div>
+
+                    {/* Total Reward Per Wallet */}
+                    <div className="bg-gradient-to-r from-yellow-900/60 to-orange-600/60 rounded-xl p-6 border-4 border-yellow-400 animate-pulse">
+                      <p className="text-center text-yellow-300 text-xl font-bold mb-2">YOUR TOTAL REWARD</p>
+                      <p className="text-center text-yellow-200 text-5xl font-bold mb-2">2,000,000 GMB</p>
+                      <p className="text-center text-yellow-400 text-lg font-bold">(1M Base + 1M Abstract)</p>
+                      <div className="mt-4 bg-yellow-400/20 rounded-lg p-3">
+                        <p className="text-center text-yellow-300 text-xl font-bold">👑 LEGENDARY RANK UNLOCKED 👑</p>
+                        <p className="text-center text-yellow-400 text-sm mt-1">Maximum faucet benefits on both chains!</p>
+                      </div>
+                    </div>
+
+                    {/* Grand Total */}
+                    <div className="mt-4 bg-black/60 rounded-xl p-4 border border-green-400/30">
+                      <p className="text-center text-green-400 text-lg font-bold mb-1">TOTAL AIRDROP DISTRIBUTION</p>
+                      <p className="text-center text-green-300 text-3xl font-bold">100,000,000 GMB</p>
+                      <p className="text-center text-green-400 text-sm mt-1">(50M Base + 50M Abstract across 50 wallets)</p>
+                    </div>
+
+                    {/* Distribution Info */}
+                    <div className="mt-4 text-center">
+                      <p className="text-green-400 text-sm font-bold">✅ All 50 wallet addresses secured for distribution</p>
+                      <p className="text-purple-300 text-xs mt-2">Each wallet will receive 2M GMB total: 1M on Base + 1M on Abstract</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Info Section */}
+              <div style={{ borderRadius: '8px' }} className="w-full text-yellow-400 text-xs text-center max-w-2xl bg-black/60 p-4 holographic-panel">
+                <p className="font-bold mb-2">ℹ️ OG Leaderboard Info</p>
+                <p className="opacity-75">
+                  The first 50 wallets to register received an exclusive GMB token airdrop! These legendary members are forever
+                  remembered in Gumbuo history! 👑
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
