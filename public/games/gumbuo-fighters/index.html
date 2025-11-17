@@ -23,8 +23,14 @@
             overflow: hidden;
         }
 
-        
+
 	</style>
+    <!-- Storage Bridge for database sync (must load BEFORE GDevelop) -->
+    <script>
+        // Pre-initialize storage bridge namespace
+        window.GumbuoStorageBridge = window.GumbuoStorageBridge || {};
+    </script>
+
     <!-- Libs and GDJS core files : -->
 		<script src="libs/jshashtable.js" crossorigin="anonymous"></script>
 	<script src="logger.js" crossorigin="anonymous"></script>
@@ -154,11 +160,17 @@
 	<script src="code1.js" crossorigin="anonymous"></script>
 	<script src="data.js" crossorigin="anonymous"></script>
 
+	<!-- Login UI - Nice looking login modal -->
+	<script src="login-ui.js" crossorigin="anonymous"></script>
+
+	<!-- Storage Bridge - Syncs localStorage with database -->
+	<script src="storage-bridge.js" crossorigin="anonymous"></script>
+
 
 </head>
 <body>
 
-    
+
 	<script>
 
     (function() {
