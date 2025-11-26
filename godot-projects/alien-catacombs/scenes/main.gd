@@ -51,13 +51,29 @@ func _ready():
 	var player_health = player.get_node_or_null("Health")
 	if player_health:
 		player_health.connect("died", self, "_on_player_died")
-		print("Connected to player health - death handler ready")
+		player_health.connect("health_changed", self, "_on_player_health_changed") # Connect to health_changed signal
+		print("Connected to player health - death and health change handlers ready")
 	else:
 		print("Warning: Player has no Health component!")
 
 	# Hide game over screen initially
 	if game_over_screen:
 		game_over_screen.visible = false
+
+func _on_player_health_changed(current: int, max_health: int):
+	# Send health update to parent window (for web app)
+	if OS.get_name() == "HTML5":
+		var js_code = """
+		if (window.parent) {
+			window.parent.postMessage({
+				type: 'ALIEN_CATACOMBS_HEALTH',
+				currentHealth: %d,
+				maxHealth: %d
+			}, '*');
+		}
+		""" % [current, max_health]
+		JavaScript.eval(js_code)
+		print("Sent HEALTH update to parent window - Current: ", current, ", Max: ", max_health)
 
 func _process(delta):
 	move_camera()
@@ -184,6 +200,27 @@ func _on_player_died():
 	# Disable player movement and input
 	player.set_physics_process(false)
 	player.set_process_input(false)
+
+	# Send game over event to parent window (for leaderboard on gamehole.games)
+	if OS.get_name() == "HTML5" and GameStats:
+		var final_score = GameStats.calculate_alien_points()
+		var stats = GameStats.get_stats()
+		var js_code = """
+		if (window.parent) {
+			window.parent.postMessage({
+				type: 'GAME_OVER',
+				game: 'catacombs',
+				score: %d,
+				kills: %d,
+				crystals: %d,
+				healthDrops: %d,
+				roomsExplored: %d,
+				highestLevel: %d
+			}, '*');
+		}
+		""" % [final_score, stats.totalKills, stats.totalCoins, stats.totalHealthDrops, stats.totalRooms, stats.highestLevel]
+		JavaScript.eval(js_code)
+		print("Sent GAME_OVER to parent window - Score: ", final_score, " Kills: ", stats.totalKills, " Crystals: ", stats.totalCoins, " Health: ", stats.totalHealthDrops, " Rooms: ", stats.totalRooms, " Level: ", stats.highestLevel)
 
 	# Show game over screen
 	if game_over_screen:
