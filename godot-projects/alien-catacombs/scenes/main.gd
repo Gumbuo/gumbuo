@@ -13,9 +13,8 @@ onready var game_over_screen=$GameOverScreen
 
 # Enemy spawning - Multiple enemy types (8 regular enemies - boss excluded from random spawns)
 var enemy_scenes = [
-	preload("res://scenes/entity/enemy.tscn"), // Keep enemy1 as requested
+	preload("res://scenes/entity/enemy.tscn"), # Keep enemy1 as requested
 	preload("res://scenes/entity/enemy_crawler.tscn"),
-	preload("res://scenes/entity/enemy_jellyfish.tscn"),
 	preload("res://scenes/entity/enemy_drone.tscn"),
 	preload("res://scenes/entity/enemy_turret_new.tscn"),
 	preload("res://scenes/entity/enemy_slug.tscn"),

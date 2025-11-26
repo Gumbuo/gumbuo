@@ -31,6 +31,10 @@ func _pickup(player):
 	if health_component and health_component.has_method("heal"):
 		health_component.heal(heal_amount)
 		print("Health orb healed player for ", heal_amount, " HP!")
+
+		# Track health drop collection in GameStats
+		if GameStats:
+			GameStats.add_health_drop()
 	else:
 		print("Player doesn't have a Health component!")
 

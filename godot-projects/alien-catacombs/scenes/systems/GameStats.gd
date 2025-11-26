@@ -9,16 +9,22 @@ signal stats_updated(stats)
 var total_coins := 0
 var total_kills := 0
 var total_rooms_explored := 0
+var total_health_drops := 0
 var total_shots_fired := 0
 var total_shots_hit := 0
 var total_damage_dealt := 0
 var session_start_time := 0
 var total_playtime := 0.0  # Cumulative across all sessions
 
+# Level tracking (1-5 levels)
+var current_level := 1
+var highest_level := 1
+
 # Current Session Stats
 var session_coins := 0
 var session_kills := 0
 var session_rooms := 0
+var session_health_drops := 0
 var session_shots_fired := 0
 var session_shots_hit := 0
 
@@ -54,6 +60,20 @@ func add_kill():
 func add_room():
 	session_rooms += 1
 	total_rooms_explored += 1
+	send_stats_to_js()
+
+# Track health drop collection
+func add_health_drop():
+	session_health_drops += 1
+	total_health_drops += 1
+	send_stats_to_js()
+
+# Track level progression
+func set_level(level: int):
+	current_level = level
+	if level > highest_level:
+		highest_level = level
+		print("New highest level reached: ", highest_level)
 	send_stats_to_js()
 
 # Track shots fired
@@ -97,15 +117,19 @@ func get_stats() -> Dictionary:
 		"totalCoins": total_coins,
 		"totalKills": total_kills,
 		"totalRooms": total_rooms_explored,
+		"totalHealthDrops": total_health_drops,
 		"totalShots": total_shots_fired,
 		"totalHits": total_shots_hit,
 		"totalDamage": total_damage_dealt,
 		"playtime": get_playtime(),
 		"accuracy": get_accuracy(),
 		"alienPoints": calculate_alien_points(),
+		"currentLevel": current_level,
+		"highestLevel": highest_level,
 		"sessionCoins": session_coins,
 		"sessionKills": session_kills,
-		"sessionRooms": session_rooms
+		"sessionRooms": session_rooms,
+		"sessionHealthDrops": session_health_drops
 	}
 
 # Send stats to JavaScript (HTML5 export only)
@@ -151,6 +175,8 @@ func load_stats():
 			total_kills = int(result.totalKills)
 		if "totalRooms" in result:
 			total_rooms_explored = int(result.totalRooms)
+		if "totalHealthDrops" in result:
+			total_health_drops = int(result.totalHealthDrops)
 		if "totalShots" in result:
 			total_shots_fired = int(result.totalShots)
 		if "totalHits" in result:
@@ -182,6 +208,7 @@ func reset_session():
 	session_coins = 0
 	session_kills = 0
 	session_rooms = 0
+	session_health_drops = 0
 	session_shots_fired = 0
 	session_shots_hit = 0
 	session_start_time = OS.get_ticks_msec()

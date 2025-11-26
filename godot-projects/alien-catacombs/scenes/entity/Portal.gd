@@ -3,6 +3,7 @@ extends Area2D
 # Portal - teleports player to specified level
 
 export(String, FILE, "*.tscn") var target_level := ""
+export(int, 1, 5) var destination_level_number := 2  # Which level (1-5) this portal leads to
 export(Color) var portal_color := Color(0, 0.5, 1)  # Default blue
 
 onready var sprite = $Sprite
@@ -35,6 +36,11 @@ func _teleport_player(player):
 
 	# Prevent multiple teleports
 	can_teleport = false
+
+	# Track level progression in GameStats for leaderboard
+	if GameStats:
+		GameStats.set_level(destination_level_number)
+		print("Player entering portal to level ", destination_level_number)
 
 	# TODO: Add teleport visual/sound effect
 

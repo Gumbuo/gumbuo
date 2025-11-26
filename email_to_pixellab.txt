@@ -1,0 +1,36 @@
+Subject: Cannot Download Completed Tilesets - Pixel Apprentice Subscription Issue
+
+Hi PixelLab Support,
+
+I have a Pixel Apprentice subscription and created 8 top-down Wang tilesets through your MCP API (I had created 16 but deleted 8 duplicates). All 8 tilesets show as "completed ✅" when I list them, but when I try to download them, I get an error: {"detail":"Tileset not found"}
+
+Tileset IDs (showing as completed but not downloadable):
+- 91278c27-8061-41b3-b1a8-ccac822383dd (Alien spaceship - GREEN)
+- f6ec0076-b78b-4d13-b09b-0f881e2b8a95 (Alien spaceship - BLUE)
+- f1fc6f46-4b4c-4295-b0d5-9d98583c0fad (Alien spaceship - RED)
+- 4088c780-d4cf-4379-a30a-b6327e7c4ff9 (Alien spaceship - PURPLE)
+- d7118c92-dc40-4207-a253-e88213253234 (Frozen ice)
+- 8c585acb-055b-4cf6-940f-8cd978fc6c94 (Volcanic rock)
+- d38c6b08-2924-4951-802f-e5196e8ac28f (Ancient stone)
+- 950aa8eb-ee8e-40c8-8f86-b2a1cb52116a (Metal tech)
+
+I expected to receive:
+- 16-tile Wang tilesets for autotiling in Godot
+- Both metadata JSON and PNG sprite sheet files for each tileset
+
+What I'm getting:
+- "Tileset not found" error when trying to download
+- Only 2 base tiles (upper/lower) instead of the full 16-tile set
+
+Questions:
+1. Does the Pixel Apprentice tier support downloading top-down Wang tilesets?
+2. If not, what features are available in my current tier?
+3. Do I need to upgrade to Pro to access these tilesets?
+4. Can I get a refund for the tilesets I paid for but cannot download?
+5. Or can you provide access to download the completed tilesets?
+
+I paid for these tilesets expecting to use them in my Godot game project. Please let me know how to resolve this issue.
+
+Thank you,
+[Your Name]
+[Your PixelLab account email]

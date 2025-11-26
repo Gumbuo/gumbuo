@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://c6f3w2w1x0y1"]
+
+[ext_resource type="Script" uid="uid://br0bjodvidns4" path="res://characters/player-tank/player_tank.gd" id="1_fgqht"]
+[ext_resource type="Texture2D" uid="uid://cbb3aidtffwfh" path="res://characters/player-tank/tank_sprite_sheet.jpg" id="2_37lh0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mv4mf"]
+atlas = ExtResource("2_37lh0")
+region = Rect2(0, 0, 360, 258)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vrshs"]
+atlas = ExtResource("2_37lh0")
+region = Rect2(362, 0, 360, 258)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p0vyx"]
+atlas = ExtResource("2_37lh0")
+region = Rect2(724, 0, 360, 258)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_605ed"]
+atlas = ExtResource("2_37lh0")
+region = Rect2(1086, 0, 360, 258)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rh1r1"]
+atlas = ExtResource("2_37lh0")
+region = Rect2(1998, 221, 360, 221)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_thieh"]
+atlas = ExtResource("2_37lh0")
+region = Rect2(2363, 221, 360, 221)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eosqe"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_37lh0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mv4mf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vrshs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p0vyx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_605ed")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rh1r1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_thieh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="PlayerTank" type="CharacterBody2D"]
+script = ExtResource("1_fgqht")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+rotation = -0.002878178
+sprite_frames = SubResource("SpriteFrames_eosqe")

@@ -8,7 +8,6 @@ All new enemy scenes have been created using PixelLab AI-generated pixel art ass
 
 | Enemy Scene | PixelLab Asset | Health | Attack Type | Description |
 |-------------|----------------|---------|-------------|-------------|
-| `enemy_jellyfish.tscn` | Jellyfish Alien | 35 HP | **CONTACT** | Floating purple creature - damages on touch (8 dmg/0.5s) |
 | `enemy_drone.tscn` | Drone Enemy | 25 HP | **RANGED** | Flying drone - shoots from distance (1.2s cooldown) |
 | `enemy_boss_overlord.tscn` | Boss Alien Overlord | 150 HP | **HEAVY_RANGED** | 4-armed boss - slow powerful shots (2.5s, 15 dmg) |
 | `enemy_crawler.tscn` | Crawler Alien | 30 HP | **MELEE** | Fast insectoid - bites in close range (12 dmg, 1.2s) |
@@ -22,7 +21,6 @@ All new enemy scenes have been created using PixelLab AI-generated pixel art ass
 
 - **MELEE**: Chases player and attacks when close (no shooting)
 - **RANGED**: Shoots bullets from distance while maintaining spacing
-- **CONTACT**: Damages player continuously while touching (jellyfish-style)
 - **HEAVY_RANGED**: Slow but powerful ranged attacks (boss-style)
 
 ### ⚠️ Kept Unchanged
@@ -33,7 +31,6 @@ All new enemy scenes have been created using PixelLab AI-generated pixel art ass
 ### New Enemy Scenes
 ```
 godot-projects/alien-catacombs/scenes/entity/
-├── enemy_jellyfish.tscn
 ├── enemy_drone.tscn
 ├── enemy_boss_overlord.tscn
 ├── enemy_crawler.tscn
@@ -47,7 +44,6 @@ godot-projects/alien-catacombs/scenes/entity/
 ### PixelLab Assets
 ```
 godot-projects/alien-catacombs/asset/characters/pixellab/
-├── jellyfish_alien/rotations/
 ├── drone_enemy/rotations/
 ├── boss_alien_overlord/rotations/
 ├── crawler_alien/rotations/
@@ -85,7 +81,6 @@ godot-projects/alien-catacombs/asset/characters/pixellab/
 2. Select the root node
 3. In the Inspector, under "Script", attach the corresponding script:
    - `enemy_crawler.tscn` → `enemy_crawler.gd`
-   - `enemy_jellyfish.tscn` → `enemy_jellyfish.gd`
    - `enemy_drone.tscn` → `enemy_drone.gd`
    - etc.
 4. Save the scene

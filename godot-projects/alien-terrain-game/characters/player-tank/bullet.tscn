@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://6cssw57jw1up"]
+
+[ext_resource type="Script" uid="uid://b6v8ggglkbtl" path="res://characters/player-tank/bullet.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ei7ow"]
+
+[node name="Bullet" type="Area2D"]
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 0.016097363
+region_enabled = true
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ei7ow")
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_exited"]

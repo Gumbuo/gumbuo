@@ -1,12 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
   background: black;
   color: #00ff00;
-  font-family: sans-serif;
+  font-family: 'Orbitron', sans-serif;
   font-size: 2rem;
   overflow: hidden;
+  text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
 }
 
   position: fixed;
