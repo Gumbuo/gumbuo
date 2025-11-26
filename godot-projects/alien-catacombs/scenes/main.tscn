@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=2]
+[gd_scene load_steps=67 format=2]
 
 [ext_resource path="res://asset/map/tileset.png" type="Texture" id=1]
 [ext_resource path="res://scenes/entity/player.tscn" type="PackedScene" id=2]
@@ -33,7 +33,6 @@
 [ext_resource path="res://scenes/items/Coin3.tscn" type="PackedScene" id=34]
 [ext_resource path="res://scenes/items/Coin2.tscn" type="PackedScene" id=35]
 [ext_resource path="res://scenes/entity/enemy_boss_overlord.tscn" type="PackedScene" id=38]
-[ext_resource path="res://scenes/entity/enemy_crawler.tscn" type="PackedScene" id=39]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
@@ -736,9 +735,6 @@ color = Color( 0.4, 0.4, 0.4, 1 )
 
 [node name="EnemyBoss" parent="canvas_modulate" instance=ExtResource( 38 )]
 position = Vector2( 1773, 2977 )
-
-[node name="EnemyCrawler" parent="canvas_modulate" instance=ExtResource( 39 )]
-position = Vector2( 702, 2091 )
 
 [node name="door" parent="." instance=ExtResource( 6 )]
 position = Vector2( 160, 288 )

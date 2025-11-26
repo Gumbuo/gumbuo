@@ -14,16 +14,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/entity/enemy.gd"
 }, {
-"base": "Entity",
-"class": "EnemyKlackon",
-"language": "GDScript",
-"path": "res://scenes/entity/enemy_klackon.gd"
-}, {
-"base": "Entity",
-"class": "EnemyZombie",
-"language": "GDScript",
-"path": "res://scenes/entity/enemy_zombie.gd"
-}, {
 "base": "KinematicBody2D",
 "class": "Entity",
 "language": "GDScript",
@@ -51,8 +41,6 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Enemy": "",
-"EnemyKlackon": "",
-"EnemyZombie": "",
 "Entity": "",
 "Health": "",
 "Hitbox": "",
