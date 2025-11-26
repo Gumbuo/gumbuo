@@ -17,6 +17,22 @@ var is_shooting = false  # Track if mouse button is held down
 # Audio
 onready var shoot_sound = AudioStreamPlayer.new()
 
+# New directional sprite logic
+var sprite_paths = {
+    "south": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south.png"),
+    "north": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/north.png"),
+    "east": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/east.png"),
+    "west": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/west.png"),
+    "south-east": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south-east.png"),
+    "south-west": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south-west.png"),
+    "north-east": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/north-east.png"),
+    "north-west": preload("res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/north-west.png")
+}
+
+onready var sprite = $sprite
+var current_direction = "south"
+
+
 func _ready():
 	speed=96
 
@@ -72,18 +88,38 @@ func _physics_process(delta):
 	# Continuous fire for rifle when mouse is held
 	if is_shooting and current_weapon == Weapon.RIFLE and can_shoot:
 		shoot()
+	
+	update_sprite_direction(velocity)
 
-func animation():
-#	match look_direction:
-#		Vector2.UP:
-#			sprite.play("idle_back")
-#		Vector2.DOWN:
-#			sprite.play("idle_front")
-#		Vector2.LEFT:
-#			sprite.play("idle_left")
-#		Vector2.RIGHT:
-#			sprite.play("idle_right")
-	pass
+
+func update_sprite_direction(velocity: Vector2):
+    if velocity.length() == 0:
+        return
+
+    var angle = velocity.angle()
+    var direction = ""
+
+    # Convert angle to direction (8-way)
+    if angle >= -PI/8 and angle < PI/8:
+        direction = "east"
+    elif angle >= PI/8 and angle < 3*PI/8:
+        direction = "south-east"
+    elif angle >= 3*PI/8 and angle < 5*PI/8:
+        direction = "south"
+    elif angle >= 5*PI/8 and angle < 7*PI/8:
+        direction = "south-west"
+    elif angle >= 7*PI/8 or angle < -7*PI/8:
+        direction = "west"
+    elif angle >= -7*PI/8 and angle < -5*PI/8:
+        direction = "north-west"
+    elif angle >= -5*PI/8 and angle < -3*PI/8:
+        direction = "north"
+    elif angle >= -3*PI/8 and angle < -PI/8:
+        direction = "north-east"
+
+    if direction != current_direction:
+        current_direction = direction
+        sprite.texture = sprite_paths[direction]
 
 func shoot():
 	print("Shoot button pressed!")

@@ -1,97 +1,13 @@
-[gd_scene load_steps=55 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scenes/entity/entity.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/components/hitbox.gd" type="Script" id=2]
 [ext_resource path="res://scenes/entity/EquipmentDisplay.gd" type="Script" id=3]
 [ext_resource path="res://asset/fx/light_blue_v2.png" type="Texture" id=4]
-[ext_resource path="res://scenes/entity/player_combat.gd" type="Script" id=5]
+[ext_resource path="res://scenes/entity/player.gd" type="Script" id=5]
 [ext_resource path="res://scenes/entity/WeaponDisplay.gd" type="Script" id=6]
 [ext_resource path="res://scenes/components/hurtbox.gd" type="Script" id=7]
-[ext_resource path="res://asset/characters/idle_1.png" type="Texture" id=10]
-[ext_resource path="res://asset/characters/idle_2.png" type="Texture" id=11]
-[ext_resource path="res://asset/characters/idle_3.png" type="Texture" id=12]
-[ext_resource path="res://asset/characters/move_1.png" type="Texture" id=20]
-[ext_resource path="res://asset/characters/move_2.png" type="Texture" id=21]
-[ext_resource path="res://asset/characters/move_3.png" type="Texture" id=22]
-[ext_resource path="res://asset/characters/move_4.png" type="Texture" id=23]
-[ext_resource path="res://asset/characters/move_5.png" type="Texture" id=24]
-[ext_resource path="res://asset/characters/punch_1.png" type="Texture" id=40]
-[ext_resource path="res://asset/characters/punch_2.png" type="Texture" id=41]
-[ext_resource path="res://asset/characters/punch_3.png" type="Texture" id=42]
-[ext_resource path="res://asset/characters/punch_4.png" type="Texture" id=43]
-[ext_resource path="res://asset/characters/punch_5.png" type="Texture" id=44]
-[ext_resource path="res://asset/characters/punch_6.png" type="Texture" id=45]
-[ext_resource path="res://asset/characters/punch_7.png" type="Texture" id=46]
-[ext_resource path="res://asset/characters/punch_8.png" type="Texture" id=47]
-[ext_resource path="res://asset/characters/kick_1.png" type="Texture" id=50]
-[ext_resource path="res://asset/characters/kick_2.png" type="Texture" id=51]
-[ext_resource path="res://asset/characters/kick_3.png" type="Texture" id=52]
-[ext_resource path="res://asset/characters/kick_4.png" type="Texture" id=53]
-[ext_resource path="res://asset/characters/kick_5.png" type="Texture" id=54]
-[ext_resource path="res://asset/characters/kick_6.png" type="Texture" id=55]
-[ext_resource path="res://asset/characters/kick_7.png" type="Texture" id=56]
-[ext_resource path="res://asset/characters/kick_8.png" type="Texture" id=57]
-[ext_resource path="res://asset/characters/hurt_1.png" type="Texture" id=60]
-[ext_resource path="res://asset/characters/hurt_2.png" type="Texture" id=61]
-[ext_resource path="res://asset/characters/hurt_3.png" type="Texture" id=62]
-[ext_resource path="res://asset/characters/hurt_4.png" type="Texture" id=63]
-[ext_resource path="res://asset/characters/dead_1.png" type="Texture" id=70]
-[ext_resource path="res://asset/characters/dead_2.png" type="Texture" id=71]
-[ext_resource path="res://asset/characters/jump_1.png" type="Texture" id=80]
-[ext_resource path="res://asset/characters/jump_2.png" type="Texture" id=81]
-[ext_resource path="res://asset/characters/jump_3.png" type="Texture" id=82]
-[ext_resource path="res://asset/characters/jump_4.png" type="Texture" id=83]
-[ext_resource path="res://asset/characters/run_1.png" type="Texture" id=90]
-[ext_resource path="res://asset/characters/run_2.png" type="Texture" id=91]
-[ext_resource path="res://asset/characters/run_3.png" type="Texture" id=92]
-[ext_resource path="res://asset/characters/run_4.png" type="Texture" id=93]
-[ext_resource path="res://asset/characters/run_5.png" type="Texture" id=94]
-[ext_resource path="res://asset/characters/run_6.png" type="Texture" id=95]
-[ext_resource path="res://asset/characters/run_7.png" type="Texture" id=96]
-[ext_resource path="res://asset/characters/run_8.png" type="Texture" id=97]
-
-[sub_resource type="SpriteFrames" id=1]
-animations = [ {
-"frames": [ ExtResource( 70 ), ExtResource( 71 ) ],
-"loop": false,
-"name": "dead",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 60 ), ExtResource( 61 ), ExtResource( 62 ), ExtResource( 63 ) ],
-"loop": false,
-"name": "hurt",
-"speed": 10.0
-}, {
-"frames": [ ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ) ],
-"loop": true,
-"name": "idle",
-"speed": 8.0
-}, {
-"frames": [ ExtResource( 80 ), ExtResource( 81 ), ExtResource( 82 ), ExtResource( 83 ) ],
-"loop": false,
-"name": "jump",
-"speed": 10.0
-}, {
-"frames": [ ExtResource( 50 ), ExtResource( 51 ), ExtResource( 52 ), ExtResource( 53 ), ExtResource( 54 ), ExtResource( 55 ), ExtResource( 56 ), ExtResource( 57 ) ],
-"loop": false,
-"name": "kick",
-"speed": 12.0
-}, {
-"frames": [ ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 24 ) ],
-"loop": true,
-"name": "move",
-"speed": 10.0
-}, {
-"frames": [ ExtResource( 40 ), ExtResource( 41 ), ExtResource( 42 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 45 ), ExtResource( 46 ), ExtResource( 47 ) ],
-"loop": false,
-"name": "punch",
-"speed": 15.0
-}, {
-"frames": [ ExtResource( 90 ), ExtResource( 91 ), ExtResource( 92 ), ExtResource( 93 ), ExtResource( 94 ), ExtResource( 95 ), ExtResource( 96 ), ExtResource( 97 ) ],
-"loop": true,
-"name": "run",
-"speed": 14.0
-} ]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south.png" type="Texture" id=8]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 8.0
@@ -107,11 +23,9 @@ extents = Vector2( 40, 15 )
 [node name="player" groups=["player"] instance=ExtResource( 1 )]
 script = ExtResource( 5 )
 
-[node name="sprite" parent="." index="0"]
+[node name="sprite" type="Sprite" parent="." index="0"]
 position = Vector2( 0, -6 )
-frames = SubResource( 1 )
-animation = "idle"
-playing = true
+texture = ExtResource( 8 )
 
 [node name="CollisionShape2D" parent="." index="1"]
 shape = SubResource( 2 )

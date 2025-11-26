@@ -1,0 +1,53 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=2]
+
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south.png" type="Texture" id=1]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south-east.png" type="Texture" id=2]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/east.png" type="Texture" id=3]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/north-east.png" type="Texture" id=4]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/north.png" type="Texture" id=5]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/north-west.png" type="Texture" id=6]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/west.png" type="Texture" id=7]
+[ext_resource path="res://godot-projects/alien-catacombs/sprites/green_alien_player/rotations/south-west.png" type="Texture" id=8]
+
+[resource]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "idle_south",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "idle_south_east",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "idle_east",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "idle_north_east",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "idle_north",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "idle_north_west",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ) ],
+"loop": true,
+"name": "idle_west",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ) ],
+"loop": true,
+"name": "idle_south_west",
+"speed": 5.0
+} ]
