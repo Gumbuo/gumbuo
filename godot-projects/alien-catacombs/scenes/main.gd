@@ -15,7 +15,6 @@ onready var game_over_screen=$GameOverScreen
 var enemy_scenes = [
 	preload("res://scenes/entity/enemy.tscn"), # Keep enemy1 as requested
 	preload("res://scenes/entity/enemy_crawler.tscn"),
-	preload("res://scenes/entity/enemy_drone.tscn"),
 	preload("res://scenes/entity/enemy_turret_new.tscn"),
 	preload("res://scenes/entity/enemy_slug.tscn"),
 	preload("res://scenes/entity/enemy_ufo.tscn"),

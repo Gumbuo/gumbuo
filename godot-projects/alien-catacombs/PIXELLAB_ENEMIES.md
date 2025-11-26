@@ -8,7 +8,6 @@ All new enemy scenes have been created using PixelLab AI-generated pixel art ass
 
 | Enemy Scene | PixelLab Asset | Health | Attack Type | Description |
 |-------------|----------------|---------|-------------|-------------|
-| `enemy_drone.tscn` | Drone Enemy | 25 HP | **RANGED** | Flying drone - shoots from distance (1.2s cooldown) |
 | `enemy_boss_overlord.tscn` | Boss Alien Overlord | 150 HP | **HEAVY_RANGED** | 4-armed boss - slow powerful shots (2.5s, 15 dmg) |
 | `enemy_crawler.tscn` | Crawler Alien | 30 HP | **MELEE** | Fast insectoid - bites in close range (12 dmg, 1.2s) |
 | `enemy_turret_new.tscn` | Turret Enemy | 40 HP | **RANGED** | Stationary shooter - long range guard (1.5s cooldown) |
@@ -31,7 +30,6 @@ All new enemy scenes have been created using PixelLab AI-generated pixel art ass
 ### New Enemy Scenes
 ```
 godot-projects/alien-catacombs/scenes/entity/
-├── enemy_drone.tscn
 ├── enemy_boss_overlord.tscn
 ├── enemy_crawler.tscn
 ├── enemy_turret_new.tscn
@@ -44,7 +42,6 @@ godot-projects/alien-catacombs/scenes/entity/
 ### PixelLab Assets
 ```
 godot-projects/alien-catacombs/asset/characters/pixellab/
-├── drone_enemy/rotations/
 ├── boss_alien_overlord/rotations/
 ├── crawler_alien/rotations/
 ├── turret_enemy/rotations/
@@ -81,16 +78,7 @@ godot-projects/alien-catacombs/asset/characters/pixellab/
 2. Select the root node
 3. In the Inspector, under "Script", attach the corresponding script:
    - `enemy_crawler.tscn` → `enemy_crawler.gd`
-   - `enemy_drone.tscn` → `enemy_drone.gd`
    - etc.
 4. Save the scene
 
 If scripts are not attached, enemies will use default RANGED behavior.
-
-## Future Enhancements
-
-- Add directional sprite switching based on movement
-- Add animations using PixelLab's animation system
-- Use Purple Alien Mystic asset (currently created but not assigned)
-- Integrate map objects (power-ups, collectibles, decorations, hazards)
-- Add themed tilesets once they become available
