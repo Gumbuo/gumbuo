@@ -304,17 +304,15 @@ After creating enemy scenes, update your enemy pool in `scenes/main.gd`:
 
 ```gdscript
 var enemy_scenes = [
-	preload("res://scenes/entity/enemy.tscn"),
+	preload("res://scenes/entity/enemy.tscn"), // Keep enemy1 as requested
 	preload("res://scenes/entity/enemy_crawler.tscn"),
-	preload("res://scenes/entity/enemy_phantom.tscn"),
-	preload("res://scenes/entity/enemy_lurker.tscn"),
-	# PixelLab enemies
-	preload("res://scenes/entity/enemy_turret.tscn"),
-	preload("res://scenes/entity/enemy_purple_mystic.tscn"),
-	preload("res://scenes/entity/enemy_red_soldier.tscn"),
-	preload("res://scenes/entity/enemy_ufo.tscn"),
+	preload("res://scenes/entity/enemy_jellyfish.tscn"),
 	preload("res://scenes/entity/enemy_drone.tscn"),
-	# preload("res://scenes/entity/enemy_blue_warrior.tscn"),  # Optional - missing walk animations
+	preload("res://scenes/entity/enemy_turret_new.tscn"),
+	preload("res://scenes/entity/enemy_slug.tscn"),
+	preload("res://scenes/entity/enemy_ufo.tscn"),
+	preload("res://scenes/entity/enemy_red_soldier.tscn"),
+	preload("res://scenes/entity/enemy_blue_warrior.tscn")
 ]
 ```
 
