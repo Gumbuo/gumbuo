@@ -16,10 +16,10 @@ export default function SpiderTanksPage() {
     setShowVideo(true);
   }, []);
 
-  // Countdown timer to December 8th, 2024
+  // Countdown timer to December 8th, 2025
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const launchDate = new Date('December 8, 2024 00:00:00').getTime();
+      const launchDate = new Date('December 8, 2025 00:00:00').getTime();
       const now = new Date().getTime();
       const difference = launchDate - now;
 
@@ -137,7 +137,7 @@ export default function SpiderTanksPage() {
               </div>
             </div>
             <p className="text-xl text-pink-400 font-bold mt-6">
-              December 8th, 2024
+              December 8th, 2025
             </p>
           </div>
 
