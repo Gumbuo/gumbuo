@@ -10,6 +10,8 @@ onready var tween=$tween
 onready var y_sort=$y_sort
 onready var tile_map=$tile_map
 onready var game_over_screen=$GameOverScreen
+onready var portal = $Portal  # Reference to the portal
+onready var boss = $canvas_modulate/EnemyBoss  # Reference to the boss
 
 # Enemy spawning - Multiple enemy types (8 regular enemies - boss excluded from random spawns)
 var enemy_scenes = [
@@ -55,6 +57,20 @@ func _ready():
 	# Hide game over screen initially
 	if game_over_screen:
 		game_over_screen.visible = false
+
+	# Connect boss death to portal unlock
+	if boss and portal:
+		var boss_health = boss.get_node_or_null("Health")
+		if boss_health:
+			boss_health.connect("died", self, "_on_boss_defeated")
+			print("Connected boss death signal to portal unlock")
+		else:
+			print("Warning: Boss has no Health component!")
+	else:
+		if not boss:
+			print("Warning: Boss not found in scene")
+		if not portal:
+			print("Warning: Portal not found in scene")
 
 func _on_player_health_changed(current: int, max_health: int):
 	# Send health update to parent window (for web app)
@@ -228,3 +244,8 @@ func _on_player_died():
 
 func _on_Restart_pressed():
 	pass # Replace with function body.
+
+func _on_boss_defeated():
+	print("Boss defeated! Unlocking portal...")
+	if portal and portal.has_method("unlock"):
+		portal.unlock()

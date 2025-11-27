@@ -1249,6 +1249,7 @@ text = "Main Menu "
 
 [node name="Portal" parent="." instance=ExtResource( 12 )]
 position = Vector2( 1861, 2962 )
+requires_boss_kill = true
 
 [node name="HealthOrb" parent="." instance=ExtResource( 17 )]
 position = Vector2( 636, 683 )
