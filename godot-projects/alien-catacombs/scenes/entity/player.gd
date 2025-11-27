@@ -19,17 +19,17 @@ onready var shoot_sound = AudioStreamPlayer.new()
 
 # New directional sprite logic
 var sprite_paths = {
-    "south": preload("res://sprites/green_alien_player/rotations/south.png"),
-    "north": preload("res://sprites/green_alien_player/rotations/north.png"),
-    "east": preload("res://sprites/green_alien_player/rotations/east.png"),
-    "west": preload("res://sprites/green_alien_player/rotations/west.png"),
-    "south-east": preload("res://sprites/green_alien_player/rotations/south-east.png"),
-    "south-west": preload("res://sprites/green_alien_player/rotations/south-west.png"),
-    "north-east": preload("res://sprites/green_alien_player/rotations/north-east.png"),
-    "north-west": preload("res://sprites/green_alien_player/rotations/north-west.png")
+	"south": preload("res://sprites/green_alien_player/rotations/south.png"),
+	"north": preload("res://sprites/green_alien_player/rotations/north.png"),
+	"east": preload("res://sprites/green_alien_player/rotations/east.png"),
+	"west": preload("res://sprites/green_alien_player/rotations/west.png"),
+	"south-east": preload("res://sprites/green_alien_player/rotations/south-east.png"),
+	"south-west": preload("res://sprites/green_alien_player/rotations/south-west.png"),
+	"north-east": preload("res://sprites/green_alien_player/rotations/north-east.png"),
+	"north-west": preload("res://sprites/green_alien_player/rotations/north-west.png")
 }
 
-onready var sprite = $sprite
+# sprite variable inherited from Entity class
 var current_direction = "south"
 
 
@@ -88,8 +88,8 @@ func _physics_process(delta):
 	# Continuous fire for rifle when mouse is held
 	if is_shooting and current_weapon == Weapon.RIFLE and can_shoot:
 		shoot()
-	
-	update_sprite_direction(velocity)
+
+	update_sprite_direction(velocity_direction)
 
 
 func update_sprite_direction(velocity: Vector2):
