@@ -5,21 +5,28 @@ extends Enemy
 var sprite_frames: SpriteFrames
 var is_loading_animations := false
 
-# Animation configurations
+# Animation configurations - ALL 13 animation types
 const ANIMATIONS = {
 	"breathing-idle": {"fps": 8, "loop": true},
+	"fight-stance-idle-8-frames": {"fps": 8, "loop": true},
 	"walking-8-frames": {"fps": 10, "loop": true},
+	"jumping-1": {"fps": 12, "loop": false},
 	"cross-punch": {"fps": 12, "loop": false},
 	"lead-jab": {"fps": 12, "loop": false},
+	"surprise-uppercut": {"fps": 12, "loop": false},
 	"high-kick": {"fps": 12, "loop": false},
+	"leg-sweep": {"fps": 12, "loop": false},
+	"roundhouse-kick": {"fps": 12, "loop": false},
+	"flying-kick": {"fps": 12, "loop": false},
+	"fireball": {"fps": 10, "loop": false},
 	"taking-punch": {"fps": 10, "loop": false},
 }
 
 const DIRECTIONS = ["south", "north", "east", "west", "south-east", "south-west", "north-east", "north-west"]
 
-# Track current attack animation
+# All attack animations to cycle through
+var attack_animations = ["cross-punch", "lead-jab", "surprise-uppercut", "high-kick", "leg-sweep", "roundhouse-kick", "flying-kick", "fireball"]
 var current_attack_anim := 0
-var attack_animations = ["cross-punch", "lead-jab", "high-kick"]
 
 func _ready():
 	._ready()
@@ -122,9 +129,13 @@ func _update_walking_animation():
 	if not sprite or not sprite is AnimatedSprite or is_loading_animations:
 		return
 
-	# Don't override if attack or hurt animation is playing
-	if sprite.animation == "attack" or sprite.animation.begins_with("cross-punch") or sprite.animation.begins_with("lead-jab") or sprite.animation.begins_with("high-kick") or sprite.animation.begins_with("taking-punch"):
+	# Don't override if any attack or hurt animation is playing
+	if sprite.animation == "attack" or sprite.animation.begins_with("taking-punch"):
 		return
+
+	for attack_anim in attack_animations:
+		if sprite.animation.begins_with(attack_anim):
+			return
 
 	var dir_suffix = _get_direction_suffix()
 

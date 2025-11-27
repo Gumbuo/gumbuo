@@ -5,23 +5,37 @@ extends Enemy
 var sprite_frames: SpriteFrames
 var is_loading_animations := false
 
-# Animation configurations
+# Animation configurations - ALL 13 animation types
 const ANIMATIONS = {
 	"breathing-idle": {"fps": 8, "loop": true},
+	"fight-stance-idle-8-frames": {"fps": 8, "loop": true},
 	"walking-8-frames": {"fps": 10, "loop": true},
+	"jumping-1": {"fps": 12, "loop": false},
+	"cross-punch": {"fps": 12, "loop": false},
+	"lead-jab": {"fps": 12, "loop": false},
+	"surprise-uppercut": {"fps": 12, "loop": false},
+	"high-kick": {"fps": 12, "loop": false},
+	"leg-sweep": {"fps": 12, "loop": false},
+	"roundhouse-kick": {"fps": 12, "loop": false},
+	"flying-kick": {"fps": 12, "loop": false},
 	"fireball": {"fps": 10, "loop": false},
 	"taking-punch": {"fps": 10, "loop": false},
 }
 
 const DIRECTIONS = ["south", "north", "east", "west", "south-east", "south-west", "north-east", "north-west"]
 
+# All attack animations to cycle through
+var attack_animations = ["cross-punch", "lead-jab", "surprise-uppercut", "high-kick", "leg-sweep", "roundhouse-kick", "flying-kick", "fireball"]
+var current_attack_anim := 0
+
 func _ready():
 	._ready()
 
-	# Configure as RANGED enemy (throws fireballs)
-	attack_type = AttackType.RANGED
-	shoot_range = 140.0
-	shoot_cooldown = 1.2
+	# Configure as MELEE enemy (uses all combat animations)
+	attack_type = AttackType.MELEE
+	melee_range = 25.0
+	melee_damage = 15
+	melee_cooldown = 0.8
 
 	# Fire Elemental stats
 	speed = 40
@@ -65,14 +79,13 @@ func _load_animations():
 			for frame in frames:
 				sprite_frames.add_frame(full_name, frame)
 
-			# Add "attack_" alias for fireball animations so base Enemy code can find them
-			if anim_name == "fireball":
-				var attack_alias = "attack_" + dir_suffix
-				sprite_frames.add_animation(attack_alias)
-				sprite_frames.set_animation_speed(attack_alias, config.fps)
-				sprite_frames.set_animation_loop(attack_alias, config.loop)
+			# Add "attack" alias for cross-punch so base Enemy code can find it
+			if anim_name == "cross-punch" and direction == "south":
+				sprite_frames.add_animation("attack")
+				sprite_frames.set_animation_speed("attack", config.fps)
+				sprite_frames.set_animation_loop("attack", config.loop)
 				for frame in frames:
-					sprite_frames.add_frame(attack_alias, frame)
+					sprite_frames.add_frame("attack", frame)
 
 	# Replace Sprite with AnimatedSprite
 	if sprite and sprite is Sprite:
@@ -114,9 +127,13 @@ func _update_walking_animation():
 	if not sprite or not sprite is AnimatedSprite or is_loading_animations:
 		return
 
-	# Don't override if attack or hurt animation is playing
-	if sprite.animation.begins_with("attack_") or sprite.animation.begins_with("fireball_") or sprite.animation.begins_with("taking-punch"):
+	# Don't override if any attack or hurt animation is playing
+	if sprite.animation == "attack" or sprite.animation.begins_with("taking-punch"):
 		return
+
+	for attack_anim in attack_animations:
+		if sprite.animation.begins_with(attack_anim):
+			return
 
 	var dir_suffix = _get_direction_suffix()
 
@@ -159,43 +176,31 @@ func _angle_to_direction(angle: float) -> String:
 	else:
 		return "north_east"
 
-# Override shoot function to use correct animation name
-func shoot_at_player():
+# Override melee attack to cycle through all combat animations
+func melee_attack_player():
 	if not target:
 		return
 
-	print("Fire Elemental shooting! Playing fireball animation")
-	can_shoot = false
+	print("Fire Elemental attacking with animation: ", attack_animations[current_attack_anim % attack_animations.size()])
+	can_melee = false
 
-	# Play fireball animation
+	# Play one of the attack animations
 	if sprite and sprite is AnimatedSprite:
 		var angle = (target.global_position - global_position).angle()
 		var dir_suffix = _angle_to_direction(angle)
-		var attack_anim = "fireball_" + dir_suffix
+		var attack_anim = attack_animations[current_attack_anim % attack_animations.size()]
+		var full_anim = attack_anim + "_" + dir_suffix
 
-		if sprite.frames.has_animation(attack_anim):
-			sprite.play(attack_anim)
-			yield(get_tree().create_timer(0.15), "timeout")
+		if sprite.frames.has_animation(full_anim):
+			sprite.play(full_anim)
+			yield(get_tree().create_timer(0.3), "timeout")
 
-	# Create bullet
-	var bullet = bullet_scene.instance()
+		current_attack_anim += 1
 
-	if bullet_texture_path != "":
-		var custom_texture = load(bullet_texture_path)
-		if custom_texture:
-			bullet.bullet_texture = custom_texture
+	# Deal damage to player
+	var player_hurtbox = target.get_node_or_null("Hurtbox")
+	if player_hurtbox and player_hurtbox.has_method("take_damage"):
+		player_hurtbox.take_damage(melee_damage, 100.0, global_position)
 
-	var shoot_direction = (target.global_position - global_position).normalized()
-	bullet.direction = shoot_direction
-
-	if attack_type == AttackType.HEAVY_RANGED:
-		bullet.damage = 15
-		bullet.speed = 80
-
-	bullet.is_enemy_bullet = true
-
-	get_parent().add_child(bullet)
-	bullet.global_position = global_position
-
-	yield(get_tree().create_timer(shoot_cooldown), "timeout")
-	can_shoot = true
+	yield(get_tree().create_timer(melee_cooldown), "timeout")
+	can_melee = true
