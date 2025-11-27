@@ -163,6 +163,7 @@ func shoot_at_player():
 	if not target:
 		return
 
+	print("Fire Elemental shooting! Playing fireball animation")
 	can_shoot = false
 
 	# Play fireball animation

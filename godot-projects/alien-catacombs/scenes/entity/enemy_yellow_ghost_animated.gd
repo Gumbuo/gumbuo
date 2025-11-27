@@ -173,6 +173,7 @@ func melee_attack_player():
 	if not target:
 		return
 
+	print("Yellow Ghost melee attacking! Playing punch/kick animation")
 	can_melee = false
 
 	# Play one of the melee attack animations
