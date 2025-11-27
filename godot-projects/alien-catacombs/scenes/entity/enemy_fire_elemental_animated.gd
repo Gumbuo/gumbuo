@@ -107,36 +107,28 @@ func _load_animation_frames(anim_name: String, direction: String) -> Array:
 
 func _physics_process(delta):
 	._physics_process(delta)
-	_update_animation()
+	_update_walking_animation()
 
-func _update_animation():
+func _update_walking_animation():
+	# Only update walking/idle - let base Enemy handle attack animations
 	if not sprite or not sprite is AnimatedSprite or is_loading_animations:
+		return
+
+	# Don't override if attack or hurt animation is playing
+	if sprite.animation.begins_with("attack_") or sprite.animation.begins_with("fireball_") or sprite.animation.begins_with("taking-punch"):
 		return
 
 	var dir_suffix = _get_direction_suffix()
 
-	# Play appropriate animation based on state
-	match current_state:
-		State.ATTACK:
-			var anim_name = "fireball_" + dir_suffix
-			if sprite.frames.has_animation(anim_name):
-				if sprite.animation != anim_name or not sprite.playing:
-					sprite.play(anim_name)
-		State.HURT:
-			var anim_name = "taking-punch_" + dir_suffix
-			if sprite.frames.has_animation(anim_name):
-				if sprite.animation != anim_name or not sprite.playing:
-					sprite.play(anim_name)
-		_:
-			# Walking or idle
-			if velocity_direction.length() > 0.1:
-				var anim_name = "walking-8-frames_" + dir_suffix
-				if sprite.frames.has_animation(anim_name):
-					if sprite.animation != anim_name:
-						sprite.play(anim_name)
-			else:
-				if sprite.animation != "idle":
-					sprite.play("idle")
+	# Walking or idle only
+	if velocity_direction.length() > 0.1:
+		var anim_name = "walking-8-frames_" + dir_suffix
+		if sprite.frames.has_animation(anim_name):
+			if sprite.animation != anim_name:
+				sprite.play(anim_name)
+	else:
+		if sprite.animation != "idle":
+			sprite.play("idle")
 
 func _get_direction_suffix() -> String:
 	if velocity_direction.length() < 0.1:
