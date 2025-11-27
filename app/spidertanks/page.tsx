@@ -4,10 +4,39 @@ import { useState, useEffect } from "react";
 
 export default function SpiderTanksPage() {
   const [showVideo, setShowVideo] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
 
   useEffect(() => {
     // Show video popup after page loads
     setShowVideo(true);
+  }, []);
+
+  // Countdown timer to December 8th, 2024
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const launchDate = new Date('December 8, 2024 00:00:00').getTime();
+      const now = new Date().getTime();
+      const difference = launchDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000)
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const closeVideo = () => {
@@ -67,6 +96,50 @@ export default function SpiderTanksPage() {
           <p className="text-2xl md:text-3xl text-gray-300">
             Epic PvP Arena Combat
           </p>
+
+          {/* Countdown Timer */}
+          <div className="max-w-4xl mx-auto my-12">
+            <h2 className="text-3xl font-bold text-purple-400 mb-6">
+              Launch Countdown
+            </h2>
+            <div className="grid grid-cols-4 gap-4 md:gap-8">
+              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+                <div className="text-5xl md:text-6xl font-bold text-white mb-2">
+                  {timeLeft.days}
+                </div>
+                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                  Days
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+                <div className="text-5xl md:text-6xl font-bold text-white mb-2">
+                  {timeLeft.hours}
+                </div>
+                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                  Hours
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+                <div className="text-5xl md:text-6xl font-bold text-white mb-2">
+                  {timeLeft.minutes}
+                </div>
+                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                  Minutes
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+                <div className="text-5xl md:text-6xl font-bold text-white mb-2">
+                  {timeLeft.seconds}
+                </div>
+                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                  Seconds
+                </div>
+              </div>
+            </div>
+            <p className="text-xl text-pink-400 font-bold mt-6">
+              December 8th, 2024
+            </p>
+          </div>
 
           {/* Description */}
           <div className="max-w-2xl mx-auto text-lg text-gray-400 space-y-4">
