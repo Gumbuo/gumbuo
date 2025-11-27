@@ -1,5 +1,7 @@
 extends Node2D
 
+# Main game scene with auto-deployment configured
+
 var vp_size:Vector2
 
 var c_current_pos:Vector2=Vector2(0,0)
