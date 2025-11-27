@@ -157,3 +157,43 @@ func _angle_to_direction(angle: float) -> String:
 		return "north"
 	else:
 		return "north_east"
+
+# Override shoot function to use correct animation name
+func shoot_at_player():
+	if not target:
+		return
+
+	can_shoot = false
+
+	# Play fireball animation
+	if sprite and sprite is AnimatedSprite:
+		var angle = (target.global_position - global_position).angle()
+		var dir_suffix = _angle_to_direction(angle)
+		var attack_anim = "fireball_" + dir_suffix
+
+		if sprite.frames.has_animation(attack_anim):
+			sprite.play(attack_anim)
+			yield(get_tree().create_timer(0.15), "timeout")
+
+	# Create bullet
+	var bullet = bullet_scene.instance()
+
+	if bullet_texture_path != "":
+		var custom_texture = load(bullet_texture_path)
+		if custom_texture:
+			bullet.bullet_texture = custom_texture
+
+	var shoot_direction = (target.global_position - global_position).normalized()
+	bullet.direction = shoot_direction
+
+	if attack_type == AttackType.HEAVY_RANGED:
+		bullet.damage = 15
+		bullet.speed = 80
+
+	bullet.is_enemy_bullet = true
+
+	get_parent().add_child(bullet)
+	bullet.global_position = global_position
+
+	yield(get_tree().create_timer(shoot_cooldown), "timeout")
+	can_shoot = true

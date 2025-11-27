@@ -167,3 +167,31 @@ func _angle_to_direction(angle: float) -> String:
 		return "north"
 	else:
 		return "north_east"
+
+# Override melee attack function to use correct animation names
+func melee_attack_player():
+	if not target:
+		return
+
+	can_melee = false
+
+	# Play one of the melee attack animations
+	if sprite and sprite is AnimatedSprite:
+		var angle = (target.global_position - global_position).angle()
+		var dir_suffix = _angle_to_direction(angle)
+		var attack_anim = attack_animations[current_attack_anim % attack_animations.size()]
+		var full_anim = attack_anim + "_" + dir_suffix
+
+		if sprite.frames.has_animation(full_anim):
+			sprite.play(full_anim)
+			yield(get_tree().create_timer(0.2), "timeout")
+
+		current_attack_anim += 1
+
+	# Deal damage to player via their hurtbox
+	var player_hurtbox = target.get_node_or_null("Hurtbox")
+	if player_hurtbox and player_hurtbox.has_method("take_damage"):
+		player_hurtbox.take_damage(melee_damage, 100.0, global_position)
+
+	yield(get_tree().create_timer(melee_cooldown), "timeout")
+	can_melee = true
