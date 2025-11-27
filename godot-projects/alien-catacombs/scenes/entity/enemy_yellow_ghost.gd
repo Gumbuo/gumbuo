@@ -17,7 +17,7 @@ func _ready():
 	melee_cooldown = 1.0
 
 	# Yellow Ghost stats - fast and aggressive
-	speed = 70
+	speed = 45
 	detection_range = 180.0
 
 func _physics_process(delta):

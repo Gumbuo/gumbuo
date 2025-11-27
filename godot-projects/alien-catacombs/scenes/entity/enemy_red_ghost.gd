@@ -15,7 +15,7 @@ func _ready():
 	contact_damage = 8
 
 	# Red Ghost stats - floaty and persistent
-	speed = 45
+	speed = 38
 	detection_range = 200.0
 
 func _physics_process(delta):

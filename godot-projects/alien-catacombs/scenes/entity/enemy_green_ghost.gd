@@ -16,7 +16,7 @@ func _ready():
 	shoot_cooldown = 2.0
 
 	# Green Ghost stats - slow but powerful
-	speed = 40
+	speed = 30
 	detection_range = 170.0
 
 func _physics_process(delta):

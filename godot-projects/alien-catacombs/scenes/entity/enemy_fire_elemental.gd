@@ -16,7 +16,7 @@ func _ready():
 	shoot_cooldown = 1.2
 
 	# Fire Elemental stats
-	speed = 50
+	speed = 40
 	detection_range = 160.0
 
 	# Custom bullet color (orange/red fire)

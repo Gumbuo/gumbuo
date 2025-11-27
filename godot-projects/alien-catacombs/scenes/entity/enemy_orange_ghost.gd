@@ -16,7 +16,7 @@ func _ready():
 	shoot_cooldown = 1.0
 
 	# Orange Ghost stats - balanced
-	speed = 55
+	speed = 42
 	detection_range = 150.0
 
 func _physics_process(delta):
