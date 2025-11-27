@@ -1,0 +1,39 @@
+name: Export Godot Game
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'godot-projects/alien-catacombs/**'
+
+jobs:
+  export-game:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:3.6.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup export templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+        env:
+          GODOT_VERSION: 3.6.2
+
+      - name: Export game to HTML5
+        run: |
+          cd godot-projects/alien-catacombs
+          mkdir -p ../../public/game
+          godot --export-release "HTML5" ../../public/game/index.html --verbose
+
+      - name: Commit exported game
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/game/
+          git diff --staged --quiet || git commit -m "chore: Auto-export Godot game [skip ci]"
+          git push
