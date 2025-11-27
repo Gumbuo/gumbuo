@@ -13,9 +13,8 @@ onready var game_over_screen=$GameOverScreen
 onready var portal = $Portal  # Reference to the portal
 onready var boss = $canvas_modulate/EnemyBoss  # Reference to the boss
 
-# Enemy spawning - 6 enemy types (Fire Elemental + 4 Ghosts + original enemy)
+# Enemy spawning - 5 new enemy types (Fire Elemental + 4 Ghost Specters)
 var enemy_scenes = [
-	preload("res://scenes/entity/enemy.tscn"),
 	preload("res://scenes/entity/enemy_fire_elemental.tscn"),
 	preload("res://scenes/entity/enemy_yellow_ghost.tscn"),
 	preload("res://scenes/entity/enemy_orange_ghost.tscn"),
