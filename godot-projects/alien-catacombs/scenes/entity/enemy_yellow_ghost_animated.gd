@@ -72,6 +72,16 @@ func _load_animations():
 			for frame in frames:
 				sprite_frames.add_frame(full_name, frame)
 
+			# Add "attack" alias for cross-punch so base Enemy code can find it
+			if anim_name == "cross-punch":
+				# Non-directional "attack" for melee
+				if direction == "south":
+					sprite_frames.add_animation("attack")
+					sprite_frames.set_animation_speed("attack", config.fps)
+					sprite_frames.set_animation_loop("attack", config.loop)
+					for frame in frames:
+						sprite_frames.add_frame("attack", frame)
+
 	# Replace Sprite with AnimatedSprite
 	if sprite and sprite is Sprite:
 		var old_sprite = sprite

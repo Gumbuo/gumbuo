@@ -65,6 +65,15 @@ func _load_animations():
 			for frame in frames:
 				sprite_frames.add_frame(full_name, frame)
 
+			# Add "attack_" alias for fireball animations so base Enemy code can find them
+			if anim_name == "fireball":
+				var attack_alias = "attack_" + dir_suffix
+				sprite_frames.add_animation(attack_alias)
+				sprite_frames.set_animation_speed(attack_alias, config.fps)
+				sprite_frames.set_animation_loop(attack_alias, config.loop)
+				for frame in frames:
+					sprite_frames.add_frame(attack_alias, frame)
+
 	# Replace Sprite with AnimatedSprite
 	if sprite and sprite is Sprite:
 		var old_sprite = sprite
