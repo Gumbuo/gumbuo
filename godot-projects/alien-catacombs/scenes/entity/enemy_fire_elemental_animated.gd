@@ -18,7 +18,7 @@ const DIRECTIONS = ["south", "north", "east", "west", "south-east", "south-west"
 func _ready():
 	._ready()
 
-	# Configure as RANGED enemy
+	# Configure as RANGED enemy (throws fireballs)
 	attack_type = AttackType.RANGED
 	shoot_range = 140.0
 	shoot_cooldown = 1.2
