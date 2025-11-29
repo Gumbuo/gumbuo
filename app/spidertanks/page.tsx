@@ -44,7 +44,7 @@ export default function SpiderTanksPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-black text-white">
+    <div className="min-h-screen text-white" style={{ background: 'linear-gradient(to bottom, #1f2833, #0b0c10)' }}>
       {/* Video Popup Modal */}
       {showVideo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 backdrop-blur-sm">
@@ -59,7 +59,7 @@ export default function SpiderTanksPage() {
             </button>
 
             {/* Video Container */}
-            <div className="relative rounded-lg overflow-hidden shadow-2xl border-4 border-purple-500">
+            <div className="relative rounded-lg overflow-hidden shadow-2xl border-4" style={{ borderColor: '#45a29e' }}>
               <video
                 autoPlay
                 controls
@@ -75,7 +75,8 @@ export default function SpiderTanksPage() {
             <div className="text-center mt-4">
               <button
                 onClick={closeVideo}
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-bold transition-colors"
+                className="px-6 py-3 rounded-lg font-bold transition-colors"
+                style={{ background: '#45a29e', color: '#0b0c10' }}
               >
                 Skip Ad →
               </button>
@@ -88,7 +89,7 @@ export default function SpiderTanksPage() {
       <div className="container mx-auto px-4 py-20">
         <div className="text-center space-y-8">
           {/* Title */}
-          <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-6xl md:text-8xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to right, #66fcf1, #45a29e)' }}>
             SPIDER TANKS
           </h1>
 
@@ -99,44 +100,44 @@ export default function SpiderTanksPage() {
 
           {/* Countdown Timer */}
           <div className="max-w-4xl mx-auto my-12">
-            <h2 className="text-3xl font-bold text-purple-400 mb-6">
+            <h2 className="text-3xl font-bold mb-6" style={{ color: '#66fcf1' }}>
               Launch Countdown
             </h2>
             <div className="grid grid-cols-4 gap-4 md:gap-8">
-              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+              <div className="p-6 rounded-xl border-2 shadow-2xl" style={{ background: 'linear-gradient(to bottom right, #1f2833, #0b0c10)', borderColor: '#45a29e' }}>
                 <div className="text-5xl md:text-6xl font-bold text-white mb-2">
                   {timeLeft.days}
                 </div>
-                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                <div className="text-sm md:text-lg uppercase tracking-wider" style={{ color: '#45a29e' }}>
                   Days
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+              <div className="p-6 rounded-xl border-2 shadow-2xl" style={{ background: 'linear-gradient(to bottom right, #1f2833, #0b0c10)', borderColor: '#45a29e' }}>
                 <div className="text-5xl md:text-6xl font-bold text-white mb-2">
                   {timeLeft.hours}
                 </div>
-                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                <div className="text-sm md:text-lg uppercase tracking-wider" style={{ color: '#45a29e' }}>
                   Hours
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+              <div className="p-6 rounded-xl border-2 shadow-2xl" style={{ background: 'linear-gradient(to bottom right, #1f2833, #0b0c10)', borderColor: '#45a29e' }}>
                 <div className="text-5xl md:text-6xl font-bold text-white mb-2">
                   {timeLeft.minutes}
                 </div>
-                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                <div className="text-sm md:text-lg uppercase tracking-wider" style={{ color: '#45a29e' }}>
                   Minutes
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-purple-900 to-pink-900 p-6 rounded-xl border-2 border-purple-500 shadow-2xl">
+              <div className="p-6 rounded-xl border-2 shadow-2xl" style={{ background: 'linear-gradient(to bottom right, #1f2833, #0b0c10)', borderColor: '#45a29e' }}>
                 <div className="text-5xl md:text-6xl font-bold text-white mb-2">
                   {timeLeft.seconds}
                 </div>
-                <div className="text-sm md:text-lg text-purple-300 uppercase tracking-wider">
+                <div className="text-sm md:text-lg uppercase tracking-wider" style={{ color: '#45a29e' }}>
                   Seconds
                 </div>
               </div>
             </div>
-            <p className="text-xl text-pink-400 font-bold mt-6">
+            <p className="text-xl font-bold mt-6" style={{ color: '#66fcf1' }}>
               December 8th, 2025
             </p>
           </div>
@@ -156,14 +157,16 @@ export default function SpiderTanksPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
             <button
               onClick={() => setShowVideo(true)}
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-bold text-xl transition-all transform hover:scale-105"
+              className="px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105"
+              style={{ background: 'linear-gradient(to right, #66fcf1, #45a29e)', color: '#0b0c10' }}
             >
               Watch Trailer
             </button>
 
             <a
               href="#play"
-              className="px-8 py-4 bg-gray-800 hover:bg-gray-700 rounded-lg font-bold text-xl transition-all border-2 border-purple-500"
+              className="px-8 py-4 rounded-lg font-bold text-xl transition-all border-2"
+              style={{ background: '#1f2833', borderColor: '#45a29e', color: '#66fcf1' }}
             >
               Play Now
             </a>
@@ -171,23 +174,23 @@ export default function SpiderTanksPage() {
 
           {/* Features Grid */}
           <div className="grid md:grid-cols-3 gap-6 mt-20">
-            <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg border border-purple-500">
-              <h3 className="text-2xl font-bold mb-3 text-purple-400">29 Characters</h3>
-              <p className="text-gray-400">
+            <div className="bg-opacity-50 p-6 rounded-lg border" style={{ background: 'rgba(31, 40, 51, 0.5)', borderColor: '#45a29e' }}>
+              <h3 className="text-2xl font-bold mb-3" style={{ color: '#66fcf1' }}>29 Characters</h3>
+              <p style={{ color: '#c5c6c7' }}>
                 Choose from Ghost Specters and Elemental warriors
               </p>
             </div>
 
-            <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg border border-purple-500">
-              <h3 className="text-2xl font-bold mb-3 text-purple-400">PvP Arena</h3>
-              <p className="text-gray-400">
+            <div className="bg-opacity-50 p-6 rounded-lg border" style={{ background: 'rgba(31, 40, 51, 0.5)', borderColor: '#45a29e' }}>
+              <h3 className="text-2xl font-bold mb-3" style={{ color: '#66fcf1' }}>PvP Arena</h3>
+              <p style={{ color: '#c5c6c7' }}>
                 Battle against players in intense top-down combat
               </p>
             </div>
 
-            <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg border border-purple-500">
-              <h3 className="text-2xl font-bold mb-3 text-purple-400">Spider Tanks</h3>
-              <p className="text-gray-400">
+            <div className="bg-opacity-50 p-6 rounded-lg border" style={{ background: 'rgba(31, 40, 51, 0.5)', borderColor: '#45a29e' }}>
+              <h3 className="text-2xl font-bold mb-3" style={{ color: '#66fcf1' }}>Spider Tanks</h3>
+              <p style={{ color: '#c5c6c7' }}>
                 Command powerful vehicles with 8-directional movement
               </p>
             </div>
@@ -196,7 +199,7 @@ export default function SpiderTanksPage() {
       </div>
 
       {/* Footer */}
-      <footer className="text-center py-8 text-gray-500 border-t border-gray-800">
+      <footer className="text-center py-8 border-t" style={{ color: '#c5c6c7', borderColor: '#1f2833' }}>
         <p>Spider Tanks © 2025 | Built with Godot & Next.js</p>
       </footer>
     </div>

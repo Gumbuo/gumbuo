@@ -175,7 +175,7 @@ export default function AdminPanel() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom, #0a0e1a, #000000)",
+        background: "#0b0c10",
         color: "#ffffff",
         padding: "2rem",
       }}
@@ -188,15 +188,14 @@ export default function AdminPanel() {
               fontSize: "3rem",
               fontWeight: "bold",
               marginBottom: "1rem",
-              background: "linear-gradient(to right, #00ff99, #8e44ad)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              color: "#66fcf1",
+              textShadow: "0 0 15px #66fcf1",
               fontFamily: "'Orbitron', sans-serif",
             }}
           >
-            🛸 Referral Admin Panel
+            Referral Admin Panel
           </h1>
-          <p style={{ color: "#888", fontSize: "1.25rem" }}>
+          <p style={{ color: "#c5c6c7", fontSize: "1.25rem" }}>
             Manage referral rewards & distribution
           </p>
         </div>
@@ -210,13 +209,13 @@ export default function AdminPanel() {
           <div
             style={{
               padding: "3rem",
-              background: "rgba(30, 30, 50, 0.5)",
+              background: "rgba(31, 40, 51, 0.8)",
               borderRadius: "1rem",
-              border: "2px solid #00ff99",
+              border: "2px solid #45a29e",
               textAlign: "center",
             }}
           >
-            <p style={{ fontSize: "1.5rem", color: "#00ff99" }}>
+            <p style={{ fontSize: "1.5rem", color: "#66fcf1" }}>
               Connect your wallet to access admin panel
             </p>
           </div>
@@ -226,13 +225,13 @@ export default function AdminPanel() {
           <div
             style={{
               padding: "3rem",
-              background: "rgba(30, 30, 50, 0.5)",
+              background: "rgba(31, 40, 51, 0.8)",
               borderRadius: "1rem",
-              border: "2px solid #00ff99",
+              border: "2px solid #45a29e",
               textAlign: "center",
             }}
           >
-            <p style={{ fontSize: "1.5rem", color: "#00ff99" }}>
+            <p style={{ fontSize: "1.5rem", color: "#66fcf1" }}>
               Checking admin access...
             </p>
           </div>
@@ -273,16 +272,16 @@ export default function AdminPanel() {
               <div
                 style={{
                   padding: "2rem",
-                  background: "linear-gradient(135deg, rgba(0, 255, 153, 0.1), rgba(0, 255, 153, 0.05))",
+                  background: "linear-gradient(135deg, rgba(102, 252, 241, 0.1), rgba(69, 162, 158, 0.05))",
                   borderRadius: "1rem",
-                  border: "2px solid #00ff99",
+                  border: "2px solid #45a29e",
                   textAlign: "center",
                 }}
               >
-                <p style={{ color: "#888", fontSize: "0.875rem", marginBottom: "0.5rem" }}>
+                <p style={{ color: "#c5c6c7", fontSize: "0.875rem", marginBottom: "0.5rem" }}>
                   Total Referrals
                 </p>
-                <p style={{ color: "#00ff99", fontSize: "3rem", fontWeight: "bold" }}>
+                <p style={{ color: "#66fcf1", fontSize: "3rem", fontWeight: "bold" }}>
                   {referrals.length}
                 </p>
               </div>
@@ -322,7 +321,7 @@ export default function AdminPanel() {
                   fontSize: "1.5rem",
                   fontWeight: "bold",
                   marginBottom: "1.5rem",
-                  color: "#00ff99",
+                  color: "#66fcf1",
                   fontFamily: "'Orbitron', sans-serif",
                 }}
               >
@@ -376,7 +375,7 @@ export default function AdminPanel() {
                   disabled={creating}
                   style={{
                     padding: "1rem 2rem",
-                    background: creating ? "#444" : "linear-gradient(135deg, #00ff99, #00cc7a)",
+                    background: creating ? "#444" : "linear-gradient(135deg, #66fcf1, #45a29e)",
                     color: "#000",
                     border: "none",
                     borderRadius: "0.5rem",
@@ -551,7 +550,7 @@ export default function AdminPanel() {
                   fontSize: "1.5rem",
                   fontWeight: "bold",
                   marginBottom: "1.5rem",
-                  color: "#00ff99",
+                  color: "#66fcf1",
                   fontFamily: "'Orbitron', sans-serif",
                 }}
               >

@@ -14,26 +14,38 @@
 html, body {
   height: 100%;
   width: 100%;
-  background-color: black;
+  background-color: #0b0c10;
 }
 
 #__next {
   min-height: 100%;
   width: 100%;
-  background-color: black;
+  background-color: #0b0c10;
 }
 
-/* Gumbuo Alien Theme */
+/* Gumbuo Mothership Theme */
 :root {
-  --alien-primary: #00ff99;
-  --alien-secondary: #00ffff;
-  --alien-accent: #ff00ff;
-  --alien-dark: #0a0a0f;
-  --alien-glow: rgba(0, 255, 153, 0.5);
-  --alien-purple: #8e44ad;
-  --alien-pink: #ff00ff;
-  --alien-blue: #00d4ff;
-  --alien-yellow: #ffff00;
+  --mothership-primary: #66fcf1;
+  --mothership-secondary: #45a29e;
+  --mothership-accent: #c5c6c7;
+  --mothership-dark: #0b0c10;
+  --mothership-darker: #1f2833;
+  --mothership-glow: rgba(102, 252, 241, 0.5);
+  --mothership-gold: #ffd700;
+  --mothership-red: #ff003c;
+  --mothership-green: #00ff41;
+  --mothership-blue: #00d9ff;
+
+  /* Legacy aliases for backwards compatibility */
+  --alien-primary: #66fcf1;
+  --alien-secondary: #45a29e;
+  --alien-accent: #c5c6c7;
+  --alien-dark: #0b0c10;
+  --alien-glow: rgba(102, 252, 241, 0.5);
+  --alien-purple: #45a29e;
+  --alien-pink: #ff003c;
+  --alien-blue: #00d9ff;
+  --alien-yellow: #ffd700;
 }
 
 /* Wheel Spin Button Animations */
@@ -621,10 +633,179 @@ html, body {
 }
 
 .alien-spinner {
-  border: 4px solid rgba(0, 255, 153, 0.2);
-  border-top: 4px solid var(--alien-primary);
+  border: 4px solid rgba(102, 252, 241, 0.2);
+  border-top: 4px solid var(--mothership-primary);
   border-radius: 50%;
   animation: alien-spin 1s linear infinite;
 }
 
+/* ============================================ */
+/* MOTHERSHIP UI SYSTEM */
+/* ============================================ */
+
+/* Mothership Page Background */
+.mothership-bg {
+  background-color: var(--mothership-dark);
+  background-image: url('/mothership-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Mothership Nav Button */
+.mothership-btn {
+  background: linear-gradient(180deg, #333 0%, #111 100%);
+  border: 1px solid var(--mothership-secondary);
+  color: var(--mothership-secondary);
+  padding: 12px 25px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 0 #000;
+  transition: all 0.1s;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+}
+
+.mothership-btn:hover {
+  background: var(--mothership-darker);
+  color: #fff;
+  box-shadow: 0 0 10px var(--mothership-secondary), 0 4px 0 #000;
+}
+
+.mothership-btn:active {
+  top: 4px;
+  box-shadow: inset 0 0 10px #000, 0 0 0 #000;
+}
+
+.mothership-btn.active {
+  background: var(--mothership-secondary);
+  color: #000;
+  box-shadow: 0 0 10px var(--mothership-secondary);
+}
+
+/* Mothership Gold Button (Referrals) */
+.mothership-btn-gold {
+  background: linear-gradient(180deg, #443a00 0%, #221d00 100%);
+  border: 1px solid var(--mothership-gold);
+  color: var(--mothership-gold);
+}
+
+.mothership-btn-gold:hover {
+  box-shadow: 0 0 15px var(--mothership-gold), 0 4px 0 #000;
+}
+
+/* Mothership Nav Panel */
+.mothership-nav {
+  background: rgba(0,0,0,0.8);
+  border-top: 2px solid var(--mothership-secondary);
+  border-bottom: 2px solid var(--mothership-secondary);
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  box-shadow: 0 0 20px rgba(69, 162, 158, 0.2);
+}
+
+/* Mothership Portal Frame */
+.mothership-portal {
+  background: rgba(11, 12, 16, 0.7);
+  border: 2px solid var(--mothership-secondary);
+  border-radius: 15px;
+  padding: 20px;
+  transition: transform 0.3s, background 0.3s;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+}
+
+.mothership-portal:hover {
+  transform: scale(1.05);
+  background: rgba(11, 12, 16, 0.9);
+}
+
+/* Mothership Portal Image */
+.mothership-portal-img {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.1);
+  display: block;
+  margin: 0 auto 15px auto;
+}
+
+.mothership-portal-img.blue {
+  box-shadow: 0 0 30px var(--mothership-blue);
+}
+
+.mothership-portal-img.grey {
+  box-shadow: 0 0 30px #e0e0e0;
+}
+
+.mothership-portal-img.green {
+  box-shadow: 0 0 30px var(--mothership-green);
+}
+
+.mothership-portal-img.red {
+  box-shadow: 0 0 30px var(--mothership-red);
+}
+
+/* Mothership Portal Label */
+.mothership-portal-label {
+  display: inline-block;
+  padding: 5px 15px;
+  background: #000;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  text-shadow: 0 0 5px currentColor;
+  text-transform: uppercase;
+}
+
+/* Mothership Title */
+.mothership-title {
+  font-size: 3.5rem;
+  text-shadow: 0 0 15px var(--mothership-primary);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--mothership-primary);
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Mothership Subtitle */
+.mothership-subtitle {
+  color: var(--mothership-accent);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+/* Mothership Section Title */
+.mothership-section-title {
+  font-size: 2.5rem;
+  color: var(--mothership-primary);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px var(--mothership-primary);
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Fixed Music Player */
+.mothership-music-player {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  border: 2px solid var(--mothership-green);
+  padding: 10px 20px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+  z-index: 100;
+}
 

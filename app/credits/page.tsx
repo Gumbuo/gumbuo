@@ -11,7 +11,7 @@ export default function CreditsPage() {
   const credits = {
     "Alien Catacombs": {
       icon: "👾",
-      color: "#00d4ff",
+      color: "#66fcf1",
       assets: [
         {
           name: "Zelda Futuristic Asset Pack",
@@ -41,7 +41,7 @@ export default function CreditsPage() {
     },
     "Gumbuo Fighters": {
       icon: "🥊",
-      color: "#00ff99",
+      color: "#45a29e",
       assets: [
         {
           name: "LPC Character Sprites",
@@ -53,7 +53,7 @@ export default function CreditsPage() {
     },
     "Other Games": {
       icon: "🎮",
-      color: "#ff3366",
+      color: "#c5c6c7",
       assets: [
         {
           name: "General Game Assets",
@@ -68,6 +68,7 @@ export default function CreditsPage() {
   return (
     <div style={{
       minHeight: '100vh',
+      backgroundColor: '#0b0c10',
       backgroundImage: 'url(/foxholeproductions.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -96,16 +97,16 @@ export default function CreditsPage() {
           top: '20px',
           left: '20px',
           padding: '12px 24px',
-          background: 'linear-gradient(135deg, rgba(0, 153, 204, 0.8), rgba(0, 119, 153, 0.8))',
-          border: '2px solid #00d4ff',
+          background: 'linear-gradient(135deg, rgba(69, 162, 158, 0.8), rgba(31, 40, 51, 0.8))',
+          border: '2px solid #45a29e',
           borderRadius: '8px',
-          color: '#00ffff',
+          color: '#66fcf1',
           textDecoration: 'none',
           fontFamily: 'Orbitron, sans-serif',
           fontWeight: 'bold',
           fontSize: '14px',
           textTransform: 'uppercase',
-          boxShadow: '0 0 20px rgba(0, 212, 255, 0.5)',
+          boxShadow: '0 0 20px rgba(102, 252, 241, 0.5)',
           transition: 'all 0.3s ease',
           zIndex: 100,
           display: 'flex',
@@ -114,11 +115,11 @@ export default function CreditsPage() {
         }}
         onMouseEnter={(e) => {
           playSound('hover');
-          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))';
+          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(102, 252, 241, 0.95), rgba(69, 162, 158, 0.95))';
           e.currentTarget.style.transform = 'scale(1.05)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(0, 153, 204, 0.8), rgba(0, 119, 153, 0.8))';
+          e.currentTarget.style.background = 'linear-gradient(135deg, rgba(69, 162, 158, 0.8), rgba(31, 40, 51, 0.8))';
           e.currentTarget.style.transform = 'scale(1)';
         }}
       >
@@ -141,8 +142,8 @@ export default function CreditsPage() {
           <h1 style={{
             fontSize: '3.5rem',
             fontWeight: 'bold',
-            color: '#00ffff',
-            textShadow: '0 0 30px rgba(0, 255, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.4)',
+            color: '#66fcf1',
+            textShadow: '0 0 30px rgba(102, 252, 241, 0.8), 0 0 60px rgba(102, 252, 241, 0.4)',
             fontFamily: 'Orbitron, sans-serif',
             textTransform: 'uppercase',
             letterSpacing: '4px',
@@ -153,9 +154,9 @@ export default function CreditsPage() {
           </h1>
           <p style={{
             fontSize: '1.2rem',
-            color: '#00ff99',
+            color: '#45a29e',
             fontFamily: 'Orbitron, sans-serif',
-            textShadow: '0 0 10px rgba(0, 255, 153, 0.5)'
+            textShadow: '0 0 10px rgba(69, 162, 158, 0.5)'
           }}>
             Special thanks to all the talented creators whose assets bring Gumbuo to life
           </p>
@@ -173,14 +174,14 @@ export default function CreditsPage() {
               key={category}
               onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
               style={{
-                background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(138, 43, 226, 0.1))',
+                background: 'linear-gradient(135deg, rgba(102, 252, 241, 0.1), rgba(69, 162, 158, 0.1))',
                 border: `3px solid ${data.color}`,
                 borderRadius: '15px',
                 padding: '30px',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 boxShadow: selectedCategory === category
-                  ? `0 0 30px ${data.color}, inset 0 0 20px rgba(0, 212, 255, 0.1)`
+                  ? `0 0 30px ${data.color}, inset 0 0 20px rgba(102, 252, 241, 0.1)`
                   : `0 0 15px ${data.color}80`,
                 transform: selectedCategory === category ? 'scale(1.02)' : 'scale(1)',
               }}
@@ -192,7 +193,7 @@ export default function CreditsPage() {
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = selectedCategory === category ? 'scale(1.02)' : 'scale(1)';
                 e.currentTarget.style.boxShadow = selectedCategory === category
-                  ? `0 0 30px ${data.color}, inset 0 0 20px rgba(0, 212, 255, 0.1)`
+                  ? `0 0 30px ${data.color}, inset 0 0 20px rgba(102, 252, 241, 0.1)`
                   : `0 0 15px ${data.color}80`;
               }}
             >
@@ -220,7 +221,7 @@ export default function CreditsPage() {
               </h2>
               <p style={{
                 textAlign: 'center',
-                color: '#00ffff',
+                color: '#66fcf1',
                 fontSize: '0.9rem',
                 fontFamily: 'Orbitron, sans-serif'
               }}>
@@ -233,7 +234,7 @@ export default function CreditsPage() {
         {/* Expanded Category Details */}
         {selectedCategory && (
           <div style={{
-            background: 'linear-gradient(135deg, rgba(0, 153, 204, 0.15), rgba(138, 43, 226, 0.15))',
+            background: 'linear-gradient(135deg, rgba(69, 162, 158, 0.15), rgba(31, 40, 51, 0.15))',
             border: `3px solid ${credits[selectedCategory as keyof typeof credits].color}`,
             borderRadius: '15px',
             padding: '40px',
@@ -263,7 +264,7 @@ export default function CreditsPage() {
                   key={index}
                   style={{
                     background: 'rgba(0, 0, 0, 0.3)',
-                    border: '2px solid rgba(0, 212, 255, 0.3)',
+                    border: '2px solid rgba(102, 252, 241, 0.3)',
                     borderRadius: '10px',
                     padding: '25px',
                     transition: 'all 0.3s ease'
@@ -271,18 +272,18 @@ export default function CreditsPage() {
                   onMouseEnter={(e) => {
                     playSound('hover');
                     e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 212, 255, 0.6)';
+                    e.currentTarget.style.borderColor = 'rgba(102, 252, 241, 0.6)';
                     e.currentTarget.style.transform = 'translateX(10px)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 212, 255, 0.3)';
+                    e.currentTarget.style.borderColor = 'rgba(102, 252, 241, 0.3)';
                     e.currentTarget.style.transform = 'translateX(0)';
                   }}
                 >
                   <h4 style={{
                     fontSize: '1.3rem',
-                    color: '#00ffff',
+                    color: '#66fcf1',
                     fontFamily: 'Orbitron, sans-serif',
                     marginBottom: '10px',
                     fontWeight: 'bold'
@@ -291,7 +292,7 @@ export default function CreditsPage() {
                   </h4>
                   <p style={{
                     fontSize: '1rem',
-                    color: '#00ff99',
+                    color: '#45a29e',
                     marginBottom: '8px',
                     fontFamily: 'Orbitron, sans-serif'
                   }}>
@@ -313,7 +314,7 @@ export default function CreditsPage() {
                       style={{
                         display: 'inline-block',
                         padding: '8px 16px',
-                        background: 'linear-gradient(135deg, #00ffff, #0099cc)',
+                        background: 'linear-gradient(135deg, #66fcf1, #45a29e)',
                         color: '#000',
                         textDecoration: 'none',
                         borderRadius: '6px',
@@ -321,16 +322,16 @@ export default function CreditsPage() {
                         fontWeight: 'bold',
                         fontFamily: 'Orbitron, sans-serif',
                         transition: 'all 0.3s ease',
-                        boxShadow: '0 0 15px rgba(0, 255, 255, 0.4)'
+                        boxShadow: '0 0 15px rgba(102, 252, 241, 0.4)'
                       }}
                       onMouseEnter={(e) => {
                         playSound('hover');
                         e.currentTarget.style.transform = 'scale(1.05)';
-                        e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 255, 0.8)';
+                        e.currentTarget.style.boxShadow = '0 0 25px rgba(102, 252, 241, 0.8)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 255, 0.4)';
+                        e.currentTarget.style.boxShadow = '0 0 15px rgba(102, 252, 241, 0.4)';
                       }}
                     >
                       Visit Creator →
@@ -347,19 +348,19 @@ export default function CreditsPage() {
           textAlign: 'center',
           marginTop: '60px',
           padding: '30px',
-          background: 'rgba(0, 212, 255, 0.1)',
-          border: '2px solid rgba(0, 212, 255, 0.3)',
+          background: 'rgba(102, 252, 241, 0.1)',
+          border: '2px solid rgba(102, 252, 241, 0.3)',
           borderRadius: '12px'
         }}>
           <p style={{
             fontSize: '1.1rem',
-            color: '#00ffff',
+            color: '#66fcf1',
             fontFamily: 'Orbitron, sans-serif',
             lineHeight: '1.8'
           }}>
             💜 All assets are used with proper licensing and attribution. 💜
             <br />
-            <span style={{ fontSize: '0.9rem', color: '#00ff99' }}>
+            <span style={{ fontSize: '0.9rem', color: '#45a29e' }}>
               Supporting indie creators helps keep the game dev community thriving!
             </span>
           </p>

@@ -45,7 +45,7 @@ export default function MazePage() {
             ALIEN MAZE CHALLENGE
             <span className="text-6xl">🛸</span>
           </h1>
-          <p className="text-cyan-300 text-xl max-w-2xl mx-auto">
+          <p style={{ color: '#66fcf1' }} className="text-xl max-w-2xl mx-auto">
             Navigate through the alien labyrinth using WASD keys! Collect cosmic treasures, avoid dead ends, and reach the portal to earn massive Alien Points!
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function MazePage() {
           maxWidth: '64rem',
           marginLeft: 'auto',
           marginRight: 'auto',
-          background: 'rgba(0, 255, 153, 0.05)',
+          background: 'rgba(102, 252, 241, 0.05)',
           borderRadius: '8px',
           padding: '32px'
         }}>
@@ -80,7 +80,7 @@ export default function MazePage() {
             HOW TO PLAY
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', color: '#22d3ee' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', color: '#66fcf1' }}>
             <div className="holographic-panel" style={{
               background: 'rgba(0, 0, 0, 0.4)',
               borderRadius: '8px',
@@ -141,15 +141,15 @@ export default function MazePage() {
 
           <div className="holographic-panel" style={{
             marginTop: '24px',
-            background: 'rgba(34, 197, 94, 0.2)',
+            background: 'rgba(69, 162, 158, 0.2)',
             borderRadius: '8px',
             padding: '16px',
             textAlign: 'center'
           }}>
-            <p style={{ color: '#86efac', fontWeight: 'bold', fontSize: '1.125rem' }}>
+            <p style={{ color: '#66fcf1', fontWeight: 'bold', fontSize: '1.125rem' }}>
               🎯 Complete the maze to earn Alien Points! 🎯
             </p>
-            <p style={{ color: '#4ade80', fontSize: '0.875rem', marginTop: '8px' }}>
+            <p style={{ color: '#45a29e', fontSize: '0.875rem', marginTop: '8px' }}>
               Your score + time bonus = Total Alien Points earned
             </p>
           </div>

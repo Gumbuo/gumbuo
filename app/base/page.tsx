@@ -284,8 +284,8 @@ export default function BasePage() {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        background: 'linear-gradient(to bottom, #1a1a2e, #0f0f1e)',
-        borderBottom: '2px solid #00d4ff',
+        background: 'linear-gradient(to bottom, #1f2833, #0b0c10)',
+        borderBottom: '2px solid #45a29e',
       }}>
         {/* Main Tabs */}
         <div style={{
@@ -302,10 +302,10 @@ export default function BasePage() {
               style={{
                 padding: '12px 24px',
                 background: selectedGame === key
-                  ? 'linear-gradient(135deg, #00d4ff, #0099cc)'
-                  : 'rgba(0, 212, 255, 0.1)',
-                color: selectedGame === key ? '#000' : '#00d4ff',
-                border: `2px solid ${selectedGame === key ? '#00d4ff' : '#00d4ff44'}`,
+                  ? 'linear-gradient(135deg, #66fcf1, #45a29e)'
+                  : 'rgba(102, 252, 241, 0.1)',
+                color: selectedGame === key ? '#000' : '#66fcf1',
+                border: `2px solid ${selectedGame === key ? '#66fcf1' : '#66fcf144'}`,
                 borderRadius: '8px',
                 cursor: 'pointer',
                 fontFamily: 'Orbitron, sans-serif',
@@ -314,20 +314,20 @@ export default function BasePage() {
                 textTransform: 'uppercase',
                 transition: 'all 0.3s ease',
                 boxShadow: selectedGame === key
-                  ? '0 0 20px rgba(0, 212, 255, 0.5)'
+                  ? '0 0 20px rgba(102, 252, 241, 0.5)'
                   : 'none',
               }}
               onMouseEnter={(e) => {
                 playSound('hover');
                 if (selectedGame !== key) {
-                  e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)';
-                  e.currentTarget.style.borderColor = '#00d4ff';
+                  e.currentTarget.style.background = 'rgba(102, 252, 241, 0.2)';
+                  e.currentTarget.style.borderColor = '#66fcf1';
                 }
               }}
               onMouseLeave={(e) => {
                 if (selectedGame !== key) {
-                  e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
-                  e.currentTarget.style.borderColor = '#00d4ff44';
+                  e.currentTarget.style.background = 'rgba(102, 252, 241, 0.1)';
+                  e.currentTarget.style.borderColor = '#66fcf144';
                 }
               }}
             >
@@ -345,7 +345,7 @@ export default function BasePage() {
             paddingTop: '0',
             justifyContent: 'center',
             flexWrap: 'wrap',
-            borderTop: '1px solid rgba(0, 212, 255, 0.3)',
+            borderTop: '1px solid rgba(102, 252, 241, 0.3)',
           }}>
             {Object.entries(oldGames).map(([key, game]) => (
               <button
@@ -354,10 +354,10 @@ export default function BasePage() {
                 style={{
                   padding: '8px 16px',
                   background: selectedOldGame === key
-                    ? 'linear-gradient(135deg, #00ff99, #00cc77)'
-                    : 'rgba(0, 255, 153, 0.1)',
-                  color: selectedOldGame === key ? '#000' : '#00ff99',
-                  border: `2px solid ${selectedOldGame === key ? '#00ff99' : '#00ff9944'}`,
+                    ? 'linear-gradient(135deg, #45a29e, #1f2833)'
+                    : 'rgba(69, 162, 158, 0.1)',
+                  color: selectedOldGame === key ? '#000' : '#45a29e',
+                  border: `2px solid ${selectedOldGame === key ? '#45a29e' : '#45a29e44'}`,
                   borderRadius: '6px',
                   cursor: 'pointer',
                   fontFamily: 'Orbitron, sans-serif',
@@ -366,20 +366,20 @@ export default function BasePage() {
                   textTransform: 'uppercase',
                   transition: 'all 0.3s ease',
                   boxShadow: selectedOldGame === key
-                    ? '0 0 15px rgba(0, 255, 153, 0.4)'
+                    ? '0 0 15px rgba(69, 162, 158, 0.4)'
                     : 'none',
                 }}
                 onMouseEnter={(e) => {
                   playSound('hover');
                   if (selectedOldGame !== key) {
-                    e.currentTarget.style.background = 'rgba(0, 255, 153, 0.2)';
-                    e.currentTarget.style.borderColor = '#00ff99';
+                    e.currentTarget.style.background = 'rgba(69, 162, 158, 0.2)';
+                    e.currentTarget.style.borderColor = '#45a29e';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (selectedOldGame !== key) {
-                    e.currentTarget.style.background = 'rgba(0, 255, 153, 0.1)';
-                    e.currentTarget.style.borderColor = '#00ff9944';
+                    e.currentTarget.style.background = 'rgba(69, 162, 158, 0.1)';
+                    e.currentTarget.style.borderColor = '#45a29e44';
                   }
                 }}
               >
@@ -456,11 +456,11 @@ export default function BasePage() {
                     top: '10px',
                     right: '10px',
                     zIndex: 1000,
-                    background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))',
+                    background: 'linear-gradient(135deg, rgba(102, 252, 241, 0.95), rgba(69, 162, 158, 0.95))',
                     padding: '12px 20px',
                     borderRadius: '8px',
-                    border: '2px solid #00d4ff',
-                    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
+                    border: '2px solid #66fcf1',
+                    boxShadow: '0 0 20px rgba(102, 252, 241, 0.6)',
                     fontFamily: 'Orbitron, sans-serif',
                     color: '#000',
                     fontWeight: 'bold',
@@ -501,11 +501,11 @@ export default function BasePage() {
                     top: '10px',
                     right: '10px',
                     zIndex: 1000,
-                    background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.95), rgba(0, 153, 204, 0.95))',
+                    background: 'linear-gradient(135deg, rgba(102, 252, 241, 0.95), rgba(69, 162, 158, 0.95))',
                     padding: '12px 20px',
                     borderRadius: '8px',
-                    border: '2px solid #00d4ff',
-                    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
+                    border: '2px solid #66fcf1',
+                    boxShadow: '0 0 20px rgba(102, 252, 241, 0.6)',
                     fontFamily: 'Orbitron, sans-serif',
                     color: '#000',
                     fontWeight: 'bold',
@@ -525,11 +525,11 @@ export default function BasePage() {
                     top: '10px',
                     right: '10px',
                     zIndex: 1000,
-                    background: 'linear-gradient(135deg, rgba(0, 255, 153, 0.95), rgba(0, 204, 119, 0.95))',
+                    background: 'linear-gradient(135deg, rgba(69, 162, 158, 0.95), rgba(31, 40, 51, 0.95))',
                     padding: '12px 20px',
                     borderRadius: '8px',
-                    border: '2px solid #00ff99',
-                    boxShadow: '0 0 20px rgba(0, 255, 153, 0.6)',
+                    border: '2px solid #45a29e',
+                    boxShadow: '0 0 20px rgba(69, 162, 158, 0.6)',
                     fontFamily: 'Orbitron, sans-serif',
                     color: '#000',
                     fontWeight: 'bold',
