@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://dspidertanktest"]
+
+[ext_resource type="TileSet" path="res://combined_terrain.tres" id="1_tileset"]
+[ext_resource type="PackedScene" path="res://characters/spider-tank-vehicle/spider_tank.tscn" id="2_spider_tank"]
+
+[node name="SpiderTankTest" type="Node2D"]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_set = ExtResource("1_tileset")
+
+[node name="SpiderTank" parent="." instance=ExtResource("2_spider_tank")]
+position = Vector2(640, 360)
+
+[node name="Camera2D" type="Camera2D" parent="SpiderTank"]
+zoom = Vector2(3, 3)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 400.0
+offset_bottom = 120.0
+text = "SPIDER TANK TEST
+WASD / Arrow Keys - Move
+Left Mouse Button - Shoot
+Tank faces 8 directions!"

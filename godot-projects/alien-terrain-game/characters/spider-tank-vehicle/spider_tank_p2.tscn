@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://dspidertankp2"]
+
+[ext_resource type="Script" path="res://characters/spider-tank-vehicle/spider_tank_p2.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://characters/spider-tank-vehicle/spider_tank_south.png" id="2_sprite"]
+[ext_resource type="PackedScene" path="res://characters/player-tank/bullet.tscn" id="3_bullet"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tank"]
+radius = 24.0
+
+[node name="SpiderTankP2" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 13
+script = ExtResource("1_script")
+bullet_scene = ExtResource("3_bullet")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_sprite")
+texture_filter = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_tank")
+
+[node name="ShootTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true

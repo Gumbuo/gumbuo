@@ -1,0 +1,451 @@
+[gd_resource type="SpriteFrames" load_steps=1 format=2]
+
+[resource]
+animations = [ {
+{
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_003.png" ) ],
+"loop": true,
+"name": "idle",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_south",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_north",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/east/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_east",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/west/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_west",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-east/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_south_east",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/south-west/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_south_west",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-east/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_north_east",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/breathing-idle/north-west/frame_003.png" ) ],
+"loop": true,
+"name": "breathing-idle_north_west",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_south",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_north",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/east/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_east",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/west/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_west",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-east/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_south_east",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/south-west/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_south_west",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-east/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_north_east",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fight-stance-idle-8-frames/north-west/frame_007.png" ) ],
+"loop": true,
+"name": "fight-stance-idle-8-frames_north_west",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_south",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_north",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/east/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_east",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/west/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_west",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-east/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_south_east",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/south-west/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_south_west",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-east/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_north_east",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/walking-8-frames/north-west/frame_007.png" ) ],
+"loop": true,
+"name": "walking-8-frames_north_west",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/east/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/west/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-east/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/south-west/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-east/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_006.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_007.png" ), ExtResource( "res://sprites/yellow_ghost/animations/jumping-1/north-west/frame_008.png" ) ],
+"loop": false,
+"name": "jumping-1_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/east/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/west/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-east/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/south-west/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-east/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/cross-punch/north-west/frame_005.png" ) ],
+"loop": false,
+"name": "cross-punch_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/east/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/west/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south-east/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/south-west/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north-east/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/lead-jab/north-west/frame_002.png" ) ],
+"loop": false,
+"name": "lead-jab_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/east/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/west/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-east/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/south-west/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-east/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/surprise-uppercut/north-west/frame_006.png" ) ],
+"loop": false,
+"name": "surprise-uppercut_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/east/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/west/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-east/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/south-west/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-east/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/high-kick/north-west/frame_006.png" ) ],
+"loop": false,
+"name": "high-kick_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/east/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/west/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-east/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/south-west/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-east/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_005.png" ), ExtResource( "res://sprites/yellow_ghost/animations/leg-sweep/north-west/frame_006.png" ) ],
+"loop": false,
+"name": "leg-sweep_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_south",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_north",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/east/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/west/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-east/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_south_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/south-west/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_south_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-east/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_north_east",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/flying-kick/north-west/frame_005.png" ) ],
+"loop": false,
+"name": "flying-kick_north_west",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/south/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_south",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/north/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_north",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/east/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_east",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/west/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_west",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-east/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_south_east",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/south-west/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_south_west",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-east/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-east/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-east/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-east/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-east/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-east/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_north_east",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-west/frame_000.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-west/frame_001.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-west/frame_002.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-west/frame_003.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-west/frame_004.png" ), ExtResource( "res://sprites/yellow_ghost/animations/fireball/north-west/frame_005.png" ) ],
+"loop": false,
+"name": "fireball_north_west",
+"speed": 10.0
+}
+ ]

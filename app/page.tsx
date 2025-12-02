@@ -1,8 +1,18 @@
 "use client";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useCosmicSound } from "./hooks/useCosmicSound";
+
+// Add more videos to this array as needed
+const AD_VIDEOS = [
+  "/Fox_Fights_Alien_Wins_Video.mp4",
+  "/can_you_make_these_character.mp4",
+  "/Fox_and_Alien_Battle_Video.mp4",
+  "/Tank_Battle_Video_Generation.mp4",
+  "/Tank_Battle_Video_Generation_2.mp4",
+  "/Pixel_Tank_Alien_Invasion_Game.mp4",
+];
 import { useAccount } from "wagmi";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -24,6 +34,11 @@ export default function MothershipPage() {
   const [showUnauthorized, setShowUnauthorized] = useState(false);
   const router = useRouter();
 
+  // Video ad state
+  const [showVideo, setShowVideo] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<string>("");
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
   // Admin wallet check
   const ADMIN_WALLETS = ["0xb374735cbe89a552421ddb4aad80380ae40f67a7"];
   const isAdmin = address && ADMIN_WALLETS.includes(address.toLowerCase());
@@ -31,6 +46,37 @@ export default function MothershipPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Show video popup on page load with rotation
+  useEffect(() => {
+    const lastPlayed = localStorage.getItem("lastVideoAdGumbuo");
+    let availableVideos = AD_VIDEOS;
+    if (lastPlayed && AD_VIDEOS.length > 1) {
+      availableVideos = AD_VIDEOS.filter(v => v !== lastPlayed);
+    }
+    const randomIndex = Math.floor(Math.random() * availableVideos.length);
+    const selected = availableVideos[randomIndex];
+    localStorage.setItem("lastVideoAdGumbuo", selected);
+    setSelectedVideo(selected);
+    setShowVideo(true);
+  }, []);
+
+  // Handle video autoplay with unmute
+  useEffect(() => {
+    if (showVideo && videoRef.current) {
+      const video = videoRef.current;
+      video.muted = true;
+      video.play().then(() => {
+        video.muted = false;
+      }).catch(() => {
+        video.muted = true;
+      });
+    }
+  }, [showVideo]);
+
+  const closeVideo = () => {
+    setShowVideo(false);
+  };
 
   // Record referral when wallet connects
   useEffect(() => {
@@ -79,6 +125,77 @@ export default function MothershipPage() {
 
   return (
     <>
+      {/* Video Popup Modal */}
+      {showVideo && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'blur(4px)',
+        }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: '900px', margin: '0 16px' }}>
+            {/* Close Button */}
+            <button
+              onClick={closeVideo}
+              style={{
+                position: 'absolute',
+                top: '-40px',
+                right: '0',
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                fontSize: '32px',
+                cursor: 'pointer',
+                zIndex: 10,
+              }}
+            >
+              ×
+            </button>
+            {/* Video Container */}
+            <div style={{
+              borderRadius: '12px',
+              overflow: 'hidden',
+              boxShadow: '0 0 40px rgba(102, 252, 241, 0.5)',
+              border: '4px solid #66fcf1',
+            }}>
+              <video
+                ref={videoRef}
+                autoPlay
+                controls
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+                onEnded={closeVideo}
+              >
+                {selectedVideo && <source src={selectedVideo} type="video/mp4" />}
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            {/* Play Button */}
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <button
+                onClick={() => videoRef.current?.play()}
+                style={{
+                  padding: '12px 32px',
+                  background: 'linear-gradient(135deg, #66fcf1, #45a29e)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  color: '#000',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                }}
+              >
+                ▶ Play Video
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{
         width: '100%',
         minHeight: '100vh',

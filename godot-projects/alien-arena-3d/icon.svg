@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#1a1a2e"/>
+  <circle cx="64" cy="50" r="30" fill="#00ff66" opacity="0.8"/>
+  <ellipse cx="52" cy="45" rx="8" ry="10" fill="#000"/>
+  <ellipse cx="76" cy="45" rx="8" ry="10" fill="#000"/>
+  <circle cx="52" cy="45" r="4" fill="#fff"/>
+  <circle cx="76" cy="45" r="4" fill="#fff"/>
+  <path d="M50 65 Q64 75 78 65" stroke="#000" stroke-width="3" fill="none"/>
+  <text x="64" y="105" font-family="sans-serif" font-size="14" font-weight="bold" fill="#00ffff" text-anchor="middle">ARENA 3D</text>
+</svg>

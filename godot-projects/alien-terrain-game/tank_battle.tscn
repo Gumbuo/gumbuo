@@ -1,0 +1,137 @@
+[gd_scene load_steps=7 format=3 uid="uid://b8ofb1ma5xrc7"]
+
+[ext_resource type="PackedScene" uid="uid://din7w5pmc3u16" path="res://terrain_painter.tscn" id="1_terrain"]
+[ext_resource type="PackedScene" uid="uid://dspidertank001" path="res://characters/spider-tank-vehicle/spider_tank.tscn" id="2_tank"]
+[ext_resource type="PackedScene" uid="uid://dspidertankp2" path="res://characters/spider-tank-vehicle/spider_tank_p2.tscn" id="3_p2tank"]
+[ext_resource type="PackedScene" uid="uid://daitank001" path="res://characters/spider-tank-vehicle/ai_tank.tscn" id="4_aitank"]
+[ext_resource type="PackedScene" uid="uid://dwalls001" path="res://walls.tscn" id="5_walls"]
+
+[sub_resource type="GDScript" id="GDScript_main"]
+script/source = "extends Node2D
+
+# Tank Battle Game Controller
+var p1_score: int = 0
+var p2_score: int = 0
+var ai_kills: int = 0
+
+@onready var p1_health_label = $UI/P1HealthLabel
+@onready var p2_health_label = $UI/P2HealthLabel
+@onready var score_label = $UI/ScoreLabel
+
+func _ready():
+	print(\"=== TANK BATTLE ===\")
+	print(\"Player 1: WASD + Mouse to shoot\")
+	print(\"Player 2: Arrow Keys + Enter to shoot\")
+	print(\"ESC - Restart\")
+
+	# Connect health signals
+	var p1 = $SpiderTank
+	var p2 = $SpiderTankP2
+
+	if p1:
+		p1.health_changed.connect(_on_p1_health_changed)
+		p1.died.connect(_on_p1_died)
+	if p2:
+		p2.health_changed.connect(_on_p2_health_changed)
+		p2.died.connect(_on_p2_died)
+
+func _process(_delta):
+	update_ui()
+
+func update_ui():
+	var p1 = get_node_or_null(\"SpiderTank\")
+	var p2 = get_node_or_null(\"SpiderTankP2\")
+
+	if p1_health_label:
+		if p1:
+			p1_health_label.text = \"P1 Health: \" + str(p1.health)
+		else:
+			p1_health_label.text = \"P1: DESTROYED\"
+
+	if p2_health_label:
+		if p2:
+			p2_health_label.text = \"P2 Health: \" + str(p2.health)
+		else:
+			p2_health_label.text = \"P2: DESTROYED\"
+
+	if score_label:
+		var enemies = get_tree().get_nodes_in_group(\"enemy\").size()
+		score_label.text = \"Enemies: \" + str(enemies) + \" | Kills: \" + str(ai_kills)
+
+func _on_p1_health_changed(new_health):
+	print(\"P1 Health: \", new_health)
+
+func _on_p2_health_changed(new_health):
+	print(\"P2 Health: \", new_health)
+
+func _on_p1_died():
+	p2_score += 1
+	print(\"Player 2 scores! Total: \", p2_score)
+
+func _on_p2_died():
+	p1_score += 1
+	print(\"Player 1 scores! Total: \", p1_score)
+
+func _input(event):
+	if event.is_action_pressed(\"ui_cancel\"):
+		get_tree().reload_current_scene()
+"
+
+[node name="TankBattle" type="Node2D"]
+script = SubResource("GDScript_main")
+
+[node name="TerrainPainter" parent="." instance=ExtResource("1_terrain")]
+
+[node name="Walls" parent="." instance=ExtResource("5_walls")]
+
+[node name="SpiderTank" parent="." instance=ExtResource("2_tank")]
+position = Vector2(300, 400)
+
+[node name="Camera2D" type="Camera2D" parent="SpiderTank"]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="SpiderTankP2" parent="." instance=ExtResource("3_p2tank")]
+position = Vector2(800, 400)
+
+[node name="AITank1" parent="." instance=ExtResource("4_aitank")]
+position = Vector2(600, 200)
+
+[node name="AITank2" parent="." instance=ExtResource("4_aitank")]
+position = Vector2(500, 600)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 500.0
+offset_bottom = 180.0
+text = "=== TANK BATTLE ===
+P1 (Green): WASD + Left Click
+P2 (Red): Arrow Keys + Enter
+ESC - Restart
+
+Destroy enemy tanks (Purple)!"
+
+[node name="P1HealthLabel" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 660.0
+offset_right = 200.0
+offset_bottom = 690.0
+text = "P1 Health: 100"
+
+[node name="P2HealthLabel" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 690.0
+offset_right = 200.0
+offset_bottom = 720.0
+text = "P2 Health: 100"
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+offset_left = 1080.0
+offset_top = 20.0
+offset_right = 1260.0
+offset_bottom = 50.0
+text = "Enemies: 2 | Kills: 0"
