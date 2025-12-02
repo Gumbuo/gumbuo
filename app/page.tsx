@@ -12,6 +12,7 @@ const AD_VIDEOS = [
   "/Tank_Battle_Video_Generation.mp4",
   "/Tank_Battle_Video_Generation_2.mp4",
   "/Pixel_Tank_Alien_Invasion_Game.mp4",
+  "/Pixel_Alien_Invasion_Game_Trailer.mp4",
 ];
 import { useAccount } from "wagmi";
 import { useSearchParams, useRouter } from "next/navigation";
