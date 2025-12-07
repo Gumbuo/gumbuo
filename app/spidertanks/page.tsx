@@ -11,10 +11,6 @@ export default function SpiderTanksPage() {
     seconds: 0
   });
 
-  useEffect(() => {
-    // Show video popup after page loads
-    setShowVideo(true);
-  }, []);
 
   // Countdown timer to December 8th, 2025
   useEffect(() => {
