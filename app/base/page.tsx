@@ -271,12 +271,12 @@ export default function BasePage() {
   };
 
   const games = {
-    fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters /> },
+    fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters />, hidden: true },
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
     arcade: { title: "Free Arcade", component: <ArcadeGames /> },
-    oldGames: { title: "Old Games", isCategory: true },
+    oldGames: { title: "Old Games", isCategory: true, hidden: true },
   };
 
   return (
@@ -297,7 +297,7 @@ export default function BasePage() {
           justifyContent: 'center',
           flexWrap: 'wrap'
         }}>
-          {Object.entries(games).map(([key, game]) => (
+          {Object.entries(games).filter(([, game]) => !('hidden' in game && game.hidden)).map(([key, game]) => (
             <button
               key={key}
               onClick={() => setSelectedGame(key)}
