@@ -11,3 +11,6 @@ test/
 # Local env files
 .env.local
 .env.*.local
+
+# Godot projects (too large for deployment)
+godot-projects/
