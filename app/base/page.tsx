@@ -12,6 +12,7 @@ const Home = dynamic(() => import("@lib/Home"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
 const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: false });
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
+const ArcadeGames = dynamic(() => import("./components/ArcadeGames"), { ssr: false });
 
 export default function BasePage() {
   const searchParams = useSearchParams();
@@ -274,6 +275,7 @@ export default function BasePage() {
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
+    arcade: { title: "Free Arcade", component: <ArcadeGames /> },
     oldGames: { title: "Old Games", isCategory: true },
   };
 
