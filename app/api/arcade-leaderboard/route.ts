@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     } else {
       // Scan for all arcade activity keys
       const keys: string[] = [];
-      let cursor = 0;
+      let cursor: string | number = 0;
 
       do {
         const result = await redis.scan(cursor, {
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
         });
         cursor = result[0];
         keys.push(...result[1]);
-      } while (cursor !== 0);
+      } while (cursor !== 0 && cursor !== "0");
 
       // Fetch all activities
       entries = [];
