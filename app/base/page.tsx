@@ -10,9 +10,9 @@ import { useCosmicSound } from "../hooks/useCosmicSound";
 
 const Home = dynamic(() => import("@lib/Home"), { ssr: false });
 const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
-const ChessWrapper = dynamic(() => import("./components/ChessWrapper"), { ssr: false });
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 const ArcadeGames = dynamic(() => import("./components/ArcadeGames"), { ssr: false });
+const AlienArmory = dynamic(() => import("./components/AlienArmory"), { ssr: false });
 
 export default function BasePage() {
   const searchParams = useSearchParams();
@@ -266,7 +266,6 @@ export default function BasePage() {
   const oldGames = {
     arena: { title: "AP Arena", component: <Home chainType="base" hideConnectButton={true} /> },
     boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
-    chess: { title: "PvP Chess", component: <ChessWrapper /> },
     maze: { title: "Maze Game", src: "/maze" },
   };
 
@@ -275,6 +274,7 @@ export default function BasePage() {
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
+    armory: { title: "Alien Armory", component: <AlienArmory /> },
     arcade: { title: "Free Arcade", component: <ArcadeGames /> },
     oldGames: { title: "Old Games", isCategory: true, hidden: true },
   };
