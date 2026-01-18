@@ -4,8 +4,6 @@ import dynamic from "next/dynamic";
 import { useRightDrawer } from "../context/RightDrawerContext";
 import "./RightDrawer.css";
 
-const GlobalMusicPlayer = dynamic(() => import("./GlobalMusicPlayer"), { ssr: false });
-const GlobalChat = dynamic(() => import("./GlobalChat"), { ssr: false });
 const GlobalWalletHUD = dynamic(() => import("./GlobalWalletHUD"), { ssr: false });
 
 export default function RightDrawer() {
@@ -29,11 +27,6 @@ export default function RightDrawer() {
           {/* Wallet Connect & HUD */}
           <div className="drawer-section drawer-section-hud">
             <GlobalWalletHUD />
-          </div>
-
-          {/* Chat */}
-          <div className="drawer-section drawer-section-chat">
-            <GlobalChat />
           </div>
         </div>
       </div>
