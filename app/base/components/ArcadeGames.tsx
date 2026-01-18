@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useAccount } from "wagmi";
-import ArcadeLeaderboard from "./ArcadeLeaderboard";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 interface FreeGame {
   id: number;
@@ -17,57 +15,58 @@ interface FreeGame {
   release_date: string;
 }
 
-interface ArcadeStats {
-  gamesPlayedToday: number;
-  timeSpentToday: number;
-  apEarnedToday: number;
-  totalGamesPlayed: number;
-  totalAPEarned: number;
-  varietyProgress: number;
-  varietyThreshold: number;
-  varietyBonusClaimed: boolean;
-  canClaimVariety: boolean;
-  timeAPEarned: number;
-  timeAPRemaining: number;
-  timeCap: number;
-}
-
 const CATEGORIES = [
-  { value: "", label: "All Games" },
+  { value: "", label: "All Genres" },
   { value: "shooter", label: "Shooter" },
   { value: "mmorpg", label: "MMORPG" },
   { value: "strategy", label: "Strategy" },
   { value: "moba", label: "MOBA" },
   { value: "racing", label: "Racing" },
   { value: "sports", label: "Sports" },
+  { value: "social", label: "Social" },
   { value: "battle-royale", label: "Battle Royale" },
   { value: "card", label: "Card Games" },
   { value: "fantasy", label: "Fantasy" },
   { value: "sci-fi", label: "Sci-Fi" },
   { value: "action", label: "Action" },
+  { value: "action-rpg", label: "Action RPG" },
   { value: "fighting", label: "Fighting" },
   { value: "horror", label: "Horror" },
   { value: "anime", label: "Anime" },
 ];
 
-type ArcadeTab = "games" | "leaderboard";
+const PLATFORMS = [
+  { value: "all", label: "All Platforms" },
+  { value: "browser", label: "Browser" },
+  { value: "pc", label: "PC Download" },
+];
+
+const SORT_OPTIONS = [
+  { value: "popularity", label: "Most Popular" },
+  { value: "release-date", label: "Newest" },
+  { value: "alphabetical", label: "A-Z" },
+  { value: "relevance", label: "Relevance" },
+];
 
 export default function ArcadeGames() {
-  const { address, isConnected } = useAccount();
   const [games, setGames] = useState<FreeGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("");
-  const [stats, setStats] = useState<ArcadeStats | null>(null);
-  const [notification, setNotification] = useState<string | null>(null);
-  const [cooldowns, setCooldowns] = useState<{ [gameId: number]: number }>({});
-  const [activeTab, setActiveTab] = useState<ArcadeTab>("games");
-  const timeTrackerRef = useRef<NodeJS.Timeout | null>(null);
+  const [platform, setPlatform] = useState("all");
+  const [sortBy, setSortBy] = useState("popularity");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch games
   const fetchGames = useCallback(async () => {
     setLoading(true);
     try {
-      const url = `/api/games?platform=browser${category ? `&category=${category}` : ""}&limit=50`;
+      const params = new URLSearchParams();
+      if (platform !== "all") params.append("platform", platform);
+      if (category) params.append("category", category);
+      if (sortBy) params.append("sort-by", sortBy);
+      params.append("limit", "150");
+
+      const url = `/api/games?${params.toString()}`;
       const response = await fetch(url);
       const data = await response.json();
       if (data.success) {
@@ -77,122 +76,30 @@ export default function ArcadeGames() {
       console.error("Failed to fetch games:", error);
     }
     setLoading(false);
-  }, [category]);
+  }, [category, platform, sortBy]);
 
-  // Fetch stats
-  const fetchStats = useCallback(async () => {
-    if (!address) return;
-    try {
-      const response = await fetch(`/api/game-activity?wallet=${address}`);
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.activity);
-      }
-    } catch (error) {
-      console.error("Failed to fetch stats:", error);
-    }
-  }, [address]);
+  // Filter games by search query
+  const filteredGames = useMemo(() => {
+    if (!searchQuery.trim()) return games;
+    const query = searchQuery.toLowerCase();
+    return games.filter(
+      (game) =>
+        game.title.toLowerCase().includes(query) ||
+        game.short_description.toLowerCase().includes(query) ||
+        game.genre.toLowerCase().includes(query) ||
+        game.publisher.toLowerCase().includes(query)
+    );
+  }, [games, searchQuery]);
 
-  // Track time spent on arcade
-  const trackTime = useCallback(async () => {
-    if (!address) return;
-    try {
-      const response = await fetch("/api/game-activity", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wallet: address }),
-      });
-      const data = await response.json();
-      if (data.success && data.apAwarded > 0) {
-        showNotification(`+${data.apAwarded} AP (Time Bonus)`);
-        fetchStats();
-      }
-    } catch (error) {
-      console.error("Failed to track time:", error);
-    }
-  }, [address, fetchStats]);
-
-  // Play game and track activity
-  const playGame = async (game: FreeGame) => {
-    if (!isConnected || !address) {
-      showNotification("Connect your wallet to earn AP!");
-      window.open(game.game_url, "_blank");
-      return;
-    }
-
-    // Check client-side cooldown
-    const cooldownEnd = cooldowns[game.id];
-    if (cooldownEnd && Date.now() < cooldownEnd) {
-      const remaining = Math.ceil((cooldownEnd - Date.now()) / 1000);
-      showNotification(`Cooldown: ${remaining}s remaining`);
-      window.open(game.game_url, "_blank");
-      return;
-    }
-
-    // Log activity and open game
-    try {
-      const response = await fetch("/api/game-activity", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          wallet: address,
-          gameId: game.id,
-          gameTitle: game.title,
-        }),
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        if (data.onCooldown) {
-          showNotification(`Cooldown: ${data.cooldownRemaining}s`);
-        } else if (data.apAwarded > 0) {
-          let msg = `+${data.apAwarded} AP`;
-          if (data.varietyBonusAwarded) {
-            msg += " (includes 500 AP Variety Bonus!)";
-          }
-          showNotification(msg);
-
-          // Set client-side cooldown
-          setCooldowns((prev) => ({
-            ...prev,
-            [game.id]: Date.now() + 5 * 60 * 1000,
-          }));
-        }
-        fetchStats();
-      }
-    } catch (error) {
-      console.error("Failed to log activity:", error);
-    }
-
+  // Play game
+  const playGame = (game: FreeGame) => {
     window.open(game.game_url, "_blank");
-  };
-
-  // Show notification
-  const showNotification = (msg: string) => {
-    setNotification(msg);
-    setTimeout(() => setNotification(null), 3000);
   };
 
   // Initial load
   useEffect(() => {
     fetchGames();
   }, [fetchGames]);
-
-  useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
-
-  // Time tracking interval
-  useEffect(() => {
-    if (isConnected && address) {
-      timeTrackerRef.current = setInterval(trackTime, 60000); // Every minute
-    }
-    return () => {
-      if (timeTrackerRef.current) {
-        clearInterval(timeTrackerRef.current);
-      }
-    };
-  }, [isConnected, address, trackTime]);
 
   return (
     <div
@@ -205,197 +112,125 @@ export default function ArcadeGames() {
         color: "#66fcf1",
       }}
     >
-      {/* Notification */}
-      {notification && (
-        <div
-          style={{
-            position: "fixed",
-            top: "80px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "linear-gradient(135deg, #66fcf1, #45a29e)",
-            color: "#000",
-            padding: "15px 30px",
-            borderRadius: "8px",
-            fontWeight: "bold",
-            fontSize: "16px",
-            zIndex: 1000,
-            boxShadow: "0 0 30px rgba(102, 252, 241, 0.8)",
-            animation: "pulse 0.5s ease-in-out",
-          }}
-        >
-          {notification}
-        </div>
-      )}
-
-      {/* Tab Navigation */}
+      {/* Search & Filters */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "10px",
+          background: "rgba(31, 40, 51, 0.9)",
+          border: "2px solid #45a29e",
+          borderRadius: "12px",
+          padding: "20px",
           marginBottom: "20px",
         }}
       >
-        <button
-          onClick={() => setActiveTab("games")}
-          style={{
-            padding: "12px 30px",
-            background: activeTab === "games"
-              ? "linear-gradient(135deg, #66fcf1, #45a29e)"
-              : "rgba(102, 252, 241, 0.1)",
-            color: activeTab === "games" ? "#000" : "#66fcf1",
-            border: `2px solid ${activeTab === "games" ? "#66fcf1" : "#45a29e55"}`,
-            borderRadius: "8px",
-            fontSize: "14px",
-            fontFamily: "Orbitron, sans-serif",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-          }}
-        >
-          🎮 GAMES
-        </button>
-        <button
-          onClick={() => setActiveTab("leaderboard")}
-          style={{
-            padding: "12px 30px",
-            background: activeTab === "leaderboard"
-              ? "linear-gradient(135deg, #66fcf1, #45a29e)"
-              : "rgba(102, 252, 241, 0.1)",
-            color: activeTab === "leaderboard" ? "#000" : "#66fcf1",
-            border: `2px solid ${activeTab === "leaderboard" ? "#66fcf1" : "#45a29e55"}`,
-            borderRadius: "8px",
-            fontSize: "14px",
-            fontFamily: "Orbitron, sans-serif",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-          }}
-        >
-          🏆 LEADERBOARD
-        </button>
-      </div>
-
-      {/* Stats Panel */}
-      {isConnected && stats && activeTab === "games" && (
-        <div
-          style={{
-            background: "rgba(31, 40, 51, 0.9)",
-            border: "2px solid #45a29e",
-            borderRadius: "12px",
-            padding: "20px",
-            marginBottom: "20px",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "15px",
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>TODAY'S AP</div>
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              {stats.apEarnedToday}
-            </div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>GAMES TODAY</div>
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              {stats.gamesPlayedToday}
-            </div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>
-              VARIETY BONUS ({stats.varietyProgress}/{stats.varietyThreshold})
-            </div>
-            <div
-              style={{
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: stats.varietyBonusClaimed ? "#45a29e" : "#66fcf1",
-              }}
-            >
-              {stats.varietyBonusClaimed ? "CLAIMED" : `${stats.varietyProgress >= stats.varietyThreshold ? "500 AP" : "Play more!"}`}
-            </div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>
-              TIME BONUS ({stats.timeAPEarned}/{stats.timeCap} AP)
-            </div>
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              {stats.timeAPRemaining > 0
-                ? `${stats.timeAPRemaining} AP left`
-                : "MAXED"}
-            </div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>LIFETIME AP</div>
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              {stats.totalAPEarned}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Leaderboard Tab Content */}
-      {activeTab === "leaderboard" && (
-        <ArcadeLeaderboard mini={false} limit={50} showViewAll={false} />
-      )}
-
-      {/* Games Tab Content */}
-      {activeTab === "games" && (
-        <>
-          {/* Not Connected Warning */}
-          {!isConnected && (
-            <div
-              style={{
-                background: "rgba(255, 100, 100, 0.2)",
-                border: "2px solid #ff6464",
-                borderRadius: "8px",
-                padding: "15px 20px",
-                marginBottom: "20px",
-                textAlign: "center",
-                color: "#ff6464",
-              }}
-            >
-              Connect your wallet to earn Alien Points while playing!
-            </div>
-          )}
-
-          {/* Filters */}
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-          marginBottom: "20px",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ fontSize: "14px" }}>Category:</span>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+        {/* Search Bar */}
+        <div style={{ marginBottom: "15px" }}>
+          <input
+            type="text"
+            placeholder="Search games by title, genre, or publisher..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             style={{
-              background: "#1f2833",
+              width: "100%",
+              background: "#0b0c10",
               color: "#66fcf1",
               border: "2px solid #45a29e",
-              borderRadius: "6px",
-              padding: "8px 12px",
+              borderRadius: "8px",
+              padding: "12px 16px",
               fontFamily: "Orbitron, sans-serif",
-              fontSize: "12px",
-              cursor: "pointer",
+              fontSize: "14px",
+              outline: "none",
             }}
-          >
-            {CATEGORIES.map((cat) => (
-              <option key={cat.value} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div style={{ fontSize: "14px", opacity: 0.7 }}>
-          {games.length} games available
+          />
+        </div>
+
+        {/* Filter Row */}
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          {/* Platform Filter */}
+          <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "12px", opacity: 0.7 }}>Platform:</span>
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+              style={{
+                background: "#0b0c10",
+                color: "#66fcf1",
+                border: "2px solid #45a29e",
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontFamily: "Orbitron, sans-serif",
+                fontSize: "12px",
+                cursor: "pointer",
+              }}
+            >
+              {PLATFORMS.map((plat) => (
+                <option key={plat.value} value={plat.value}>
+                  {plat.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Genre Filter */}
+          <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "12px", opacity: 0.7 }}>Genre:</span>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              style={{
+                background: "#0b0c10",
+                color: "#66fcf1",
+                border: "2px solid #45a29e",
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontFamily: "Orbitron, sans-serif",
+                fontSize: "12px",
+                cursor: "pointer",
+              }}
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Sort By */}
+          <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "12px", opacity: 0.7 }}>Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
+                background: "#0b0c10",
+                color: "#66fcf1",
+                border: "2px solid #45a29e",
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontFamily: "Orbitron, sans-serif",
+                fontSize: "12px",
+                cursor: "pointer",
+              }}
+            >
+              {SORT_OPTIONS.map((sort) => (
+                <option key={sort.value} value={sort.value}>
+                  {sort.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Game Count */}
+          <div style={{ marginLeft: "auto", fontSize: "13px", opacity: 0.7 }}>
+            {filteredGames.length} of {games.length} games
+          </div>
         </div>
       </div>
 
@@ -403,6 +238,13 @@ export default function ArcadeGames() {
       {loading ? (
         <div style={{ textAlign: "center", padding: "50px" }}>
           <div style={{ fontSize: "18px" }}>Loading games...</div>
+        </div>
+      ) : filteredGames.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "50px" }}>
+          <div style={{ fontSize: "18px", marginBottom: "10px" }}>No games found</div>
+          <div style={{ fontSize: "14px", opacity: 0.7 }}>
+            Try adjusting your search or filters
+          </div>
         </div>
       ) : (
         <div
@@ -412,174 +254,122 @@ export default function ArcadeGames() {
             gap: "20px",
           }}
         >
-          {games.map((game) => {
-            const onCooldown =
-              cooldowns[game.id] && Date.now() < cooldowns[game.id];
-            return (
-              <div
-                key={game.id}
-                onClick={() => playGame(game)}
+          {filteredGames.map((game) => (
+            <div
+              key={game.id}
+              onClick={() => playGame(game)}
+              style={{
+                background: "rgba(31, 40, 51, 0.95)",
+                border: "2px solid #45a29e",
+                borderRadius: "12px",
+                overflow: "hidden",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-5px)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 30px rgba(102, 252, 241, 0.3)";
+                e.currentTarget.style.borderColor = "#66fcf1";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "#45a29e";
+              }}
+            >
+              <img
+                src={game.thumbnail}
+                alt={game.title}
                 style={{
-                  background: "rgba(31, 40, 51, 0.95)",
-                  border: "2px solid #45a29e",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  opacity: onCooldown ? 0.6 : 1,
+                  width: "100%",
+                  height: "150px",
+                  objectFit: "cover",
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 10px 30px rgba(102, 252, 241, 0.3)";
-                  e.currentTarget.style.borderColor = "#66fcf1";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.borderColor = "#45a29e";
-                }}
-              >
-                <img
-                  src={game.thumbnail}
-                  alt={game.title}
+              />
+              <div style={{ padding: "15px" }}>
+                <div
                   style={{
-                    width: "100%",
-                    height: "150px",
-                    objectFit: "cover",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    marginBottom: "8px",
                   }}
-                />
-                <div style={{ padding: "15px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <h3
-                      style={{
-                        margin: 0,
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        color: "#66fcf1",
-                        flex: 1,
-                      }}
-                    >
-                      {game.title}
-                    </h3>
-                    <span
-                      style={{
-                        background: "#45a29e",
-                        color: "#000",
-                        padding: "2px 8px",
-                        borderRadius: "4px",
-                        fontSize: "10px",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        flexShrink: 0,
-                        marginLeft: "8px",
-                      }}
-                    >
-                      {game.genre}
-                    </span>
-                  </div>
-                  <p
+                >
+                  <h3
                     style={{
                       margin: 0,
-                      fontSize: "11px",
-                      color: "#c5c6c7",
-                      lineHeight: "1.4",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      color: "#66fcf1",
+                      flex: 1,
                     }}
                   >
-                    {game.short_description}
-                  </p>
-                  <div
+                    {game.title}
+                  </h3>
+                  <span
                     style={{
-                      marginTop: "12px",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                      background: "#45a29e",
+                      color: "#000",
+                      padding: "2px 8px",
+                      borderRadius: "4px",
+                      fontSize: "10px",
+                      fontWeight: "bold",
+                      textTransform: "uppercase",
+                      flexShrink: 0,
+                      marginLeft: "8px",
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: "10px",
-                        opacity: 0.6,
-                      }}
-                    >
-                      {game.publisher}
-                    </span>
-                    <span
-                      style={{
-                        background: onCooldown
-                          ? "#666"
-                          : "linear-gradient(135deg, #66fcf1, #45a29e)",
-                        color: "#000",
-                        padding: "6px 12px",
-                        borderRadius: "6px",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {onCooldown ? "COOLDOWN" : "+100 AP"}
-                    </span>
-                  </div>
+                    {game.genre}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "11px",
+                    color: "#c5c6c7",
+                    lineHeight: "1.4",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {game.short_description}
+                </p>
+                <div
+                  style={{
+                    marginTop: "12px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      opacity: 0.6,
+                    }}
+                  >
+                    {game.publisher}
+                  </span>
+                  <span
+                    style={{
+                      background: "linear-gradient(135deg, #66fcf1, #45a29e)",
+                      color: "#000",
+                      padding: "6px 12px",
+                      borderRadius: "6px",
+                      fontSize: "11px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    PLAY FREE
+                  </span>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
-      )}
-
-      {/* Rewards Info */}
-      <div
-        style={{
-          marginTop: "30px",
-          padding: "20px",
-          background: "rgba(31, 40, 51, 0.8)",
-          border: "2px solid #45a29e",
-          borderRadius: "12px",
-        }}
-      >
-        <h3
-          style={{
-            margin: "0 0 15px 0",
-            fontSize: "16px",
-            color: "#66fcf1",
-          }}
-        >
-          HOW TO EARN ALIEN POINTS
-        </h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "15px",
-            fontSize: "12px",
-            color: "#c5c6c7",
-          }}
-        >
-          <div>
-            <strong style={{ color: "#66fcf1" }}>PLAY GAMES:</strong> +100 AP per
-            game (5 min cooldown)
-          </div>
-          <div>
-            <strong style={{ color: "#66fcf1" }}>TIME BONUS:</strong> +20 AP per
-            minute on this page (max 200/day)
-          </div>
-          <div>
-            <strong style={{ color: "#66fcf1" }}>VARIETY BONUS:</strong> +500 AP
-            for playing 5+ unique games daily
-          </div>
-        </div>
-      </div>
-        </>
       )}
     </div>
   );
