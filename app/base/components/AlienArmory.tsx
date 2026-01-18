@@ -537,8 +537,12 @@ export default function AlienArmory() {
                 alignItems: "center",
                 marginBottom: "12px",
               }}>
-                <div>
-                  <span style={{ fontSize: "24px", marginRight: "8px" }}>{station.icon}</span>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {station.icon.startsWith('/') ? (
+                    <img src={station.icon} alt={station.name} style={{ width: "48px", height: "48px", marginRight: "8px", imageRendering: "pixelated" }} />
+                  ) : (
+                    <span style={{ fontSize: "24px", marginRight: "8px" }}>{station.icon}</span>
+                  )}
                   <span style={{ color: isLocked ? THEME.colors.locked : THEME.colors.primary, fontWeight: "bold" }}>
                     {station.name}
                   </span>
@@ -881,7 +885,11 @@ export default function AlienArmory() {
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
                         <div>
-                          <span style={{ fontSize: "24px" }}>{item.icon}</span>
+                          {item.icon.startsWith('/') ? (
+                            <img src={item.icon} alt={item.name} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
+                          ) : (
+                            <span style={{ fontSize: "24px" }}>{item.icon}</span>
+                          )}
                           <div style={{ color: THEME.colors.textBright, fontWeight: "bold", marginTop: "4px" }}>
                             {item.name}
                           </div>
@@ -962,8 +970,13 @@ export default function AlienArmory() {
               alignItems: "center",
               marginBottom: "20px",
             }}>
-              <h2 style={{ color: THEME.colors.primary, margin: 0 }}>
-                {STATIONS[selectedStation].icon} {STATIONS[selectedStation].name} RECIPES
+              <h2 style={{ color: THEME.colors.primary, margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                {STATIONS[selectedStation].icon.startsWith('/') ? (
+                  <img src={STATIONS[selectedStation].icon} alt={STATIONS[selectedStation].name} style={{ width: "32px", height: "32px", imageRendering: "pixelated" }} />
+                ) : (
+                  <span>{STATIONS[selectedStation].icon}</span>
+                )}
+                {STATIONS[selectedStation].name} RECIPES
               </h2>
               <button
                 onClick={() => setActiveModal("none")}
