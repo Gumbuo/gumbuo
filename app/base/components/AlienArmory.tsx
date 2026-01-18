@@ -478,7 +478,7 @@ export default function AlienArmory() {
               padding: "8px",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: "20px" }}>{MATERIAL_ICONS[key]}</div>
+              <img src={MATERIAL_ICONS[key]} alt={MATERIAL_NAMES[key]} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
               <div style={{ fontSize: "11px", color: THEME.colors.text }}>{MATERIAL_NAMES[key]}</div>
               <div style={{ color: THEME.colors.primary, fontWeight: "bold" }}>
                 {saveState.resources[key]}
@@ -493,7 +493,7 @@ export default function AlienArmory() {
               padding: "8px",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: "20px" }}>{PROCESSED_ICONS[key]}</div>
+              <img src={PROCESSED_ICONS[key]} alt={PROCESSED_NAMES[key]} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
               <div style={{ fontSize: "11px", color: THEME.colors.text }}>{PROCESSED_NAMES[key]}</div>
               <div style={{ color: THEME.colors.primary, fontWeight: "bold" }}>
                 {saveState.resources[key as keyof typeof saveState.resources] || 0}
@@ -766,7 +766,7 @@ export default function AlienArmory() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <span style={{ fontSize: "24px" }}>{MATERIAL_ICONS[resourceId]}</span>
+                  <img src={MATERIAL_ICONS[resourceId]} alt={MATERIAL_NAMES[resourceId]} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
                   <div>
                     <div style={{ color: THEME.colors.textBright }}>{MATERIAL_NAMES[resourceId]}</div>
                     <div style={{ color: THEME.colors.secondary, fontSize: "12px" }}>

@@ -18,11 +18,11 @@ export const MATERIAL_NAMES: Record<RawResourceKey, string> = {
 };
 
 export const MATERIAL_ICONS: Record<RawResourceKey, string> = {
-  plasmaOre: '🟠',
-  voidCrystal: '💎',
-  bioMetal: '🧫',
-  quantumDust: '✨',
-  nebulaEssence: '🌌',
+  plasmaOre: '/images/armory/materials/plasma-ore.png',
+  voidCrystal: '/images/armory/materials/void-crystal.png',
+  bioMetal: '/images/armory/materials/bio-metal.png',
+  quantumDust: '/images/armory/materials/quantum-dust.png',
+  nebulaEssence: '/images/armory/materials/nebula-essence.png',
 };
 
 export const PROCESSED_NAMES: Record<string, string> = {
@@ -33,10 +33,10 @@ export const PROCESSED_NAMES: Record<string, string> = {
 };
 
 export const PROCESSED_ICONS: Record<string, string> = {
-  refinedPlasma: '⚡',
-  voidShard: '🔮',
-  bioAlloy: '🧬',
-  quantumCore: '⚛️',
+  refinedPlasma: '/images/armory/materials/refined-plasma.png',
+  voidShard: '/images/armory/materials/void-shard.png',
+  bioAlloy: '/images/armory/materials/bio-alloy.png',
+  quantumCore: '/images/armory/materials/quantum-core.png',
 };
 
 // ============== PROGRESSION ==============
