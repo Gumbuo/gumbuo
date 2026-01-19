@@ -17,12 +17,10 @@ const AD_VIDEOS = [
 import { useAccount } from "wagmi";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const AlienLeaderboard = dynamic(() => import("./components/AlienLeaderboard"), { ssr: false });
-const AlienDripStation = dynamic(() => import("./components/AlienDripStation"), { ssr: false });
 const ReferralDrawer = dynamic(() => import("./components/ReferralDrawer"), { ssr: false });
 const GlobalMusicPlayer = dynamic(() => import("./components/GlobalMusicPlayer"), { ssr: false });
 
-type Scene = "portals" | "drip" | "leaderboard" | "buygmb" | "shopify" | "socials" | "support" | "admin";
+type Scene = "portals" | "buygmb" | "socials" | "support" | "admin";
 
 export default function MothershipPage() {
   const [mounted, setMounted] = useState(false);
@@ -258,40 +256,6 @@ export default function MothershipPage() {
             Portals
           </button>
           <button
-            onClick={() => showScene('drip')}
-            style={{
-              background: activeScene === 'drip' ? '#45a29e' : 'linear-gradient(180deg, #333 0%, #111 100%)',
-              border: '1px solid #45a29e',
-              color: activeScene === 'drip' ? '#000' : '#45a29e',
-              padding: '12px 25px',
-              fontSize: '0.8rem',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              borderRadius: '5px',
-              fontFamily: 'Orbitron, sans-serif',
-              fontWeight: 'bold',
-            }}
-          >
-            Alien Drip
-          </button>
-          <button
-            onClick={() => showScene('leaderboard')}
-            style={{
-              background: activeScene === 'leaderboard' ? '#45a29e' : 'linear-gradient(180deg, #333 0%, #111 100%)',
-              border: '1px solid #45a29e',
-              color: activeScene === 'leaderboard' ? '#000' : '#45a29e',
-              padding: '12px 25px',
-              fontSize: '0.8rem',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              borderRadius: '5px',
-              fontFamily: 'Orbitron, sans-serif',
-              fontWeight: 'bold',
-            }}
-          >
-            Leaderboard
-          </button>
-          <button
             onClick={() => showScene('buygmb')}
             style={{
               background: activeScene === 'buygmb' ? '#45a29e' : 'linear-gradient(180deg, #333 0%, #111 100%)',
@@ -307,23 +271,6 @@ export default function MothershipPage() {
             }}
           >
             Buy GMB
-          </button>
-          <button
-            onClick={() => showScene('shopify')}
-            style={{
-              background: activeScene === 'shopify' ? '#45a29e' : 'linear-gradient(180deg, #333 0%, #111 100%)',
-              border: '1px solid #45a29e',
-              color: activeScene === 'shopify' ? '#000' : '#45a29e',
-              padding: '12px 25px',
-              fontSize: '0.8rem',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              borderRadius: '5px',
-              fontFamily: 'Orbitron, sans-serif',
-              fontWeight: 'bold',
-            }}
-          >
-            Alien Gear
           </button>
           <button
             onClick={() => showScene('socials')}
@@ -485,108 +432,6 @@ export default function MothershipPage() {
                   </span>
                 </Link>
 
-                {/* Grey Portal - Alien Drip */}
-                <div
-                  onClick={() => showScene('drip')}
-                  onMouseEnter={() => playSound('hover')}
-                  style={{
-                    background: 'rgba(11, 12, 16, 0.7)',
-                    border: '2px solid #45a29e',
-                    borderRadius: '15px',
-                    padding: '20px',
-                    transition: 'transform 0.3s, background 0.3s',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    backdropFilter: 'blur(5px)',
-                    color: '#e0e0e0'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
-                  }}
-                >
-                  <img src="/greyportal.png" alt="Alien Drip" style={{
-                    width: '100%',
-                    maxWidth: '180px',
-                    height: 'auto',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 30px #e0e0e0',
-                    border: '4px solid rgba(255,255,255,0.1)',
-                    display: 'block',
-                    margin: '0 auto 15px auto'
-                  }} />
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '5px 15px',
-                    background: '#000',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '5px',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
-                    textShadow: '0 0 5px #e0e0e0',
-                    textTransform: 'uppercase'
-                  }}>
-                    Alien Drip
-                  </span>
-                </div>
-
-                {/* Green Portal - Leaderboard */}
-                <div
-                  onClick={() => showScene('leaderboard')}
-                  onMouseEnter={() => playSound('hover')}
-                  style={{
-                    background: 'rgba(11, 12, 16, 0.7)',
-                    border: '2px solid #45a29e',
-                    borderRadius: '15px',
-                    padding: '20px',
-                    transition: 'transform 0.3s, background 0.3s',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    backdropFilter: 'blur(5px)',
-                    color: '#00ff41'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
-                  }}
-                >
-                  <img src="/greenportal.png" alt="Leaderboard" style={{
-                    width: '100%',
-                    maxWidth: '180px',
-                    height: 'auto',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 30px #00ff41',
-                    border: '4px solid rgba(255,255,255,0.1)',
-                    display: 'block',
-                    margin: '0 auto 15px auto'
-                  }} />
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '5px 15px',
-                    background: '#000',
-                    border: '1px solid #00ff41',
-                    borderRadius: '5px',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
-                    textShadow: '0 0 5px #00ff41',
-                    textTransform: 'uppercase'
-                  }}>
-                    Leaderboard
-                  </span>
-                </div>
-
                 {/* Red Portal - Credits */}
                 <Link
                   href="/credits"
@@ -643,40 +488,7 @@ export default function MothershipPage() {
             </div>
           )}
 
-          {/* Scene 2: Drip */}
-          {activeScene === 'drip' && (
-            <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-              <h2 style={{
-                fontSize: '2.5rem',
-                color: '#66fcf1',
-                textAlign: 'center',
-                textTransform: 'uppercase',
-                letterSpacing: '3px',
-                textShadow: '0 0 20px #66fcf1',
-                marginBottom: '20px'
-              }}>
-                Drip Station
-              </h2>
-              <div style={{
-                fontSize: '1rem',
-                color: '#00ff99',
-                textAlign: 'center',
-                marginBottom: '30px'
-              }}>
-                Claim all drips here - free and earned
-              </div>
-              <AlienDripStation />
-            </div>
-          )}
-
-          {/* Scene 3: Leaderboard */}
-          {activeScene === 'leaderboard' && (
-            <div style={{ padding: '20px' }}>
-              <AlienLeaderboard />
-            </div>
-          )}
-
-          {/* Scene 4: Buy GMB */}
+          {/* Scene 2: Buy GMB */}
           {activeScene === 'buygmb' && (
             <div style={{
               display: 'flex',
@@ -732,55 +544,7 @@ export default function MothershipPage() {
             </div>
           )}
 
-          {/* Scene 5: Shopify */}
-          {activeScene === 'shopify' && (
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '400px',
-              padding: '40px'
-            }}>
-              <h2 style={{
-                fontSize: '2.5rem',
-                color: '#66fcf1',
-                textTransform: 'uppercase',
-                letterSpacing: '3px',
-                textShadow: '0 0 20px #66fcf1',
-                marginBottom: '30px'
-              }}>
-                Alien Gear Shop
-              </h2>
-              <div style={{
-                background: 'rgba(0,0,0,0.6)',
-                border: '2px solid #333',
-                borderRadius: '20px',
-                padding: '40px',
-                textAlign: 'center',
-                maxWidth: '500px'
-              }}>
-                <h3 style={{
-                  color: '#ffd700',
-                  fontSize: '2.5rem',
-                  fontWeight: 'bold',
-                  marginBottom: '20px',
-                  textShadow: '0 0 20px #ffd700'
-                }}>
-                  COMING SOON!
-                </h3>
-                <div style={{ fontSize: '1.1rem', color: '#00ff99', lineHeight: '2' }}>
-                  <p style={{ fontWeight: 'bold', marginBottom: '10px' }}>Win Exclusive Alien Gear!</p>
-                  <p>Get Shopify discount codes</p>
-                  <p style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#00ff99', marginTop: '10px' }}>
-                    Pay Shipping & Handling ONLY!
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Scene 6: Socials */}
+          {/* Scene 3: Socials */}
           {activeScene === 'socials' && (
             <div style={{
               display: 'flex',
@@ -858,7 +622,7 @@ export default function MothershipPage() {
             </div>
           )}
 
-          {/* Scene 7: Support */}
+          {/* Scene 4: Support */}
           {activeScene === 'support' && (
             <div style={{
               display: 'flex',
