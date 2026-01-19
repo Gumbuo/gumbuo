@@ -122,10 +122,16 @@ export async function POST(request: NextRequest) {
     const newDamageDealt = { ...currentState.totalDamageDealt };
     newDamageDealt[wallet.toLowerCase()] = (newDamageDealt[wallet.toLowerCase()] || 0) + damage;
 
+    // Limit to top 100 attackers to prevent unbounded growth
+    const sortedAttackers = Object.entries(newDamageDealt)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 100);
+    const limitedDamageDealt = Object.fromEntries(sortedAttackers);
+
     const newState: BossState = {
       ...currentState,
       currentHP: newHP,
-      totalDamageDealt: newDamageDealt,
+      totalDamageDealt: limitedDamageDealt,
       isAlive: newHP > 0,
       defeatedAt: newHP === 0 ? Date.now() : null,
     };
