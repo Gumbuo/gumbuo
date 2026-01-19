@@ -8,8 +8,6 @@ import { useAlienPoints as useAlienPointsEconomy } from "../context/AlienPointsE
 import { useAccount } from "wagmi";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
-const Home = dynamic(() => import("@lib/Home"), { ssr: false });
-const GumbuoBoss = dynamic(() => import("../components/GumbuoBoss"), { ssr: false });
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 const ArcadeGames = dynamic(() => import("./components/ArcadeGames"), { ssr: false });
 const AlienArmory = dynamic(() => import("./components/AlienArmory"), { ssr: false });
@@ -19,7 +17,6 @@ export default function BasePage() {
   const gameParam = searchParams?.get('game');
 
   const [selectedGame, setSelectedGame] = useState(gameParam || "catacombs");
-  const [selectedOldGame, setSelectedOldGame] = useState("arena");
   const alienPointContext = useAlienPoints();
   const { addPoints } = useAlienPointsEconomy();
   const { address } = useAccount();
@@ -263,12 +260,6 @@ export default function BasePage() {
     return () => window.removeEventListener('message', handleMessage);
   }, [alienPointContext, address, addPoints]);
 
-  const oldGames = {
-    arena: { title: "AP Arena", component: <Home chainType="base" hideConnectButton={true} /> },
-    boss: { title: "Gumbuo Boss", component: <GumbuoBoss /> },
-    maze: { title: "Maze Game", src: "/maze" },
-  };
-
   const games = {
     fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters />, hidden: true },
     invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
@@ -276,7 +267,6 @@ export default function BasePage() {
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
     armory: { title: "Alien Armory", component: <AlienArmory /> },
     arcade: { title: "Free Arcade", component: <ArcadeGames /> },
-    oldGames: { title: "Old Games", isCategory: true, hidden: true },
   };
 
   return (
@@ -338,58 +328,6 @@ export default function BasePage() {
           ))}
         </div>
 
-        {/* Old Games Sub-Tabs */}
-        {selectedGame === "oldGames" && (
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            padding: '10px 15px',
-            paddingTop: '0',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            borderTop: '1px solid rgba(102, 252, 241, 0.3)',
-          }}>
-            {Object.entries(oldGames).map(([key, game]) => (
-              <button
-                key={key}
-                onClick={() => setSelectedOldGame(key)}
-                style={{
-                  padding: '8px 16px',
-                  background: selectedOldGame === key
-                    ? 'linear-gradient(135deg, #45a29e, #1f2833)'
-                    : 'rgba(69, 162, 158, 0.1)',
-                  color: selectedOldGame === key ? '#000' : '#45a29e',
-                  border: `2px solid ${selectedOldGame === key ? '#45a29e' : '#45a29e44'}`,
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'Orbitron, sans-serif',
-                  fontWeight: 'bold',
-                  fontSize: '12px',
-                  textTransform: 'uppercase',
-                  transition: 'all 0.3s ease',
-                  boxShadow: selectedOldGame === key
-                    ? '0 0 15px rgba(69, 162, 158, 0.4)'
-                    : 'none',
-                }}
-                onMouseEnter={(e) => {
-                  playSound('hover');
-                  if (selectedOldGame !== key) {
-                    e.currentTarget.style.background = 'rgba(69, 162, 158, 0.2)';
-                    e.currentTarget.style.borderColor = '#45a29e';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedOldGame !== key) {
-                    e.currentTarget.style.background = 'rgba(69, 162, 158, 0.1)';
-                    e.currentTarget.style.borderColor = '#45a29e44';
-                  }
-                }}
-              >
-                {game.title}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Game Display */}
@@ -399,48 +337,6 @@ export default function BasePage() {
         overflow: 'hidden'
       }}>
         {(() => {
-          // Handle Old Games category
-          if (selectedGame === "oldGames") {
-            const game = oldGames[selectedOldGame as keyof typeof oldGames];
-
-            // Old games with components (arena, boss)
-            if ('component' in game && game.component) {
-              return (
-                <div style={{
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  background: '#000',
-                  overflowY: 'auto',
-                  overflowX: 'hidden',
-                  padding: '20px 0'
-                }}>
-                  {game.component}
-                </div>
-              );
-            }
-
-            // Old games with iframes (maze)
-            if ('src' in game && game.src) {
-              return (
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                  <iframe
-                    key={selectedOldGame}
-                    src={game.src}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      border: 'none',
-                    }}
-                    title={game.title}
-                  />
-                </div>
-              );
-            }
-          }
-
           // Handle current games
           const game = games[selectedGame as keyof typeof games];
           if (!game || ('isCategory' in game && game.isCategory)) {
