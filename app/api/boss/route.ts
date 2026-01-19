@@ -36,14 +36,31 @@ const EMPTY_BOSS: BossState = {
   isAlive: true,
 };
 
+// In-memory cache for read-heavy endpoints (5 second TTL)
+let bossCache: { data: { bossState: BossState; recentAttackers: RecentAttacker[] } | null; timestamp: number } = {
+  data: null,
+  timestamp: 0,
+};
+const CACHE_TTL = 5000; // 5 seconds
+
 // GET /api/boss - Fetch current boss state and recent attackers
 export async function GET() {
   try {
+    const now = Date.now();
+
+    // Return cached data if still valid
+    if (bossCache.data && (now - bossCache.timestamp) < CACHE_TTL) {
+      return NextResponse.json({
+        success: true,
+        ...bossCache.data,
+        cached: true,
+      });
+    }
+
     let bossState = await redis.get<BossState>(BOSS_STATE_KEY) || EMPTY_BOSS;
 
     // Check if boss should respawn
     if (!bossState.isAlive && bossState.defeatedAt) {
-      const now = Date.now();
       const timeSinceDefeat = now - bossState.defeatedAt;
 
       if (timeSinceDefeat >= BOSS_RESPAWN_TIME) {
@@ -57,6 +74,12 @@ export async function GET() {
 
     // Fetch recent attackers
     const recentAttackers = await redis.get<RecentAttacker[]>(BOSS_ATTACKERS_KEY) || [];
+
+    // Update cache
+    bossCache = {
+      data: { bossState, recentAttackers },
+      timestamp: now,
+    };
 
     return NextResponse.json({
       success: true,
@@ -121,6 +144,9 @@ export async function POST(request: NextRequest) {
     const updatedAttackers = [newAttacker, ...recentAttackers].slice(0, 10); // Keep last 10
     await redis.set(BOSS_ATTACKERS_KEY, updatedAttackers);
 
+    // Invalidate cache after state change
+    bossCache = { data: { bossState: newState, recentAttackers: updatedAttackers }, timestamp: Date.now() };
+
     return NextResponse.json({
       success: true,
       bossState: newState,
@@ -140,6 +166,9 @@ export async function DELETE() {
   try {
     await redis.set(BOSS_STATE_KEY, EMPTY_BOSS);
     await redis.del(BOSS_ATTACKERS_KEY);
+
+    // Invalidate cache
+    bossCache = { data: { bossState: EMPTY_BOSS, recentAttackers: [] }, timestamp: Date.now() };
 
     return NextResponse.json({
       success: true,

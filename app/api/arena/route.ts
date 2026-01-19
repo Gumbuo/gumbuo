@@ -44,11 +44,35 @@ const EMPTY_ARENA: ArenaState = {
   lastUpdated: Date.now(),
 };
 
+// In-memory cache for read-heavy endpoints (5 second TTL)
+let arenaCache: { data: { arenaState: ArenaState; fightHistory: FightResult[] } | null; timestamp: number } = {
+  data: null,
+  timestamp: 0,
+};
+const CACHE_TTL = 5000; // 5 seconds
+
 // GET /api/arena - Fetch current arena state and fight history
 export async function GET() {
   try {
+    const now = Date.now();
+
+    // Return cached data if still valid
+    if (arenaCache.data && (now - arenaCache.timestamp) < CACHE_TTL) {
+      return NextResponse.json({
+        success: true,
+        ...arenaCache.data,
+        cached: true,
+      });
+    }
+
     const arenaState = await redis.get<ArenaState>(ARENA_STATE_KEY) || EMPTY_ARENA;
     const fightHistory = await redis.get<FightResult[]>(ARENA_FIGHT_HISTORY_KEY) || [];
+
+    // Update cache
+    arenaCache = {
+      data: { arenaState, fightHistory },
+      timestamp: now,
+    };
 
     return NextResponse.json({
       success: true,
@@ -81,6 +105,11 @@ export async function POST(request: NextRequest) {
 
     // Save to Redis
     await redis.set(ARENA_STATE_KEY, newState);
+
+    // Update cache
+    if (arenaCache.data) {
+      arenaCache = { data: { ...arenaCache.data, arenaState: newState }, timestamp: Date.now() };
+    }
 
     return NextResponse.json({
       success: true,
@@ -116,6 +145,11 @@ export async function PUT(request: NextRequest) {
     // Save to Redis
     await redis.set(ARENA_FIGHT_HISTORY_KEY, updatedHistory);
 
+    // Update cache
+    if (arenaCache.data) {
+      arenaCache = { data: { ...arenaCache.data, fightHistory: updatedHistory }, timestamp: Date.now() };
+    }
+
     return NextResponse.json({
       success: true,
       fightHistory: updatedHistory,
@@ -133,6 +167,9 @@ export async function PUT(request: NextRequest) {
 export async function DELETE() {
   try {
     await redis.set(ARENA_STATE_KEY, EMPTY_ARENA);
+
+    // Update cache with cleared arena
+    arenaCache = { data: { arenaState: EMPTY_ARENA, fightHistory: arenaCache.data?.fightHistory || [] }, timestamp: Date.now() };
 
     return NextResponse.json({
       success: true,

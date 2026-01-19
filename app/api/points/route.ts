@@ -37,20 +37,38 @@ const INITIAL_POOL: AlienPointsPool = {
   totalAliensBurned: 0, // Total aliens burned in arena
 };
 
+// In-memory cache for pool data (10 second TTL - pool changes less often)
+let poolCache: { data: AlienPointsPool | null; timestamp: number } = {
+  data: null,
+  timestamp: 0,
+};
+const POOL_CACHE_TTL = 10000; // 10 seconds
+
 // GET /api/points - Get pool status and user balance
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const wallet = searchParams.get('wallet');
+    const now = Date.now();
 
-    // Get pool data
-    let pool = await redis.get<AlienPointsPool>(POOL_KEY);
-    if (!pool) {
-      pool = INITIAL_POOL;
-      await redis.set(POOL_KEY, pool);
+    // Try to use cached pool data
+    let pool: AlienPointsPool;
+    if (poolCache.data && (now - poolCache.timestamp) < POOL_CACHE_TTL) {
+      pool = poolCache.data;
+    } else {
+      // Fetch from Redis
+      const fetchedPool = await redis.get<AlienPointsPool>(POOL_KEY);
+      if (!fetchedPool) {
+        pool = INITIAL_POOL;
+        await redis.set(POOL_KEY, pool);
+      } else {
+        pool = fetchedPool;
+      }
+      // Update cache
+      poolCache = { data: pool, timestamp: now };
     }
 
-    // Get user balance if wallet provided
+    // Get user balance if wallet provided (not cached - user-specific)
     let userBalance = 0;
     if (wallet) {
       let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
@@ -127,6 +145,9 @@ export async function POST(request: NextRequest) {
     await redis.set(POOL_KEY, pool);
     await redis.set(BALANCES_KEY, balances);
 
+    // Update cache
+    poolCache = { data: pool, timestamp: Date.now() };
+
     return NextResponse.json({
       success: true,
       pool,
@@ -187,6 +208,9 @@ export async function PATCH(request: NextRequest) {
     await redis.set(POOL_KEY, pool);
     await redis.set(BALANCES_KEY, balances);
 
+    // Update cache
+    poolCache = { data: pool, timestamp: Date.now() };
+
     return NextResponse.json({
       success: true,
       pool,
@@ -223,6 +247,9 @@ export async function PUT(request: NextRequest) {
 
     // Save to database
     await redis.set(POOL_KEY, pool);
+
+    // Update cache
+    poolCache = { data: pool, timestamp: Date.now() };
 
     return NextResponse.json({
       success: true,
