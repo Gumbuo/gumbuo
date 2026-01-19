@@ -484,6 +484,112 @@ export default function MothershipPage() {
                     Credits
                   </span>
                 </Link>
+
+                {/* Grey Portal - Alien Armory */}
+                <Link
+                  href="/base?game=armory"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  style={{
+                    background: 'rgba(11, 12, 16, 0.7)',
+                    border: '2px solid #45a29e',
+                    borderRadius: '15px',
+                    padding: '20px',
+                    transition: 'transform 0.3s, background 0.3s',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    backdropFilter: 'blur(5px)',
+                    color: '#888888'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
+                  }}
+                >
+                  <img src="/greyportal.png" alt="Alien Armory" style={{
+                    width: '100%',
+                    maxWidth: '180px',
+                    height: 'auto',
+                    borderRadius: '50%',
+                    boxShadow: '0 0 30px #888888',
+                    border: '4px solid rgba(255,255,255,0.1)',
+                    display: 'block',
+                    margin: '0 auto 15px auto'
+                  }} />
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '5px 15px',
+                    background: '#000',
+                    border: '1px solid #888888',
+                    borderRadius: '5px',
+                    fontSize: '1.1rem',
+                    fontWeight: 900,
+                    textShadow: '0 0 5px #888888',
+                    textTransform: 'uppercase'
+                  }}>
+                    Alien Armory
+                  </span>
+                </Link>
+
+                {/* Green Portal - Alien Catacombs */}
+                <Link
+                  href="/base?game=catacombs"
+                  onMouseEnter={() => playSound('hover')}
+                  onClick={() => playSound('click')}
+                  style={{
+                    background: 'rgba(11, 12, 16, 0.7)',
+                    border: '2px solid #45a29e',
+                    borderRadius: '15px',
+                    padding: '20px',
+                    transition: 'transform 0.3s, background 0.3s',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    backdropFilter: 'blur(5px)',
+                    color: '#00ff41'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
+                  }}
+                >
+                  <img src="/greenportal.png" alt="Alien Catacombs" style={{
+                    width: '100%',
+                    maxWidth: '180px',
+                    height: 'auto',
+                    borderRadius: '50%',
+                    boxShadow: '0 0 30px #00ff41',
+                    border: '4px solid rgba(255,255,255,0.1)',
+                    display: 'block',
+                    margin: '0 auto 15px auto'
+                  }} />
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '5px 15px',
+                    background: '#000',
+                    border: '1px solid #00ff41',
+                    borderRadius: '5px',
+                    fontSize: '1.1rem',
+                    fontWeight: 900,
+                    textShadow: '0 0 5px #00ff41',
+                    textTransform: 'uppercase'
+                  }}>
+                    Alien Catacombs
+                  </span>
+                </Link>
               </div>
             </div>
           )}

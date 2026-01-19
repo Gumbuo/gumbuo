@@ -150,21 +150,20 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Scan and delete user-specific keys
-    let cursor = 0;
     const patterns = ["gumbuo:user_data:*", "gumbuo:armory:*", "gumbuo:game_activity:*"];
 
     for (const pattern of patterns) {
-      cursor = 0;
+      let cursor = "0";
       do {
         const result = await redis.scan(cursor, { match: pattern, count: 100 });
-        cursor = result[0];
-        const keys = result[1];
+        cursor = String(result[0]);
+        const keys = result[1] as string[];
 
         for (const key of keys) {
           await redis.del(key);
           deleted.push(key);
         }
-      } while (cursor !== 0);
+      } while (cursor !== "0");
     }
 
     return NextResponse.json({

@@ -2,7 +2,6 @@
 import dynamic from "next/dynamic";
 
 const AlienMarketplace = dynamic(() => import("./AlienMarketplace"), { ssr: false });
-const GumbuoFightersArena = dynamic(() => import("./GumbuoFightersArena"), { ssr: false });
 
 export default function AlienMarketAndArena() {
   return (
@@ -70,16 +69,11 @@ export default function AlienMarketAndArena() {
       {/* Content with proper spacing for pipes */}
       <div className="relative z-10 w-full mt-8">
         <h1 className="font-alien font-bold holographic-text tracking-wider text-center mb-8" style={{fontSize: '4.5rem'}}>
-          <span className="text-orange-400">🛸 Gumbuo Fighters UFO Marketplace & Arena 👽</span>
+          <span className="text-orange-400">🛸 Gumbuo Fighters UFO Marketplace 👽</span>
         </h1>
 
         {/* Marketplace Section */}
         <AlienMarketplace />
-
-        {/* Arena Section */}
-        <div className="mt-12">
-          <GumbuoFightersArena />
-        </div>
       </div>
     </div>
   );
