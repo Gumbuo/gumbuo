@@ -134,8 +134,8 @@ export default function GumbuoFightersArena() {
 
     fetchArenaState();
 
-    // Poll for arena updates every 3 seconds
-    const pollInterval = setInterval(fetchArenaState, 3000);
+    // Poll for arena updates every 30 seconds (reduced from 3s to save API calls)
+    const pollInterval = setInterval(fetchArenaState, 30000);
 
     return () => clearInterval(pollInterval);
   }, []);

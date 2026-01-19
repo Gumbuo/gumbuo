@@ -113,8 +113,8 @@ export default function GumbuoBoss() {
 
     fetchBossState();
 
-    // Poll for updates every 3 seconds
-    const pollInterval = setInterval(fetchBossState, 3000);
+    // Poll for updates every 30 seconds (reduced from 3s to save API calls)
+    const pollInterval = setInterval(fetchBossState, 30000);
 
     return () => clearInterval(pollInterval);
   }, [address, hasClaimedReward]);
@@ -224,7 +224,7 @@ export default function GumbuoBoss() {
     };
 
     updateSpecialCooldowns();
-    const interval = setInterval(updateSpecialCooldowns, 3000); // Poll every 3 seconds
+    const interval = setInterval(updateSpecialCooldowns, 30000); // Poll every 30 seconds (reduced from 3s)
     return () => clearInterval(interval);
   }, [address]);
 

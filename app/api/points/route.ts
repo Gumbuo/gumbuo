@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss' && source !== 'staking') {
+    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss' && source !== 'staking' && source !== 'arcade') {
       return NextResponse.json(
         { success: false, error: "Invalid source" },
         { status: 400 }
@@ -238,21 +238,4 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// DELETE /api/points - Reset pools (admin only, for testing)
-export async function DELETE() {
-  try {
-    await redis.set(POOL_KEY, INITIAL_POOL);
-    await redis.set(BALANCES_KEY, {});
-
-    return NextResponse.json({
-      success: true,
-      message: "Pools reset to initial state",
-    });
-  } catch (error) {
-    console.error("Error resetting pools:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to reset pools" },
-      { status: 500 }
-    );
-  }
-}
+// DELETE endpoint removed for security - data reset should only be done directly in Vercel KV dashboard
