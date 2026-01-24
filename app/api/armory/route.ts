@@ -14,10 +14,21 @@ import {
   XP_REQUIREMENTS,
 } from "../../base/components/armory/constants";
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+// Lazy initialization to avoid build-time errors
+let _redis: Redis | null = null;
+
+function getRedis(): Redis {
+  if (!_redis) {
+    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+      throw new Error("Redis environment variables not configured");
+    }
+    _redis = new Redis({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    });
+  }
+  return _redis;
+}
 
 const SAVE_KEY_PREFIX = "armory:save:";
 
@@ -80,13 +91,43 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Check if Redis env vars are configured
+    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+      console.error("Missing Redis env vars:", {
+        hasUrl: !!process.env.KV_REST_API_URL,
+        hasToken: !!process.env.KV_REST_API_TOKEN,
+      });
+      return NextResponse.json(
+        { success: false, error: "Redis not configured" },
+        { status: 500 }
+      );
+    }
+
     const saveKey = getSaveKey(wallet);
-    let saveState = await redis.get<ArmorySaveState>(saveKey);
+    let saveState: ArmorySaveState | null = null;
+
+    try {
+      saveState = await getRedis().get<ArmorySaveState>(saveKey);
+    } catch (redisError) {
+      console.error("Redis GET error:", redisError);
+      return NextResponse.json(
+        { success: false, error: "Redis connection failed", details: String(redisError) },
+        { status: 500 }
+      );
+    }
 
     // Create new save if doesn't exist
     if (!saveState) {
       saveState = createNewSave(wallet);
-      await redis.set(saveKey, saveState);
+      try {
+        await getRedis().set(saveKey, saveState);
+      } catch (setError) {
+        console.error("Redis SET error:", setError);
+        return NextResponse.json(
+          { success: false, error: "Failed to create save", details: String(setError) },
+          { status: 500 }
+        );
+      }
     }
 
     // Check for completed crafting jobs
@@ -105,7 +146,12 @@ export async function GET(request: NextRequest) {
         : 1;
       saveState.progress.lastLoginDate = today;
       saveState.lastUpdated = Date.now();
-      await redis.set(saveKey, saveState);
+      try {
+        await getRedis().set(saveKey, saveState);
+      } catch (updateError) {
+        console.error("Redis update error:", updateError);
+        // Don't fail the request, just log it
+      }
     }
 
     return NextResponse.json({
@@ -116,7 +162,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error loading armory save:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to load save" },
+      { success: false, error: "Failed to load save", details: String(error) },
       { status: 500 }
     );
   }
@@ -137,7 +183,7 @@ export async function POST(request: NextRequest) {
     const saveKey = getSaveKey(wallet);
 
     // Check if save already exists
-    const existingSave = await redis.get<ArmorySaveState>(saveKey);
+    const existingSave = await getRedis().get<ArmorySaveState>(saveKey);
     if (existingSave && !reset) {
       return NextResponse.json({
         success: true,
@@ -148,7 +194,7 @@ export async function POST(request: NextRequest) {
 
     // Create new save
     const saveState = createNewSave(wallet);
-    await redis.set(saveKey, saveState);
+    await getRedis().set(saveKey, saveState);
 
     return NextResponse.json({
       success: true,
@@ -177,7 +223,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const saveKey = getSaveKey(wallet);
-    let saveState = await redis.get<ArmorySaveState>(saveKey);
+    let saveState = await getRedis().get<ArmorySaveState>(saveKey);
 
     if (!saveState) {
       return NextResponse.json(
@@ -210,7 +256,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     saveState.lastUpdated = Date.now();
-    await redis.set(saveKey, saveState);
+    await getRedis().set(saveKey, saveState);
 
     return NextResponse.json({
       success: true,
