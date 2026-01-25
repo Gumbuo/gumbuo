@@ -87,6 +87,7 @@ export interface Recipe {
 // ============== ITEMS ==============
 export type ItemTier = 1 | 2 | 3 | 4;
 export type ItemType = 'weapon' | 'armor';
+export type EquipmentSlot = 'weapon' | 'armor';
 
 export interface ArmoryItem {
   id: string;
@@ -106,6 +107,25 @@ export interface ArmoryItem {
 export interface InventoryItem {
   itemId: string;
   quantity: number;
+}
+
+// ============== EQUIPMENT ==============
+export interface EquippedItems {
+  weapon: string | null;   // itemId or null
+  armor: string | null;    // itemId or null
+}
+
+export interface PlayerStats {
+  baseAttack: number;
+  baseDefense: number;
+  totalAttack: number;     // base + equipment bonuses
+  totalDefense: number;    // base + equipment bonuses
+}
+
+// ============== MAP / POSITION ==============
+export interface PlayerPosition {
+  x: number;
+  currentStation: StationId | null;  // Which station player is at
 }
 
 // ============== PLAYER PROGRESS ==============
@@ -129,6 +149,8 @@ export interface ArmorySaveState {
   stationLevels: StationLevels;
   inventory: InventoryItem[];
   progress: ArmoryProgress;
+  equipped: EquippedItems;     // Currently equipped weapon/armor
+  playerPosition: PlayerPosition;  // Map position
   lastUpdated: number;       // Unix timestamp (ms)
   createdAt: number;         // Unix timestamp (ms)
 }

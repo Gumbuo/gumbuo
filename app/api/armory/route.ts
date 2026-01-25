@@ -45,6 +45,14 @@ function createNewSave(wallet: string): ArmorySaveState {
     stationLevels: { ...DEFAULT_STATION_LEVELS },
     inventory: [],
     progress: { ...DEFAULT_PROGRESS },
+    equipped: {
+      weapon: null,
+      armor: null,
+    },
+    playerPosition: {
+      x: 0,
+      currentStation: 'plasmaRefinery',
+    },
     lastUpdated: now,
     createdAt: now,
   };
@@ -235,6 +243,19 @@ export async function PATCH(request: NextRequest) {
         ...saveState.craftingQueues,
         ...updates.craftingQueues,
       };
+    }
+    if (updates.equipped) {
+      saveState.equipped = { ...saveState.equipped, ...updates.equipped };
+    }
+    if (updates.playerPosition) {
+      saveState.playerPosition = { ...saveState.playerPosition, ...updates.playerPosition };
+    }
+    // Initialize equipment/position if missing (migration for existing saves)
+    if (!saveState.equipped) {
+      saveState.equipped = { weapon: null, armor: null };
+    }
+    if (!saveState.playerPosition) {
+      saveState.playerPosition = { x: 0, currentStation: 'plasmaRefinery' };
     }
 
     saveState.lastUpdated = Date.now();

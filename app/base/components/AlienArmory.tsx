@@ -9,10 +9,12 @@ import {
   RawResourceKey,
   Recipe,
   InventoryItem,
+  EquipmentSlot,
 } from "./armory/types";
 import { STATIONS, STATION_ORDER, getStationQueueSize } from "./armory/data/stations";
 import { RECIPES, getAvailableRecipes, canCraftRecipe, getRecipe } from "./armory/data/recipes";
 import { ITEMS, getItem } from "./armory/data/items";
+import ArmoryMap from "./armory/ArmoryMap";
 import {
   MATERIAL_COSTS,
   MATERIAL_NAMES,
@@ -239,6 +241,86 @@ export default function AlienArmory() {
       }
     } catch (error) {
       showNotification("Failed to upgrade", "error");
+    }
+  };
+
+  // Equip item
+  const equipItem = async (itemId: string, slot: EquipmentSlot) => {
+    if (!address) return;
+
+    try {
+      const response = await fetch("/api/armory/equip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: address, itemId, slot }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSaveState((prev) => prev ? {
+          ...prev,
+          equipped: data.data.equipped,
+          inventory: data.data.inventory,
+        } : null);
+        showNotification(`Equipped ${data.data.equippedItem.name}!`, "success");
+      } else {
+        showNotification(data.error || "Failed to equip", "error");
+      }
+    } catch (error) {
+      showNotification("Failed to equip", "error");
+    }
+  };
+
+  // Unequip item
+  const unequipItem = async (slot: EquipmentSlot) => {
+    if (!address) return;
+
+    try {
+      const response = await fetch("/api/armory/equip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: address, slot, unequip: true }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSaveState((prev) => prev ? {
+          ...prev,
+          equipped: data.data.equipped,
+          inventory: data.data.inventory,
+        } : null);
+        showNotification("Item unequipped", "info");
+      } else {
+        showNotification(data.error || "Failed to unequip", "error");
+      }
+    } catch (error) {
+      showNotification("Failed to unequip", "error");
+    }
+  };
+
+  // Update player position on map
+  const updatePlayerPosition = async (position: { x: number; currentStation: StationId | null }) => {
+    if (!address) return;
+
+    try {
+      await fetch("/api/armory", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: address, updates: { playerPosition: position } }),
+      });
+      setSaveState((prev) => prev ? { ...prev, playerPosition: position } : null);
+    } catch (error) {
+      console.error("Failed to update position:", error);
+    }
+  };
+
+  // Handle station select from map click
+  const handleMapStationSelect = (stationId: StationId) => {
+    const stationLevel = saveState?.stationLevels[stationId] || 0;
+    const station = STATIONS[stationId];
+    const isUnlocked = stationLevel > 0 || (saveState && saveState.progress.level >= station.unlockLevel);
+
+    if (isUnlocked && stationLevel > 0) {
+      setSelectedStation(stationId);
+      setActiveModal("crafting");
     }
   };
 
@@ -500,6 +582,26 @@ export default function AlienArmory() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Armory Map */}
+      <div style={{
+        background: THEME.colors.panel,
+        border: THEME.borders.panel,
+        borderRadius: "12px",
+        padding: "16px",
+        marginBottom: "20px",
+      }}>
+        <h3 style={{ color: THEME.colors.primary, margin: "0 0 12px 0", fontSize: "14px" }}>
+          ARMORY MAP
+        </h3>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <ArmoryMap
+            saveState={saveState}
+            onStationSelect={handleMapStationSelect}
+            onUpdatePosition={updatePlayerPosition}
+          />
         </div>
       </div>
 
@@ -917,28 +1019,140 @@ export default function AlienArmory() {
                           {item.stats.attack && `ATK: ${item.stats.attack}`}
                           {item.stats.defense && ` DEF: ${item.stats.defense}`}
                         </div>
-                        <button
-                          onClick={() => sellItem(slot.itemId, 1)}
-                          style={{
-                            background: THEME.colors.warning,
-                            border: "none",
-                            borderRadius: "4px",
-                            padding: "4px 8px",
-                            color: "#000",
-                            fontWeight: "bold",
-                            cursor: "pointer",
-                            fontFamily: "Orbitron, sans-serif",
-                            fontSize: "10px",
-                          }}
-                        >
-                          SELL (+{item.sellValue} AP)
-                        </button>
+                        <div style={{ display: "flex", gap: "4px" }}>
+                          <button
+                            onClick={() => equipItem(slot.itemId, item.type as EquipmentSlot)}
+                            style={{
+                              background: THEME.gradients.button,
+                              border: "none",
+                              borderRadius: "4px",
+                              padding: "4px 8px",
+                              color: "#000",
+                              fontWeight: "bold",
+                              cursor: "pointer",
+                              fontFamily: "Orbitron, sans-serif",
+                              fontSize: "10px",
+                            }}
+                          >
+                            EQUIP
+                          </button>
+                          <button
+                            onClick={() => sellItem(slot.itemId, 1)}
+                            style={{
+                              background: THEME.colors.warning,
+                              border: "none",
+                              borderRadius: "4px",
+                              padding: "4px 8px",
+                              color: "#000",
+                              fontWeight: "bold",
+                              cursor: "pointer",
+                              fontFamily: "Orbitron, sans-serif",
+                              fontSize: "10px",
+                            }}
+                          >
+                            SELL (+{item.sellValue} AP)
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
                 })}
               </div>
             )}
+
+            {/* Currently Equipped Section */}
+            <div style={{ marginTop: "20px", borderTop: `1px solid ${THEME.colors.secondary}`, paddingTop: "16px" }}>
+              <h3 style={{ color: THEME.colors.primary, margin: "0 0 12px 0", fontSize: "14px" }}>
+                EQUIPPED ITEMS
+              </h3>
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                {/* Weapon Slot */}
+                <div style={{
+                  background: "rgba(0,0,0,0.3)",
+                  borderRadius: "8px",
+                  padding: "12px",
+                  minWidth: "150px",
+                  border: `1px solid ${saveState.equipped?.weapon ? THEME.colors.primary : THEME.colors.locked}`,
+                }}>
+                  <div style={{ fontSize: "10px", color: THEME.colors.secondary, marginBottom: "4px" }}>WEAPON</div>
+                  {saveState.equipped?.weapon ? (() => {
+                    const weapon = getItem(saveState.equipped.weapon);
+                    return weapon ? (
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "20px" }}>{weapon.icon}</span>
+                          <span style={{ color: THEME.colors.textBright, fontSize: "12px" }}>{weapon.name}</span>
+                        </div>
+                        <div style={{ fontSize: "10px", color: "#ff6b6b", marginTop: "4px" }}>
+                          ATK: +{weapon.stats.attack || 0}
+                        </div>
+                        <button
+                          onClick={() => unequipItem("weapon")}
+                          style={{
+                            marginTop: "8px",
+                            background: "rgba(255,107,107,0.2)",
+                            border: "1px solid #ff6b6b",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            color: "#ff6b6b",
+                            cursor: "pointer",
+                            fontFamily: "Orbitron, sans-serif",
+                            fontSize: "9px",
+                          }}
+                        >
+                          UNEQUIP
+                        </button>
+                      </div>
+                    ) : null;
+                  })() : (
+                    <div style={{ color: THEME.colors.locked, fontSize: "11px" }}>Empty</div>
+                  )}
+                </div>
+
+                {/* Armor Slot */}
+                <div style={{
+                  background: "rgba(0,0,0,0.3)",
+                  borderRadius: "8px",
+                  padding: "12px",
+                  minWidth: "150px",
+                  border: `1px solid ${saveState.equipped?.armor ? THEME.colors.primary : THEME.colors.locked}`,
+                }}>
+                  <div style={{ fontSize: "10px", color: THEME.colors.secondary, marginBottom: "4px" }}>ARMOR</div>
+                  {saveState.equipped?.armor ? (() => {
+                    const armor = getItem(saveState.equipped.armor);
+                    return armor ? (
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "20px" }}>{armor.icon}</span>
+                          <span style={{ color: THEME.colors.textBright, fontSize: "12px" }}>{armor.name}</span>
+                        </div>
+                        <div style={{ fontSize: "10px", color: "#4ecdc4", marginTop: "4px" }}>
+                          DEF: +{armor.stats.defense || 0}
+                        </div>
+                        <button
+                          onClick={() => unequipItem("armor")}
+                          style={{
+                            marginTop: "8px",
+                            background: "rgba(78,205,196,0.2)",
+                            border: "1px solid #4ecdc4",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            color: "#4ecdc4",
+                            cursor: "pointer",
+                            fontFamily: "Orbitron, sans-serif",
+                            fontSize: "9px",
+                          }}
+                        >
+                          UNEQUIP
+                        </button>
+                      </div>
+                    ) : null;
+                  })() : (
+                    <div style={{ color: THEME.colors.locked, fontSize: "11px" }}>Empty</div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
