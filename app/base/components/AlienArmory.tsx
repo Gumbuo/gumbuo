@@ -15,6 +15,7 @@ import { STATIONS, STATION_ORDER, getStationQueueSize } from "./armory/data/stat
 import { RECIPES, getAvailableRecipes, canCraftRecipe, getRecipe } from "./armory/data/recipes";
 import { ITEMS, getItem } from "./armory/data/items";
 import ArmoryMap from "./armory/ArmoryMap";
+import RecipeChart from "./armory/RecipeChart";
 import {
   MATERIAL_COSTS,
   MATERIAL_NAMES,
@@ -38,6 +39,7 @@ export default function AlienArmory() {
   const [selectedStation, setSelectedStation] = useState<StationId | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
   const [completedJobsReady, setCompletedJobsReady] = useState(0);
+  const [showRecipeChart, setShowRecipeChart] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [, setTick] = useState(0); // Force re-render for timers
 
@@ -515,6 +517,21 @@ export default function AlienArmory() {
           }}
         >
           INVENTORY ({saveState.inventory.reduce((sum, i) => sum + i.quantity, 0)})
+        </button>
+        <button
+          onClick={() => setShowRecipeChart(true)}
+          style={{
+            background: THEME.colors.panel,
+            border: THEME.borders.panel,
+            borderRadius: "8px",
+            padding: "12px 24px",
+            color: THEME.colors.secondary,
+            fontWeight: "bold",
+            cursor: "pointer",
+            fontFamily: "Orbitron, sans-serif",
+          }}
+        >
+          📜 RECIPES
         </button>
         {completedCount > 0 && (
           <button
@@ -1276,6 +1293,14 @@ export default function AlienArmory() {
             })()}
           </div>
         </div>
+      )}
+
+      {/* Recipe Chart Modal */}
+      {showRecipeChart && (
+        <RecipeChart
+          onClose={() => setShowRecipeChart(false)}
+          playerLevel={saveState.progress.level}
+        />
       )}
 
       <style jsx global>{`
