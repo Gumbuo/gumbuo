@@ -106,7 +106,7 @@ export default function RecipeChart({ onClose, playerLevel = 1 }: RecipeChartPro
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "8px" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "20px" }}>
+              <span style={{ fontSize: "24px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif", lineHeight: 1 }}>
                 {outputItem ? outputItem.icon : CATEGORY_ICONS[recipe.category]}
               </span>
               <span style={{ color: isLocked ? THEME.colors.locked : THEME.colors.textBright, fontWeight: "bold", fontSize: "14px" }}>
@@ -158,7 +158,9 @@ export default function RecipeChart({ onClose, playerLevel = 1 }: RecipeChartPro
                     style={{ width: "16px", height: "16px", imageRendering: "pixelated" }}
                   />
                 ) : (
-                  <span style={{ fontSize: "14px" }}>{getResourceIcon(input.resource)}</span>
+                  <span style={{ fontSize: "16px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>
+                    {getResourceIcon(input.resource)}
+                  </span>
                 )}
                 <span style={{ color: THEME.colors.textBright, fontSize: "11px" }}>
                   {input.quantity}x {getResourceName(input.resource)}

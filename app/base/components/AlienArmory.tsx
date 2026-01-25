@@ -577,7 +577,7 @@ export default function AlienArmory() {
               padding: "8px",
               textAlign: "center",
             }}>
-              <img src={MATERIAL_ICONS[key]} alt={MATERIAL_NAMES[key]} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
+              <span style={{ fontSize: "32px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>{MATERIAL_ICONS[key]}</span>
               <div style={{ fontSize: "11px", color: THEME.colors.text }}>{MATERIAL_NAMES[key]}</div>
               <div style={{ color: THEME.colors.primary, fontWeight: "bold" }}>
                 {saveState.resources[key]}
@@ -592,7 +592,7 @@ export default function AlienArmory() {
               padding: "8px",
               textAlign: "center",
             }}>
-              <img src={PROCESSED_ICONS[key]} alt={PROCESSED_NAMES[key]} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
+              <span style={{ fontSize: "32px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>{PROCESSED_ICONS[key]}</span>
               <div style={{ fontSize: "11px", color: THEME.colors.text }}>{PROCESSED_NAMES[key]}</div>
               <div style={{ color: THEME.colors.primary, fontWeight: "bold" }}>
                 {saveState.resources[key as keyof typeof saveState.resources] || 0}
@@ -657,11 +657,7 @@ export default function AlienArmory() {
                 marginBottom: "12px",
               }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  {station.icon.startsWith('/') ? (
-                    <img src={station.icon} alt={station.name} style={{ width: "48px", height: "48px", marginRight: "8px", imageRendering: "pixelated" }} />
-                  ) : (
-                    <span style={{ fontSize: "24px", marginRight: "8px" }}>{station.icon}</span>
-                  )}
+                  <span style={{ fontSize: "28px", marginRight: "8px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>{station.icon}</span>
                   <span style={{ color: isLocked ? THEME.colors.locked : THEME.colors.primary, fontWeight: "bold" }}>
                     {station.name}
                   </span>
@@ -889,7 +885,7 @@ export default function AlienArmory() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <img src={MATERIAL_ICONS[resourceId]} alt={MATERIAL_NAMES[resourceId]} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
+                  <span style={{ fontSize: "36px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>{MATERIAL_ICONS[resourceId]}</span>
                   <div>
                     <div style={{ color: THEME.colors.textBright }}>{MATERIAL_NAMES[resourceId]}</div>
                     <div style={{ color: THEME.colors.secondary, fontSize: "12px" }}>
@@ -1004,11 +1000,7 @@ export default function AlienArmory() {
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
                         <div>
-                          {item.icon.startsWith('/') ? (
-                            <img src={item.icon} alt={item.name} style={{ width: "48px", height: "48px", imageRendering: "pixelated" }} />
-                          ) : (
-                            <span style={{ fontSize: "24px" }}>{item.icon}</span>
-                          )}
+                          <span style={{ fontSize: "32px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>{item.icon}</span>
                           <div style={{ color: THEME.colors.textBright, fontWeight: "bold", marginTop: "4px" }}>
                             {item.name}
                           </div>
@@ -1202,11 +1194,7 @@ export default function AlienArmory() {
               marginBottom: "20px",
             }}>
               <h2 style={{ color: THEME.colors.primary, margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-                {STATIONS[selectedStation].icon.startsWith('/') ? (
-                  <img src={STATIONS[selectedStation].icon} alt={STATIONS[selectedStation].name} style={{ width: "32px", height: "32px", imageRendering: "pixelated" }} />
-                ) : (
-                  <span>{STATIONS[selectedStation].icon}</span>
-                )}
+                <span style={{ fontSize: "28px", fontFamily: "'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" }}>{STATIONS[selectedStation].icon}</span>
                 {STATIONS[selectedStation].name} RECIPES
               </h2>
               <button

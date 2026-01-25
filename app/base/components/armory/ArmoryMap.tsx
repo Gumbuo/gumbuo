@@ -248,15 +248,8 @@ export default function ArmoryMap({ saveState, onStationSelect, onUpdatePosition
       ctx.stroke();
     }
 
-    // Draw equipped items on player
-    if (equippedWeapon) {
-      ctx.font = "16px Arial";
-      ctx.fillText(equippedWeapon.icon, playerX + 20, playerY - 30);
-    }
-    if (equippedArmor) {
-      ctx.font = "12px Arial";
-      ctx.fillText(equippedArmor.icon, playerX - 25, playerY - 35);
-    }
+    // Equipment indicators shown via HTML overlay instead of canvas
+    // (Canvas emoji rendering is unreliable on Windows)
 
     // Draw stats display
     ctx.fillStyle = "#0a0a0f";
@@ -282,29 +275,60 @@ export default function ArmoryMap({ saveState, onStationSelect, onUpdatePosition
 
   return (
     <div className="relative">
-      <canvas
-        ref={canvasRef}
-        width={720}
-        height={250}
-        onClick={handleCanvasClick}
-        className="border border-cyan-800 rounded-lg cursor-pointer"
-        style={{ imageRendering: "pixelated" }}
-      />
+      <div className="relative inline-block">
+        <canvas
+          ref={canvasRef}
+          width={720}
+          height={250}
+          onClick={handleCanvasClick}
+          className="border border-cyan-800 rounded-lg cursor-pointer"
+          style={{ imageRendering: "pixelated" }}
+        />
+
+        {/* Equipment overlay on player - positioned absolutely over canvas */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            left: `${playerX - 40}px`,
+            top: '95px',
+            transition: 'left 0.1s ease-out',
+          }}
+        >
+          {equippedWeapon && (
+            <div className="absolute" style={{ left: '60px', top: '-5px', fontSize: '20px' }}>
+              {equippedWeapon.icon}
+            </div>
+          )}
+          {equippedArmor && (
+            <div className="absolute" style={{ left: '-5px', top: '0px', fontSize: '16px' }}>
+              {equippedArmor.icon}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Equipment display below map */}
       <div className="mt-3 flex justify-center gap-4">
-        <div className="bg-gray-900/80 border border-cyan-800 rounded px-3 py-2 text-xs">
-          <span className="text-gray-400">Weapon: </span>
+        <div className="bg-gray-900/80 border border-cyan-800 rounded px-3 py-2 text-xs flex items-center gap-2">
+          <span className="text-gray-400">Weapon:</span>
           {equippedWeapon ? (
-            <span className="text-cyan-400">{equippedWeapon.icon} {equippedWeapon.name}</span>
+            <>
+              <span style={{ fontSize: '18px' }}>{equippedWeapon.icon}</span>
+              <span className="text-cyan-400">{equippedWeapon.name}</span>
+              <span className="text-red-400 text-xs">+{equippedWeapon.stats.attack} ATK</span>
+            </>
           ) : (
             <span className="text-gray-600">None</span>
           )}
         </div>
-        <div className="bg-gray-900/80 border border-cyan-800 rounded px-3 py-2 text-xs">
-          <span className="text-gray-400">Armor: </span>
+        <div className="bg-gray-900/80 border border-cyan-800 rounded px-3 py-2 text-xs flex items-center gap-2">
+          <span className="text-gray-400">Armor:</span>
           {equippedArmor ? (
-            <span className="text-cyan-400">{equippedArmor.icon} {equippedArmor.name}</span>
+            <>
+              <span style={{ fontSize: '18px' }}>{equippedArmor.icon}</span>
+              <span className="text-cyan-400">{equippedArmor.name}</span>
+              <span className="text-teal-400 text-xs">+{equippedArmor.stats.defense} DEF</span>
+            </>
           ) : (
             <span className="text-gray-600">None</span>
           )}
