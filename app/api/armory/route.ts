@@ -14,18 +14,12 @@ import {
   XP_REQUIREMENTS,
 } from "../../base/components/armory/constants";
 
-// Lazy initialization to avoid build-time errors
+// Lazy initialization using fromEnv() - automatically reads UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN
 let _redis: Redis | null = null;
 
 function getRedis(): Redis {
   if (!_redis) {
-    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-      throw new Error("Redis environment variables not configured");
-    }
-    _redis = new Redis({
-      url: process.env.KV_REST_API_URL,
-      token: process.env.KV_REST_API_TOKEN,
-    });
+    _redis = Redis.fromEnv();
   }
   return _redis;
 }
@@ -88,18 +82,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Wallet address required" },
         { status: 400 }
-      );
-    }
-
-    // Check if Redis env vars are configured
-    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-      console.error("Missing Redis env vars:", {
-        hasUrl: !!process.env.KV_REST_API_URL,
-        hasToken: !!process.env.KV_REST_API_TOKEN,
-      });
-      return NextResponse.json(
-        { success: false, error: "Redis not configured" },
-        { status: 500 }
       );
     }
 

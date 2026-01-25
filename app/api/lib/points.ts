@@ -1,17 +1,11 @@
 import { Redis } from "@upstash/redis";
 
-// Lazy initialization to avoid build-time errors
+// Lazy initialization using fromEnv() - automatically reads UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN
 let _redis: Redis | null = null;
 
 export function getRedis(): Redis {
   if (!_redis) {
-    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-      throw new Error("Redis environment variables not configured");
-    }
-    _redis = new Redis({
-      url: process.env.KV_REST_API_URL,
-      token: process.env.KV_REST_API_TOKEN,
-    });
+    _redis = Redis.fromEnv();
   }
   return _redis;
 }
