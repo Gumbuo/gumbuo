@@ -4,10 +4,7 @@ import { Redis } from "@upstash/redis";
 const USER_DATA_KEY_PREFIX = "gumbuo:user_data:";
 
 // Initialize Redis client with Vercel KV environment variables
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+const redis = Redis.fromEnv();
 
 interface OwnedAlien {
   id: string;

@@ -13,10 +13,7 @@ import {
   FIRST_CRAFT_BONUS_XP,
 } from "../../../base/components/armory/constants";
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+const redis = Redis.fromEnv();
 
 const SAVE_KEY_PREFIX = "armory:save:";
 
