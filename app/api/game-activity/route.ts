@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+import { getRedis, addUserPoints } from "../lib/points";
 
 const ACTIVITY_KEY_PREFIX = "gumbuo:arcade_activity:";
-const BALANCES_KEY = "gumbuo:points:balances";
 
 // Reward constants
 const PLAY_REWARD = 100; // AP per game launch
@@ -59,20 +53,6 @@ function resetDailyIfNeeded(activity: ArcadeActivity): ArcadeActivity {
   return activity;
 }
 
-// Helper to award points
-async function awardPoints(wallet: string, points: number): Promise<boolean> {
-  try {
-    const normalizedWallet = wallet.toLowerCase();
-    const balances = await redis.get<{ [address: string]: number }>(BALANCES_KEY) || {};
-    balances[normalizedWallet] = (balances[normalizedWallet] || 0) + points;
-    await redis.set(BALANCES_KEY, balances);
-    return true;
-  } catch (error) {
-    console.error("Error awarding points:", error);
-    return false;
-  }
-}
-
 // GET /api/game-activity - Get user's arcade stats
 export async function GET(request: NextRequest) {
   try {
@@ -86,6 +66,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const key = `${ACTIVITY_KEY_PREFIX}${normalizedWallet}`;
 
@@ -118,7 +99,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching game activity:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch activity" },
+      { success: false, error: "Failed to fetch activity", details: String(error) },
       { status: 500 }
     );
   }
@@ -136,6 +117,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const key = `${ACTIVITY_KEY_PREFIX}${normalizedWallet}`;
 
@@ -153,8 +135,8 @@ export async function POST(request: NextRequest) {
     const timeSincePlay = now - lastPlayed;
 
     if (timeSincePlay >= PLAY_COOLDOWN) {
-      // Award play points
-      await awardPoints(normalizedWallet, PLAY_REWARD);
+      // Award play points (individual key update)
+      await addUserPoints(normalizedWallet, PLAY_REWARD);
       apAwarded += PLAY_REWARD;
 
       // Track game play
@@ -170,7 +152,7 @@ export async function POST(request: NextRequest) {
           activity.todayGamesPlayed.length >= VARIETY_THRESHOLD &&
           !activity.varietyBonusClaimed
         ) {
-          await awardPoints(normalizedWallet, VARIETY_REWARD);
+          await addUserPoints(normalizedWallet, VARIETY_REWARD);
           apAwarded += VARIETY_REWARD;
           activity.varietyBonusClaimed = true;
           varietyBonusAwarded = true;
@@ -204,7 +186,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error logging game activity:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to log activity" },
+      { success: false, error: "Failed to log activity", details: String(error) },
       { status: 500 }
     );
   }
@@ -222,6 +204,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const key = `${ACTIVITY_KEY_PREFIX}${normalizedWallet}`;
 
@@ -233,7 +216,7 @@ export async function PATCH(request: NextRequest) {
 
     // Check if under daily cap
     if (currentTimeAP < TIME_CAP) {
-      await awardPoints(normalizedWallet, TIME_REWARD);
+      await addUserPoints(normalizedWallet, TIME_REWARD);
       apAwarded = TIME_REWARD;
       activity.todayTimeSpent += 1;
       activity.todayAPEarned += TIME_REWARD;
@@ -257,7 +240,7 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     console.error("Error tracking time:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to track time" },
+      { success: false, error: "Failed to track time", details: String(error) },
       { status: 500 }
     );
   }

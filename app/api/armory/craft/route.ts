@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
 import { ArmorySaveState, CraftingJob, StationId } from "../../../base/components/armory/types";
 import { getRecipe, canCraftRecipe } from "../../../base/components/armory/data/recipes";
 import { STATIONS, getStationQueueSize, getStationSpeedMultiplier } from "../../../base/components/armory/data/stations";
 import { calculateSpeedUpCost } from "../../../base/components/armory/constants";
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+import { getRedis, getUserBalance, deductUserPoints } from "../../lib/points";
 
 const SAVE_KEY_PREFIX = "armory:save:";
-const BALANCES_KEY = "gumbuo:points:balances";
 
 function getSaveKey(wallet: string): string {
   return `${SAVE_KEY_PREFIX}${wallet.toLowerCase()}`;
@@ -33,7 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const normalizedWallet = wallet.toLowerCase();
+    const redis = getRedis();
     const saveKey = getSaveKey(wallet);
     const saveState = await redis.get<ArmorySaveState>(saveKey);
 
@@ -150,7 +144,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error starting craft:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to start craft" },
+      { success: false, error: "Failed to start craft", details: String(error) },
       { status: 500 }
     );
   }
@@ -175,6 +169,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const saveKey = getSaveKey(wallet);
     const saveState = await redis.get<ArmorySaveState>(saveKey);
@@ -223,9 +218,8 @@ export async function PATCH(request: NextRequest) {
     // Calculate cost
     const apCost = calculateSpeedUpCost(remainingSeconds, speedUpType);
 
-    // Check AP balance
-    const balances = (await redis.get<Record<string, number>>(BALANCES_KEY)) || {};
-    const userBalance = balances[normalizedWallet] || 0;
+    // Check AP balance (individual key lookup)
+    const userBalance = await getUserBalance(normalizedWallet);
 
     if (userBalance < apCost) {
       return NextResponse.json({
@@ -234,9 +228,8 @@ export async function PATCH(request: NextRequest) {
       });
     }
 
-    // Deduct AP
-    balances[normalizedWallet] = userBalance - apCost;
-    await redis.set(BALANCES_KEY, balances);
+    // Deduct AP (individual key update)
+    const newBalance = await deductUserPoints(normalizedWallet, apCost);
 
     // Update job time
     if (speedUpType === "instant") {
@@ -260,13 +253,13 @@ export async function PATCH(request: NextRequest) {
       data: {
         job: foundJob,
         apSpent: apCost,
-        newAPBalance: balances[normalizedWallet],
+        newAPBalance: newBalance,
       },
     });
   } catch (error) {
     console.error("Error speeding up craft:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to speed up craft" },
+      { success: false, error: "Failed to speed up craft", details: String(error) },
       { status: 500 }
     );
   }

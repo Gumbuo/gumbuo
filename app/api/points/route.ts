@@ -1,13 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+// Lazy initialization to avoid build-time errors
+let _redis: Redis | null = null;
+
+function getRedis(): Redis {
+  if (!_redis) {
+    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+      throw new Error("Redis environment variables not configured");
+    }
+    _redis = new Redis({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    });
+  }
+  return _redis;
+}
 
 const POOL_KEY = "gumbuo:points:pool";
-const BALANCES_KEY = "gumbuo:points:balances";
+const BALANCE_PREFIX = "gumbuo:points:balance:"; // Individual key per user
+const LEGACY_BALANCES_KEY = "gumbuo:points:balances"; // Old combined key for migration
+
+// Helper to get user balance key
+function getBalanceKey(wallet: string): string {
+  return `${BALANCE_PREFIX}${wallet.toLowerCase()}`;
+}
+
+// Get user balance with migration support
+async function getUserBalance(wallet: string): Promise<number> {
+  const redis = getRedis();
+  const normalizedWallet = wallet.toLowerCase();
+  const balanceKey = getBalanceKey(normalizedWallet);
+
+  // Try new individual key first
+  const balance = await redis.get<number>(balanceKey);
+  if (balance !== null) {
+    return balance;
+  }
+
+  // Fall back to legacy combined key and migrate
+  const legacyBalances = await redis.get<Record<string, number>>(LEGACY_BALANCES_KEY);
+  if (legacyBalances && legacyBalances[normalizedWallet] !== undefined) {
+    const userBalance = legacyBalances[normalizedWallet];
+    // Migrate to individual key
+    await redis.set(balanceKey, userBalance);
+    return userBalance;
+  }
+
+  // New user - give starting balance
+  const startingBalance = 5000;
+  await redis.set(balanceKey, startingBalance);
+  return startingBalance;
+}
+
+// Set user balance
+async function setUserBalance(wallet: string, balance: number): Promise<void> {
+  const redis = getRedis();
+  const balanceKey = getBalanceKey(wallet.toLowerCase());
+  await redis.set(balanceKey, balance);
+}
 
 interface AlienPointsPool {
   totalSupply: number;
@@ -50,6 +101,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const wallet = searchParams.get('wallet');
     const now = Date.now();
+    const redis = getRedis();
 
     // Try to use cached pool data
     let pool: AlienPointsPool;
@@ -68,20 +120,10 @@ export async function GET(request: NextRequest) {
       poolCache = { data: pool, timestamp: now };
     }
 
-    // Get user balance if wallet provided (not cached - user-specific)
+    // Get user balance if wallet provided (individual key lookup - much faster!)
     let userBalance = 0;
     if (wallet) {
-      let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
-      const normalizedWallet = wallet.toLowerCase();
-
-      // If user doesn't exist, give them 5000 AP starting balance
-      if (balances[normalizedWallet] === undefined) {
-        balances[normalizedWallet] = 5000;
-        await redis.set(BALANCES_KEY, balances);
-        userBalance = 5000;
-      } else {
-        userBalance = balances[normalizedWallet];
-      }
+      userBalance = await getUserBalance(wallet);
     }
 
     return NextResponse.json({
@@ -92,7 +134,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching points:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch points" },
+      { success: false, error: "Failed to fetch points", details: String(error) },
       { status: 500 }
     );
   }
@@ -117,11 +159,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
 
-    // Get current pool and balances
+    // Get current pool
     let pool = await redis.get<AlienPointsPool>(POOL_KEY) || INITIAL_POOL;
-    let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
 
     // Only check pool limits for GMB token rewards (boss)
     // Alien points (wheel, faucet, staking, arena) are unlimited
@@ -138,12 +180,13 @@ export async function POST(request: NextRequest) {
     // Track total distributed (for stats only, not enforced)
     pool.totalDistributed += points;
 
-    // Update user balance
-    balances[normalizedWallet] = (balances[normalizedWallet] || 0) + points;
+    // Update user balance (individual key)
+    const currentBalance = await getUserBalance(normalizedWallet);
+    const newBalance = currentBalance + points;
+    await setUserBalance(normalizedWallet, newBalance);
 
-    // Save to database
+    // Save pool to database
     await redis.set(POOL_KEY, pool);
-    await redis.set(BALANCES_KEY, balances);
 
     // Update cache
     poolCache = { data: pool, timestamp: Date.now() };
@@ -151,7 +194,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       pool,
-      userBalance: balances[normalizedWallet],
+      userBalance: newBalance,
       awarded: points,
     });
   } catch (error) {
@@ -175,14 +218,14 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
 
-    // Get current pool and balances
+    // Get current pool
     let pool = await redis.get<AlienPointsPool>(POOL_KEY) || INITIAL_POOL;
-    let balances = await redis.get<UserBalances>(BALANCES_KEY) || {};
 
-    // Check if user has enough points
-    const userBalance = balances[normalizedWallet] || 0;
+    // Check if user has enough points (individual key lookup)
+    const userBalance = await getUserBalance(normalizedWallet);
     if (userBalance < points) {
       return NextResponse.json({
         success: false,
@@ -191,22 +234,11 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Deduct points from user
-    balances[normalizedWallet] = userBalance - points;
+    const newBalance = userBalance - points;
+    await setUserBalance(normalizedWallet, newBalance);
 
-    // Add to appropriate pool based on item type
-    if (itemName.includes("Arena Entry Fee")) {
-      // Arena entry fees: 500 AP per player, but only 200 AP house fee goes to burn pool
-      // The rest is paid out to winner (800 AP), so we only add the house fee (200 AP) to marketplace pool
-      // We need to track this per fight, not per entry
-      // For now, don't add anything to marketplace pool on entry - it will be added when fight completes
-    } else {
-      // Marketplace purchases: Points are spent but NOT added to burn pool
-      // Only arena house fees (200 AP per fight) go to burn pool
-    }
-
-    // Save to database
+    // Save pool to database (in case we need to update it later)
     await redis.set(POOL_KEY, pool);
-    await redis.set(BALANCES_KEY, balances);
 
     // Update cache
     poolCache = { data: pool, timestamp: Date.now() };
@@ -214,7 +246,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({
       success: true,
       pool,
-      userBalance: balances[normalizedWallet],
+      userBalance: newBalance,
       spent: points,
       item: itemName,
     });
@@ -238,6 +270,8 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const redis = getRedis();
 
     // Get current pool
     let pool = await redis.get<AlienPointsPool>(POOL_KEY) || INITIAL_POOL;

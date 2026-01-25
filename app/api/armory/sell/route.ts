@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
 import { ArmorySaveState } from "../../../base/components/armory/types";
 import { getItem } from "../../../base/components/armory/data/items";
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+import { getRedis, addUserPoints } from "../../lib/points";
 
 const SAVE_KEY_PREFIX = "armory:save:";
-const BALANCES_KEY = "gumbuo:points:balances";
 
 function getSaveKey(wallet: string): string {
   return `${SAVE_KEY_PREFIX}${wallet.toLowerCase()}`;
@@ -27,6 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const saveKey = getSaveKey(wallet);
     const saveState = await redis.get<ArmorySaveState>(saveKey);
@@ -69,10 +64,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add AP to user balance
-    const balances = (await redis.get<Record<string, number>>(BALANCES_KEY)) || {};
-    balances[normalizedWallet] = (balances[normalizedWallet] || 0) + totalAPEarned;
-    await redis.set(BALANCES_KEY, balances);
+    // Add AP to user balance (individual key)
+    const newBalance = await addUserPoints(normalizedWallet, totalAPEarned);
 
     // Update progress
     saveState.progress.totalAPEarned += totalAPEarned;
@@ -85,14 +78,14 @@ export async function POST(request: NextRequest) {
       data: {
         sold: { itemId, itemName: item.name, quantity },
         apEarned: totalAPEarned,
-        newAPBalance: balances[normalizedWallet],
+        newAPBalance: newBalance,
         inventory: saveState.inventory,
       },
     });
   } catch (error) {
     console.error("Error selling item:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to sell item" },
+      { success: false, error: "Failed to sell item", details: String(error) },
       { status: 500 }
     );
   }

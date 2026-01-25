@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
 import { ArmorySaveState, RawResourceKey } from "../../../base/components/armory/types";
 import { MATERIAL_COSTS } from "../../../base/components/armory/constants";
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+import { getRedis, getUserBalance, deductUserPoints } from "../../lib/points";
 
 const SAVE_KEY_PREFIX = "armory:save:";
-const BALANCES_KEY = "gumbuo:points:balances";
 
 function getSaveKey(wallet: string): string {
   return `${SAVE_KEY_PREFIX}${wallet.toLowerCase()}`;
@@ -35,13 +29,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const unitCost = MATERIAL_COSTS[resourceId as RawResourceKey];
     const totalCost = unitCost * quantity;
 
-    // Get user's AP balance
-    const balances = (await redis.get<Record<string, number>>(BALANCES_KEY)) || {};
-    const userBalance = balances[normalizedWallet] || 0;
+    // Get user's AP balance (individual key lookup)
+    const userBalance = await getUserBalance(normalizedWallet);
 
     if (userBalance < totalCost) {
       return NextResponse.json({
@@ -61,9 +55,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Deduct AP
-    balances[normalizedWallet] = userBalance - totalCost;
-    await redis.set(BALANCES_KEY, balances);
+    // Deduct AP (individual key update)
+    const newBalance = await deductUserPoints(normalizedWallet, totalCost);
 
     // Add resources to inventory
     const typedResourceId = resourceId as RawResourceKey;
@@ -79,14 +72,14 @@ export async function POST(request: NextRequest) {
       data: {
         resources: saveState.resources,
         apSpent: totalCost,
-        newAPBalance: balances[normalizedWallet],
+        newAPBalance: newBalance,
         purchased: { resourceId, quantity },
       },
     });
   } catch (error) {
     console.error("Error in armory shop:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to process purchase" },
+      { success: false, error: "Failed to process purchase", details: String(error) },
       { status: 500 }
     );
   }

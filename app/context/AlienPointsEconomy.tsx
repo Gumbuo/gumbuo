@@ -54,8 +54,8 @@ export function AlienPointsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refreshPool();
-    // Refresh pool every 60 seconds to stay in sync (reduced from 30s)
-    const interval = setInterval(refreshPool, 60000);
+    // Refresh pool every 5 minutes (reduced from 60s to save Redis requests)
+    const interval = setInterval(refreshPool, 300000);
     return () => clearInterval(interval);
   }, []);
 

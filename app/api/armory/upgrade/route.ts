@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
 import { ArmorySaveState, StationId } from "../../../base/components/armory/types";
 import { STATIONS, getUpgradeCost, isStationUnlocked } from "../../../base/components/armory/data/stations";
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+import { getRedis, getUserBalance, deductUserPoints } from "../../lib/points";
 
 const SAVE_KEY_PREFIX = "armory:save:";
-const BALANCES_KEY = "gumbuo:points:balances";
 
 function getSaveKey(wallet: string): string {
   return `${SAVE_KEY_PREFIX}${wallet.toLowerCase()}`;
@@ -35,6 +29,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const redis = getRedis();
     const normalizedWallet = wallet.toLowerCase();
     const typedStationId = stationId as StationId;
     const saveKey = getSaveKey(wallet);
@@ -59,8 +54,7 @@ export async function POST(request: NextRequest) {
           error: `Station unlocks at level ${station.unlockLevel}`,
         });
       }
-      // If player level is high enough but station is still 0, something went wrong
-      // Auto-unlock it
+      // If player level is high enough but station is still 0, auto-unlock
       saveState.stationLevels[typedStationId] = 1;
       saveState.lastUpdated = Date.now();
       await redis.set(saveKey, saveState);
@@ -93,9 +87,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Check AP balance
-    const balances = (await redis.get<Record<string, number>>(BALANCES_KEY)) || {};
-    const userBalance = balances[normalizedWallet] || 0;
+    // Check AP balance (individual key lookup)
+    const userBalance = await getUserBalance(normalizedWallet);
 
     if (userBalance < upgradeCost) {
       return NextResponse.json({
@@ -104,9 +97,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Deduct AP
-    balances[normalizedWallet] = userBalance - upgradeCost;
-    await redis.set(BALANCES_KEY, balances);
+    // Deduct AP (individual key update)
+    const newBalance = await deductUserPoints(normalizedWallet, upgradeCost);
 
     // Upgrade station
     saveState.stationLevels[typedStationId] = currentLevel + 1;
@@ -121,14 +113,14 @@ export async function POST(request: NextRequest) {
         stationId: typedStationId,
         newLevel: currentLevel + 1,
         apSpent: upgradeCost,
-        newAPBalance: balances[normalizedWallet],
+        newAPBalance: newBalance,
         stationLevels: saveState.stationLevels,
       },
     });
   } catch (error) {
     console.error("Error upgrading station:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to upgrade station" },
+      { success: false, error: "Failed to upgrade station", details: String(error) },
       { status: 500 }
     );
   }
