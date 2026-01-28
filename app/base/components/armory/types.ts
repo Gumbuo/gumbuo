@@ -84,9 +84,6 @@ export interface Recipe {
   category: RecipeCategory;
 }
 
-// ============== RARITY ==============
-export type RarityTier = 'common' | 'uncommon' | 'rare' | 'epic';
-
 // ============== ITEMS ==============
 export type ItemTier = 1 | 2 | 3 | 4;
 export type ItemType = 'weapon' | 'armor';
@@ -110,15 +107,12 @@ export interface ArmoryItem {
 export interface InventoryItem {
   itemId: string;
   quantity: number;
-  rarity: RarityTier;
 }
 
 // ============== EQUIPMENT ==============
 export interface EquippedItems {
   weapon: string | null;   // itemId or null
   armor: string | null;    // itemId or null
-  weaponRarity: RarityTier | null;
-  armorRarity: RarityTier | null;
 }
 
 export interface PlayerStats {
@@ -190,13 +184,6 @@ export interface SellItemRequest {
   wallet: string;
   itemId: string;
   quantity: number;
-  rarity?: RarityTier;
-}
-
-export interface MergeItemRequest {
-  wallet: string;
-  itemId: string;
-  rarity: RarityTier;
 }
 
 export interface UpgradeStationRequest {

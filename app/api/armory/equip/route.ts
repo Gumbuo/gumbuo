@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
-import { ArmorySaveState, EquipmentSlot, RarityTier } from "../../../base/components/armory/types";
+import { ArmorySaveState, EquipmentSlot } from "../../../base/components/armory/types";
 import { getItem } from "../../../base/components/armory/data/items";
 
 const redis = Redis.fromEnv();
@@ -14,8 +14,7 @@ function getSaveKey(wallet: string): string {
 // POST /api/armory/equip - Equip or unequip an item
 export async function POST(request: NextRequest) {
   try {
-    const { wallet, itemId, slot, unequip, rarity: requestRarity } = await request.json();
-    const rarity: RarityTier = requestRarity || 'common';
+    const { wallet, itemId, slot, unequip } = await request.json();
 
     if (!wallet || !slot) {
       return NextResponse.json(
@@ -43,29 +42,21 @@ export async function POST(request: NextRequest) {
 
     // Initialize equipped if missing (migration)
     if (!saveState.equipped) {
-      saveState.equipped = { weapon: null, armor: null, weaponRarity: null, armorRarity: null };
+      saveState.equipped = { weapon: null, armor: null };
     }
-    // Migrate: add rarity fields if missing
-    if (saveState.equipped.weaponRarity === undefined) saveState.equipped.weaponRarity = saveState.equipped.weapon ? 'common' : null;
-    if (saveState.equipped.armorRarity === undefined) saveState.equipped.armorRarity = saveState.equipped.armor ? 'common' : null;
 
     // Handle unequip
     if (unequip) {
       const currentlyEquipped = saveState.equipped[slot as EquipmentSlot];
-      const currentRarityKey = (slot === 'weapon' ? 'weaponRarity' : 'armorRarity') as keyof typeof saveState.equipped;
-      const currentRarity = (saveState.equipped[currentRarityKey] as RarityTier | null) || 'common';
       if (currentlyEquipped) {
-        // Add back to inventory with correct rarity
-        const existingSlot = saveState.inventory.find(
-          (inv) => inv.itemId === currentlyEquipped && (inv.rarity || 'common') === currentRarity
-        );
+        // Add back to inventory
+        const existingSlot = saveState.inventory.find((inv) => inv.itemId === currentlyEquipped);
         if (existingSlot) {
           existingSlot.quantity += 1;
         } else {
-          saveState.inventory.push({ itemId: currentlyEquipped, quantity: 1, rarity: currentRarity });
+          saveState.inventory.push({ itemId: currentlyEquipped, quantity: 1 });
         }
         saveState.equipped[slot as EquipmentSlot] = null;
-        saveState.equipped[currentRarityKey as 'weaponRarity' | 'armorRarity'] = null;
       }
 
       saveState.lastUpdated = Date.now();
@@ -106,10 +97,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if player has this item in inventory (match by rarity too)
-    const inventorySlot = saveState.inventory.find(
-      (inv) => inv.itemId === itemId && (inv.rarity || 'common') === rarity
-    );
+    // Check if player has this item in inventory
+    const inventorySlot = saveState.inventory.find((inv) => inv.itemId === itemId);
     if (!inventorySlot || inventorySlot.quantity <= 0) {
       return NextResponse.json(
         { success: false, error: "Item not in inventory" },
@@ -119,22 +108,17 @@ export async function POST(request: NextRequest) {
 
     // Unequip current item first (if any)
     const currentlyEquipped = saveState.equipped[slot as EquipmentSlot];
-    const rarityKey = (slot === 'weapon' ? 'weaponRarity' : 'armorRarity') as 'weaponRarity' | 'armorRarity';
-    const prevRarity = (saveState.equipped[rarityKey] as RarityTier | null) || 'common';
     if (currentlyEquipped) {
-      const existingSlot = saveState.inventory.find(
-        (inv) => inv.itemId === currentlyEquipped && (inv.rarity || 'common') === prevRarity
-      );
+      const existingSlot = saveState.inventory.find((inv) => inv.itemId === currentlyEquipped);
       if (existingSlot) {
         existingSlot.quantity += 1;
       } else {
-        saveState.inventory.push({ itemId: currentlyEquipped, quantity: 1, rarity: prevRarity });
+        saveState.inventory.push({ itemId: currentlyEquipped, quantity: 1 });
       }
     }
 
-    // Equip new item with rarity
+    // Equip new item
     saveState.equipped[slot as EquipmentSlot] = itemId;
-    saveState.equipped[rarityKey] = rarity;
     inventorySlot.quantity -= 1;
 
     // Remove from inventory if quantity is 0

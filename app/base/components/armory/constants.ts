@@ -1,4 +1,4 @@
-import { ArmoryResources, StationLevels, ArmoryProgress, RawResourceKey, RarityTier } from './types';
+import { ArmoryResources, StationLevels, ArmoryProgress, RawResourceKey } from './types';
 
 // ============== SHOP PRICES ==============
 export const MATERIAL_COSTS: Record<RawResourceKey, number> = {
@@ -38,46 +38,6 @@ export const PROCESSED_ICONS: Record<string, string> = {
   bioAlloy: '🔩',
   quantumCore: '⚛️',
 };
-
-// ============== RARITY ==============
-export const RARITY_NAMES: Record<RarityTier, string> = {
-  common: 'Common',
-  uncommon: 'Uncommon',
-  rare: 'Rare',
-  epic: 'Epic',
-};
-
-export const RARITY_COLORS: Record<RarityTier, string> = {
-  common: '#9ca3af',
-  uncommon: '#60a5fa',
-  rare: '#a78bfa',
-  epic: '#fbbf24',
-};
-
-export const RARITY_STAT_MULTIPLIERS: Record<RarityTier, number> = {
-  common: 1,
-  uncommon: 1.5,
-  rare: 2,
-  epic: 3,
-};
-
-export const RARITY_SELL_MULTIPLIERS: Record<RarityTier, number> = {
-  common: 1,
-  uncommon: 2,
-  rare: 4,
-  epic: 8,
-};
-
-export const MERGE_COST = 50; // AP cost per merge
-
-export const RARITY_UPGRADE_PATH: Record<RarityTier, RarityTier | null> = {
-  common: 'uncommon',
-  uncommon: 'rare',
-  rare: 'epic',
-  epic: null,
-};
-
-export const MERGE_XP_REWARD = 25;
 
 // ============== PROGRESSION ==============
 export const XP_REQUIREMENTS: number[] = [

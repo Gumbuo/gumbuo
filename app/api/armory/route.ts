@@ -48,8 +48,6 @@ function createNewSave(wallet: string): ArmorySaveState {
     equipped: {
       weapon: null,
       armor: null,
-      weaponRarity: null,
-      armorRarity: null,
     },
     playerPosition: {
       x: 0,
@@ -120,30 +118,6 @@ export async function GET(request: NextRequest) {
           { status: 500 }
         );
       }
-    }
-
-    // Migrate inventory items: add rarity field if missing
-    let migrated = false;
-    for (const slot of saveState.inventory) {
-      if (!slot.rarity) {
-        slot.rarity = 'common';
-        migrated = true;
-      }
-    }
-    // Migrate equipped rarity fields
-    if (saveState.equipped) {
-      if (saveState.equipped.weaponRarity === undefined) {
-        saveState.equipped.weaponRarity = saveState.equipped.weapon ? 'common' : null;
-        migrated = true;
-      }
-      if (saveState.equipped.armorRarity === undefined) {
-        saveState.equipped.armorRarity = saveState.equipped.armor ? 'common' : null;
-        migrated = true;
-      }
-    }
-    if (migrated) {
-      saveState.lastUpdated = Date.now();
-      try { await getRedis().set(saveKey, saveState); } catch (_) { /* non-critical */ }
     }
 
     // Check for completed crafting jobs
@@ -278,7 +252,7 @@ export async function PATCH(request: NextRequest) {
     }
     // Initialize equipment/position if missing (migration for existing saves)
     if (!saveState.equipped) {
-      saveState.equipped = { weapon: null, armor: null, weaponRarity: null, armorRarity: null };
+      saveState.equipped = { weapon: null, armor: null };
     }
     if (!saveState.playerPosition) {
       saveState.playerPosition = { x: 0, currentStation: 'plasmaRefinery' };
