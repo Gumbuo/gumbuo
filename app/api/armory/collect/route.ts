@@ -113,14 +113,16 @@ export async function POST(request: NextRequest) {
           const item = getItem(recipe.output.itemId);
           if (item) {
             const existingSlot = saveState.inventory.find(
-              (slot) => slot.itemId === recipe.output.itemId
+              (slot) => slot.itemId === recipe.output.itemId && (slot.rarity || 'common') === 'common'
             );
             if (existingSlot) {
               existingSlot.quantity += recipe.output.quantity;
+              if (!existingSlot.rarity) existingSlot.rarity = 'common';
             } else {
               saveState.inventory.push({
                 itemId: recipe.output.itemId!,
                 quantity: recipe.output.quantity,
+                rarity: 'common',
               });
             }
 

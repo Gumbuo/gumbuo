@@ -1,4 +1,5 @@
-import { ArmoryItem } from '../types';
+import { ArmoryItem, RarityTier } from '../types';
+import { RARITY_STAT_MULTIPLIERS, RARITY_SELL_MULTIPLIERS, RARITY_NAMES } from '../constants';
 
 export const ITEMS: Record<string, ArmoryItem> = {
   // ============== TIER 1 WEAPONS ==============
@@ -150,4 +151,23 @@ export const ARMOR = Object.values(ITEMS).filter(item => item.type === 'armor');
 
 export function getItem(itemId: string): ArmoryItem | undefined {
   return ITEMS[itemId];
+}
+
+export function getItemWithRarity(itemId: string, rarity: RarityTier): ArmoryItem | undefined {
+  const base = ITEMS[itemId];
+  if (!base) return undefined;
+
+  const statMul = RARITY_STAT_MULTIPLIERS[rarity];
+  const sellMul = RARITY_SELL_MULTIPLIERS[rarity];
+
+  return {
+    ...base,
+    name: rarity === 'common' ? base.name : `${RARITY_NAMES[rarity]} ${base.name}`,
+    sellValue: Math.floor(base.sellValue * sellMul),
+    stats: {
+      attack: base.stats.attack ? Math.floor(base.stats.attack * statMul) : undefined,
+      defense: base.stats.defense ? Math.floor(base.stats.defense * statMul) : undefined,
+      special: base.stats.special,
+    },
+  };
 }

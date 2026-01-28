@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ArmorySaveState } from "../../../base/components/armory/types";
+import { ArmorySaveState, RarityTier } from "../../../base/components/armory/types";
 import { getItem } from "../../../base/components/armory/data/items";
+import { RARITY_SELL_MULTIPLIERS } from "../../../base/components/armory/constants";
 import { getRedis, addUserPoints } from "../../lib/points";
 
 const SAVE_KEY_PREFIX = "armory:save:";
@@ -12,7 +13,8 @@ function getSaveKey(wallet: string): string {
 // POST /api/armory/sell - Sell items for AP
 export async function POST(request: NextRequest) {
   try {
-    const { wallet, itemId, quantity } = await request.json();
+    const { wallet, itemId, quantity, rarity: requestRarity } = await request.json();
+    const rarity: RarityTier = requestRarity || 'common';
 
     if (!wallet || !itemId || !quantity || quantity < 1) {
       return NextResponse.json(
@@ -33,9 +35,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find item in inventory
+    // Find item in inventory matching both itemId and rarity
     const inventorySlot = saveState.inventory.find(
-      (slot) => slot.itemId === itemId
+      (slot) => slot.itemId === itemId && (slot.rarity || 'common') === rarity
     );
 
     if (!inventorySlot || inventorySlot.quantity < quantity) {
@@ -54,13 +56,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totalAPEarned = item.sellValue * quantity;
+    const sellMultiplier = RARITY_SELL_MULTIPLIERS[rarity];
+    const totalAPEarned = Math.floor(item.sellValue * sellMultiplier * quantity);
 
     // Remove items from inventory
     inventorySlot.quantity -= quantity;
     if (inventorySlot.quantity <= 0) {
       saveState.inventory = saveState.inventory.filter(
-        (slot) => slot.itemId !== itemId
+        (slot) => !(slot.itemId === itemId && (slot.rarity || 'common') === rarity) || slot.quantity > 0
       );
     }
 
