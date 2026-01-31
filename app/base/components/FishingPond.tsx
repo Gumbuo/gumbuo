@@ -20,6 +20,18 @@ interface FishingData {
   totalFishCaught: number;
   catchLog: CatchEntry[];
   apBalance: number;
+  totalAPEarned: number;
+  totalResourcesEarned: number;
+  totalRareCatches: number;
+}
+
+interface LeaderboardEntry {
+  rank: number;
+  wallet: string;
+  totalCasts: number;
+  totalAPEarned: number;
+  totalResourcesEarned: number;
+  totalRareCatches: number;
 }
 
 interface PlayerLevelInfo {
@@ -39,6 +51,9 @@ export default function FishingPond() {
   const [showReward, setShowReward] = useState(false);
   const [playerLevel, setPlayerLevel] = useState<PlayerLevelInfo | null>(null);
   const [ripple, setRipple] = useState(false);
+  const [countdown, setCountdown] = useState("");
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [playerStats, setPlayerStats] = useState<LeaderboardEntry | null>(null);
 
   const fetchFishingState = useCallback(async () => {
     if (!address) return;
@@ -75,12 +90,47 @@ export default function FishingPond() {
     }
   }, [address]);
 
+  const fetchLeaderboard = useCallback(async () => {
+    if (!address) return;
+    try {
+      const res = await fetch(`/api/fishing/leaderboard?wallet=${address}`);
+      const data = await res.json();
+      if (data.success) {
+        setLeaderboard(data.leaderboard || []);
+        setPlayerStats(data.playerStats || null);
+      }
+    } catch (err) {
+      console.error("Failed to fetch leaderboard:", err);
+    }
+  }, [address]);
+
   useEffect(() => {
     if (address) {
       fetchFishingState();
       fetchPlayerLevel();
+      fetchLeaderboard();
     }
-  }, [address, fetchFishingState, fetchPlayerLevel]);
+  }, [address, fetchFishingState, fetchPlayerLevel, fetchLeaderboard]);
+
+  // Countdown timer to midnight UTC
+  useEffect(() => {
+    function getTimeUntilMidnightUTC(): string {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setUTCDate(midnight.getUTCDate() + 1);
+      midnight.setUTCHours(0, 0, 0, 0);
+      const diff = midnight.getTime() - now.getTime();
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    }
+    setCountdown(getTimeUntilMidnightUTC());
+    const interval = setInterval(() => {
+      setCountdown(getTimeUntilMidnightUTC());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleCast = async () => {
     if (!address || casting || !fishingData || fishingData.castsRemaining <= 0) return;
@@ -104,6 +154,9 @@ export default function FishingPond() {
                 ...prev,
                 castsRemaining: data.data.castsRemaining,
                 totalCasts: data.data.totalCasts,
+                totalAPEarned: data.data.totalAPEarned ?? prev.totalAPEarned,
+                totalResourcesEarned: data.data.totalResourcesEarned ?? prev.totalResourcesEarned,
+                totalRareCatches: data.data.totalRareCatches ?? prev.totalRareCatches,
                 catchLog: data.data.catchLog,
                 apBalance: data.data.apBalance,
               }
@@ -127,6 +180,9 @@ export default function FishingPond() {
           // Re-fetch player level for accurate progress
           fetchPlayerLevel();
         }
+
+        // Re-fetch leaderboard
+        fetchLeaderboard();
 
         // Show reward after brief delay for animation
         setTimeout(() => {
@@ -290,6 +346,18 @@ export default function FishingPond() {
               {fishingData?.totalFishCaught ?? 0}
             </span>
           </div>
+        </div>
+
+        {/* Countdown timer */}
+        <div
+          style={{
+            marginBottom: 16,
+            fontSize: 12,
+            textAlign: "center",
+            color: castsRemaining === 0 ? THEME.colors.warning : THEME.colors.secondary,
+          }}
+        >
+          {castsRemaining === 0 ? `Resets in ${countdown}` : `Daily reset in ${countdown}`}
         </div>
 
         {/* Pond */}
@@ -570,6 +638,173 @@ export default function FishingPond() {
                 )}
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Your Stats */}
+      {fishingData && (
+        <div
+          style={{
+            background: THEME.colors.panel,
+            border: THEME.borders.panel,
+            borderRadius: 12,
+            padding: 16,
+            marginTop: 16,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 14,
+              color: THEME.colors.primary,
+              fontWeight: "bold",
+              marginBottom: 12,
+            }}
+          >
+            Your Stats
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+            }}
+          >
+            {[
+              { label: "Total Casts", value: fishingData.totalCasts, icon: "🎣" },
+              { label: "AP Earned", value: (fishingData.totalAPEarned ?? 0).toLocaleString(), icon: "✨" },
+              { label: "Resources", value: fishingData.totalResourcesEarned ?? 0, icon: "📦" },
+              { label: "Rare Catches", value: fishingData.totalRareCatches ?? 0, icon: "★" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                style={{
+                  padding: "10px 12px",
+                  background: "rgba(102,252,241,0.05)",
+                  borderRadius: 6,
+                  border: "1px solid rgba(69,162,158,0.2)",
+                }}
+              >
+                <div style={{ fontSize: 11, color: THEME.colors.secondary, marginBottom: 4 }}>
+                  {stat.icon} {stat.label}
+                </div>
+                <div style={{ fontSize: 16, color: THEME.colors.primary, fontWeight: "bold" }}>
+                  {stat.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Leaderboard */}
+      <div
+        style={{
+          background: THEME.colors.panel,
+          border: THEME.borders.panel,
+          borderRadius: 12,
+          padding: 16,
+          marginTop: 16,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 14,
+            color: THEME.colors.primary,
+            fontWeight: "bold",
+            marginBottom: 12,
+          }}
+        >
+          Fishing Leaderboard
+        </div>
+        {leaderboard.length === 0 ? (
+          <div style={{ fontSize: 13, color: THEME.colors.locked, textAlign: "center", padding: 20 }}>
+            No entries yet. Be the first to cast!
+          </div>
+        ) : (
+          <div>
+            {/* Header row */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "40px 1fr 80px 80px",
+                gap: 8,
+                padding: "6px 12px",
+                fontSize: 11,
+                color: THEME.colors.secondary,
+                borderBottom: "1px solid rgba(69,162,158,0.2)",
+                marginBottom: 4,
+              }}
+            >
+              <span>#</span>
+              <span>Wallet</span>
+              <span style={{ textAlign: "right" }}>Casts</span>
+              <span style={{ textAlign: "right" }}>AP Earned</span>
+            </div>
+            {/* Rows */}
+            {leaderboard.slice(0, 10).map((entry) => {
+              const isPlayer = address && entry.wallet === address.toLowerCase();
+              return (
+                <div
+                  key={entry.wallet}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "40px 1fr 80px 80px",
+                    gap: 8,
+                    padding: "8px 12px",
+                    fontSize: 13,
+                    borderRadius: 6,
+                    background: isPlayer ? "rgba(102,252,241,0.1)" : "transparent",
+                    border: isPlayer ? `1px solid ${THEME.colors.primary}` : "1px solid transparent",
+                    color: isPlayer ? THEME.colors.primary : THEME.colors.text,
+                    fontWeight: isPlayer ? "bold" : "normal",
+                  }}
+                >
+                  <span>{entry.rank}</span>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {entry.wallet.slice(0, 6)}...{entry.wallet.slice(-4)}
+                  </span>
+                  <span style={{ textAlign: "right" }}>{entry.totalCasts}</span>
+                  <span style={{ textAlign: "right" }}>{entry.totalAPEarned.toLocaleString()}</span>
+                </div>
+              );
+            })}
+            {/* Show player row if not in top 10 */}
+            {playerStats && playerStats.rank > 10 && (
+              <>
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: THEME.colors.locked,
+                    fontSize: 12,
+                    padding: "4px 0",
+                  }}
+                >
+                  ...
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "40px 1fr 80px 80px",
+                    gap: 8,
+                    padding: "8px 12px",
+                    fontSize: 13,
+                    borderRadius: 6,
+                    background: "rgba(102,252,241,0.1)",
+                    border: `1px solid ${THEME.colors.primary}`,
+                    color: THEME.colors.primary,
+                    fontWeight: "bold",
+                  }}
+                >
+                  <span>{playerStats.rank}</span>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {playerStats.wallet.slice(0, 6)}...{playerStats.wallet.slice(-4)}
+                  </span>
+                  <span style={{ textAlign: "right" }}>{playerStats.totalCasts}</span>
+                  <span style={{ textAlign: "right" }}>{playerStats.totalAPEarned.toLocaleString()}</span>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

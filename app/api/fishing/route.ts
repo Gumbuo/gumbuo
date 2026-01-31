@@ -5,6 +5,7 @@ import { ArmorySaveState } from "../../base/components/armory/types";
 
 const FISHING_KEY_PREFIX = "gumbuo:fishing:";
 const ARMORY_SAVE_PREFIX = "armory:save:";
+const FISHING_LEADERBOARD_KEY = "gumbuo:fishing:leaderboard";
 const MAX_CASTS_PER_DAY = 20;
 const XP_PER_CAST = 10;
 
@@ -14,6 +15,9 @@ interface FishingState {
   totalFishCaught: number;
   lastCastDate: string;
   catchLog: CatchEntry[];
+  totalAPEarned: number;
+  totalResourcesEarned: number;
+  totalRareCatches: number;
 }
 
 interface CatchEntry {
@@ -84,7 +88,18 @@ function getDefaultState(): FishingState {
     totalFishCaught: 0,
     lastCastDate: getTodayDate(),
     catchLog: [],
+    totalAPEarned: 0,
+    totalResourcesEarned: 0,
+    totalRareCatches: 0,
   };
+}
+
+// Ensure existing states have the new cumulative fields
+function migrateCumulativeFields(state: FishingState): FishingState {
+  if (state.totalAPEarned === undefined) state.totalAPEarned = 0;
+  if (state.totalResourcesEarned === undefined) state.totalResourcesEarned = 0;
+  if (state.totalRareCatches === undefined) state.totalRareCatches = 0;
+  return state;
 }
 
 // Reset casts if it's a new day
@@ -113,6 +128,7 @@ export async function GET(request: NextRequest) {
       state = getDefaultState();
       await redis.set(key, state);
     } else {
+      state = migrateCumulativeFields(state);
       state = checkDailyReset(state);
     }
 
@@ -148,6 +164,7 @@ export async function POST(request: NextRequest) {
     if (!state) {
       state = getDefaultState();
     } else {
+      state = migrateCumulativeFields(state);
       state = checkDailyReset(state);
     }
 
@@ -200,6 +217,16 @@ export async function POST(request: NextRequest) {
     state.totalCasts++;
     state.totalFishCaught++;
 
+    // Track cumulative stats
+    if (loot.type === "ap") {
+      state.totalAPEarned += loot.rolledAmount;
+    } else if (loot.type === "resource") {
+      state.totalResourcesEarned += loot.rolledAmount;
+    }
+    if (loot.rare) {
+      state.totalRareCatches++;
+    }
+
     const catchEntry: CatchEntry = {
       reward: loot.type === "ap" ? "ap" : loot.resourceKey || "unknown",
       icon: loot.icon,
@@ -216,6 +243,9 @@ export async function POST(request: NextRequest) {
 
     await redis.set(key, state);
 
+    // Update leaderboard sorted set
+    await redis.zincrby(FISHING_LEADERBOARD_KEY, 1, normalizedWallet);
+
     return NextResponse.json({
       success: true,
       data: {
@@ -223,6 +253,9 @@ export async function POST(request: NextRequest) {
         castsRemaining: state.castsRemaining,
         maxCasts: MAX_CASTS_PER_DAY,
         totalCasts: state.totalCasts,
+        totalAPEarned: state.totalAPEarned,
+        totalResourcesEarned: state.totalResourcesEarned,
+        totalRareCatches: state.totalRareCatches,
         catchLog: state.catchLog,
         apBalance: newApBalance,
         playerLevel: {
