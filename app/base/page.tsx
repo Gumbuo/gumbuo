@@ -262,11 +262,11 @@ export default function BasePage() {
 
   const games = {
     fighters: { title: "Gumbuo Fighters", component: <GumbuoFighters />, hidden: true },
-    invasion: { title: "Gumbuo Invasion", src: "/gumbuo-invasion.html" },
-    dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
+    invasion: { title: "Alien Invasion", src: "/gumbuo-invasion.html" },
+    dungeon: { title: "Alien Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
     armory: { title: "Alien Armory", component: <AlienArmory /> },
-    fishing: { title: "Fishing Pond", component: <FishingPond /> },
+    fishing: { title: "Alien Points Pond", component: <FishingPond /> },
   };
 
   return (

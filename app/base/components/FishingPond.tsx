@@ -213,7 +213,7 @@ export default function FishingPond() {
         }}
       >
         <div style={{ fontSize: 48, marginBottom: 20 }}>🎣</div>
-        <div style={{ fontSize: 18, marginBottom: 10 }}>ALIEN FISHING POND</div>
+        <div style={{ fontSize: 18, marginBottom: 10 }}>ALIEN POINTS POND</div>
         <div style={{ color: THEME.colors.text, fontSize: 14 }}>
           Connect your wallet to start fishing
         </div>
@@ -234,7 +234,7 @@ export default function FishingPond() {
           color: THEME.colors.primary,
         }}
       >
-        <div style={{ fontSize: 18 }}>Loading fishing pond...</div>
+        <div style={{ fontSize: 18 }}>Loading alien points pond...</div>
       </div>
     );
   }
@@ -271,7 +271,7 @@ export default function FishingPond() {
       >
         <div>
           <div style={{ fontSize: 18, color: THEME.colors.primary, fontWeight: "bold" }}>
-            🎣 ALIEN FISHING POND
+            🎣 ALIEN POINTS POND
           </div>
         </div>
         {playerLevel && (

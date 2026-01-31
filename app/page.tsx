@@ -381,10 +381,10 @@ export default function MothershipPage() {
               }}>
                 {[
                   { href: '/base?game=catacombs', img: '/greenportal.png', label: 'Alien Catacombs', color: '#00ff41' },
-                  { href: '/base?game=invasion', img: '/blueportal.png', label: 'Gumbuo Invasion', color: '#00d9ff' },
-                  { href: '/base?game=dungeon', img: '/redportal.png', label: 'Dungeon Crawler', color: '#ff003c' },
+                  { href: '/base?game=invasion', img: '/blueportal.png', label: 'Alien Invasion', color: '#00d9ff' },
+                  { href: '/base?game=dungeon', img: '/redportal.png', label: 'Alien Crawler', color: '#ff003c' },
                   { href: '/base?game=armory', img: '/greyportal.png', label: 'Alien Armory', color: '#888888' },
-                  { href: '/base?game=fishing', img: '/purpleportal.png', label: 'Fishing Pond', color: '#b44dff' },
+                  { href: '/base?game=fishing', img: '/purpleportal.png', label: 'Alien Points Pond', color: '#b44dff' },
                 ].map((portal) => (
                   <Link
                     key={portal.label}
