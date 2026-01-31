@@ -52,7 +52,7 @@ export default function BasePage() {
         }
       }
 
-      // Handle alien points claim from Gumbuo Invasion game
+      // Handle alien points claim from Alien Invasion game
       if (event.data.type === 'INVASION_CLAIM_AP') {
         console.log('📨 Received INVASION_CLAIM_AP message:', event.data);
         const pointsToAward = event.data.alienPoints || 0;
@@ -60,10 +60,7 @@ export default function BasePage() {
 
         // Check if wallet is connected
         if (!address) {
-          console.error('❌ No wallet connected! Address:', address);
-          // Send failure message back to iframe
           const iframe = document.querySelector('iframe');
-          console.log('Found iframe:', iframe);
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.postMessage({
               type: 'INVASION_CLAIM_FAILED',
@@ -73,21 +70,35 @@ export default function BasePage() {
           return;
         }
 
-        console.log('🎮 Gumbuo Invasion claim! Awarding', pointsToAward, 'AP to', address, '| Enemies killed:', enemiesKilled);
-        console.log('addPoints function available?', typeof addPoints === 'function');
+        // Check daily play limit
+        try {
+          const playsRes = await fetch('/api/game-plays', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: address, game: 'invasion' }),
+          });
+          const playsData = await playsRes.json();
+          if (!playsData.success) {
+            const iframe = document.querySelector('iframe');
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({
+                type: 'INVASION_CLAIM_FAILED',
+                error: playsData.error || 'Daily play limit reached!'
+              }, '*');
+            }
+            return;
+          }
+        } catch (err) {
+          console.error('Failed to check play limit:', err);
+        }
 
         try {
-          console.log('⏳ Calling addPoints...');
-          // Use 'arena' as source - API only accepts: wheel, faucet, arena, boss, staking
           const success = await addPoints(address, pointsToAward, 'arena');
-          console.log('addPoints result:', success);
 
           const iframe = document.querySelector('iframe');
-          console.log('Found iframe for response:', iframe);
 
           if (iframe && iframe.contentWindow) {
             if (success) {
-              console.log('✅ Successfully awarded', pointsToAward, 'AP from', enemiesKilled, 'enemy kills');
 
               // Track Invasion game stats
               try {
@@ -152,9 +163,8 @@ export default function BasePage() {
         }
       }
 
-      // Handle alien points claim from Dungeon Crawler game
+      // Handle alien points claim from Alien Crawler game
       if (event.data.type === 'DUNGEON_CLAIM_AP') {
-        console.log('📨 Received DUNGEON_CLAIM_AP message:', event.data);
         const pointsToAward = event.data.alienPoints || 0;
         const killsCount = event.data.kills || 0;
         const currentFloor = event.data.floor || 1;
@@ -162,10 +172,7 @@ export default function BasePage() {
 
         // Check if wallet is connected
         if (!address) {
-          console.error('❌ No wallet connected! Address:', address);
-          // Send failure message back to iframe
           const iframe = document.querySelector('iframe');
-          console.log('Found iframe:', iframe);
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.postMessage({
               type: 'DUNGEON_CLAIM_FAILED',
@@ -175,21 +182,35 @@ export default function BasePage() {
           return;
         }
 
-        console.log('🎮 Dungeon Crawler claim! Awarding', pointsToAward, 'AP to', address, '| Kills:', killsCount);
-        console.log('addPoints function available?', typeof addPoints === 'function');
+        // Check daily play limit
+        try {
+          const playsRes = await fetch('/api/game-plays', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: address, game: 'dungeon' }),
+          });
+          const playsData = await playsRes.json();
+          if (!playsData.success) {
+            const iframe = document.querySelector('iframe');
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({
+                type: 'DUNGEON_CLAIM_FAILED',
+                error: playsData.error || 'Daily play limit reached!'
+              }, '*');
+            }
+            return;
+          }
+        } catch (err) {
+          console.error('Failed to check play limit:', err);
+        }
 
         try {
-          console.log('⏳ Calling addPoints...');
-          // Use 'arena' as source - API only accepts: wheel, faucet, arena, boss, staking
           const success = await addPoints(address, pointsToAward, 'arena');
-          console.log('addPoints result:', success);
 
           const iframe = document.querySelector('iframe');
-          console.log('Found iframe for response:', iframe);
 
           if (iframe && iframe.contentWindow) {
             if (success) {
-              console.log('✅ Successfully awarded', pointsToAward, 'AP from', killsCount, 'kills');
 
               // Track Dungeon Crawler game stats
               try {
