@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
+import { addPlayerXP } from "../lib/playerLevel";
 
 // Lazy initialization to avoid build-time errors
 let _redis: Redis | null = null;
@@ -146,7 +147,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss' && source !== 'staking' && source !== 'arcade') {
+    if (source !== 'wheel' && source !== 'faucet' && source !== 'arena' && source !== 'boss' && source !== 'staking') {
       return NextResponse.json(
         { success: false, error: "Invalid source" },
         { status: 400 }
@@ -185,11 +186,25 @@ export async function POST(request: NextRequest) {
     // Update cache
     poolCache = { data: pool, timestamp: Date.now() };
 
+    // Award player XP for earning AP (1 XP per 10 AP earned)
+    const playerXP = Math.floor(points / 10);
+    let playerXPResult = null;
+    if (playerXP > 0) {
+      playerXPResult = await addPlayerXP(normalizedWallet, playerXP, "earn");
+    }
+
     return NextResponse.json({
       success: true,
       pool,
       userBalance: newBalance,
       awarded: points,
+      playerLevel: playerXPResult ? {
+        level: playerXPResult.levelData.level,
+        xp: playerXPResult.levelData.xp,
+        xpAdded: playerXPResult.xpAdded,
+        levelsGained: playerXPResult.levelsGained,
+        apRewarded: playerXPResult.apRewarded,
+      } : undefined,
     });
   } catch (error) {
     console.error("Error awarding points:", error);

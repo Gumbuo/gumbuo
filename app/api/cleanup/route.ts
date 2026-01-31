@@ -14,7 +14,6 @@ const KEYS = {
   LEADERBOARD: "gumbuo:leaderboard",
   MAZE_LEADERBOARD: "gumbuo:maze_leaderboard",
   ALIEN_SALES: "gumbuo:alien_sales",
-  ARCADE_LEADERBOARD: "gumbuo:arcade_leaderboard_cache",
 };
 
 // GET /api/cleanup - Show current storage stats
@@ -101,9 +100,6 @@ export async function POST(request: NextRequest) {
         cleaned.push("maze_leaderboard (trimmed to 50)");
       }
 
-      // Clear arcade leaderboard cache (will regenerate)
-      await redis.del(KEYS.ARCADE_LEADERBOARD);
-      cleaned.push("arcade_leaderboard_cache");
     }
 
     if (action === "sales" || action === "all") {
