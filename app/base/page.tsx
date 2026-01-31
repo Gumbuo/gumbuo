@@ -11,6 +11,7 @@ import { useCosmicSound } from "../hooks/useCosmicSound";
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
 const ArcadeGames = dynamic(() => import("./components/ArcadeGames"), { ssr: false });
 const AlienArmory = dynamic(() => import("./components/AlienArmory"), { ssr: false });
+const FishingPond = dynamic(() => import("./components/FishingPond"), { ssr: false });
 
 export default function BasePage() {
   const searchParams = useSearchParams();
@@ -266,6 +267,7 @@ export default function BasePage() {
     dungeon: { title: "Dungeon Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
     armory: { title: "Alien Armory", component: <AlienArmory /> },
+    fishing: { title: "Fishing Pond", component: <FishingPond /> },
     arcade: { title: "Free Arcade", component: <ArcadeGames /> },
   };
 
