@@ -374,222 +374,71 @@ export default function MothershipPage() {
               {/* Portal Grid */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                maxWidth: '700px',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                maxWidth: '900px',
                 margin: '50px auto',
-                gap: '30px'
+                gap: '25px'
               }}>
-                {/* Blue Portal - Base Games */}
-                <Link
-                  href="/base"
-                  onMouseEnter={() => playSound('hover')}
-                  onClick={() => playSound('click')}
-                  style={{
-                    background: 'rgba(11, 12, 16, 0.7)',
-                    border: '2px solid #45a29e',
-                    borderRadius: '15px',
-                    padding: '20px',
-                    transition: 'transform 0.3s, background 0.3s',
-                    cursor: 'pointer',
-                    textDecoration: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    backdropFilter: 'blur(5px)',
-                    color: '#00d9ff'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
-                  }}
-                >
-                  <img src="/blueportal.png" alt="Base Games" style={{
-                    width: '100%',
-                    maxWidth: '180px',
-                    height: 'auto',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 30px #00d9ff',
-                    border: '4px solid rgba(255,255,255,0.1)',
-                    display: 'block',
-                    margin: '0 auto 15px auto'
-                  }} />
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '5px 15px',
-                    background: '#000',
-                    border: '1px solid #00d9ff',
-                    borderRadius: '5px',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
-                    textShadow: '0 0 5px #00d9ff',
-                    textTransform: 'uppercase'
-                  }}>
-                    Base Games
-                  </span>
-                </Link>
-
-                {/* Red Portal - Credits */}
-                <Link
-                  href="/credits"
-                  onMouseEnter={() => playSound('hover')}
-                  onClick={() => playSound('click')}
-                  style={{
-                    background: 'rgba(11, 12, 16, 0.7)',
-                    border: '2px solid #45a29e',
-                    borderRadius: '15px',
-                    padding: '20px',
-                    transition: 'transform 0.3s, background 0.3s',
-                    cursor: 'pointer',
-                    textDecoration: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    backdropFilter: 'blur(5px)',
-                    color: '#ff003c'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
-                  }}
-                >
-                  <img src="/redportal.png" alt="Credits" style={{
-                    width: '100%',
-                    maxWidth: '180px',
-                    height: 'auto',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 30px #ff003c',
-                    border: '4px solid rgba(255,255,255,0.1)',
-                    display: 'block',
-                    margin: '0 auto 15px auto'
-                  }} />
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '5px 15px',
-                    background: '#000',
-                    border: '1px solid #ff003c',
-                    borderRadius: '5px',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
-                    textShadow: '0 0 5px #ff003c',
-                    textTransform: 'uppercase'
-                  }}>
-                    Credits
-                  </span>
-                </Link>
-
-                {/* Grey Portal - Alien Armory */}
-                <Link
-                  href="/base?game=armory"
-                  onMouseEnter={() => playSound('hover')}
-                  onClick={() => playSound('click')}
-                  style={{
-                    background: 'rgba(11, 12, 16, 0.7)',
-                    border: '2px solid #45a29e',
-                    borderRadius: '15px',
-                    padding: '20px',
-                    transition: 'transform 0.3s, background 0.3s',
-                    cursor: 'pointer',
-                    textDecoration: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    backdropFilter: 'blur(5px)',
-                    color: '#888888'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
-                  }}
-                >
-                  <img src="/greyportal.png" alt="Alien Armory" style={{
-                    width: '100%',
-                    maxWidth: '180px',
-                    height: 'auto',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 30px #888888',
-                    border: '4px solid rgba(255,255,255,0.1)',
-                    display: 'block',
-                    margin: '0 auto 15px auto'
-                  }} />
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '5px 15px',
-                    background: '#000',
-                    border: '1px solid #888888',
-                    borderRadius: '5px',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
-                    textShadow: '0 0 5px #888888',
-                    textTransform: 'uppercase'
-                  }}>
-                    Alien Armory
-                  </span>
-                </Link>
-
-                {/* Green Portal - Alien Catacombs */}
-                <Link
-                  href="/base?game=catacombs"
-                  onMouseEnter={() => playSound('hover')}
-                  onClick={() => playSound('click')}
-                  style={{
-                    background: 'rgba(11, 12, 16, 0.7)',
-                    border: '2px solid #45a29e',
-                    borderRadius: '15px',
-                    padding: '20px',
-                    transition: 'transform 0.3s, background 0.3s',
-                    cursor: 'pointer',
-                    textDecoration: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    backdropFilter: 'blur(5px)',
-                    color: '#00ff41'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
-                  }}
-                >
-                  <img src="/greenportal.png" alt="Alien Catacombs" style={{
-                    width: '100%',
-                    maxWidth: '180px',
-                    height: 'auto',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 30px #00ff41',
-                    border: '4px solid rgba(255,255,255,0.1)',
-                    display: 'block',
-                    margin: '0 auto 15px auto'
-                  }} />
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '5px 15px',
-                    background: '#000',
-                    border: '1px solid #00ff41',
-                    borderRadius: '5px',
-                    fontSize: '1.1rem',
-                    fontWeight: 900,
-                    textShadow: '0 0 5px #00ff41',
-                    textTransform: 'uppercase'
-                  }}>
-                    Alien Catacombs
-                  </span>
-                </Link>
+                {[
+                  { href: '/base?game=catacombs', img: '/greenportal.png', label: 'Alien Catacombs', color: '#00ff41' },
+                  { href: '/base?game=invasion', img: '/blueportal.png', label: 'Gumbuo Invasion', color: '#00d9ff' },
+                  { href: '/base?game=dungeon', img: '/redportal.png', label: 'Dungeon Crawler', color: '#ff003c' },
+                  { href: '/base?game=armory', img: '/greyportal.png', label: 'Alien Armory', color: '#888888' },
+                  { href: '/base?game=fishing', img: '/purpleportal.png', label: 'Fishing Pond', color: '#b44dff' },
+                ].map((portal) => (
+                  <Link
+                    key={portal.label}
+                    href={portal.href}
+                    onMouseEnter={() => playSound('hover')}
+                    onClick={() => playSound('click')}
+                    style={{
+                      background: 'rgba(11, 12, 16, 0.7)',
+                      border: '2px solid #45a29e',
+                      borderRadius: '15px',
+                      padding: '20px',
+                      transition: 'transform 0.3s, background 0.3s',
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      backdropFilter: 'blur(5px)',
+                      color: portal.color
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.style.background = 'rgba(11, 12, 16, 0.9)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.background = 'rgba(11, 12, 16, 0.7)';
+                    }}
+                  >
+                    <img src={portal.img} alt={portal.label} style={{
+                      width: '100%',
+                      maxWidth: '160px',
+                      height: 'auto',
+                      borderRadius: '50%',
+                      boxShadow: `0 0 30px ${portal.color}`,
+                      border: '4px solid rgba(255,255,255,0.1)',
+                      display: 'block',
+                      margin: '0 auto 15px auto'
+                    }} />
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '5px 15px',
+                      background: '#000',
+                      border: `1px solid ${portal.color}`,
+                      borderRadius: '5px',
+                      fontSize: '1rem',
+                      fontWeight: 900,
+                      textShadow: `0 0 5px ${portal.color}`,
+                      textTransform: 'uppercase'
+                    }}>
+                      {portal.label}
+                    </span>
+                  </Link>
+                ))}
               </div>
             </div>
           )}
