@@ -242,9 +242,17 @@ func melee_attack():
 	set_animation("cross-punch")
 
 	# Check for enemies in melee range
+	var hit_something = false
 	for body in melee_area.get_overlapping_bodies():
 		if body != self and body.has_method("take_damage"):
 			body.take_damage(melee_damage, self)
+			hit_something = true
+
+	# Screen shake if we hit something
+	if hit_something:
+		var camera = get_viewport().get_camera_3d()
+		if camera and camera.has_method("melee_shake"):
+			camera.melee_shake()
 
 func take_damage(amount: int, attacker = null):
 	if is_dead:
@@ -258,12 +266,23 @@ func take_damage(amount: int, attacker = null):
 	await get_tree().create_timer(0.1).timeout
 	sprite.modulate = Color.WHITE
 
+	# Screen shake on hit
+	var camera = get_viewport().get_camera_3d()
+	if camera and camera.has_method("hit_shake"):
+		camera.hit_shake()
+
 	if health <= 0:
 		die()
 
 func die():
 	is_dead = true
 	died.emit()
+
+	# Big screen shake on death
+	var camera = get_viewport().get_camera_3d()
+	if camera and camera.has_method("explosion_shake"):
+		camera.explosion_shake()
+
 	# Respawn after delay
 	await get_tree().create_timer(2.0).timeout
 	respawn()

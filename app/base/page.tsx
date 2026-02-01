@@ -286,6 +286,7 @@ export default function BasePage() {
     invasion: { title: "Alien Invasion", src: "/gumbuo-invasion.html" },
     dungeon: { title: "Alien Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
+    arena: { title: "Alien Arena", src: "/alien-arena.html" },
     armory: { title: "Alien Armory", component: <AlienArmory /> },
     fishing: { title: "Alien Points Pond", component: <FishingPond /> },
   };
@@ -414,7 +415,7 @@ export default function BasePage() {
             return (
               <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                 {/* Alpha Build Notice for Catacombs */}
-                {selectedGame === "catacombs" && (
+                {(selectedGame === "catacombs" || selectedGame === "arena") && (
                   <div style={{
                     position: 'absolute',
                     top: '10px',
