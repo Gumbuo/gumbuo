@@ -50,11 +50,17 @@ export async function POST(request: NextRequest) {
       const currentlyEquipped = saveState.equipped[slot as EquipmentSlot];
       if (currentlyEquipped) {
         // Add back to inventory
-        const existingSlot = saveState.inventory.find((inv) => inv.itemId === currentlyEquipped);
+        const existingSlot = saveState.inventory.find(
+          (inv) => inv.itemId === currentlyEquipped.itemId && inv.rarity === currentlyEquipped.rarity
+        );
         if (existingSlot) {
           existingSlot.quantity += 1;
         } else {
-          saveState.inventory.push({ itemId: currentlyEquipped, quantity: 1 });
+          saveState.inventory.push({
+            itemId: currentlyEquipped.itemId,
+            quantity: 1,
+            rarity: currentlyEquipped.rarity,
+          });
         }
         saveState.equipped[slot as EquipmentSlot] = null;
       }
@@ -109,16 +115,25 @@ export async function POST(request: NextRequest) {
     // Unequip current item first (if any)
     const currentlyEquipped = saveState.equipped[slot as EquipmentSlot];
     if (currentlyEquipped) {
-      const existingSlot = saveState.inventory.find((inv) => inv.itemId === currentlyEquipped);
+      const existingSlot = saveState.inventory.find(
+        (inv) => inv.itemId === currentlyEquipped.itemId && inv.rarity === currentlyEquipped.rarity
+      );
       if (existingSlot) {
         existingSlot.quantity += 1;
       } else {
-        saveState.inventory.push({ itemId: currentlyEquipped, quantity: 1 });
+        saveState.inventory.push({
+          itemId: currentlyEquipped.itemId,
+          quantity: 1,
+          rarity: currentlyEquipped.rarity,
+        });
       }
     }
 
-    // Equip new item
-    saveState.equipped[slot as EquipmentSlot] = itemId;
+    // Equip new item - use the rarity from the inventory slot
+    saveState.equipped[slot as EquipmentSlot] = {
+      itemId,
+      rarity: inventorySlot.rarity,
+    };
     inventorySlot.quantity -= 1;
 
     // Remove from inventory if quantity is 0

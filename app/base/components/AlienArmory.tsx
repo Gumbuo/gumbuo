@@ -30,6 +30,16 @@ import {
 
 type ModalType = "shop" | "inventory" | "crafting" | "none";
 
+interface PlayerLevelInfo {
+  level: number;
+  title: string;
+  xp: number;
+  xpForCurrentLevel: number;
+  xpForNextLevel: number;
+  progressPercent: number;
+  totalXpEarned: number;
+}
+
 export default function AlienArmory() {
   const { address, isConnected } = useAccount();
   const [saveState, setSaveState] = useState<ArmorySaveState | null>(null);
@@ -40,6 +50,7 @@ export default function AlienArmory() {
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
   const [completedJobsReady, setCompletedJobsReady] = useState(0);
   const [showRecipeChart, setShowRecipeChart] = useState(false);
+  const [playerLevel, setPlayerLevel] = useState<PlayerLevelInfo | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [, setTick] = useState(0); // Force re-render for timers
 
@@ -71,6 +82,13 @@ export default function AlienArmory() {
       if (apData.success) {
         setApBalance(apData.userBalance);
       }
+
+      // Fetch player level
+      const levelResponse = await fetch(`/api/player-level?wallet=${address}`);
+      const levelData = await levelResponse.json();
+      if (levelData.success) {
+        setPlayerLevel(levelData.data);
+      }
     } catch (error) {
       console.error("Failed to load save:", error);
       showNotification("Failed to load game data", "error");
@@ -88,6 +106,24 @@ export default function AlienArmory() {
   const showNotification = (message: string, type: "success" | "error" | "info" = "info") => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  // Refresh player level from API
+  const refreshPlayerLevel = async () => {
+    if (!address) return;
+    try {
+      const res = await fetch(`/api/player-level?wallet=${address}`);
+      const data = await res.json();
+      if (data.success) setPlayerLevel(data.data);
+    } catch {}
+  };
+
+  // Check for player level-up in API response and show notification
+  const handlePlayerLevelResponse = (plData: { levelsGained?: number; level?: number; apRewarded?: number }) => {
+    if (plData?.levelsGained && plData.levelsGained > 0) {
+      showNotification(`LEVEL UP! Player Level ${plData.level}! +${plData.apRewarded} AP bonus`, "success");
+    }
+    refreshPlayerLevel();
   };
 
   // Shop: Buy materials
@@ -110,6 +146,7 @@ export default function AlienArmory() {
         setSaveState((prev) => prev ? { ...prev, resources: data.data.resources } : null);
         setApBalance(data.data.newAPBalance);
         showNotification(`Purchased ${quantity}x ${MATERIAL_NAMES[resourceId]}!`, "success");
+        if (data.data.playerLevel) handlePlayerLevelResponse(data.data.playerLevel);
       } else {
         showNotification(data.error || "Purchase failed", "error");
       }
@@ -167,6 +204,7 @@ export default function AlienArmory() {
         // Reload to get updated queues
         loadSaveState();
         showNotification(`Sped up! -${data.data.apSpent} AP`, "success");
+        if (data.data.playerLevel) handlePlayerLevelResponse(data.data.playerLevel);
       } else {
         showNotification(data.error || "Failed to speed up", "error");
       }
@@ -190,6 +228,7 @@ export default function AlienArmory() {
         loadSaveState();
         const itemNames = data.data.collected.map((c: { recipeName: string }) => c.recipeName).join(", ");
         showNotification(`Collected: ${itemNames}! +${data.data.totalXP} XP`, "success");
+        if (data.data.playerLevel) handlePlayerLevelResponse(data.data.playerLevel);
       } else if (data.data.collected.length === 0) {
         showNotification("No completed crafts to collect", "info");
       } else {
@@ -215,6 +254,7 @@ export default function AlienArmory() {
         setSaveState((prev) => prev ? { ...prev, inventory: data.data.inventory } : null);
         setApBalance(data.data.newAPBalance);
         showNotification(`Sold! +${data.data.apEarned} AP`, "success");
+        if (data.data.playerLevel) handlePlayerLevelResponse(data.data.playerLevel);
       } else {
         showNotification(data.error || "Failed to sell", "error");
       }
@@ -238,6 +278,7 @@ export default function AlienArmory() {
         setSaveState((prev) => prev ? { ...prev, stationLevels: data.data.stationLevels } : null);
         setApBalance(data.data.newAPBalance);
         showNotification(`Upgraded ${STATIONS[stationId].name} to Level ${data.data.newLevel}!`, "success");
+        if (data.data.playerLevel) handlePlayerLevelResponse(data.data.playerLevel);
       } else {
         showNotification(data.error || "Failed to upgrade", "error");
       }
@@ -467,6 +508,46 @@ export default function AlienArmory() {
           alignItems: "center",
           gap: "16px",
         }}>
+          {/* Player Level Bar */}
+          {playerLevel && (
+            <div style={{
+              background: THEME.colors.panel,
+              border: THEME.borders.panel,
+              borderRadius: "8px",
+              padding: "12px 20px",
+              minWidth: "200px",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: THEME.colors.text, fontSize: "12px" }}>PLAYER LEVEL</span>
+                <span style={{ color: "#facc15", fontSize: "14px", fontWeight: "bold" }}>
+                  Lv.{playerLevel.level}
+                </span>
+              </div>
+              <div style={{ color: "#facc15", fontSize: "13px", fontWeight: "bold", marginTop: "2px" }}>
+                {playerLevel.title}
+              </div>
+              <div style={{
+                width: "100%",
+                height: "8px",
+                background: "rgba(250, 204, 21, 0.15)",
+                borderRadius: "4px",
+                marginTop: "6px",
+                overflow: "hidden",
+              }}>
+                <div style={{
+                  width: `${playerLevel.progressPercent}%`,
+                  height: "100%",
+                  background: "linear-gradient(135deg, #facc15, #f59e0b)",
+                  transition: "width 0.5s ease",
+                  borderRadius: "4px",
+                }} />
+              </div>
+              <div style={{ fontSize: "11px", color: THEME.colors.text, marginTop: "3px" }}>
+                {playerLevel.xp.toLocaleString()} / {playerLevel.xpForNextLevel.toLocaleString()} XP
+              </div>
+            </div>
+          )}
+
           <div style={{
             background: THEME.colors.panel,
             border: THEME.borders.panel,
@@ -1085,7 +1166,7 @@ export default function AlienArmory() {
                 }}>
                   <div style={{ fontSize: "10px", color: THEME.colors.secondary, marginBottom: "4px" }}>WEAPON</div>
                   {saveState.equipped?.weapon ? (() => {
-                    const weapon = getItem(saveState.equipped.weapon);
+                    const weapon = getItem(saveState.equipped.weapon.itemId);
                     return weapon ? (
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1128,7 +1209,7 @@ export default function AlienArmory() {
                 }}>
                   <div style={{ fontSize: "10px", color: THEME.colors.secondary, marginBottom: "4px" }}>ARMOR</div>
                   {saveState.equipped?.armor ? (() => {
-                    const armor = getItem(saveState.equipped.armor);
+                    const armor = getItem(saveState.equipped.armor.itemId);
                     return armor ? (
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>

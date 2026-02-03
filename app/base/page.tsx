@@ -9,8 +9,7 @@ import { useAccount } from "wagmi";
 import { useCosmicSound } from "../hooks/useCosmicSound";
 
 const GumbuoFighters = dynamic(() => import("./GumbuoGame"), { ssr: false });
-const AlienArmory = dynamic(() => import("./components/AlienArmory"), { ssr: false });
-const FishingPond = dynamic(() => import("./components/FishingPond"), { ssr: false });
+const AlienBase = dynamic(() => import("./components/AlienBase"), { ssr: false });
 
 export default function BasePage() {
   const searchParams = useSearchParams();
@@ -287,8 +286,7 @@ export default function BasePage() {
     dungeon: { title: "Alien Crawler", src: "/gumbuo-dungeon-crawler.html" },
     catacombs: { title: "Alien Catacombs", src: "/alien-catacombs.html" },
     arena: { title: "Alien Arena", src: "/alien-arena.html" },
-    armory: { title: "Alien Armory", component: <AlienArmory /> },
-    fishing: { title: "Alien Points Pond", component: <FishingPond /> },
+    alienbase: { title: "Alien Base", component: <AlienBase /> },
   };
 
   return (

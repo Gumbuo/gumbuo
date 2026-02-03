@@ -38,12 +38,39 @@ export default function MothershipPage() {
   const [selectedVideo, setSelectedVideo] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
+  // Reward pool state
+  const [rewardPoolBalance, setRewardPoolBalance] = useState<string | null>(null);
+  const [rewardPoolLoading, setRewardPoolLoading] = useState(true);
+
   // Admin wallet check
   const ADMIN_WALLETS = ["0xb374735cbe89a552421ddb4aad80380ae40f67a7"];
   const isAdmin = address && ADMIN_WALLETS.includes(address.toLowerCase());
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Fetch reward pool balance
+  useEffect(() => {
+    const fetchRewardPool = async () => {
+      try {
+        const res = await fetch('/api/reward-pool');
+        const data = await res.json();
+        if (data.success) {
+          // Format to 4 decimal places
+          const formatted = parseFloat(data.balance).toFixed(4);
+          setRewardPoolBalance(formatted);
+        }
+      } catch (err) {
+        console.error('Failed to fetch reward pool:', err);
+      } finally {
+        setRewardPoolLoading(false);
+      }
+    };
+    fetchRewardPool();
+    // Refresh every 60 seconds
+    const interval = setInterval(fetchRewardPool, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   // Show video popup on page load with rotation
@@ -371,20 +398,76 @@ export default function MothershipPage() {
           {/* Scene 1: Portals */}
           {activeScene === 'portals' && (
             <div style={{ position: 'relative', width: '100%', minHeight: '500px' }}>
+              {/* Reward Pool Banner */}
+              <div style={{
+                maxWidth: '600px',
+                margin: '0 auto 30px auto',
+                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1))',
+                border: '2px solid rgba(255, 215, 0, 0.5)',
+                borderRadius: '15px',
+                padding: '20px 25px',
+                boxShadow: '0 0 30px rgba(255, 215, 0, 0.2)',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '15px',
+                  flexWrap: 'wrap',
+                }}>
+                  <div style={{
+                    fontSize: '28px',
+                  }}>
+                    <img src="/base-logo.svg" alt="Base" style={{ width: '32px', height: '32px' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: '#ffd700',
+                      textTransform: 'uppercase',
+                      letterSpacing: '2px',
+                      marginBottom: '5px',
+                      fontWeight: 'bold',
+                    }}>
+                      Testing Event Reward Pool
+                    </div>
+                    <div style={{
+                      fontSize: '1.8rem',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      textShadow: '0 0 15px rgba(255, 215, 0, 0.5)',
+                    }}>
+                      {rewardPoolLoading ? (
+                        <span style={{ fontSize: '1rem', color: '#aaa' }}>Loading...</span>
+                      ) : (
+                        <>{rewardPoolBalance} ETH</>
+                      )}
+                    </div>
+                    <div style={{
+                      fontSize: '0.7rem',
+                      color: '#aaa',
+                      marginTop: '5px',
+                    }}>
+                      Base Chain
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Portal Grid */}
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
                 maxWidth: '900px',
-                margin: '50px auto',
+                margin: '30px auto',
                 gap: '25px'
               }}>
                 {[
                   { href: '/base?game=catacombs', img: '/greenportal.png', label: 'Alien Catacombs', color: '#00ff41' },
                   { href: '/base?game=invasion', img: '/blueportal.png', label: 'Alien Invasion', color: '#00d9ff' },
                   { href: '/base?game=dungeon', img: '/redportal.png', label: 'Alien Crawler', color: '#ff003c' },
-                  { href: '/base?game=armory', img: '/greyportal.png', label: 'Alien Armory', color: '#888888' },
-                  { href: '/base?game=fishing', img: '/purpleportal.png', label: 'Alien Points Pond', color: '#b44dff' },
+                  { href: '/base?game=arena', img: '/greyportal.png', label: 'Alien Arena', color: '#888888' },
+                  { href: '/base?game=alienbase', img: '/purpleportal.png', label: 'Alien Base', color: '#b44dff' },
                 ].map((portal) => (
                   <Link
                     key={portal.label}

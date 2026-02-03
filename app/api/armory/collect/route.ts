@@ -12,6 +12,7 @@ import {
   XP_REQUIREMENTS,
   FIRST_CRAFT_BONUS_XP,
 } from "../../../base/components/armory/constants";
+import { addPlayerXP } from "../../lib/playerLevel";
 
 const redis = Redis.fromEnv();
 
@@ -112,8 +113,17 @@ export async function POST(request: NextRequest) {
           // Item output goes to inventory
           const item = getItem(recipe.output.itemId);
           if (item) {
+            // Determine rarity based on item tier
+            const tierToRarity: Record<number, 'common' | 'uncommon' | 'rare' | 'epic'> = {
+              1: 'common',
+              2: 'uncommon',
+              3: 'rare',
+              4: 'epic',
+            };
+            const rarity = tierToRarity[item.tier] || 'common';
+
             const existingSlot = saveState.inventory.find(
-              (slot) => slot.itemId === recipe.output.itemId
+              (slot) => slot.itemId === recipe.output.itemId && slot.rarity === rarity
             );
             if (existingSlot) {
               existingSlot.quantity += recipe.output.quantity;
@@ -121,6 +131,7 @@ export async function POST(request: NextRequest) {
               saveState.inventory.push({
                 itemId: recipe.output.itemId!,
                 quantity: recipe.output.quantity,
+                rarity,
               });
             }
 
@@ -181,6 +192,16 @@ export async function POST(request: NextRequest) {
     saveState.lastUpdated = Date.now();
     await redis.set(saveKey, saveState);
 
+    // Award player XP for crafting (5 XP per item crafted)
+    let playerXPResult = null;
+    if (collectedItems.length > 0) {
+      const totalItemsCrafted = collectedItems.reduce((sum, ci) => sum + ci.output.quantity, 0);
+      const playerXP = totalItemsCrafted * 5;
+      if (playerXP > 0) {
+        playerXPResult = await addPlayerXP(wallet, playerXP, "craft");
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
@@ -193,6 +214,13 @@ export async function POST(request: NextRequest) {
         resources: saveState.resources,
         inventory: saveState.inventory,
         stationLevels: saveState.stationLevels,
+        playerLevel: playerXPResult ? {
+          level: playerXPResult.levelData.level,
+          xp: playerXPResult.levelData.xp,
+          xpAdded: playerXPResult.xpAdded,
+          levelsGained: playerXPResult.levelsGained,
+          apRewarded: playerXPResult.apRewarded,
+        } : undefined,
       },
     });
   } catch (error) {

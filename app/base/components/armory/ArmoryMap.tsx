@@ -58,8 +58,8 @@ export default function ArmoryMap({ saveState, onStationSelect, onUpdatePosition
   }, []);
 
   // Get equipped item info
-  const equippedWeapon = saveState.equipped?.weapon ? getItem(saveState.equipped.weapon) : null;
-  const equippedArmor = saveState.equipped?.armor ? getItem(saveState.equipped.armor) : null;
+  const equippedWeapon = saveState.equipped?.weapon ? getItem(saveState.equipped.weapon.itemId) : null;
+  const equippedArmor = saveState.equipped?.armor ? getItem(saveState.equipped.armor.itemId) : null;
 
   // Calculate total stats
   const totalAttack = (equippedWeapon?.stats.attack || 0);
