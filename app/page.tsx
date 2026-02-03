@@ -399,15 +399,24 @@ export default function MothershipPage() {
           {activeScene === 'portals' && (
             <div style={{ position: 'relative', width: '100%', minHeight: '500px' }}>
               {/* Reward Pool Banner */}
-              <div style={{
-                maxWidth: '600px',
-                margin: '0 auto 30px auto',
-                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1))',
-                border: '2px solid rgba(255, 215, 0, 0.5)',
-                borderRadius: '15px',
-                padding: '20px 25px',
-                boxShadow: '0 0 30px rgba(255, 215, 0, 0.2)',
-              }}>
+              <Link
+                href="/event"
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                style={{
+                  display: 'block',
+                  maxWidth: '600px',
+                  margin: '0 auto 30px auto',
+                  background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1))',
+                  border: '2px solid rgba(255, 215, 0, 0.5)',
+                  borderRadius: '15px',
+                  padding: '20px 25px',
+                  boxShadow: '0 0 30px rgba(255, 215, 0, 0.2)',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                }}
+              >
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -472,9 +481,19 @@ export default function MothershipPage() {
                     }}>
                       0xEd6f...1f4B
                     </div>
+                    <div style={{
+                      marginTop: '12px',
+                      fontSize: '0.75rem',
+                      color: '#66fcf1',
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                    }}>
+                      View Event Details &rarr;
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Portal Grid */}
               <div style={{

@@ -32,6 +32,17 @@ interface ReferralReward {
   note?: string;
 }
 
+interface EventConfig {
+  isActive: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  name: string;
+  description: string;
+  createdAt: number;
+  updatedAt: number;
+  activatedBy: string | null;
+}
+
 export default function AdminPanel() {
   const { address, isConnected } = useAccount();
   const [mounted, setMounted] = useState(false);
@@ -41,6 +52,14 @@ export default function AdminPanel() {
   // Data
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [pendingRewards, setPendingRewards] = useState<ReferralReward[]>([]);
+
+  // Event Config
+  const [eventConfig, setEventConfig] = useState<EventConfig | null>(null);
+  const [eventStatus, setEventStatus] = useState<string>("inactive");
+  const [eventStartDate, setEventStartDate] = useState("");
+  const [eventEndDate, setEventEndDate] = useState("");
+  const [savingEvent, setSavingEvent] = useState(false);
+  const [activeTab, setActiveTab] = useState<"referrals" | "event">("event");
 
   // Create Reward Form
   const [createWallet, setCreateWallet] = useState("");
@@ -80,9 +99,10 @@ export default function AdminPanel() {
     if (!address) return;
 
     try {
-      const [referralsRes, pendingRes] = await Promise.all([
+      const [referralsRes, pendingRes, eventRes] = await Promise.all([
         fetch(`/api/referral/admin?adminWallet=${address}&action=all-referrals&limit=100`),
         fetch(`/api/referral/admin?adminWallet=${address}&action=pending-rewards`),
+        fetch(`/api/event/config`),
       ]);
 
       if (referralsRes.ok) {
@@ -94,8 +114,81 @@ export default function AdminPanel() {
         const data = await pendingRes.json();
         setPendingRewards(data.pendingRewards);
       }
+
+      if (eventRes.ok) {
+        const data = await eventRes.json();
+        setEventConfig(data.config);
+        setEventStatus(data.status || "inactive");
+        if (data.config.startDate) {
+          setEventStartDate(data.config.startDate.split("T")[0]);
+        }
+        if (data.config.endDate) {
+          setEventEndDate(data.config.endDate.split("T")[0]);
+        }
+      }
     } catch (error) {
       console.error("Error loading admin data:", error);
+    }
+  };
+
+  const handleToggleEvent = async () => {
+    if (!address || !eventConfig) return;
+
+    setSavingEvent(true);
+    try {
+      const res = await fetch("/api/event/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminWallet: address,
+          isActive: !eventConfig.isActive,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setEventConfig(data.config);
+        setEventStatus(data.config.isActive ? "live" : "inactive");
+        alert(data.message);
+      } else {
+        const data = await res.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert(`Error: ${(error as Error).message}`);
+    } finally {
+      setSavingEvent(false);
+    }
+  };
+
+  const handleSaveEventDates = async () => {
+    if (!address) return;
+
+    setSavingEvent(true);
+    try {
+      const res = await fetch("/api/event/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminWallet: address,
+          startDate: eventStartDate ? new Date(eventStartDate).toISOString() : null,
+          endDate: eventEndDate ? new Date(eventEndDate + "T23:59:59").toISOString() : null,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setEventConfig(data.config);
+        alert("Event dates saved!");
+        await loadAdminData();
+      } else {
+        const data = await res.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert(`Error: ${(error as Error).message}`);
+    } finally {
+      setSavingEvent(false);
     }
   };
 
@@ -193,10 +286,10 @@ export default function AdminPanel() {
               fontFamily: "'Orbitron', sans-serif",
             }}
           >
-            Referral Admin Panel
+            Admin Panel
           </h1>
           <p style={{ color: "#c5c6c7", fontSize: "1.25rem" }}>
-            Manage referral rewards & distribution
+            Manage events, referrals & rewards
           </p>
         </div>
 
@@ -261,6 +354,240 @@ export default function AdminPanel() {
 
         {isConnected && !loading && isAdmin && (
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+            {/* Tab Navigation */}
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button
+                onClick={() => setActiveTab("event")}
+                style={{
+                  padding: "1rem 2rem",
+                  background: activeTab === "event" ? "linear-gradient(135deg, #ffd700, #ff8c00)" : "rgba(20, 20, 40, 0.8)",
+                  color: activeTab === "event" ? "#000" : "#ffd700",
+                  border: "2px solid #ffd700",
+                  borderRadius: "0.5rem",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  cursor: "pointer",
+                  fontFamily: "'Orbitron', sans-serif",
+                }}
+              >
+                Event Controls
+              </button>
+              <button
+                onClick={() => setActiveTab("referrals")}
+                style={{
+                  padding: "1rem 2rem",
+                  background: activeTab === "referrals" ? "linear-gradient(135deg, #66fcf1, #45a29e)" : "rgba(20, 20, 40, 0.8)",
+                  color: activeTab === "referrals" ? "#000" : "#66fcf1",
+                  border: "2px solid #66fcf1",
+                  borderRadius: "0.5rem",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  cursor: "pointer",
+                  fontFamily: "'Orbitron', sans-serif",
+                }}
+              >
+                Referrals
+              </button>
+            </div>
+
+            {/* Event Controls Tab */}
+            {activeTab === "event" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                {/* Event Status Card */}
+                <div
+                  style={{
+                    padding: "2rem",
+                    background: eventConfig?.isActive
+                      ? "linear-gradient(135deg, rgba(0, 255, 65, 0.15), rgba(0, 170, 42, 0.1))"
+                      : "linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 71, 87, 0.1))",
+                    borderRadius: "1rem",
+                    border: eventConfig?.isActive ? "2px solid #00ff41" : "2px solid #ff6b6b",
+                    textAlign: "center",
+                  }}
+                >
+                  <div style={{ marginBottom: "1rem" }}>
+                    <span
+                      style={{
+                        fontSize: "1rem",
+                        color: eventConfig?.isActive ? "#00ff41" : "#ff6b6b",
+                        textTransform: "uppercase",
+                        letterSpacing: "3px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Event Status
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "2.5rem",
+                      fontWeight: "bold",
+                      color: eventConfig?.isActive ? "#00ff41" : "#ff6b6b",
+                      marginBottom: "1rem",
+                      textShadow: eventConfig?.isActive ? "0 0 15px #00ff41" : "0 0 15px #ff6b6b",
+                    }}
+                  >
+                    {eventStatus === "live" ? "LIVE" : eventStatus === "upcoming" ? "UPCOMING" : eventStatus === "ended" ? "ENDED" : "INACTIVE"}
+                  </div>
+                  <button
+                    onClick={handleToggleEvent}
+                    disabled={savingEvent}
+                    style={{
+                      padding: "1rem 3rem",
+                      background: eventConfig?.isActive
+                        ? "linear-gradient(135deg, #ff6b6b, #ff4757)"
+                        : "linear-gradient(135deg, #00ff41, #00aa2a)",
+                      color: "#000",
+                      border: "none",
+                      borderRadius: "0.5rem",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      cursor: savingEvent ? "not-allowed" : "pointer",
+                      fontFamily: "'Orbitron', sans-serif",
+                      opacity: savingEvent ? 0.7 : 1,
+                    }}
+                  >
+                    {savingEvent ? "Saving..." : eventConfig?.isActive ? "DEACTIVATE EVENT" : "ACTIVATE EVENT"}
+                  </button>
+                  {eventConfig?.activatedBy && (
+                    <p style={{ color: "#888", fontSize: "0.75rem", marginTop: "1rem", fontFamily: "monospace" }}>
+                      Last activated by: {eventConfig.activatedBy.slice(0, 6)}...{eventConfig.activatedBy.slice(-4)}
+                    </p>
+                  )}
+                </div>
+
+                {/* Event Dates */}
+                <div
+                  style={{
+                    padding: "2rem",
+                    background: "rgba(20, 20, 40, 0.8)",
+                    borderRadius: "1rem",
+                    border: "2px solid #ffd700",
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                      marginBottom: "1.5rem",
+                      color: "#ffd700",
+                      fontFamily: "'Orbitron', sans-serif",
+                    }}
+                  >
+                    Event Duration
+                  </h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+                    <div>
+                      <label style={{ display: "block", color: "#aaa", marginBottom: "0.5rem", fontSize: "0.875rem" }}>
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={eventStartDate}
+                        onChange={(e) => setEventStartDate(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "1rem",
+                          borderRadius: "0.5rem",
+                          border: "2px solid #333",
+                          background: "#1a1a2e",
+                          color: "#fff",
+                          fontSize: "1rem",
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", color: "#aaa", marginBottom: "0.5rem", fontSize: "0.875rem" }}>
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={eventEndDate}
+                        onChange={(e) => setEventEndDate(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "1rem",
+                          borderRadius: "0.5rem",
+                          border: "2px solid #333",
+                          background: "#1a1a2e",
+                          color: "#fff",
+                          fontSize: "1rem",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleSaveEventDates}
+                    disabled={savingEvent}
+                    style={{
+                      width: "100%",
+                      padding: "1rem 2rem",
+                      background: savingEvent ? "#444" : "linear-gradient(135deg, #ffd700, #ff8c00)",
+                      color: "#000",
+                      border: "none",
+                      borderRadius: "0.5rem",
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      cursor: savingEvent ? "not-allowed" : "pointer",
+                      fontFamily: "'Orbitron', sans-serif",
+                    }}
+                  >
+                    {savingEvent ? "Saving..." : "Save Dates"}
+                  </button>
+                  {eventConfig?.startDate && eventConfig?.endDate && (
+                    <p style={{ color: "#888", fontSize: "0.875rem", marginTop: "1rem", textAlign: "center" }}>
+                      Duration: {Math.ceil((new Date(eventConfig.endDate).getTime() - new Date(eventConfig.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
+                    </p>
+                  )}
+                </div>
+
+                {/* Quick Actions */}
+                <div
+                  style={{
+                    padding: "2rem",
+                    background: "rgba(20, 20, 40, 0.8)",
+                    borderRadius: "1rem",
+                    border: "2px solid #333",
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: "1.5rem",
+                      fontWeight: "bold",
+                      marginBottom: "1.5rem",
+                      color: "#66fcf1",
+                      fontFamily: "'Orbitron', sans-serif",
+                    }}
+                  >
+                    Quick Actions
+                  </h3>
+                  <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+                    <a
+                      href="/event"
+                      target="_blank"
+                      style={{
+                        padding: "1rem 2rem",
+                        background: "linear-gradient(135deg, #1da1f2, #0d8bd9)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                        fontWeight: "bold",
+                        fontSize: "0.875rem",
+                        cursor: "pointer",
+                        fontFamily: "'Orbitron', sans-serif",
+                        textDecoration: "none",
+                      }}
+                    >
+                      View Event Page
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Referrals Tab */}
+            {activeTab === "referrals" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
             {/* Summary Stats */}
             <div
               style={{
@@ -587,6 +914,8 @@ export default function AdminPanel() {
                 </table>
               </div>
             </div>
+              </div>
+            )}
           </div>
         )}
       </div>
