@@ -422,6 +422,16 @@ export default function MothershipPage() {
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{
+                      fontSize: '0.7rem',
+                      color: '#ff6b6b',
+                      textTransform: 'uppercase',
+                      letterSpacing: '3px',
+                      marginBottom: '3px',
+                      fontWeight: 'bold',
+                    }}>
+                      Coming Soon
+                    </div>
+                    <div style={{
                       fontSize: '0.75rem',
                       color: '#ffd700',
                       textTransform: 'uppercase',
@@ -444,11 +454,23 @@ export default function MothershipPage() {
                       )}
                     </div>
                     <div style={{
-                      fontSize: '0.7rem',
+                      fontSize: '0.65rem',
                       color: '#aaa',
                       marginTop: '5px',
                     }}>
                       Base Chain
+                    </div>
+                    <div style={{
+                      fontSize: '0.6rem',
+                      color: '#888',
+                      marginTop: '8px',
+                      fontFamily: 'monospace',
+                      background: 'rgba(0,0,0,0.3)',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      display: 'inline-block',
+                    }}>
+                      0xEd6f...1f4B
                     </div>
                   </div>
                 </div>
