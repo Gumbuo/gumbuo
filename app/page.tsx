@@ -352,6 +352,26 @@ export default function MothershipPage() {
               Admin
             </button>
           )}
+          <Link
+            href="/quest"
+            onMouseEnter={() => playSound('hover')}
+            onClick={() => playSound('click')}
+            style={{
+              background: 'linear-gradient(180deg, #1a3a1a 0%, #0d1f0d 100%)',
+              border: '1px solid #00ff41',
+              color: '#00ff41',
+              padding: '12px 25px',
+              fontSize: '0.8rem',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              borderRadius: '5px',
+              fontFamily: 'Orbitron, sans-serif',
+              fontWeight: 'bold',
+              textDecoration: 'none',
+            }}
+          >
+            Quests
+          </Link>
           <button
             onClick={() => {
               playSound('click');
