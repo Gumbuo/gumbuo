@@ -392,6 +392,26 @@ export default function MothershipPage() {
           >
             Referrals
           </button>
+          <Link
+            href="/guildevents"
+            onMouseEnter={() => playSound('hover')}
+            onClick={() => playSound('click')}
+            style={{
+              background: 'linear-gradient(180deg, #2a1a3a 0%, #15082a 100%)',
+              border: '1px solid #b44dff',
+              color: '#b44dff',
+              padding: '12px 25px',
+              fontSize: '0.8rem',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              borderRadius: '5px',
+              fontFamily: 'Orbitron, sans-serif',
+              fontWeight: 'bold',
+              textDecoration: 'none',
+            }}
+          >
+            Guild Events
+          </Link>
         </div>
 
         {/* Unauthorized message */}
