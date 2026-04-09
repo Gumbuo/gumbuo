@@ -25,12 +25,7 @@ func _ready():
 	label.add_color_override("font_color", Color(0.4, 0.99, 0.95))
 	add_child(label)
 
-func _unhandled_input(event):
-	if not player_nearby:
-		return
-	if event is InputEventKey and event.scancode == KEY_E and event.pressed:
-		_open_armory()
-		get_tree().set_input_as_handled()
+# E key is handled by player_combat.gd which calls _open_armory() directly
 
 func _on_body_entered(body):
 	if body.is_in_group("player"):
