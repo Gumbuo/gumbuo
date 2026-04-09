@@ -22,6 +22,15 @@ func add_item(item: Dictionary) -> bool:
 	emit_signal("inventory_changed")
 	return true
 
+# Add item and stack if same name already exists (for resources)
+func add_or_stack(item: Dictionary) -> bool:
+	for existing in items:
+		if existing.get("name") == item.get("name"):
+			existing["quantity"] = existing.get("quantity", 1) + item.get("quantity", 1)
+			emit_signal("inventory_changed")
+			return true
+	return add_item(item)
+
 func remove_item(item: Dictionary) -> bool:
 	var index = items.find(item)
 	if index != -1:

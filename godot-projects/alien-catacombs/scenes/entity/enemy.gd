@@ -268,6 +268,50 @@ func _on_died():
 	# Notify GameStats for leaderboard tracking
 	if GameStats:
 		GameStats.add_kill()
+
+	# Drop armory resource — 60% chance per enemy kill
+	if randf() < 0.6:
+		var resources = ["plasmaOre", "voidCrystal", "bioMetal", "quantumDust", "nebulaEssence"]
+		var dropped = resources[randi() % resources.size()]
+
+		var resource_sprites = {
+			"plasmaOre":      "res://asset/map-objects/pixellab/red_crystal.png",
+			"voidCrystal":    "res://asset/map-objects/pixellab/blue_crystal.png",
+			"bioMetal":       "res://asset/map-objects/pixellab/green_crystal.png",
+			"quantumDust":    "res://asset/map-objects/pixellab/purple_crystal.png",
+			"nebulaEssence":  "res://asset/map-objects/pixellab/alien_artifact.png"
+		}
+		var resource_labels = {
+			"plasmaOre":      "Plasma Ore",
+			"voidCrystal":    "Void Crystal",
+			"bioMetal":       "Bio Metal",
+			"quantumDust":    "Quantum Dust",
+			"nebulaEssence":  "Nebula Essence"
+		}
+
+		# Add to Godot inventory (stacks)
+		if Inventory:
+			Inventory.add_or_stack({
+				"name":         resource_labels[dropped],
+				"resource_key": dropped,
+				"type":         "armory_resource",
+				"texture_path": resource_sprites[dropped],
+				"quantity":     1
+			})
+
+		# Also notify web backend (HTML5 only)
+		if OS.get_name() == "HTML5":
+			var js_code = """
+			if (window.parent) {
+				window.parent.postMessage({
+					type: 'ARMORY_RESOURCE_DROP',
+					resource: '%s',
+					quantity: 1
+				}, '*');
+			}
+			""" % dropped
+			JavaScript.eval(js_code)
+
 	queue_free()
 
 # Shooting function for RANGED and HEAVY_RANGED enemies

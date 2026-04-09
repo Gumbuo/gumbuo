@@ -79,27 +79,50 @@ func _refresh_inventory():
 		if i < inventory.items.size():
 			var item = inventory.items[i]
 
-			# Make slot clickable for cosmetic items
-			if item.get("type") == "cosmetic":
-				var button = Button.new()
-				button.text = item.get("name", "???")
-				button.rect_min_size = Vector2(50, 50)
-				button.set_anchors_preset(Control.PRESET_WIDE)
-				button.add_color_override("font_color", Color(0, 1, 1, 1))  # Cyan text
-				button.add_color_override("font_color_hover", Color(1, 1, 0, 1))  # Yellow on hover
-				button.flat = true
-				button.connect("pressed", self, "_on_item_clicked", [i])
-				slot.add_child(button)
-			else:
-				# Non-cosmetic items just show as label
-				var label = Label.new()
-				label.text = item.get("name", "???")
-				label.align = Label.ALIGN_CENTER
-				label.valign = Label.VALIGN_CENTER
-				label.rect_min_size = Vector2(50, 50)
-				label.add_color_override("font_color", Color(0, 1, 1, 1))  # Cyan text
-				label.set_anchors_preset(Control.PRESET_WIDE)
-				slot.add_child(label)
+			# Show sprite if item has a texture path
+			var tex_path = item.get("texture_path", "")
+			if tex_path != "" and ResourceLoader.exists(tex_path):
+				var tex_rect = TextureRect.new()
+				tex_rect.texture = load(tex_path)
+				tex_rect.expand = true
+				tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				tex_rect.rect_min_size = Vector2(50, 50)
+				tex_rect.set_anchors_preset(Control.PRESET_WIDE)
+				slot.add_child(tex_rect)
+
+			# Quantity badge for stackable items
+			var qty = item.get("quantity", 1)
+			if qty > 1:
+				var qty_label = Label.new()
+				qty_label.text = "x" + str(qty)
+				qty_label.align = Label.ALIGN_RIGHT
+				qty_label.valign = Label.VALIGN_BOTTOM
+				qty_label.rect_min_size = Vector2(50, 50)
+				qty_label.set_anchors_preset(Control.PRESET_WIDE)
+				qty_label.add_color_override("font_color", Color(1, 1, 0, 1))
+				slot.add_child(qty_label)
+
+			# Fallback text label if no texture (or cosmetic button)
+			if tex_path == "":
+				if item.get("type") == "cosmetic":
+					var button = Button.new()
+					button.text = item.get("name", "???")
+					button.rect_min_size = Vector2(50, 50)
+					button.set_anchors_preset(Control.PRESET_WIDE)
+					button.add_color_override("font_color", Color(0, 1, 1, 1))
+					button.add_color_override("font_color_hover", Color(1, 1, 0, 1))
+					button.flat = true
+					button.connect("pressed", self, "_on_item_clicked", [i])
+					slot.add_child(button)
+				else:
+					var label = Label.new()
+					label.text = item.get("name", "???")
+					label.align = Label.ALIGN_CENTER
+					label.valign = Label.VALIGN_CENTER
+					label.rect_min_size = Vector2(50, 50)
+					label.add_color_override("font_color", Color(0, 1, 1, 1))
+					label.set_anchors_preset(Control.PRESET_WIDE)
+					slot.add_child(label)
 
 		grid.add_child(slot)
 
