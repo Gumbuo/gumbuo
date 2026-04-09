@@ -13,6 +13,7 @@ func _ready():
 	add_to_group("armory_station")
 	connect("body_entered", self, "_on_body_entered")
 	connect("body_exited",  self, "_on_body_exited")
+	print("[ArmoryStation] READY — ", station_name, " at global_pos: ", global_position)
 
 	# Interaction prompt label
 	label = Label.new()
