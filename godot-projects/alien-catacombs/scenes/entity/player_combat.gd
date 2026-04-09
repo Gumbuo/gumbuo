@@ -232,6 +232,14 @@ func _physics_process(delta):
 				sprite.texture = sprite_paths[current_direction]
 
 func _input(event):
+	# E key — interact with armory stations (always works, even in combat)
+	if event is InputEventKey and event.scancode == KEY_E and event.pressed:
+		for station in get_tree().get_nodes_in_group("armory_station"):
+			if station.player_nearby:
+				station._open_armory()
+				get_tree().set_input_as_handled()
+				return
+
 	# Debug all mouse button events
 	if event is InputEventMouseButton:
 		print("Mouse button event: button=", event.button_index, " pressed=", event.pressed)
