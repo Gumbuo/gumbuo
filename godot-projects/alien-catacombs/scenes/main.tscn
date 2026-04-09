@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=2]
+[gd_scene load_steps=68 format=2]
 
 [ext_resource path="res://asset/map/tileset.png" type="Texture" id=1]
 [ext_resource path="res://scenes/entity/player.tscn" type="PackedScene" id=2]
@@ -33,6 +33,7 @@
 [ext_resource path="res://scenes/items/Coin3.tscn" type="PackedScene" id=34]
 [ext_resource path="res://scenes/items/Coin2.tscn" type="PackedScene" id=35]
 [ext_resource path="res://scenes/entity/enemy_boss_overlord.tscn" type="PackedScene" id=38]
+[ext_resource path="res://scenes/entity/ArmoryStation.tscn" type="PackedScene" id=39]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
@@ -1292,6 +1293,30 @@ position = Vector2( 1689, 725 )
 
 [node name="HealthOrb14" parent="." instance=ExtResource( 17 )]
 position = Vector2( 1228, 1489 )
+
+[node name="ArmoryStation_PlasmaRefinery" parent="." instance=ExtResource( 39 )]
+position = Vector2( 450, 700 )
+station_id = "plasmaRefinery"
+station_name = "Plasma Refinery"
+station_icon = "🔥"
+
+[node name="ArmoryStation_VoidShard" parent="." instance=ExtResource( 39 )]
+position = Vector2( 1200, 1200 )
+station_id = "voidShardLab"
+station_name = "Void Shard Lab"
+station_icon = "💎"
+
+[node name="ArmoryStation_BioFoundry" parent="." instance=ExtResource( 39 )]
+position = Vector2( 1800, 1800 )
+station_id = "bioFoundry"
+station_name = "Bio Foundry"
+station_icon = "🧬"
+
+[node name="ArmoryStation_QuantumForge" parent="." instance=ExtResource( 39 )]
+position = Vector2( 1600, 2700 )
+station_id = "quantumForge"
+station_name = "Quantum Forge"
+station_icon = "⚡"
 
 [connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/Restart" to="GameOverScreen" method="_on_Restart_pressed"]
 [connection signal="pressed" from="GameOverScreen/color_rect/v_box_container/MainMenu" to="GameOverScreen" method="_on_MainMenu_pressed"]
