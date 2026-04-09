@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/entity/ArmoryStation.gd" type="Script" id=1]
-[ext_resource path="res://asset/map-objects/pixellab/alien_artifact.png" type="Texture" id=2]
+[ext_resource path="res://asset/map-objects/pixellab/storage_crate.png" type="Texture" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 48.0
@@ -14,7 +14,7 @@ station_icon = "🔥"
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
-scale = Vector2( 1.5, 1.5 )
+scale = Vector2( 3.0, 3.0 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )

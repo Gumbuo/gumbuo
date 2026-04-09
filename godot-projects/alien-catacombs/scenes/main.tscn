@@ -1295,13 +1295,10 @@ position = Vector2( 1689, 725 )
 position = Vector2( 1228, 1489 )
 
 [node name="ArmoryStation_PlasmaRefinery" parent="." instance=ExtResource( 39 )]
-position = Vector2( 450, 700 )
-station_id = "plasmaRefinery"
-station_name = "Plasma Refinery"
-station_icon = "🔥"
+position = Vector2( 400, 775 )
 
 [node name="ArmoryStation_VoidShard" parent="." instance=ExtResource( 39 )]
-position = Vector2( 1200, 1200 )
+position = Vector2( 1268, 1345 )
 station_id = "voidShardLab"
 station_name = "Void Shard Lab"
 station_icon = "💎"
