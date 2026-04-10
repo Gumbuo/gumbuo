@@ -8,16 +8,13 @@ export(String) var station_icon = "🔥"
 
 var player_nearby = false
 var label: Label
+var pulse_time := 0.0
 
 func _ready():
 	add_to_group("armory_station")
 	connect("body_entered", self, "_on_body_entered")
 	connect("body_exited",  self, "_on_body_exited")
 	print("[ArmoryStation] READY — ", station_name, " at global_pos: ", global_position)
-	# Draw a visible glowing box — no texture assets needed
-	var box = Node2D.new()
-	box.set_script(load("res://scenes/entity/ArmoryStationVisual.gd"))
-	add_child(box)
 
 	# Interaction prompt label
 	label = Label.new()
@@ -26,9 +23,26 @@ func _ready():
 	label.rect_position = Vector2(-64, -56)
 	label.rect_size    = Vector2(128, 24)
 	label.visible = false
-	# Cyan colour to match web armory theme
 	label.add_color_override("font_color", Color(0.4, 0.99, 0.95))
 	add_child(label)
+
+func _process(delta):
+	pulse_time += delta
+	update()
+
+func _draw():
+	var pulse = 0.7 + 0.3 * sin(pulse_time * 3.0)
+	# Outer glow
+	draw_circle(Vector2.ZERO, 22, Color(0.0, pulse, pulse, 0.3))
+	# Body
+	draw_rect(Rect2(-14, -18, 28, 36), Color(0.05, 0.15, 0.25, 1.0))
+	draw_rect(Rect2(-14, -18, 28, 36), Color(0.0, pulse, pulse * 0.8, 1.0), false, 2.0)
+	# Screen panel
+	draw_rect(Rect2(-9, -13, 18, 16), Color(0.0, pulse * 0.5, pulse * 0.3, 1.0))
+	# Indicator lights
+	draw_circle(Vector2(-6, 10), 3, Color(0.0, 1.0, 0.6, pulse))
+	draw_circle(Vector2(0,  10), 3, Color(pulse, 0.8, 0.0, 1.0))
+	draw_circle(Vector2(6,  10), 3, Color(0.2, 0.4, pulse, 1.0))
 
 # E key is handled by player_combat.gd which calls _open_armory() directly
 
@@ -53,7 +67,6 @@ func _open_armory():
 		}
 		""" % station_id
 		JavaScript.eval(js_code)
-		# Pause game physics while armory panel is open
 		get_tree().paused = true
 	else:
 		print("[ArmoryStation] Would open: ", station_id)
