@@ -14,6 +14,10 @@ func _ready():
 	connect("body_entered", self, "_on_body_entered")
 	connect("body_exited",  self, "_on_body_exited")
 	print("[ArmoryStation] READY — ", station_name, " at global_pos: ", global_position)
+	# Draw a visible glowing box — no texture assets needed
+	var box = Node2D.new()
+	box.set_script(load("res://scenes/entity/ArmoryStationVisual.gd"))
+	add_child(box)
 
 	# Interaction prompt label
 	label = Label.new()
