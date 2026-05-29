@@ -131,6 +131,9 @@ export interface PlayerStats {
   totalDefense: number;    // base + equipment bonuses
 }
 
+// ============== ZONES ==============
+export type ZoneId = 'homeBase' | 'crystalCaverns' | 'bioSwamp';
+
 // ============== MAP / POSITION ==============
 export interface PlayerPosition {
   x: number;
