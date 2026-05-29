@@ -28,6 +28,14 @@ function fmt(n: number) {
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
+// Players exempt from the harvest-without-planting violation flag
+const VIOLATION_EXEMPT = ["Dravyn"];
+
+function isHarvestViolator(player: Player): boolean {
+  if (VIOLATION_EXEMPT.includes(player.name)) return false;
+  return sum(player.harvested) > 0 && sum(player.planted) === 0;
+}
+
 // ── Mini table ─────────────────────────────────────────────────────────────────
 function MiniTable({ rows, unit = "" }: { rows: [string, number][]; unit?: string }) {
   return (
@@ -83,6 +91,7 @@ function Badge({ label, value, color }: { label: string; value: string; color: s
 
 // ── Player card ────────────────────────────────────────────────────────────────
 function PlayerCard({ player, rank }: { player: Player; rank: number }) {
+  const violation = isHarvestViolator(player);
   const harv = sorted(player.harvested);
   const plant = sorted(player.planted);
   const mine = sorted(player.mined);
@@ -99,8 +108,8 @@ function PlayerCard({ player, rank }: { player: Player; rank: number }) {
 
   return (
     <div style={{
-      background: "rgba(0,0,0,0.45)",
-      border: "1px solid #45a29e",
+      background: violation ? "rgba(60,0,0,0.55)" : "rgba(0,0,0,0.45)",
+      border: `1px solid ${violation ? "#ff2d2d" : "#45a29e"}`,
       borderRadius: "12px",
       padding: "18px 20px",
       marginBottom: "16px",
@@ -108,14 +117,23 @@ function PlayerCard({ player, rank }: { player: Player; rank: number }) {
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "baseline", gap: "10px",
-        borderBottom: "1px solid #45a29e22", paddingBottom: "10px", marginBottom: "12px",
+        borderBottom: `1px solid ${violation ? "#ff2d2d44" : "#45a29e22"}`, paddingBottom: "10px", marginBottom: "12px",
       }}>
-        <span style={{ fontSize: "0.65rem", color: "#45a29e", minWidth: "22px" }}>
+        <span style={{ fontSize: "0.65rem", color: violation ? "#ff2d2d" : "#45a29e", minWidth: "22px" }}>
           #{rank + 1}
         </span>
-        <h3 style={{ margin: 0, fontSize: "1rem", color: "#66fcf1", letterSpacing: "1px" }}>
+        <h3 style={{ margin: 0, fontSize: "1rem", color: violation ? "#ff6b6b" : "#66fcf1", letterSpacing: "1px" }}>
           {medal}{player.name}
         </h3>
+        {violation && (
+          <span style={{
+            marginLeft: "auto", fontSize: "0.6rem", letterSpacing: "1px",
+            color: "#ff2d2d", border: "1px solid #ff2d2d", borderRadius: "4px",
+            padding: "2px 7px", textTransform: "uppercase", whiteSpace: "nowrap",
+          }}>
+            ⚠ Harvesting — Not Planting
+          </span>
+        )}
       </div>
 
       {/* Summary badges */}
