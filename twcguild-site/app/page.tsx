@@ -64,14 +64,14 @@ export default function HomePage() {
         position: "relative",
         minHeight: "100vh",
         backgroundImage: "url('/images/hero.png')",
-        backgroundSize: "80%",
+        backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-end",
-        paddingBottom: "60px",
+        paddingBottom: "220px",
       }}>
         {/* dark overlay */}
         <div style={{
