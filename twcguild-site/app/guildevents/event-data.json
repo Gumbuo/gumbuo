@@ -1,0 +1,23 @@
+{
+  "eventStartDate": "2026-05-30",
+  "questDays": [
+    {
+      "date": "2026-05-30",
+      "completed": true,
+      "quests": [
+        { "item": "Veggie salad", "target": 1500, "actual": 1500 },
+        { "item": "Bench", "target": 60, "actual": 60 },
+        { "item": "Upside down tomato cake", "target": 60, "actual": 60 }
+      ]
+    },
+    {
+      "date": "2026-05-31",
+      "completed": true,
+      "quests": [
+        { "item": "Cotton", "target": 15000, "actual": 15000 },
+        { "item": "Pillow grey", "target": 60, "actual": 60 },
+        { "item": "Stone brick", "target": 3000, "actual": 3000 }
+      ]
+    }
+  ]
+}
