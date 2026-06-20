@@ -221,8 +221,16 @@ export default function HomePage() {
               <h3 style={{ fontFamily: "Orbitron, sans-serif", fontSize: "22px", color: NOMSTEAD.color, marginBottom: "10px" }}>
                 {NOMSTEAD.title}
               </h3>
-              <p style={{ fontFamily: "Share Tech Mono, monospace", color: "#aaa", fontSize: "14px", lineHeight: "1.6", marginBottom: "15px" }}>
+              <p style={{ fontFamily: "Share Tech Mono, monospace", color: "#aaa", fontSize: "14px", lineHeight: "1.6", marginBottom: "10px" }}>
                 {NOMSTEAD.description}
+              </p>
+              <p style={{
+                fontFamily: "Share Tech Mono, monospace", fontSize: "11px",
+                color: NOMSTEAD.color, marginBottom: "15px",
+                background: `${NOMSTEAD.color}15`, border: `1px solid ${NOMSTEAD.color}40`,
+                borderRadius: "6px", padding: "5px 10px", display: "inline-block",
+              }}>
+                ERC-1155 Economy
               </p>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" }}>
                 {NOMSTEAD.tags.map((tag) => (
@@ -379,7 +387,7 @@ export default function HomePage() {
             }}
           >
             {/* YouTube trailer */}
-            <div style={{ height: "200px", borderBottom: `1px solid ${INFINITYRISING.color}40`, overflow: "hidden", position: "relative" }}>
+            <div style={{ height: "200px", borderBottom: `1px solid ${INFINITYRISING.color}40`, overflow: "hidden" }}>
               <iframe
                 width="100%"
                 height="100%"
@@ -390,21 +398,6 @@ export default function HomePage() {
                 allowFullScreen
                 style={{ border: "none" }}
               />
-              <div style={{
-                position: "absolute",
-                bottom: 0, left: 0, right: 0,
-                padding: "8px 14px",
-                background: "linear-gradient(135deg, rgba(255,0,51,0.9), rgba(180,0,30,0.9))",
-                color: "#fff",
-                fontFamily: "Orbitron, sans-serif",
-                fontSize: "11px",
-                fontWeight: "bold",
-                textAlign: "center",
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-              }}>
-                Guild Asset Lending Program — Coming Soon
-              </div>
             </div>
 
             <div style={{ padding: "20px" }}>
@@ -445,9 +438,19 @@ export default function HomePage() {
                 borderRadius: "6px", color: INFINITYRISING.color,
                 fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
                 textAlign: "center", textDecoration: "none", boxSizing: "border-box",
+                marginBottom: "8px",
               }}>
                 {INFINITYRISING.guideLabel} →
               </a>
+              <div style={{
+                display: "block", width: "100%", padding: "10px",
+                background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "6px", color: "#555",
+                fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
+                textAlign: "center", boxSizing: "border-box", cursor: "default",
+              }}>
+                Guild Asset Lending Program — Coming Soon
+              </div>
             </div>
           </div>
 
