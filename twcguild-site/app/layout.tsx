@@ -5,6 +5,27 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "TWC Guild",
   description: "Together We Can — TWC Guild. NomStead guild activity, events, and community.",
+  openGraph: {
+    title: "TWC Guild — Together We Can",
+    description: "NomStead guild activity, events, and community.",
+    url: "https://twcguild.xyz",
+    siteName: "TWC Guild",
+    images: [
+      {
+        url: "https://twcguild.xyz/images/hero.png",
+        width: 600,
+        height: 400,
+        alt: "TWC Guild — Together We Can",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TWC Guild — Together We Can",
+    description: "NomStead guild activity, events, and community.",
+    images: ["https://twcguild.xyz/images/hero.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
