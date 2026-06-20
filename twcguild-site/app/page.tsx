@@ -22,6 +22,18 @@ const NOMSTEAD = {
   tool4Label: "NomStead Docs",
 };
 
+const SPIDERTANKS = {
+  title: "Spider Tanks: Cores of Chaos",
+  description:
+    "PvP brawler where you battle in arenas with customizable tanks. Revived by GAMEDIA on Immutable. Note: IMX questing indefinitely removed due to bot abuse.",
+  color: "#ff6b00",
+  tags: ["PvP", "Brawler", "Immutable"],
+  playUrl: "https://play.immutable.com/games/spider-tanks-cores-of-chaos/",
+  youtubeTrailer: "5Tyqhqp3GYI",
+  guideUrl: "https://www.spidergang.xyz",
+  guideLabel: "Spider Gang",
+};
+
 const ADVENTUREWURLD = {
   title: "AdventureWurld",
   description:
@@ -120,7 +132,7 @@ export default function HomePage() {
           marginBottom: "40px",
           textAlign: "center",
         }}>
-          Our Games
+          Games We Enjoy
         </h2>
 
         <div style={{
@@ -244,6 +256,83 @@ export default function HomePage() {
                   </a>
                 ))}
               </div>
+            </div>
+          </div>
+
+          {/* Spider Tanks Card */}
+          <div style={{
+            background: "linear-gradient(135deg, #1a0a00, #0b0c10)",
+            border: `2px solid ${SPIDERTANKS.color}40`,
+            borderRadius: "16px",
+            overflow: "hidden",
+            transition: "all 0.3s ease",
+          }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = SPIDERTANKS.color;
+              e.currentTarget.style.boxShadow = `0 0 30px ${SPIDERTANKS.color}40`;
+              e.currentTarget.style.transform = "translateY(-5px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = `${SPIDERTANKS.color}40`;
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            {/* YouTube trailer */}
+            <div style={{ height: "200px", borderBottom: `1px solid ${SPIDERTANKS.color}40`, overflow: "hidden" }}>
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${SPIDERTANKS.youtubeTrailer}`}
+                title="Spider Tanks Trailer"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ border: "none" }}
+              />
+            </div>
+
+            <div style={{ padding: "20px" }}>
+              <h3 style={{ fontFamily: "Orbitron, sans-serif", fontSize: "20px", color: SPIDERTANKS.color, marginBottom: "10px" }}>
+                {SPIDERTANKS.title}
+              </h3>
+              <p style={{ fontFamily: "Share Tech Mono, monospace", color: "#aaa", fontSize: "14px", lineHeight: "1.6", marginBottom: "15px" }}>
+                {SPIDERTANKS.description}
+              </p>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" }}>
+                {SPIDERTANKS.tags.map((tag) => (
+                  <span key={tag} style={{
+                    padding: "4px 10px",
+                    background: `${SPIDERTANKS.color}20`,
+                    border: `1px solid ${SPIDERTANKS.color}40`,
+                    borderRadius: "12px",
+                    color: SPIDERTANKS.color,
+                    fontFamily: "Share Tech Mono, monospace",
+                    fontSize: "11px",
+                  }}>{tag}</span>
+                ))}
+              </div>
+
+              <a href={SPIDERTANKS.playUrl} target="_blank" rel="noopener noreferrer" style={{
+                display: "block", width: "100%", padding: "12px",
+                background: `${SPIDERTANKS.color}20`, border: `2px solid ${SPIDERTANKS.color}`,
+                borderRadius: "8px", color: SPIDERTANKS.color,
+                fontFamily: "Orbitron, sans-serif", fontWeight: "bold", fontSize: "13px",
+                textAlign: "center", textDecoration: "none", textTransform: "uppercase",
+                marginBottom: "10px", boxSizing: "border-box",
+              }}>
+                ▶ PLAY NOW
+              </a>
+
+              <a href={SPIDERTANKS.guideUrl} target="_blank" rel="noopener noreferrer" style={{
+                display: "block", width: "100%", padding: "10px",
+                background: `${SPIDERTANKS.color}10`, border: `1px solid ${SPIDERTANKS.color}40`,
+                borderRadius: "6px", color: SPIDERTANKS.color,
+                fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
+                textAlign: "center", textDecoration: "none", boxSizing: "border-box",
+              }}>
+                {SPIDERTANKS.guideLabel} →
+              </a>
             </div>
           </div>
 
