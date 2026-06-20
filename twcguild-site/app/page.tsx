@@ -368,7 +368,7 @@ export default function HomePage() {
             }}
           >
             {/* YouTube trailer */}
-            <div style={{ height: "200px", borderBottom: `1px solid ${INFINITYRISING.color}40`, overflow: "hidden" }}>
+            <div style={{ height: "200px", borderBottom: `1px solid ${INFINITYRISING.color}40`, overflow: "hidden", position: "relative" }}>
               <iframe
                 width="100%"
                 height="100%"
@@ -379,6 +379,21 @@ export default function HomePage() {
                 allowFullScreen
                 style={{ border: "none" }}
               />
+              <div style={{
+                position: "absolute",
+                bottom: 0, left: 0, right: 0,
+                padding: "8px 14px",
+                background: "linear-gradient(135deg, rgba(255,0,51,0.9), rgba(180,0,30,0.9))",
+                color: "#fff",
+                fontFamily: "Orbitron, sans-serif",
+                fontSize: "11px",
+                fontWeight: "bold",
+                textAlign: "center",
+                textTransform: "uppercase",
+                letterSpacing: "2px",
+              }}>
+                Guild Asset Lending Program — Coming Soon
+              </div>
             </div>
 
             <div style={{ padding: "20px" }}>
