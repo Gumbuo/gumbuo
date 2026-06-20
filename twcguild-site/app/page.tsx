@@ -336,15 +336,26 @@ export default function HomePage() {
                 ▶ PLAY NOW
               </a>
 
-              <a href={SPIDERTANKS.guideUrl} target="_blank" rel="noopener noreferrer" style={{
-                display: "block", width: "100%", padding: "10px",
-                background: `${SPIDERTANKS.color}10`, border: `1px solid ${SPIDERTANKS.color}40`,
-                borderRadius: "6px", color: SPIDERTANKS.color,
-                fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
-                textAlign: "center", textDecoration: "none", boxSizing: "border-box",
-              }}>
-                {SPIDERTANKS.guideLabel} →
-              </a>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                <a href={SPIDERTANKS.guideUrl} target="_blank" rel="noopener noreferrer" style={{
+                  display: "block", padding: "10px",
+                  background: `${SPIDERTANKS.color}10`, border: `1px solid ${SPIDERTANKS.color}40`,
+                  borderRadius: "6px", color: SPIDERTANKS.color,
+                  fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
+                  textAlign: "center", textDecoration: "none", boxSizing: "border-box",
+                }}>
+                  {SPIDERTANKS.guideLabel} →
+                </a>
+                <a href={SPIDERTANKS.guideUrl} target="_blank" rel="noopener noreferrer" style={{
+                  display: "block", padding: "10px",
+                  background: `${SPIDERTANKS.color}10`, border: `1px solid ${SPIDERTANKS.color}40`,
+                  borderRadius: "6px", color: SPIDERTANKS.color,
+                  fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
+                  textAlign: "center", textDecoration: "none", boxSizing: "border-box",
+                }}>
+                  Tank Builder →
+                </a>
+              </div>
             </div>
           </div>
 
