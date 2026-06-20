@@ -76,7 +76,7 @@ export default function HomePage() {
         {/* dark overlay */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(to bottom, rgba(11,12,16,0.3) 0%, rgba(11,12,16,0.6) 70%, rgba(11,12,16,1) 100%)",
+          background: "linear-gradient(to bottom, rgba(11,12,16,0) 0%, rgba(11,12,16,0) 60%, rgba(11,12,16,0.85) 90%, rgba(11,12,16,1) 100%)",
         }} />
 
         {/* Nav */}
