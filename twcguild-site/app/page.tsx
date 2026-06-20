@@ -22,6 +22,18 @@ const NOMSTEAD = {
   tool4Label: "NomStead Docs",
 };
 
+const INFINITYRISING = {
+  title: "Infinity Rising",
+  description:
+    "Open-world multiplayer RPG (formerly Cornucopias) on Cardano & Base. Race, build, craft, and earn $RISE. Multiple NFT collections including Land Zones and vehicles.",
+  color: "#ff0033",
+  tags: ["RPG", "Action", "Cardano", "Base", "$RISE"],
+  playUrl: "https://infinityrising.io/",
+  youtubeTrailer: "yZECO2nDyu8",
+  guideUrl: "https://www.gamehole.games/infinityrising",
+  guideLabel: "File Nodes & Token Guide",
+};
+
 const SPIDERTANKS = {
   title: "Spider Tanks: Cores of Chaos",
   description:
@@ -332,6 +344,83 @@ export default function HomePage() {
                 textAlign: "center", textDecoration: "none", boxSizing: "border-box",
               }}>
                 {SPIDERTANKS.guideLabel} →
+              </a>
+            </div>
+          </div>
+
+          {/* Infinity Rising Card */}
+          <div style={{
+            background: "linear-gradient(135deg, #1a1a1a, #0b0c10)",
+            border: `2px solid ${INFINITYRISING.color}40`,
+            borderRadius: "16px",
+            overflow: "hidden",
+            transition: "all 0.3s ease",
+          }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = INFINITYRISING.color;
+              e.currentTarget.style.boxShadow = `0 0 30px ${INFINITYRISING.color}40`;
+              e.currentTarget.style.transform = "translateY(-5px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = `${INFINITYRISING.color}40`;
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            {/* YouTube trailer */}
+            <div style={{ height: "200px", borderBottom: `1px solid ${INFINITYRISING.color}40`, overflow: "hidden" }}>
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${INFINITYRISING.youtubeTrailer}`}
+                title="Infinity Rising Trailer"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ border: "none" }}
+              />
+            </div>
+
+            <div style={{ padding: "20px" }}>
+              <h3 style={{ fontFamily: "Orbitron, sans-serif", fontSize: "20px", color: INFINITYRISING.color, marginBottom: "10px" }}>
+                {INFINITYRISING.title}
+              </h3>
+              <p style={{ fontFamily: "Share Tech Mono, monospace", color: "#aaa", fontSize: "14px", lineHeight: "1.6", marginBottom: "15px" }}>
+                {INFINITYRISING.description}
+              </p>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" }}>
+                {INFINITYRISING.tags.map((tag) => (
+                  <span key={tag} style={{
+                    padding: "4px 10px",
+                    background: `${INFINITYRISING.color}20`,
+                    border: `1px solid ${INFINITYRISING.color}40`,
+                    borderRadius: "12px",
+                    color: INFINITYRISING.color,
+                    fontFamily: "Share Tech Mono, monospace",
+                    fontSize: "11px",
+                  }}>{tag}</span>
+                ))}
+              </div>
+
+              <a href={INFINITYRISING.playUrl} target="_blank" rel="noopener noreferrer" style={{
+                display: "block", width: "100%", padding: "12px",
+                background: `${INFINITYRISING.color}20`, border: `2px solid ${INFINITYRISING.color}`,
+                borderRadius: "8px", color: INFINITYRISING.color,
+                fontFamily: "Orbitron, sans-serif", fontWeight: "bold", fontSize: "13px",
+                textAlign: "center", textDecoration: "none", textTransform: "uppercase",
+                marginBottom: "10px", boxSizing: "border-box",
+              }}>
+                ▶ PLAY NOW
+              </a>
+
+              <a href={INFINITYRISING.guideUrl} target="_blank" rel="noopener noreferrer" style={{
+                display: "block", width: "100%", padding: "10px",
+                background: `${INFINITYRISING.color}10`, border: `1px solid ${INFINITYRISING.color}40`,
+                borderRadius: "6px", color: INFINITYRISING.color,
+                fontFamily: "Share Tech Mono, monospace", fontSize: "12px",
+                textAlign: "center", textDecoration: "none", boxSizing: "border-box",
+              }}>
+                {INFINITYRISING.guideLabel} →
               </a>
             </div>
           </div>
