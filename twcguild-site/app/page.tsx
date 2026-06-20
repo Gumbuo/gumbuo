@@ -64,7 +64,7 @@ export default function HomePage() {
         position: "relative",
         minHeight: "100vh",
         backgroundImage: "url('/images/hero.png')",
-        backgroundSize: "cover",
+        backgroundSize: "80%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         display: "flex",
