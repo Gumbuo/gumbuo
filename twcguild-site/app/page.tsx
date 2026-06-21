@@ -408,9 +408,12 @@ export default function HomePage() {
           </h2>
           <div style={{ flexShrink: 0, textAlign: "right" }}>
             <p style={{ fontWeight: 500, fontSize: 17, maxWidth: 280, margin: "0 0 22px", lineHeight: 1.5, color: "#0a0c05" }}>
-              Bring your rank, your role, or your skills. Check out the roster and claim your profile.
+              Bring your rank, your role, or your skills. Jump in on Discord or claim your profile on the roster.
             </p>
-            <Link href="/members" style={{ ...btnLime, background: "#0a0c05", color: LIME, display: "inline-flex" }}>View roster →</Link>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <a href="https://discord.gg/CBtfFHmVwZ" target="_blank" rel="noopener noreferrer" style={{ ...btnLime, background: "#0a0c05", color: LIME, display: "inline-flex" }}>Join Discord →</a>
+              <Link href="/members" style={{ ...btnLime, background: "rgba(0,0,0,.15)", color: "#0a0c05", border: "1.5px solid rgba(0,0,0,.2)", display: "inline-flex" }}>View roster</Link>
+            </div>
           </div>
         </div>
       </div>
@@ -441,6 +444,7 @@ export default function HomePage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={footerHead}>Community</div>
+          <a href="https://discord.gg/CBtfFHmVwZ" target="_blank" rel="noopener noreferrer" style={footerLink}>Discord</a>
           <a href="https://www.gamehole.games" target="_blank" rel="noopener noreferrer" style={footerLink}>GameHole.games</a>
           <Link href="/members" style={footerLink}>Apply / Join</Link>
         </div>

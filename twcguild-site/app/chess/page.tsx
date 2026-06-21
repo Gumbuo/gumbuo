@@ -158,12 +158,16 @@ export default function ChessPage() {
                 </p>
                 <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "8px 0 0", lineHeight: 1.6 }}>
                   {memberName
-                    ? `Hey ${memberName} — your profile is set up but an officer hasn't approved your membership yet. Hang tight or reach out on Discord.`
+                    ? `Hey ${memberName} — your profile is set up but an officer hasn't approved your membership yet. Hang tight or reach out on Discord:`
                     : "Your wallet isn't linked to a guild profile. Find your name on the roster and claim it — an officer will approve your membership."}
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-                {!memberName && (
+                {memberName ? (
+                  <a href="https://discord.gg/CBtfFHmVwZ" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 14, padding: "13px 28px", borderRadius: 999, background: "#3d9eff", color: "#fff", textDecoration: "none", display: "inline-block" }}>
+                    Open Discord →
+                  </a>
+                ) : (
                   <Link href="/members" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 14, padding: "13px 28px", borderRadius: 999, background: "#c6f53e", color: "#0a0c05", textDecoration: "none", display: "inline-block" }}>
                     Go to roster →
                   </Link>
