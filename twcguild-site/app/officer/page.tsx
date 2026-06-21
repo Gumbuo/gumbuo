@@ -230,8 +230,11 @@ function Avatar({ entry }: { entry: MemberEntry }) {
   return entry.profile.avatarUrl ? (
     <img src={entry.profile.avatarUrl} alt={entry.name} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: `1.5px solid ${LINE}` }} />
   ) : (
-    <div style={{ width: 44, height: 44, borderRadius: 10, background: "rgba(198,245,62,.15)", border: `1.5px solid ${LINE}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Anton', sans-serif", fontSize: 20, color: LIME }}>
-      {entry.name.charAt(0).toUpperCase()}
+    <div style={{ width: 44, height: 44, borderRadius: 10, background: "rgba(198,245,62,.1)", border: `1.5px solid ${LINE}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <svg viewBox="0 0 40 40" width={28} height={28} xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="15" r="7" fill={LIME} opacity={0.7} />
+        <path d="M4 38 Q4 26 20 26 Q36 26 36 38" fill={LIME} opacity={0.7} />
+      </svg>
     </div>
   );
 }

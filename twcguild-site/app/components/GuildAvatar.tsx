@@ -28,11 +28,14 @@ export function GuildAvatar({ address, ensImage, size }: Props) {
   return (
     <div style={{
       width: size, height: size, borderRadius: "50%",
-      background: "#45a29e33", border: "1px solid #45a29e",
+      background: "#0e1814", border: "1px solid #c6f53e40",
       display: "flex", alignItems: "center", justifyContent: "center",
-      color: "#45a29e", fontSize: size * 0.38, fontWeight: "bold",
+      overflow: "hidden", flexShrink: 0,
     }}>
-      {address.slice(2, 4).toUpperCase()}
+      <svg viewBox="0 0 40 40" width={size * 0.7} height={size * 0.7} xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="15" r="7" fill="#c6f53e99" />
+        <path d="M4 38 Q4 26 20 26 Q36 26 36 38" fill="#c6f53e99" />
+      </svg>
     </div>
   );
 }

@@ -107,6 +107,15 @@ const TICKER_ITEMS = [
 
 const SHOWN_MEMBERS = 19;
 
+function DefaultAvatar({ size, accent }: { size: number; accent: string }) {
+  return (
+    <svg viewBox="0 0 40 40" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="15" r="7" fill={accent} opacity={0.7} />
+      <path d="M4 38 Q4 26 20 26 Q36 26 36 38" fill={accent} opacity={0.7} />
+    </svg>
+  );
+}
+
 // Deterministic tile color per index
 function tileAccent(i: number) {
   const cycle = i % 3;
@@ -372,8 +381,8 @@ export default function HomePage() {
                 {photo ? (
                   <img src={photo} alt={m.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
-                  <div style={{ width: "100%", height: "100%", background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Anton', sans-serif", fontSize: 22, color }}>
-                    {m.name.charAt(0).toUpperCase()}
+                  <div style={{ width: "100%", height: "100%", background: bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <DefaultAvatar size={42} accent={color} />
                   </div>
                 )}
               </Link>
