@@ -1,9 +1,9 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { base } from "wagmi/chains";
+import { base, immutableZkEvm } from "wagmi/chains";
 
 export const config = getDefaultConfig({
   appName: "TWC Guild",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
-  chains: [base],
+  chains: [immutableZkEvm, base],
   ssr: true,
 });
