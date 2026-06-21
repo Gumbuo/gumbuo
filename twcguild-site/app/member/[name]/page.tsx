@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { upload } from "@vercel/blob/client";
 import activityData from "../../guildevents/activity-data.json";
 import memberRoster from "../../guildevents/member-roster.json";
 
@@ -110,16 +111,15 @@ export default function MemberPage({ params }: { params: { name: string } }) {
     if (!file) return;
     setUploading(true);
     setUploadError("");
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    if (!res.ok) {
-      setUploadError("Upload failed — try a URL instead");
-      setUploading(false);
-      return;
+    try {
+      const blob = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+      });
+      setForm(f => ({ ...f, avatarUrl: blob.url }));
+    } catch {
+      setUploadError("Upload failed — try a smaller image or paste a URL");
     }
-    const { url } = await res.json();
-    setForm(f => ({ ...f, avatarUrl: url }));
     setUploading(false);
   };
 
