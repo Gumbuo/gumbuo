@@ -14,4 +14,8 @@ export const redis = {
     await connected;
     await client.set(key, JSON.stringify(value));
   },
+  async keys(pattern: string): Promise<string[]> {
+    await connected;
+    return client.keys(pattern);
+  },
 };

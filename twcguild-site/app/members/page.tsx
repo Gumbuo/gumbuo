@@ -1,7 +1,13 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import activityData from "../guildevents/activity-data.json";
 import memberRoster from "../guildevents/member-roster.json";
+
+type SavedProfile = {
+  avatarUrl?: string;
+  claimedBy?: string;
+};
 
 type Player = {
   name: string;
@@ -61,6 +67,13 @@ const SPECIALTY_EMOJI: Record<string, string> = {
 export default function MembersPage() {
   const players = (activityData as unknown as { players: Player[] }).players;
   const roster = memberRoster as RosterMember[];
+  const [savedProfiles, setSavedProfiles] = useState<Record<string, SavedProfile>>({});
+
+  useEffect(() => {
+    fetch("/api/profiles")
+      .then(r => r.json())
+      .then(d => setSavedProfiles(d.profiles || {}));
+  }, []);
 
   // Build merged list: roster is the source of truth, enhance with activity data
   const activeRoster = roster.filter(r => {
@@ -105,6 +118,9 @@ export default function MembersPage() {
             const emoji = SPECIALTY_EMOJI[m.specialty];
             const initials = m.name[0].toUpperCase();
             const slug = encodeURIComponent(m.name);
+            const saved = savedProfiles[m.name.toLowerCase()];
+            const avatarUrl = saved?.avatarUrl;
+            const verified = !!saved?.claimedBy;
 
             return (
               <Link
@@ -114,12 +130,11 @@ export default function MembersPage() {
               >
                 <div style={{
                   background: `${color}0a`,
-                  border: `1px solid ${color}44`,
+                  border: `1px solid ${verified ? color : color + "44"}`,
                   borderRadius: "12px",
                   padding: "20px 16px",
                   textAlign: "center",
                   cursor: "pointer",
-                  transition: "border-color 0.2s",
                   position: "relative",
                 }}>
                   {/* Rank badge */}
@@ -127,16 +142,29 @@ export default function MembersPage() {
                     #{i + 1}
                   </div>
 
-                  {/* Avatar circle */}
-                  <div style={{
-                    width: "64px", height: "64px", borderRadius: "50%",
-                    background: `${color}22`, border: `2px solid ${color}`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    margin: "0 auto 12px",
-                    fontSize: "1.5rem", fontWeight: "bold", color,
-                  }}>
-                    {initials}
-                  </div>
+                  {/* Verified badge */}
+                  {verified && (
+                    <div style={{ position: "absolute", top: "10px", right: "10px", color: "#4ade80", fontSize: "0.6rem" }}>✓</div>
+                  )}
+
+                  {/* Avatar */}
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={m.name}
+                      style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: `2px solid ${color}`, display: "block", margin: "0 auto 12px" }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: "64px", height: "64px", borderRadius: "50%",
+                      background: `${color}22`, border: `2px solid ${color}`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      margin: "0 auto 12px",
+                      fontSize: "1.5rem", fontWeight: "bold", color,
+                    }}>
+                      {initials}
+                    </div>
+                  )}
 
                   {/* Name */}
                   <div style={{ fontSize: "0.85rem", fontWeight: "bold", color: "#66fcf1", letterSpacing: "1px", marginBottom: "8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
