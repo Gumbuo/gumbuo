@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-type Props = { address: string; ensImage: string | null | undefined; size: number };
+type Props = { address: string; ensImage?: string | null; size: number };
 
 export function GuildAvatar({ address, ensImage, size }: Props) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(ensImage ?? null);
