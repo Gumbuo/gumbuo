@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { formatEther, parseEther } from "viem";
@@ -27,9 +27,33 @@ const STAKE_OPTIONS: Record<StakeOption, { label: string; value: bigint; descrip
   high:     { label: "0.01 ETH",    value: parseEther("0.01"),     description: "High stakes" },
 };
 
+type MemberStatus = "checking" | "not-connected" | "not-member" | "member";
+
 export default function ChessPage() {
   const { address, isConnected } = useAccount();
   const { data: balance } = useBalance({ address });
+
+  const [memberStatus, setMemberStatus] = useState<MemberStatus>("checking");
+  const [memberName, setMemberName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isConnected || !address) {
+      setMemberStatus("not-connected");
+      return;
+    }
+    setMemberStatus("checking");
+    fetch(`/api/wallet/${address.toLowerCase()}`)
+      .then((r) => r.json())
+      .then((data: { profile: { name: string; avatarUrl?: string } | null }) => {
+        if (data.profile?.name) {
+          setMemberName(data.profile.name);
+          setMemberStatus("member");
+        } else {
+          setMemberStatus("not-member");
+        }
+      })
+      .catch(() => setMemberStatus("not-member"));
+  }, [address, isConnected]);
 
   const [gameMode, setGameMode] = useState<GameMode>("lobby");
   const [settings, setSettings] = useState<GameSettings>({
@@ -96,22 +120,53 @@ export default function ChessPage() {
     setGame(new Chess());
   };
 
-  if (!isConnected) {
+  if (memberStatus !== "member") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center" style={{ background: "linear-gradient(180deg, #0b0c10 0%, #0d1a1a 50%, #0b0c10 100%)" }}>
-        <div className="text-center space-y-6 px-4">
-          <div className="text-7xl mb-2">♟</div>
-          <h1 className="text-5xl font-bold" style={{ fontFamily: "Orbitron, sans-serif", color: "#66fcf1", textShadow: "0 0 20px #66fcf1" }}>
+      <div style={{ minHeight: "100vh", background: "#08090a", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center", padding: "0 24px", maxWidth: 480 }}>
+          <div style={{ fontSize: 72, marginBottom: 8 }}>♟</div>
+          <h1 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(36px, 6vw, 56px)", textTransform: "uppercase", color: "#c6f53e", marginBottom: 16, fontWeight: 400 }}>
             TWC CHESS
           </h1>
-          <p className="text-gray-400 text-lg" style={{ fontFamily: "Share Tech Mono, monospace" }}>
-            Connect your wallet to play
-          </p>
-          <div className="flex justify-center mt-4">
-            <ConnectButton />
-          </div>
-          <Link href="/" className="block text-sm mt-6" style={{ color: "#45a29e", fontFamily: "Orbitron, sans-serif" }}>
-            ← TWC GUILD
+
+          {memberStatus === "checking" && (
+            <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 16 }}>
+              Checking membership…
+            </p>
+          )}
+
+          {memberStatus === "not-connected" && (
+            <>
+              <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, marginBottom: 28, lineHeight: 1.5 }}>
+                TWC Chess is members only. Connect your wallet to verify your guild membership.
+              </p>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <ConnectButton />
+              </div>
+            </>
+          )}
+
+          {memberStatus === "not-member" && (
+            <>
+              <div style={{ background: "rgba(255,61,160,.1)", border: "1.5px solid rgba(255,61,160,.4)", borderRadius: 16, padding: "20px 24px", marginBottom: 28 }}>
+                <p style={{ color: "#ff3da0", fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: 0, lineHeight: 1.6, fontWeight: 600 }}>
+                  Members only
+                </p>
+                <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "8px 0 0", lineHeight: 1.6 }}>
+                  Your wallet isn&apos;t linked to a guild profile yet. Find your name on the roster and claim your profile — once you save it, you&apos;re in.
+                </p>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+                <Link href="/members" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 14, padding: "13px 28px", borderRadius: 999, background: "#c6f53e", color: "#0a0c05", textDecoration: "none", display: "inline-block" }}>
+                  Go to roster →
+                </Link>
+                <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
+              </div>
+            </>
+          )}
+
+          <Link href="/" style={{ display: "block", marginTop: 32, fontSize: 13, color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", textDecoration: "none" }}>
+            ← TWC Guild
           </Link>
         </div>
       </div>
@@ -130,6 +185,11 @@ export default function ChessPage() {
             <span style={{ color: "#45a29e", fontFamily: "Orbitron, sans-serif", fontSize: "0.9rem" }}>/ CHESS</span>
           </div>
           <div className="flex items-center gap-4">
+            {memberName && (
+              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: "#c6f53e", background: "rgba(198,245,62,.1)", border: "1px solid rgba(198,245,62,.3)", borderRadius: 999, padding: "4px 12px" }}>
+                {memberName}
+              </div>
+            )}
             {balance && (
               <div className="text-sm" style={{ fontFamily: "Share Tech Mono, monospace", color: "#45a29e" }}>
                 {parseFloat(formatEther(balance.value)).toFixed(4)} ETH
