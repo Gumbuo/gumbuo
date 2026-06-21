@@ -168,6 +168,7 @@ export default function HomePage() {
           <a href="#squads"  style={navLink}>Squads</a>
           <a href="#roadmap" style={navLink}>Roadmap</a>
           <Link href="/members" style={navLink}>Roster</Link>
+          <Link href="/lending" style={navLink}>Item Board</Link>
           <Link href="/chess" style={{ ...navLink, color: "#f0c040" }}>Chess</Link>
         </div>
 
