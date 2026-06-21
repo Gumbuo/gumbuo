@@ -1,6 +1,8 @@
 import "./globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "TWC Guild",
@@ -39,7 +41,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
