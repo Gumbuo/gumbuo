@@ -32,6 +32,11 @@ type SavedProfile = {
   avatarUrl?: string;
   discordTag?: string;
   customTitle?: string;
+  steamUrl?: string;
+  youtubeUrl?: string;
+  twitterUrl?: string;
+  twitchUrl?: string;
+  games?: string[];
   claimedBy?: string;
 };
 
@@ -80,7 +85,8 @@ export default function MemberPage({ params }: { params: { name: string } }) {
 
   const [saved, setSaved] = useState<SavedProfile>({});
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ avatarUrl: "", discordTag: "", customTitle: "" });
+  const [form, setForm] = useState({ avatarUrl: "", discordTag: "", customTitle: "", steamUrl: "", youtubeUrl: "", twitterUrl: "", twitchUrl: "", games: [] as string[] });
+  const [gameInput, setGameInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
@@ -96,6 +102,11 @@ export default function MemberPage({ params }: { params: { name: string } }) {
           avatarUrl: profile.avatarUrl || "",
           discordTag: profile.discordTag || "",
           customTitle: profile.customTitle || "",
+          steamUrl: profile.steamUrl || "",
+          youtubeUrl: profile.youtubeUrl || "",
+          twitterUrl: profile.twitterUrl || "",
+          twitchUrl: profile.twitchUrl || "",
+          games: profile.games || [],
         });
       });
   }, [nameParam]);
@@ -232,6 +243,43 @@ export default function MemberPage({ params }: { params: { name: string } }) {
             </div>
           )}
 
+          {/* Social links */}
+          {(saved.steamUrl || saved.youtubeUrl || saved.twitterUrl || saved.twitchUrl) && (
+            <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
+              {saved.steamUrl && (
+                <a href={saved.steamUrl} target="_blank" rel="noopener noreferrer" style={socialBtn("#1b2838")}>
+                  Steam
+                </a>
+              )}
+              {saved.youtubeUrl && (
+                <a href={saved.youtubeUrl} target="_blank" rel="noopener noreferrer" style={socialBtn("#ff0000")}>
+                  YouTube
+                </a>
+              )}
+              {saved.twitterUrl && (
+                <a href={saved.twitterUrl} target="_blank" rel="noopener noreferrer" style={socialBtn("#3d9eff")}>
+                  X / Twitter
+                </a>
+              )}
+              {saved.twitchUrl && (
+                <a href={saved.twitchUrl} target="_blank" rel="noopener noreferrer" style={socialBtn("#9146ff")}>
+                  Twitch
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Game tags */}
+          {saved.games && saved.games.length > 0 && (
+            <div style={{ display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
+              {saved.games.map(g => (
+                <span key={g} style={{ background: "rgba(198,245,62,.1)", border: "1px solid rgba(198,245,62,.35)", color: "#c6f53e", padding: "3px 12px", borderRadius: "999px", fontSize: "0.65rem", letterSpacing: "1px", fontFamily: "Share Tech Mono, monospace" }}>
+                  {g}
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* Days in guild / status */}
           <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap", marginBottom: "16px" }}>
             {days !== null && (
@@ -351,7 +399,7 @@ export default function MemberPage({ params }: { params: { name: string } }) {
                         placeholder="or paste image URL"
                         value={form.avatarUrl}
                         onChange={e => setForm(f => ({ ...f, avatarUrl: e.target.value }))}
-                        style={{ flex: 1, padding: "10px 14px", background: "rgba(0,0,0,0.5)", border: "1px solid #45a29e44", borderRadius: "6px", color: "#fff", fontFamily: "Share Tech Mono, monospace", fontSize: "13px", boxSizing: "border-box" }}
+                        style={{ ...inputStyle, flex: 1 }}
                       />
                     </div>
                     {uploadError && <div style={{ color: "#ff6b6b", fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", marginTop: "4px" }}>{uploadError}</div>}
@@ -364,7 +412,7 @@ export default function MemberPage({ params }: { params: { name: string } }) {
                       placeholder="e.g. foxhole#1234 or @foxhole"
                       value={form.discordTag}
                       onChange={e => setForm(f => ({ ...f, discordTag: e.target.value }))}
-                      style={{ width: "100%", padding: "10px 14px", background: "rgba(0,0,0,0.5)", border: "1px solid #45a29e44", borderRadius: "6px", color: "#fff", fontFamily: "Share Tech Mono, monospace", fontSize: "13px", boxSizing: "border-box" }}
+                      style={inputStyle}
                     />
                   </div>
 
@@ -375,8 +423,80 @@ export default function MemberPage({ params }: { params: { name: string } }) {
                       placeholder="e.g. Officer, Founder, Dragon Slayer..."
                       value={form.customTitle}
                       onChange={e => setForm(f => ({ ...f, customTitle: e.target.value }))}
-                      style={{ width: "100%", padding: "10px 14px", background: "rgba(0,0,0,0.5)", border: "1px solid #45a29e44", borderRadius: "6px", color: "#fff", fontFamily: "Share Tech Mono, monospace", fontSize: "13px", boxSizing: "border-box" }}
+                      style={inputStyle}
                     />
+                  </div>
+
+                  {/* Socials */}
+                  <div style={{ borderTop: "1px solid #45a29e22", paddingTop: "14px" }}>
+                    <label style={{ display: "block", color: "#45a29e", fontSize: "0.6rem", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "12px" }}>Social Links</label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ width: 72, fontSize: "0.65rem", color: "#1b2838", background: "#c7d5e0", borderRadius: "4px", padding: "2px 8px", textAlign: "center", fontWeight: "bold", flexShrink: 0 }}>Steam</span>
+                        <input type="url" placeholder="https://steamcommunity.com/id/..." value={form.steamUrl} onChange={e => setForm(f => ({ ...f, steamUrl: e.target.value }))} style={inputStyle} />
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ width: 72, fontSize: "0.65rem", color: "#fff", background: "#ff0000", borderRadius: "4px", padding: "2px 8px", textAlign: "center", fontWeight: "bold", flexShrink: 0 }}>YouTube</span>
+                        <input type="url" placeholder="https://youtube.com/@..." value={form.youtubeUrl} onChange={e => setForm(f => ({ ...f, youtubeUrl: e.target.value }))} style={inputStyle} />
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ width: 72, fontSize: "0.65rem", color: "#fff", background: "#3d9eff", borderRadius: "4px", padding: "2px 8px", textAlign: "center", fontWeight: "bold", flexShrink: 0 }}>X / Twitter</span>
+                        <input type="url" placeholder="https://x.com/..." value={form.twitterUrl} onChange={e => setForm(f => ({ ...f, twitterUrl: e.target.value }))} style={inputStyle} />
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ width: 72, fontSize: "0.65rem", color: "#fff", background: "#9146ff", borderRadius: "4px", padding: "2px 8px", textAlign: "center", fontWeight: "bold", flexShrink: 0 }}>Twitch</span>
+                        <input type="url" placeholder="https://twitch.tv/..." value={form.twitchUrl} onChange={e => setForm(f => ({ ...f, twitchUrl: e.target.value }))} style={inputStyle} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Games I play */}
+                  <div style={{ borderTop: "1px solid #45a29e22", paddingTop: "14px" }}>
+                    <label style={{ display: "block", color: "#45a29e", fontSize: "0.6rem", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "8px" }}>Games I Play</label>
+                    <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
+                      <input
+                        type="text"
+                        placeholder="e.g. NomStead, Valorant, CS2..."
+                        value={gameInput}
+                        onChange={e => setGameInput(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            const g = gameInput.trim();
+                            if (g && !form.games.includes(g)) setForm(f => ({ ...f, games: [...f.games, g] }));
+                            setGameInput("");
+                          }
+                        }}
+                        style={{ ...inputStyle, flex: 1 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const g = gameInput.trim();
+                          if (g && !form.games.includes(g)) setForm(f => ({ ...f, games: [...f.games, g] }));
+                          setGameInput("");
+                        }}
+                        style={{ padding: "9px 16px", background: "rgba(198,245,62,.15)", border: "1px solid rgba(198,245,62,.4)", borderRadius: "6px", color: "#c6f53e", fontFamily: "Share Tech Mono, monospace", fontSize: "12px", cursor: "pointer", whiteSpace: "nowrap" }}
+                      >
+                        + Add
+                      </button>
+                    </div>
+                    {form.games.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {form.games.map(g => (
+                          <button
+                            key={g}
+                            type="button"
+                            onClick={() => setForm(f => ({ ...f, games: f.games.filter(x => x !== g) }))}
+                            title="Remove"
+                            style={{ background: "rgba(198,245,62,.1)", border: "1px solid rgba(198,245,62,.35)", color: "#c6f53e", padding: "3px 10px", borderRadius: "999px", fontSize: "0.65rem", fontFamily: "Share Tech Mono, monospace", cursor: "pointer", letterSpacing: "1px" }}
+                          >
+                            {g} ✕
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    <p style={{ color: "#555", fontFamily: "Share Tech Mono, monospace", fontSize: "0.6rem", marginTop: "6px" }}>Type a game name and press Enter or + Add. Click a tag to remove it.</p>
                   </div>
 
                   <button
@@ -395,4 +515,31 @@ export default function MemberPage({ params }: { params: { name: string } }) {
       </div>
     </div>
   );
+}
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 14px",
+  background: "rgba(0,0,0,0.5)",
+  border: "1px solid #45a29e44",
+  borderRadius: "6px",
+  color: "#fff",
+  fontFamily: "Share Tech Mono, monospace",
+  fontSize: "13px",
+  boxSizing: "border-box",
+};
+
+function socialBtn(bg: string): React.CSSProperties {
+  return {
+    padding: "4px 14px",
+    background: bg + "22",
+    border: `1px solid ${bg}66`,
+    color: bg === "#1b2838" ? "#c7d5e0" : bg,
+    borderRadius: "999px",
+    fontSize: "0.7rem",
+    fontFamily: "Share Tech Mono, monospace",
+    letterSpacing: "1px",
+    textDecoration: "none",
+    display: "inline-block",
+  };
 }

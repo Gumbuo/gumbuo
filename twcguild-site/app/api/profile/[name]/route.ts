@@ -7,6 +7,11 @@ export type Profile = {
   avatarUrl?: string;
   discordTag?: string;
   customTitle?: string;
+  steamUrl?: string;
+  youtubeUrl?: string;
+  twitterUrl?: string;
+  twitchUrl?: string;
+  games?: string[];
   claimedBy?: string;
   guildStatus?: GuildStatus;
   claimedAt?: number;
@@ -50,6 +55,11 @@ export async function POST(req: NextRequest, { params }: { params: { name: strin
     avatarUrl: body.avatarUrl || existing.avatarUrl,
     discordTag: body.discordTag !== undefined ? body.discordTag : existing.discordTag,
     customTitle: body.customTitle !== undefined ? body.customTitle : existing.customTitle,
+    steamUrl: body.steamUrl !== undefined ? body.steamUrl : existing.steamUrl,
+    youtubeUrl: body.youtubeUrl !== undefined ? body.youtubeUrl : existing.youtubeUrl,
+    twitterUrl: body.twitterUrl !== undefined ? body.twitterUrl : existing.twitterUrl,
+    twitchUrl: body.twitchUrl !== undefined ? body.twitchUrl : existing.twitchUrl,
+    games: body.games !== undefined ? body.games : existing.games,
     claimedBy: existing.claimedBy || wallet,
     // Existing members keep their status; brand-new claims start pending
     guildStatus: existing.guildStatus ?? (isFirstClaim ? "pending" : undefined),

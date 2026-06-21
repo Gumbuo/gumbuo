@@ -8,6 +8,7 @@ import memberRoster from "../guildevents/member-roster.json";
 type SavedProfile = {
   avatarUrl?: string;
   claimedBy?: string;
+  games?: string[];
 };
 
 type Player = {
@@ -185,9 +186,23 @@ export default function MembersPage() {
                   </div>
 
                   {/* Level / XP */}
-                  <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#888" }}>
+                  <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#888", marginBottom: saved?.games?.length ? "8px" : "0" }}>
                     LV {m.level} · {m.xp.toLocaleString()} XP
                   </div>
+
+                  {/* Game tags */}
+                  {saved?.games && saved.games.length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", justifyContent: "center" }}>
+                      {saved.games.slice(0, 3).map(g => (
+                        <span key={g} style={{ background: "rgba(198,245,62,.08)", border: "1px solid rgba(198,245,62,.25)", color: "#c6f53e", padding: "2px 8px", borderRadius: "999px", fontSize: "0.55rem", letterSpacing: "0.5px", fontFamily: "Share Tech Mono, monospace" }}>
+                          {g}
+                        </span>
+                      ))}
+                      {saved.games.length > 3 && (
+                        <span style={{ color: "#555", fontSize: "0.55rem", fontFamily: "Share Tech Mono, monospace", padding: "2px 4px" }}>+{saved.games.length - 3}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </Link>
             );
