@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
@@ -152,8 +152,8 @@ export default function ChessPage() {
 
           {memberStatus === "not-member" && (
             <>
-              <div style={{ background: "rgba(255,61,160,.1)", border: "1.5px solid rgba(255,61,160,.4)", borderRadius: 16, padding: "20px 24px", marginBottom: 28 }}>
-                <p style={{ color: "#ff3da0", fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: 0, lineHeight: 1.6, fontWeight: 600 }}>
+              <div style={{ background: "rgba(61,158,255,.1)", border: "1.5px solid rgba(61,158,255,.4)", borderRadius: 16, padding: "20px 24px", marginBottom: 28 }}>
+                <p style={{ color: "#3d9eff", fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: 0, lineHeight: 1.6, fontWeight: 600 }}>
                   {memberName ? "Approval pending" : "Members only"}
                 </p>
                 <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "8px 0 0", lineHeight: 1.6 }}>

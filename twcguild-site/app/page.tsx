@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
@@ -9,7 +9,7 @@ import memberRoster from "./guildevents/member-roster.json";
 
 // ── Design tokens ────────────────────────────────────────────────────────────
 const LIME    = "#c6f53e";
-const MAG     = "#ff3da0";
+const MAG     = "#3d9eff";
 const BG      = "#08090a";
 const SURFACE = "#101214";
 const LINE    = "rgba(255,255,255,.12)";
@@ -120,7 +120,7 @@ function DefaultAvatar({ size, accent }: { size: number; accent: string }) {
 function tileAccent(i: number) {
   const cycle = i % 3;
   if (cycle === 0) return { bg: "rgba(198,245,62,.18)", color: LIME };
-  if (cycle === 1) return { bg: "rgba(255,61,160,.18)", color: MAG };
+  if (cycle === 1) return { bg: "rgba(61,158,255,.18)", color: MAG };
   return { bg: "rgba(255,255,255,.06)", color: MUTED };
 }
 
@@ -182,7 +182,7 @@ export default function HomePage() {
         {/* Badge row */}
         <div style={{ display: "flex", gap: 10, marginBottom: 30, flexWrap: "wrap" }}>
           <span style={{ ...pill, background: LIME, color: "#0a0c05" }}>63 Members</span>
-          <span style={{ ...pill, background: MAG, color: "#1a0410" }}>Recruiting</span>
+          <span style={{ ...pill, background: MAG, color: "#001a33" }}>Recruiting</span>
           <span style={{ ...pill, border: `1.5px solid ${LINE}`, color: MUTED }}>Est. 2023</span>
         </div>
 
@@ -262,7 +262,7 @@ export default function HomePage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
           {[
             { n: "01", title: "Compete",  color: LIME,   textColor: "#0a0c05", body: "Active squads across NomStead, Spider Tanks, Infinity Rising, and AdventureWurld. Guild events every week, real competition every season." },
-            { n: "02", title: "Belong",   color: MAG,    textColor: "#1a0410", body: "63 people who actually show up. Voice every night, guild events with real rewards, zero dead roster slots." },
+            { n: "02", title: "Belong",   color: MAG,    textColor: "#001a33", body: "63 people who actually show up. Voice every night, guild events with real rewards, zero dead roster slots." },
             { n: "03", title: "Build",    color: "#fff", textColor: "#0a0c05", body: "We are making an on-chain game. No ERC-20 token — ever. The economy runs entirely on ERC-1155 items, built to last. The crew designs it, tests it, and owns a piece before anyone else does." },
           ].map(({ n, title, color, textColor, body }) => (
             <div key={n} style={{ background: SURFACE, border: `1.5px solid ${LINE}`, borderRadius: 18, padding: "34px 30px 38px", cursor: "default", transition: "border-color .2s" }}

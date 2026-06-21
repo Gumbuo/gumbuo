@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { useAccount } from "wagmi";
@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Crown } from "../components/Crown";
 
 const LIME    = "#c6f53e";
-const MAG     = "#ff3da0";
+const MAG     = "#3d9eff";
 const BG      = "#08090a";
 const SURFACE = "#101214";
 const LINE    = "rgba(255,255,255,.12)";
@@ -140,7 +140,7 @@ export default function OfficerPage() {
             </div>
 
             {message && (
-              <div style={{ padding: "12px 18px", borderRadius: 10, marginBottom: 24, background: message.ok ? "rgba(198,245,62,.1)" : "rgba(255,61,160,.1)", border: `1.5px solid ${message.ok ? LIME : MAG}`, color: message.ok ? LIME : MAG, fontWeight: 600 }}>
+              <div style={{ padding: "12px 18px", borderRadius: 10, marginBottom: 24, background: message.ok ? "rgba(198,245,62,.1)" : "rgba(61,158,255,.1)", border: `1.5px solid ${message.ok ? LIME : MAG}`, color: message.ok ? LIME : MAG, fontWeight: 600 }}>
                 {message.text}
               </div>
             )}
@@ -150,7 +150,7 @@ export default function OfficerPage() {
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
                 <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: 28, textTransform: "uppercase", margin: 0, fontWeight: 400 }}>Pending</h2>
                 {data.pending.length > 0 && (
-                  <span style={{ background: MAG, color: "#1a0410", fontWeight: 700, fontSize: 12, padding: "3px 10px", borderRadius: 999 }}>
+                  <span style={{ background: MAG, color: "#001a33", fontWeight: 700, fontSize: 12, padding: "3px 10px", borderRadius: 999 }}>
                     {data.pending.length}
                   </span>
                 )}
@@ -199,7 +199,7 @@ export default function OfficerPage() {
                       <button
                         onClick={() => act(entry.name, "remove")}
                         disabled={actionLoading === entry.name + "remove"}
-                        style={{ ...ghostBtn, color: MAG, borderColor: "rgba(255,61,160,.3)", fontSize: 12, padding: "6px 14px" }}
+                        style={{ ...ghostBtn, color: MAG, borderColor: "rgba(61,158,255,.3)", fontSize: 12, padding: "6px 14px" }}
                       >
                         {actionLoading === entry.name + "remove" ? "…" : "Remove"}
                       </button>
@@ -250,7 +250,7 @@ function MemberCard({ entry, actionLoading, onAccept, onRemove }: {
     : "Unknown";
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", background: SURFACE, border: `1.5px solid rgba(255,61,160,.25)`, borderRadius: 14, gap: 16, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", background: SURFACE, border: `1.5px solid rgba(61,158,255,.25)`, borderRadius: 14, gap: 16, flexWrap: "wrap" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
         <Avatar entry={entry} />
         <div>
@@ -265,7 +265,7 @@ function MemberCard({ entry, actionLoading, onAccept, onRemove }: {
         <button onClick={onAccept} disabled={!!actionLoading} style={limeBtn}>
           {actionLoading === entry.name + "accept" ? "…" : "✓ Approve"}
         </button>
-        <button onClick={onRemove} disabled={!!actionLoading} style={{ ...ghostBtn, color: MAG, borderColor: "rgba(255,61,160,.3)" }}>
+        <button onClick={onRemove} disabled={!!actionLoading} style={{ ...ghostBtn, color: MAG, borderColor: "rgba(61,158,255,.3)" }}>
           {actionLoading === entry.name + "remove" ? "…" : "✕ Remove"}
         </button>
       </div>
