@@ -1,0 +1,163 @@
+"use client";
+import Link from "next/link";
+import activityData from "../guildevents/activity-data.json";
+import memberRoster from "../guildevents/member-roster.json";
+
+type Player = {
+  name: string;
+  score: number;
+  harvested: Record<string, number>;
+  planted: Record<string, number>;
+  trees: number;
+  mined: Record<string, number>;
+  fished: Record<string, number>;
+  quests: Record<string, number>;
+  treeChops: number;
+  mineSwings: number;
+  fishCasts: number;
+  questContributions: number;
+  goldEarned: number;
+  vaultDonated: number;
+  joinDate: string | null;
+  guildStatus: "accepted" | "kicked" | null;
+};
+
+type RosterMember = { name: string; level: number; xp: number };
+
+function sum(map: Record<string, number>) {
+  return Object.values(map).reduce((a, b) => a + b, 0);
+}
+
+function getAutoTitle(player: Player): string {
+  const scores: Record<string, number> = {
+    Farmer: sum(player.harvested) + sum(player.planted),
+    Fisher: sum(player.fished),
+    Woodcutter: player.trees,
+    Miner: sum(player.mined),
+    "Quest Runner": sum(player.quests),
+  };
+  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+  return best && best[1] > 0 ? best[0] : "Guild Member";
+}
+
+const SPECIALTY_COLORS: Record<string, string> = {
+  Farmer: "#2e7d32",
+  Fisher: "#00838f",
+  Woodcutter: "#c68642",
+  Miner: "#b44dff",
+  "Quest Runner": "#ffd700",
+  "Guild Member": "#45a29e",
+};
+
+const SPECIALTY_EMOJI: Record<string, string> = {
+  Farmer: "🌾",
+  Fisher: "🎣",
+  Woodcutter: "🪓",
+  Miner: "⛏️",
+  "Quest Runner": "📋",
+  "Guild Member": "⚔️",
+};
+
+export default function MembersPage() {
+  const players = (activityData as unknown as { players: Player[] }).players;
+  const roster = memberRoster as RosterMember[];
+
+  // Build merged list: roster is the source of truth, enhance with activity data
+  const activeRoster = roster.filter(r => {
+    const player = players.find(p => p.name.toLowerCase() === r.name.toLowerCase());
+    return !player || player.guildStatus !== "kicked";
+  });
+
+  const members = activeRoster
+    .map(r => {
+      const player = players.find(p => p.name.toLowerCase() === r.name.toLowerCase());
+      const specialty = player ? getAutoTitle(player) : "Guild Member";
+      const score = player?.score || 0;
+      return { ...r, player, specialty, score };
+    })
+    .sort((a, b) => b.xp - a.xp);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0b0c10", fontFamily: "Orbitron, sans-serif", color: "#66fcf1", paddingBottom: "80px" }}>
+
+      {/* Top bar */}
+      <div style={{ background: "rgba(0,0,0,0.8)", borderBottom: "2px solid #45a29e", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Link href="/" style={{ color: "#45a29e", textDecoration: "none", fontSize: "0.85rem", fontWeight: "bold" }}>
+          ← TWC GUILD
+        </Link>
+        <span style={{ fontSize: "0.7rem", color: "#c5c6c7", letterSpacing: "2px", textTransform: "uppercase" }}>
+          Guild Roster
+        </span>
+      </div>
+
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 16px" }}>
+
+        <h1 style={{ fontSize: "1.4rem", textAlign: "center", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "6px", textShadow: "0 0 15px #66fcf1" }}>
+          TWC Guild Members
+        </h1>
+        <p style={{ textAlign: "center", color: "#c5c6c7", fontFamily: "Share Tech Mono, monospace", fontSize: "0.8rem", marginBottom: "40px" }}>
+          {members.length} active members · Click a card to view profile
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>
+          {members.map((m, i) => {
+            const color = SPECIALTY_COLORS[m.specialty];
+            const emoji = SPECIALTY_EMOJI[m.specialty];
+            const initials = m.name[0].toUpperCase();
+            const slug = encodeURIComponent(m.name);
+
+            return (
+              <Link
+                key={m.name}
+                href={`/member/${slug}`}
+                style={{ textDecoration: "none" }}
+              >
+                <div style={{
+                  background: `${color}0a`,
+                  border: `1px solid ${color}44`,
+                  borderRadius: "12px",
+                  padding: "20px 16px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  transition: "border-color 0.2s",
+                  position: "relative",
+                }}>
+                  {/* Rank badge */}
+                  <div style={{ position: "absolute", top: "10px", left: "12px", color: "#555", fontFamily: "Share Tech Mono, monospace", fontSize: "0.6rem" }}>
+                    #{i + 1}
+                  </div>
+
+                  {/* Avatar circle */}
+                  <div style={{
+                    width: "64px", height: "64px", borderRadius: "50%",
+                    background: `${color}22`, border: `2px solid ${color}`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    margin: "0 auto 12px",
+                    fontSize: "1.5rem", fontWeight: "bold", color,
+                  }}>
+                    {initials}
+                  </div>
+
+                  {/* Name */}
+                  <div style={{ fontSize: "0.85rem", fontWeight: "bold", color: "#66fcf1", letterSpacing: "1px", marginBottom: "8px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {m.name}
+                  </div>
+
+                  {/* Specialty */}
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: "4px", background: `${color}22`, border: `1px solid ${color}55`, color, padding: "2px 10px", borderRadius: "20px", fontSize: "0.55rem", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "10px" }}>
+                    {emoji} {m.specialty}
+                  </div>
+
+                  {/* Level / XP */}
+                  <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#888" }}>
+                    LV {m.level} · {m.xp.toLocaleString()} XP
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -96,6 +96,17 @@ export default function HomePage() {
             TWC GUILD
           </span>
           <div style={{ display: "flex", gap: "12px" }}>
+            <Link href="/members" style={{
+              fontFamily: "Orbitron, sans-serif",
+              fontSize: "12px",
+              color: "#66fcf1",
+              textDecoration: "none",
+              border: "1px solid #66fcf160",
+              padding: "6px 14px",
+              borderRadius: "6px",
+            }}>
+              MEMBERS
+            </Link>
             <Link href="/guildevents" style={{
               fontFamily: "Orbitron, sans-serif",
               fontSize: "12px",
