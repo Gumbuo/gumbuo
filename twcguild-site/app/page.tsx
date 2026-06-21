@@ -263,7 +263,7 @@ export default function HomePage() {
           {[
             { n: "01", title: "Compete",  color: LIME,   textColor: "#0a0c05", body: "Active squads across NomStead, Spider Tanks, Infinity Rising, and AdventureWurld. Guild events every week, real competition every season." },
             { n: "02", title: "Belong",   color: MAG,    textColor: "#1a0410", body: "63 people who actually show up. Voice every night, guild events with real rewards, zero dead roster slots." },
-            { n: "03", title: "Build",    color: "#fff", textColor: "#0a0c05", body: "We are making an on-chain game. The crew designs it, tests it, and owns a piece before anyone else does." },
+            { n: "03", title: "Build",    color: "#fff", textColor: "#0a0c05", body: "We are making an on-chain game. No ERC-20 token — ever. The economy runs entirely on ERC-1155 items, built to last. The crew designs it, tests it, and owns a piece before anyone else does." },
           ].map(({ n, title, color, textColor, body }) => (
             <div key={n} style={{ background: SURFACE, border: `1.5px solid ${LINE}`, borderRadius: 18, padding: "34px 30px 38px", cursor: "default", transition: "border-color .2s" }}
               onMouseEnter={(e) => (e.currentTarget.style.borderColor = LIME)}
