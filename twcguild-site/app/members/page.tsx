@@ -159,11 +159,18 @@ export default function MembersPage() {
                       background: `${color}22`, border: `2px solid ${color}`,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       margin: "0 auto 12px",
+                      fontSize: "1.5rem", fontWeight: "bold", color,
                     }}>
-                      <svg viewBox="0 0 40 40" width={36} height={36} xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="15" r="7" fill={color} opacity={0.75} />
-                        <path d="M4 38 Q4 26 20 26 Q36 26 36 38" fill={color} opacity={0.75} />
-                      </svg>
+                      {verified ? (
+                        /* Wallet linked, no photo → person icon */
+                        <svg viewBox="0 0 40 40" width={36} height={36} xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="20" cy="15" r="7" fill={color} opacity={0.75} />
+                          <path d="M4 38 Q4 26 20 26 Q36 26 36 38" fill={color} opacity={0.75} />
+                        </svg>
+                      ) : (
+                        /* No wallet linked → initials */
+                        initials
+                      )}
                     </div>
                   )}
 

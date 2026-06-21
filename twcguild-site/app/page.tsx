@@ -126,17 +126,17 @@ function tileAccent(i: number) {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function HomePage() {
-  const [profilePhotos, setProfilePhotos] = useState<Record<string, string>>({});
+  const [profileData, setProfileData] = useState<Record<string, { avatarUrl?: string; linked: boolean }>>({});
 
   useEffect(() => {
     fetch("/api/profiles")
       .then((r) => r.json())
-      .then((data: { profiles: Record<string, { avatarUrl?: string }> }) => {
-        const photos: Record<string, string> = {};
+      .then((data: { profiles: Record<string, { avatarUrl?: string; claimedBy?: string }> }) => {
+        const out: Record<string, { avatarUrl?: string; linked: boolean }> = {};
         for (const [name, p] of Object.entries(data.profiles)) {
-          if (p.avatarUrl) photos[name.toLowerCase()] = p.avatarUrl;
+          out[name.toLowerCase()] = { avatarUrl: p.avatarUrl, linked: !!p.claimedBy };
         }
-        setProfilePhotos(photos);
+        setProfileData(out);
       })
       .catch(() => {});
   }, []);
@@ -373,16 +373,22 @@ export default function HomePage() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           {shownRoster.map((m, i) => {
             const key = m.name.toLowerCase();
-            const photo = profilePhotos[key];
+            const pdata = profileData[key];
             const { bg, color } = tileAccent(i);
             return (
               <Link key={m.name} href={`/member/${encodeURIComponent(m.name)}`} title={m.name}
-                style={{ width: 66, height: 66, borderRadius: 16, overflow: "hidden", border: `1.5px solid ${LINE}`, display: "block", flexShrink: 0, position: "relative", textDecoration: "none" }}>
-                {photo ? (
-                  <img src={photo} alt={m.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
+                style={{ width: 66, height: 66, borderRadius: 16, overflow: "hidden", border: `1.5px solid ${pdata?.linked ? LIME + "60" : LINE}`, display: "block", flexShrink: 0, position: "relative", textDecoration: "none" }}>
+                {pdata?.avatarUrl ? (
+                  <img src={pdata.avatarUrl} alt={m.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : pdata?.linked ? (
+                  /* Wallet linked, no photo yet → person icon */
                   <div style={{ width: "100%", height: "100%", background: bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <DefaultAvatar size={42} accent={color} />
+                  </div>
+                ) : (
+                  /* No wallet linked → initials */
+                  <div style={{ width: "100%", height: "100%", background: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Anton', sans-serif", fontSize: 22, color }}>
+                    {m.name.charAt(0).toUpperCase()}
                   </div>
                 )}
               </Link>
