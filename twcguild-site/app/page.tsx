@@ -130,6 +130,17 @@ export default function HomePage() {
             }}>
               ITEM BOARD
             </Link>
+            <Link href="/chess" style={{
+              fontFamily: "Orbitron, sans-serif",
+              fontSize: "12px",
+              color: "#f0c040",
+              textDecoration: "none",
+              border: "1px solid #f0c04060",
+              padding: "6px 14px",
+              borderRadius: "6px",
+            }}>
+              CHESS
+            </Link>
             <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
           </div>
         </nav>
