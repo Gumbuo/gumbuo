@@ -1,16 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 
-type Profile = {
+export type GuildStatus = "pending" | "accepted" | "removed";
+
+export type Profile = {
   avatarUrl?: string;
   discordTag?: string;
   customTitle?: string;
   claimedBy?: string;
+  guildStatus?: GuildStatus;
+  claimedAt?: number;
 };
 
 export async function GET(_req: NextRequest, { params }: { params: { name: string } }) {
-  const data = await redis.get<Profile>(`profile:${params.name.toLowerCase()}`);
-  return NextResponse.json({ profile: data || {} });
+  const key = `profile:${params.name.toLowerCase()}`;
+  const data = await redis.get<Profile>(key);
+
+  if (!data) return NextResponse.json({ profile: {} });
+
+  // Lazy migration: existing claimed profiles without a status are legacy guild members
+  if (data.claimedBy && !data.guildStatus) {
+    const migrated: Profile = { ...data, guildStatus: "accepted" };
+    await redis.set(key, migrated);
+    await redis.set(`wallet:${data.claimedBy}`, {
+      name: params.name,
+      avatarUrl: data.avatarUrl,
+      guildStatus: "accepted",
+    });
+    return NextResponse.json({ profile: migrated });
+  }
+
+  return NextResponse.json({ profile: data });
 }
 
 export async function POST(req: NextRequest, { params }: { params: { name: string } }) {
@@ -24,21 +44,26 @@ export async function POST(req: NextRequest, { params }: { params: { name: strin
     return NextResponse.json({ error: "Profile claimed by another wallet" }, { status: 403 });
   }
 
+  const isFirstClaim = !existing.claimedBy && !!wallet;
+
   const updated: Profile = {
     avatarUrl: body.avatarUrl || existing.avatarUrl,
     discordTag: body.discordTag !== undefined ? body.discordTag : existing.discordTag,
     customTitle: body.customTitle !== undefined ? body.customTitle : existing.customTitle,
     claimedBy: existing.claimedBy || wallet,
+    // Existing members keep their status; brand-new claims start pending
+    guildStatus: existing.guildStatus ?? (isFirstClaim ? "pending" : undefined),
+    claimedAt: existing.claimedAt ?? (isFirstClaim ? Date.now() : undefined),
   };
 
   await redis.set(key, updated);
 
-  // Keep reverse wallet→profile lookup in sync
   const claimedWallet = updated.claimedBy;
   if (claimedWallet) {
     await redis.set(`wallet:${claimedWallet}`, {
       name: params.name,
       avatarUrl: updated.avatarUrl,
+      guildStatus: updated.guildStatus,
     });
   }
 

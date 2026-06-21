@@ -44,10 +44,14 @@ export default function ChessPage() {
     setMemberStatus("checking");
     fetch(`/api/wallet/${address.toLowerCase()}`)
       .then((r) => r.json())
-      .then((data: { profile: { name: string; avatarUrl?: string } | null }) => {
-        if (data.profile?.name) {
+      .then((data: { profile: { name: string; avatarUrl?: string; guildStatus?: string } | null }) => {
+        if (data.profile?.guildStatus === "accepted") {
           setMemberName(data.profile.name);
           setMemberStatus("member");
+        } else if (data.profile?.name) {
+          // Has a profile but not yet approved
+          setMemberName(data.profile.name);
+          setMemberStatus("not-member");
         } else {
           setMemberStatus("not-member");
         }
@@ -150,16 +154,20 @@ export default function ChessPage() {
             <>
               <div style={{ background: "rgba(255,61,160,.1)", border: "1.5px solid rgba(255,61,160,.4)", borderRadius: 16, padding: "20px 24px", marginBottom: 28 }}>
                 <p style={{ color: "#ff3da0", fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: 0, lineHeight: 1.6, fontWeight: 600 }}>
-                  Members only
+                  {memberName ? "Approval pending" : "Members only"}
                 </p>
                 <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "8px 0 0", lineHeight: 1.6 }}>
-                  Your wallet isn&apos;t linked to a guild profile yet. Find your name on the roster and claim your profile — once you save it, you&apos;re in.
+                  {memberName
+                    ? `Hey ${memberName} — your profile is set up but an officer hasn't approved your membership yet. Hang tight or reach out on Discord.`
+                    : "Your wallet isn't linked to a guild profile. Find your name on the roster and claim it — an officer will approve your membership."}
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-                <Link href="/members" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 14, padding: "13px 28px", borderRadius: 999, background: "#c6f53e", color: "#0a0c05", textDecoration: "none", display: "inline-block" }}>
-                  Go to roster →
-                </Link>
+                {!memberName && (
+                  <Link href="/members" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 14, padding: "13px 28px", borderRadius: 999, background: "#c6f53e", color: "#0a0c05", textDecoration: "none", display: "inline-block" }}>
+                    Go to roster →
+                  </Link>
+                )}
                 <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
               </div>
             </>
