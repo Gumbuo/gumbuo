@@ -95,7 +95,7 @@ export default function HomePage() {
           }}>
             TWC GUILD
           </span>
-          <div style={{ display: "flex", gap: "20px" }}>
+          <div style={{ display: "flex", gap: "12px" }}>
             <Link href="/guildevents" style={{
               fontFamily: "Orbitron, sans-serif",
               fontSize: "12px",
@@ -106,6 +106,17 @@ export default function HomePage() {
               borderRadius: "6px",
             }}>
               GUILD EVENTS
+            </Link>
+            <Link href="/lending" style={{
+              fontFamily: "Orbitron, sans-serif",
+              fontSize: "12px",
+              color: "#4ade80",
+              textDecoration: "none",
+              border: "1px solid #4ade8060",
+              padding: "6px 14px",
+              borderRadius: "6px",
+            }}>
+              ITEM BOARD
             </Link>
           </div>
         </nav>
