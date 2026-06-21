@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 
-export type GuildStatus = "pending" | "accepted" | "removed";
+export type GuildStatus = "prospect" | "accepted" | "removed";
 
 export type Profile = {
   avatarUrl?: string;
@@ -23,14 +23,14 @@ export async function GET(_req: NextRequest, { params }: { params: { name: strin
 
   if (!data) return NextResponse.json({ profile: {} });
 
-  // Lazy migration: existing claimed profiles without a status are legacy guild members
+  // Lazy migration: existing claimed profiles without a status become Prospects
   if (data.claimedBy && !data.guildStatus) {
-    const migrated: Profile = { ...data, guildStatus: "accepted" };
+    const migrated: Profile = { ...data, guildStatus: "prospect" };
     await redis.set(key, migrated);
     await redis.set(`wallet:${data.claimedBy}`, {
       name: params.name,
       avatarUrl: data.avatarUrl,
-      guildStatus: "accepted",
+      guildStatus: "prospect",
     });
     return NextResponse.json({ profile: migrated });
   }
@@ -61,8 +61,8 @@ export async function POST(req: NextRequest, { params }: { params: { name: strin
     twitchUrl: body.twitchUrl !== undefined ? body.twitchUrl : existing.twitchUrl,
     games: body.games !== undefined ? body.games : existing.games,
     claimedBy: existing.claimedBy || wallet,
-    // Existing members keep their status; brand-new claims start pending
-    guildStatus: existing.guildStatus ?? (isFirstClaim ? "pending" : undefined),
+    // Existing members keep their status; brand-new claims become Prospects automatically
+    guildStatus: existing.guildStatus ?? (isFirstClaim ? "prospect" : undefined),
     claimedAt: existing.claimedAt ?? (isFirstClaim ? Date.now() : undefined),
   };
 

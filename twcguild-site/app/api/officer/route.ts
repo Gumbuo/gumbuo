@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       const name = key.replace("profile:", "");
       const data = await redis.get<Profile>(key);
       if (!data?.claimedBy) return;
-      if (data.guildStatus === "pending") {
+      if (data.guildStatus === "prospect" || data.guildStatus === ("pending" as string)) {
         pending.push({ name, profile: data });
       } else if (data.guildStatus === "accepted") {
         members.push({ name, profile: data });

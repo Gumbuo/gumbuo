@@ -154,12 +154,12 @@ export default function ChessPage() {
             <>
               <div style={{ background: "rgba(61,158,255,.1)", border: "1.5px solid rgba(61,158,255,.4)", borderRadius: 16, padding: "20px 24px", marginBottom: 28 }}>
                 <p style={{ color: "#3d9eff", fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: 0, lineHeight: 1.6, fontWeight: 600 }}>
-                  {memberName ? "Approval pending" : "Members only"}
+                  {memberName ? "Prospect — Chess is Guild Members only" : "Members only"}
                 </p>
                 <p style={{ color: "#878d86", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "8px 0 0", lineHeight: 1.6 }}>
                   {memberName
-                    ? `Hey ${memberName} — your profile is set up but an officer hasn't approved your membership yet. Hang tight or reach out on Discord:`
-                    : "Your wallet isn't linked to a guild profile. Find your name on the roster and claim it — an officer will approve your membership."}
+                    ? `Hey ${memberName} — you're a Prospect which means you have access to the roster, events, and item board. Chess is reserved for full Guild Members. Ask an officer on Discord to promote you:`
+                    : "Your wallet isn't linked to a guild profile. Find your name on the roster and claim it to become a Prospect."}
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>

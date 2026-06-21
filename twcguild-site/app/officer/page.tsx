@@ -13,7 +13,7 @@ const SURFACE = "#101214";
 const LINE    = "rgba(255,255,255,.12)";
 const MUTED   = "#878d86";
 
-type GuildStatus = "pending" | "accepted" | "removed";
+type GuildStatus = "prospect" | "accepted" | "removed";
 
 type MemberEntry = {
   name: string;
@@ -71,7 +71,7 @@ export default function OfficerPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setMessage({ text: `${name} ${action === "accept" ? "approved" : "removed"}`, ok: true });
+        setMessage({ text: `${name} ${action === "accept" ? "promoted to Guild Member" : "removed"}`, ok: true });
         await loadData(address);
       } else {
         setMessage({ text: json.error || "Action failed", ok: false });
@@ -148,7 +148,7 @@ export default function OfficerPage() {
             {/* Pending approvals */}
             <section style={{ marginBottom: 48 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-                <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: 28, textTransform: "uppercase", margin: 0, fontWeight: 400 }}>Pending</h2>
+                <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: 28, textTransform: "uppercase", margin: 0, fontWeight: 400 }}>Prospects</h2>
                 {data.pending.length > 0 && (
                   <span style={{ background: MAG, color: "#001a33", fontWeight: 700, fontSize: 12, padding: "3px 10px", borderRadius: 999 }}>
                     {data.pending.length}
@@ -158,7 +158,7 @@ export default function OfficerPage() {
 
               {data.pending.length === 0 ? (
                 <div style={{ padding: "32px 24px", background: SURFACE, border: `1.5px solid ${LINE}`, borderRadius: 16, textAlign: "center", color: MUTED }}>
-                  No pending approvals — you&apos;re all caught up.
+                  No prospects waiting — you&apos;re all caught up.
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -263,7 +263,7 @@ function MemberCard({ entry, actionLoading, onAccept, onRemove }: {
       </div>
       <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
         <button onClick={onAccept} disabled={!!actionLoading} style={limeBtn}>
-          {actionLoading === entry.name + "accept" ? "…" : "✓ Approve"}
+          {actionLoading === entry.name + "accept" ? "…" : "✓ Promote"}
         </button>
         <button onClick={onRemove} disabled={!!actionLoading} style={{ ...ghostBtn, color: MAG, borderColor: "rgba(61,158,255,.3)" }}>
           {actionLoading === entry.name + "remove" ? "…" : "✕ Remove"}

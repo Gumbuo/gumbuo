@@ -8,6 +8,7 @@ import memberRoster from "../guildevents/member-roster.json";
 type SavedProfile = {
   avatarUrl?: string;
   claimedBy?: string;
+  guildStatus?: string;
   games?: string[];
 };
 
@@ -142,9 +143,12 @@ export default function MembersPage() {
                     #{i + 1}
                   </div>
 
-                  {/* Verified badge */}
-                  {verified && (
+                  {/* Status badge */}
+                  {saved?.guildStatus === "accepted" && (
                     <div style={{ position: "absolute", top: "10px", right: "10px", color: "#4ade80", fontSize: "0.6rem" }}>✓</div>
+                  )}
+                  {(saved?.guildStatus === "prospect" || (verified && !saved?.guildStatus)) && (
+                    <div style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(61,158,255,.15)", border: "1px solid rgba(61,158,255,.4)", color: "#3d9eff", fontSize: "0.5rem", fontWeight: 700, letterSpacing: ".06em", padding: "1px 5px", borderRadius: 4 }}>PROSPECT</div>
                   )}
 
                   {/* Avatar */}

@@ -38,6 +38,7 @@ type SavedProfile = {
   twitchUrl?: string;
   games?: string[];
   claimedBy?: string;
+  guildStatus?: string;
 };
 
 function sum(map: Record<string, number>) {
@@ -292,9 +293,14 @@ export default function MemberPage({ params }: { params: { name: string } }) {
                 LV {rosterEntry.level} · {rosterEntry.xp.toLocaleString()} XP
               </span>
             )}
-            {isClaimed && (
+            {isClaimed && saved.guildStatus === "accepted" && (
               <span style={{ background: "rgba(74,222,128,0.05)", border: "1px solid #4ade8033", color: "#4ade80", padding: "3px 12px", borderRadius: "4px", fontSize: "0.65rem", letterSpacing: "1px" }}>
-                ✓ Verified Member
+                ✓ Guild Member
+              </span>
+            )}
+            {isClaimed && (saved.guildStatus === "prospect" || !saved.guildStatus) && (
+              <span style={{ background: "rgba(61,158,255,.08)", border: "1px solid rgba(61,158,255,.3)", color: "#3d9eff", padding: "3px 12px", borderRadius: "4px", fontSize: "0.65rem", letterSpacing: "1px" }}>
+                ◈ Prospect
               </span>
             )}
           </div>

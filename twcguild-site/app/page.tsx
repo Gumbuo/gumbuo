@@ -179,39 +179,62 @@ export default function HomePage() {
 
       {/* ── HERO ────────────────────────────────────────────────────────── */}
       <section style={{ padding: "clamp(48px,6vw,72px) clamp(20px,4vw,60px) clamp(40px,5vw,60px)" }}>
-        {/* Badge row */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 30, flexWrap: "wrap" }}>
-          <span style={{ ...pill, background: LIME, color: "#0a0c05" }}>63 Members</span>
-          <span style={{ ...pill, background: MAG, color: "#001a33" }}>Recruiting</span>
-          <span style={{ ...pill, border: `1.5px solid ${LINE}`, color: MUTED }}>Est. 2023</span>
-        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "clamp(32px,4vw,64px)", flexWrap: "wrap" }}>
 
-        {/* H1 */}
-        <h1 style={{
-          fontFamily: "'Anton', sans-serif",
-          fontSize: "clamp(60px, 10.5vw, 148px)",
-          lineHeight: .86,
-          letterSpacing: "-.01em",
-          textTransform: "uppercase",
-          margin: 0,
-          fontWeight: 400,
-        }}>
-          WE <span style={{ color: LIME }}>PLAY.</span>
-          <br />
-          WE <span style={{ color: "transparent", WebkitTextStroke: `2px ${TEXT}` }}>WIN.</span> WE
-          <br />
-          <span style={{ color: MAG }}>BUILD</span> OUR OWN.
-        </h1>
+          {/* Left — text */}
+          <div style={{ flex: "1 1 340px", minWidth: 0 }}>
+            {/* Badge row */}
+            <div style={{ display: "flex", gap: 10, marginBottom: 30, flexWrap: "wrap" }}>
+              <span style={{ ...pill, background: LIME, color: "#0a0c05" }}>63 Members</span>
+              <span style={{ ...pill, background: MAG, color: "#001a33" }}>Recruiting</span>
+              <span style={{ ...pill, border: `1.5px solid ${LINE}`, color: MUTED }}>Est. 2023</span>
+            </div>
 
-        {/* Bottom row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 40, gap: 50, flexWrap: "wrap" }}>
-          <p style={{ fontSize: "clamp(15px,1.3vw,19px)", lineHeight: 1.55, color: "#c8ccc6", maxWidth: 440, margin: 0, fontWeight: 400 }}>
-            A 63-strong gaming guild grinding multiple titles — and building our own on-chain game that the crew actually owns.
-          </p>
-          <div style={{ display: "flex", gap: 12, flexShrink: 0 }}>
-            <Link href="/members" style={btnLime}>Join the crew →</Link>
-            <a href="#roadmap" style={btnGhost}>See the roadmap</a>
+            {/* H1 */}
+            <h1 style={{
+              fontFamily: "'Anton', sans-serif",
+              fontSize: "clamp(52px, 7.5vw, 120px)",
+              lineHeight: .86,
+              letterSpacing: "-.01em",
+              textTransform: "uppercase",
+              margin: 0,
+              fontWeight: 400,
+            }}>
+              WE <span style={{ color: LIME }}>PLAY.</span>
+              <br />
+              WE <span style={{ color: "transparent", WebkitTextStroke: `2px ${TEXT}` }}>WIN.</span> WE
+              <br />
+              <span style={{ color: MAG }}>BUILD</span> OUR OWN.
+            </h1>
+
+            {/* Description + CTAs */}
+            <div style={{ marginTop: 40 }}>
+              <p style={{ fontSize: "clamp(15px,1.3vw,18px)", lineHeight: 1.55, color: "#c8ccc6", maxWidth: 440, margin: "0 0 24px", fontWeight: 400 }}>
+                A 63-strong gaming guild grinding multiple titles — and building our own on-chain game that the crew actually owns.
+              </p>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <Link href="/members" style={btnLime}>Join the crew →</Link>
+                <a href="#roadmap" style={btnGhost}>See the roadmap</a>
+              </div>
+            </div>
           </div>
+
+          {/* Right — hero image */}
+          <div style={{ flex: "1 1 320px", display: "flex", justifyContent: "center" }}>
+            <img
+              src="/images/hero.png"
+              alt="TWC Guild — Together We Can"
+              style={{
+                width: "100%",
+                maxWidth: 520,
+                borderRadius: 20,
+                border: `1.5px solid rgba(198,245,62,.25)`,
+                boxShadow: "0 0 48px rgba(198,245,62,.08), 0 8px 40px rgba(0,0,0,.6)",
+                display: "block",
+              }}
+            />
+          </div>
+
         </div>
       </section>
 
@@ -425,6 +448,18 @@ export default function HomePage() {
             <Crown size={30} />TWC GUILD
           </div>
           <div style={{ fontSize: 12, color: "#5a605a", fontWeight: 600 }}>© 2026 TWC Guild — Together We Can</div>
+          <div style={{ marginTop: 8 }}>
+            <div style={{ fontSize: 10, color: "#3a3f3a", fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Built by</div>
+            <a href="https://www.gamehole.games" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
+              <img
+                src="/images/foxhole-productions.png"
+                alt="Foxhole Productions"
+                style={{ width: 110, height: 110, borderRadius: 14, objectFit: "cover", border: `1.5px solid rgba(61,158,255,.25)`, transition: "border-color .2s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(61,158,255,.7)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(61,158,255,.25)")}
+              />
+            </a>
+          </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

@@ -4,7 +4,7 @@ import { redis } from "@/lib/redis";
 export type WalletProfile = {
   name: string;
   avatarUrl?: string;
-  guildStatus?: "pending" | "accepted" | "removed";
+  guildStatus?: "prospect" | "accepted" | "removed";
 };
 
 export async function GET(_req: NextRequest, { params }: { params: { address: string } }) {
