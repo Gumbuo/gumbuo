@@ -179,6 +179,10 @@ export default function HomePage() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Link href="/members" style={btnLime}>Join the crew</Link>
+          <Link href="/officer" title="Officer Panel" style={{ width: 38, height: 38, borderRadius: 10, border: `1.5px solid ${LINE}`, display: "flex", alignItems: "center", justifyContent: "center", color: MUTED, textDecoration: "none", fontSize: 18, transition: "border-color .15s, color .15s" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = LIME; (e.currentTarget as HTMLAnchorElement).style.color = LIME; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = LINE; (e.currentTarget as HTMLAnchorElement).style.color = MUTED; }}
+          >🛡</Link>
           <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
         </div>
       </nav>
@@ -509,6 +513,7 @@ export default function HomePage() {
           <Link href="/guildevents" style={footerLink}>Guild Events</Link>
           <Link href="/lending"     style={footerLink}>Item Board</Link>
           <Link href="/chess"       style={footerLink}>Chess</Link>
+          <Link href="/officer"     style={{ ...footerLink, color: "#5a605a" }}>🛡 Officer Panel</Link>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
