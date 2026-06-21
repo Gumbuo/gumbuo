@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import activityData from "../guildevents/activity-data.json";
 import memberRoster from "../guildevents/member-roster.json";
 
@@ -98,9 +99,7 @@ export default function MembersPage() {
         <Link href="/" style={{ color: "#45a29e", textDecoration: "none", fontSize: "0.85rem", fontWeight: "bold" }}>
           ← TWC GUILD
         </Link>
-        <span style={{ fontSize: "0.7rem", color: "#c5c6c7", letterSpacing: "2px", textTransform: "uppercase" }}>
-          Guild Roster
-        </span>
+        <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
       </div>
 
       <div style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 16px" }}>

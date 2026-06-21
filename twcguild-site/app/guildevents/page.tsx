@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import activityData from "./activity-data.json";
 import eventData from "./event-data.json";
 import memberRoster from "./member-roster.json";
@@ -306,9 +307,7 @@ export default function GuildEventsPage() {
         }}>
           &larr; TWC GUILD
         </Link>
-        <span style={{ fontSize: "0.7rem", color: "#c5c6c7", letterSpacing: "2px", textTransform: "uppercase" }}>
-          Guild Activity
-        </span>
+        <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
       </div>
 
       <div style={{ maxWidth: "960px", margin: "0 auto", padding: "30px 16px" }}>

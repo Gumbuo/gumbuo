@@ -32,5 +32,15 @@ export async function POST(req: NextRequest, { params }: { params: { name: strin
   };
 
   await redis.set(key, updated);
+
+  // Keep reverse wallet→profile lookup in sync
+  const claimedWallet = updated.claimedBy;
+  if (claimedWallet) {
+    await redis.set(`wallet:${claimedWallet}`, {
+      name: params.name,
+      avatarUrl: updated.avatarUrl,
+    });
+  }
+
   return NextResponse.json({ success: true, profile: updated });
 }

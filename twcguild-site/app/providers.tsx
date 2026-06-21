@@ -4,6 +4,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config } from "./wagmi";
 import { useState } from "react";
+import { GuildAvatar } from "./components/GuildAvatar";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -11,6 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
+          avatar={GuildAvatar}
           theme={darkTheme({
             accentColor: "#45a29e",
             accentColorForeground: "#0b0c10",

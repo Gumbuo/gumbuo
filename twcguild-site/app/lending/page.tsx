@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const ITEMS = [
   { name: "Demon Sword",   color: "#ff2d2d", emoji: "⚔️" },
@@ -75,9 +76,7 @@ export default function LendingPage() {
         <Link href="/" style={{ color: "#45a29e", textDecoration: "none", fontSize: "0.85rem", fontWeight: "bold" }}>
           ← TWC GUILD
         </Link>
-        <span style={{ fontSize: "0.7rem", color: "#c5c6c7", letterSpacing: "2px", textTransform: "uppercase" }}>
-          Item Board
-        </span>
+        <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
       </div>
 
       <div style={{ maxWidth: "760px", margin: "0 auto", padding: "40px 16px" }}>

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const NOMSTEAD = {
   title: "NomStead",
@@ -129,6 +130,7 @@ export default function HomePage() {
             }}>
               ITEM BOARD
             </Link>
+            <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
           </div>
         </nav>
 
