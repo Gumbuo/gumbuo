@@ -23,6 +23,7 @@ const GAMES = [
     squad:    "Primary Squad",
     color:    "#4ade80",
     image:    null,
+    videoId:  "sdQtdwdVduY",
     eventActive: true,
     playUrl:  "https://play.immutable.com/games/nomstead/",
     guideUrl: "https://www.gamehole.games/nomstead",
@@ -37,6 +38,7 @@ const GAMES = [
     squad:    "PvP Squad",
     color:    "#ff6b00",
     image:    "/images/spider-tanks.png",
+    videoId:  null,
     eventActive: false,
     playUrl:  "https://play.immutable.com/games/spider-tanks-cores-of-chaos/",
     guideUrl: "https://www.spidergang.xyz",
@@ -48,6 +50,7 @@ const GAMES = [
     squad:    "Founding Members",
     color:    "#ff0033",
     image:    "/images/infinity-rising.png",
+    videoId:  "yZECO2nDyu8",
     eventActive: false,
     playUrl:  "https://infinityrising.io/",
     guideUrl: "https://www.gamehole.games/infinityrising",
@@ -59,6 +62,7 @@ const GAMES = [
     squad:    "Explorers",
     color:    "#a855f7",
     image:    null,
+    videoId:  null,
     eventActive: false,
     playUrl:  "https://adventurewurld.com/",
     guideUrl: null,
@@ -164,12 +168,13 @@ export default function HomePage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "clamp(16px, 2.5vw, 34px)" }}>
-          <a href="#crew"    style={navLink}>Crew</a>
-          <a href="#squads"  style={navLink}>Squads</a>
-          <a href="#roadmap" style={navLink}>Roadmap</a>
-          <Link href="/members" style={navLink}>Roster</Link>
-          <Link href="/lending" style={navLink}>Item Board</Link>
-          <Link href="/chess" style={{ ...navLink, color: "#f0c040" }}>Chess</Link>
+          <a href="#crew"       style={navLink}>Crew</a>
+          <a href="#squads"     style={navLink}>Squads</a>
+          <a href="#roadmap"    style={navLink}>Roadmap</a>
+          <Link href="/members"     style={navLink}>Roster</Link>
+          <Link href="/guildevents" style={navLink}>Events</Link>
+          <Link href="/lending"     style={navLink}>Item Board</Link>
+          <Link href="/chess"       style={{ ...navLink, color: "#f0c040" }}>Chess</Link>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -319,7 +324,42 @@ export default function HomePage() {
             >
               {/* Image / banner */}
               <div style={{ aspectRatio: "4/5", position: "relative", overflow: "hidden" }}>
-                {g.image ? (
+                {g.videoId ? (
+                  <a
+                    href={`https://www.youtube.com/watch?v=${g.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: "block", width: "100%", height: "100%", position: "relative" }}
+                  >
+                    <img
+                      src={`https://img.youtube.com/vi/${g.videoId}/hqdefault.jpg`}
+                      alt={`${g.title} trailer`}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                    {/* Play button overlay */}
+                    <div style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: "rgba(0,0,0,.35)",
+                      transition: "background .2s",
+                    }}
+                      onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,0,0,.15)")}
+                      onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,0,0,.35)")}
+                    >
+                      <div style={{
+                        width: 56, height: 56, borderRadius: "50%",
+                        background: "rgba(255,255,255,.92)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        boxShadow: "0 4px 20px rgba(0,0,0,.5)",
+                      }}>
+                        <div style={{ width: 0, height: 0, borderTop: "10px solid transparent", borderBottom: "10px solid transparent", borderLeft: "18px solid #111", marginLeft: 4 }} />
+                      </div>
+                    </div>
+                    {g.image && (
+                      <img src={g.image} alt={g.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }} />
+                    )}
+                  </a>
+                ) : g.image ? (
                   <img src={g.image} alt={g.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                 ) : (
                   <div style={{
