@@ -178,6 +178,10 @@ export default function HomePage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <a href="https://discord.gg/CBtfFHmVwZ" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 13, padding: "9px 16px", borderRadius: 999, background: "#5865f2", color: "#fff", textDecoration: "none" }}>
+            <svg width="18" height="14" viewBox="0 0 71 55" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.5.4a40.7 40.7 0 0 0-1.8 3.7 54.2 54.2 0 0 0-16.3 0A40 40 0 0 0 25.6.4 58.5 58.5 0 0 0 11 5C1.6 19.2-.9 33 .3 46.6a59 59 0 0 0 18 9.1 44 44 0 0 0 3.8-6.2 38.4 38.4 0 0 1-6-2.9l1.5-1.1a42.1 42.1 0 0 0 36 0l1.5 1.1a38.5 38.5 0 0 1-6 2.9 43.7 43.7 0 0 0 3.8 6.2 58.7 58.7 0 0 0 18-9.1C72 31 68.4 17.3 60.1 4.9ZM23.7 38.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.5 0 6.4 3.2 6.3 7.2 0 4-2.8 7.2-6.3 7.2Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.5 0 6.3 3.2 6.3 7.2 0 4-2.8 7.2-6.3 7.2Z"/></svg>
+            Discord
+          </a>
           <Link href="/members" style={btnLime}>Join the crew</Link>
           <Link href="/officer" title="Officer Panel" style={{ width: 38, height: 38, borderRadius: 10, border: `1.5px solid ${LINE}`, display: "flex", alignItems: "center", justifyContent: "center", color: MUTED, textDecoration: "none", fontSize: 18, transition: "border-color .15s, color .15s" }}
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = LIME; (e.currentTarget as HTMLAnchorElement).style.color = LIME; }}
