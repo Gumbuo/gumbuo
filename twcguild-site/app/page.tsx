@@ -64,7 +64,7 @@ const GAMES = [
     title:    "AdventureWurld",
     squad:    "Explorers",
     color:    "#a855f7",
-    image:    null,
+    image:    "/images/adventurewurld.png",
     videoId:  null,
     eventActive: false,
     comingSoon: false,
