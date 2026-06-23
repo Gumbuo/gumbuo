@@ -90,7 +90,7 @@ const GAMES = [
     title:    "Foxstead",
     squad:    "Coming Soon",
     color:    "#f97316",
-    image:    null,
+    image:    "/images/foxstead.png",
     videoId:  null,
     eventActive: false,
     comingSoon: true,
