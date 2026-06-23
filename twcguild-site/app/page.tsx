@@ -25,6 +25,7 @@ const GAMES = [
     image:    null,
     videoId:  "sdQtdwdVduY",
     eventActive: true,
+    comingSoon: false,
     playUrl:  "https://play.immutable.com/games/nomstead/",
     guideUrl: "https://www.gamehole.games/nomstead",
     guideLabel: "NFT Guide",
@@ -40,6 +41,7 @@ const GAMES = [
     image:    "/images/spider-tanks.png",
     videoId:  null,
     eventActive: false,
+    comingSoon: false,
     playUrl:  "https://play.immutable.com/games/spider-tanks-cores-of-chaos/",
     guideUrl: "https://www.spidergang.xyz",
     guideLabel: "Spider Gang",
@@ -52,6 +54,7 @@ const GAMES = [
     image:    "/images/infinity-rising.png",
     videoId:  "yZECO2nDyu8",
     eventActive: false,
+    comingSoon: false,
     playUrl:  "https://infinityrising.io/",
     guideUrl: "https://www.gamehole.games/infinityrising",
     guideLabel: "Token Guide",
@@ -64,9 +67,36 @@ const GAMES = [
     image:    null,
     videoId:  null,
     eventActive: false,
+    comingSoon: false,
     playUrl:  "https://adventurewurld.com/",
     guideUrl: null,
     guideLabel: null,
+    tools: [],
+  },
+  {
+    title:    "AlienAF",
+    squad:    "Recon Squad",
+    color:    "#00d4ff",
+    image:    null,
+    videoId:  "Fs-Hik2Lizo",
+    eventActive: false,
+    comingSoon: false,
+    playUrl:  "https://www.gamehole.games/catacombs",
+    guideUrl: null,
+    guideLabel: null,
+    tools: [],
+  },
+  {
+    title:    "Foxstead",
+    squad:    "Coming Soon",
+    color:    "#f97316",
+    image:    null,
+    videoId:  null,
+    eventActive: false,
+    comingSoon: true,
+    playUrl:  null,
+    guideUrl: "https://www.gamehole.games/foxstead",
+    guideLabel: "GameHole",
     tools: [],
   },
 ];
@@ -384,6 +414,11 @@ export default function HomePage() {
                     GUILD EVENT ACTIVE
                   </div>
                 )}
+                {g.comingSoon && (
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(135deg, rgba(249,115,22,.95), rgba(234,88,12,.95))", padding: "10px 16px", fontFamily: "'Anton', sans-serif", fontSize: 13, letterSpacing: ".12em", textAlign: "center", textTransform: "uppercase" }}>
+                    COMING SOON
+                  </div>
+                )}
               </div>
 
               {/* Meta */}
@@ -393,7 +428,9 @@ export default function HomePage() {
                   <span style={{ fontWeight: 600, fontSize: 11, color: MUTED, textTransform: "uppercase", letterSpacing: ".06em" }}>{g.squad}</span>
                 </div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <a href={g.playUrl} target="_blank" rel="noopener noreferrer" style={{ ...btnSmallLime }}>Play now →</a>
+                  {g.playUrl && (
+                    <a href={g.playUrl} target="_blank" rel="noopener noreferrer" style={{ ...btnSmallLime }}>Play now →</a>
+                  )}
                   {g.guideUrl && (
                     <a href={g.guideUrl} target="_blank" rel="noopener noreferrer" style={{ ...btnSmallGhost }}>{g.guideLabel}</a>
                   )}
