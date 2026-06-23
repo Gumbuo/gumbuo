@@ -560,7 +560,7 @@ export default function HomePage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={footerHead}>Games</div>
           {GAMES.map((g) => (
-            <a key={g.title} href={g.playUrl} target="_blank" rel="noopener noreferrer" style={footerLink}>{g.title}</a>
+            <a key={g.title} href={g.playUrl ?? "#"} target="_blank" rel="noopener noreferrer" style={footerLink}>{g.title}</a>
           ))}
         </div>
 
