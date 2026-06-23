@@ -536,15 +536,22 @@ export default function HomePage() {
           <div style={{ fontSize: 12, color: "#5a605a", fontWeight: 600 }}>© 2026 TWC Guild — Together We Can</div>
           <div style={{ marginTop: 8 }}>
             <div style={{ fontSize: 10, color: "#3a3f3a", fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Built by</div>
-            <a href="https://www.gamehole.games" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <a href="https://www.gamehole.games" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
+                <img
+                  src="/images/foxhole-productions.png"
+                  alt="Foxhole Productions"
+                  style={{ width: 110, height: 110, borderRadius: 14, objectFit: "cover", border: `1.5px solid rgba(61,158,255,.25)`, transition: "border-color .2s" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(61,158,255,.7)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(61,158,255,.25)")}
+                />
+              </a>
               <img
-                src="/images/foxhole-productions.png"
-                alt="Foxhole Productions"
-                style={{ width: 110, height: 110, borderRadius: 14, objectFit: "cover", border: `1.5px solid rgba(61,158,255,.25)`, transition: "border-color .2s" }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(61,158,255,.7)")}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(61,158,255,.25)")}
+                src="/images/gamehole-fox.png"
+                alt="GameHole Fox"
+                style={{ width: 110, height: 110, borderRadius: 14, objectFit: "cover", border: `1.5px solid rgba(61,158,255,.25)` }}
               />
-            </a>
+            </div>
           </div>
         </div>
 
