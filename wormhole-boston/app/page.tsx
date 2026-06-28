@@ -15,6 +15,22 @@ export default function Home() {
 
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px 80px" }}>
+      {/* Launch banner */}
+      <div
+        style={{
+          background: "#cc2200",
+          color: "#fff",
+          textAlign: "center",
+          padding: "14px 20px",
+          fontSize: 15,
+          fontWeight: 700,
+          letterSpacing: 1,
+          margin: "0 -20px 0",
+        }}
+      >
+        OFFICIAL LAUNCH: JULY 4TH, 2026 — INDEPENDENCE DAY
+      </div>
+
       {/* Header */}
       <header
         style={{
