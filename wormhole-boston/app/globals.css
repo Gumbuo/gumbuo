@@ -1,0 +1,32 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #080808;
+  --surface: #111111;
+  --surface-2: #1a1a1a;
+  --border: #2a2a2a;
+  --red: #cc2200;
+  --red-dim: #7a1400;
+  --text: #e8e8e8;
+  --text-dim: #888;
+  --name: #ff4422;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--red);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
