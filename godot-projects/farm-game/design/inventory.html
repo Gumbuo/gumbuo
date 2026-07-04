@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farm Kingdom — Inventory UI Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="inventory.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* placeholder background — swap for your actual game screenshot */
+      background: #0d1f0f url("../assets/sprites/trees/apple_tree/full.png") center/cover no-repeat;
+      background-color: #0a1a10;
+    }
+  </style>
+</head>
+<body>
+
+<div class="inventory" id="inventory">
+
+  <!-- ── Header ── -->
+  <div class="inventory__header">
+    <span class="inventory__title">Backpack</span>
+    <div class="inventory__counts">
+      <span>Items <span class="count-value count-visible">—</span></span>
+      <span>Silver <span class="count-value">1,240</span></span>
+      <span>Gold <span class="count-value" style="color:var(--accent-gold)">3</span></span>
+    </div>
+  </div>
+
+  <!-- ── Tabs ── -->
+  <div class="inventory__tabs">
+    <div class="tab-row tab-row--primary">
+      <button class="tab active" data-category="all">All</button>
+      <span class="tab-divider"></span>
+      <button class="tab" data-category="seeds">Seeds</button>
+      <button class="tab" data-category="crops">Crops</button>
+      <button class="tab" data-category="fish">Fish</button>
+      <button class="tab" data-category="livestock">Livestock</button>
+      <button class="tab" data-category="tools">Tools</button>
+      <button class="tab" data-category="materials">Materials</button>
+      <button class="tab" data-category="recipes">Recipes</button>
+    </div>
+    <div class="tab-row tab-row--secondary" id="secondary-tabs"></div>
+  </div>
+
+  <!-- ── Grid ── -->
+  <div class="inventory__scroll">
+    <div class="inventory__grid" id="item-grid">
+
+      <!-- FISH -->
+      <div class="item-slot" data-category="fish" data-subcategory="bluegill" data-tooltip="Yellow Bluegill · 4 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/yellow_bluegill.png" alt="Yellow Bluegill">
+        <span class="item-slot__name">Yellow Bluegill</span>
+        <span class="item-slot__badge">12</span>
+      </div>
+
+      <div class="item-slot item-slot--uncommon" data-category="fish" data-subcategory="bluegill" data-tooltip="Orange Bluegill · 4 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/orange_bluegill.png" alt="Orange Bluegill">
+        <span class="item-slot__name">Orange Bluegill</span>
+        <span class="item-slot__badge">5</span>
+      </div>
+
+      <div class="item-slot item-slot--uncommon" data-category="fish" data-subcategory="bluegill" data-tooltip="Blue Bluegill · 4 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/blue_bluegill.png" alt="Blue Bluegill">
+        <span class="item-slot__name">Blue Bluegill</span>
+        <span class="item-slot__badge">3</span>
+      </div>
+
+      <div class="item-slot" data-category="fish" data-subcategory="chubfish" data-tooltip="Grey Chubfish · 2 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/grey_chubfish.png" alt="Grey Chubfish">
+        <span class="item-slot__name">Grey Chubfish</span>
+        <span class="item-slot__badge">28</span>
+      </div>
+
+      <div class="item-slot" data-category="fish" data-subcategory="chubfish" data-tooltip="Yellow Chubfish · 2 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/yellow_chubfish.png" alt="Yellow Chubfish">
+        <span class="item-slot__name">Yellow Chubfish</span>
+        <span class="item-slot__badge">7</span>
+      </div>
+
+      <div class="item-slot item-slot--uncommon" data-category="fish" data-subcategory="chubfish" data-tooltip="Red Chubfish · 3 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/red_chubfish.png" alt="Red Chubfish">
+        <span class="item-slot__name">Red Chubfish</span>
+        <span class="item-slot__badge">4</span>
+      </div>
+
+      <div class="item-slot" data-category="fish" data-subcategory="frog" data-tooltip="Bullfrog · 5 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/bullfrog.png" alt="Bullfrog">
+        <span class="item-slot__name">Bullfrog</span>
+        <span class="item-slot__badge">2</span>
+      </div>
+
+      <!-- LIVESTOCK -->
+      <div class="item-slot" data-category="livestock" data-subcategory="eggs" data-tooltip="White Egg · 2 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/egg_white.png" alt="White Egg">
+        <span class="item-slot__name">White Egg</span>
+        <span class="item-slot__badge">34</span>
+      </div>
+
+      <div class="item-slot item-slot--rare" data-category="livestock" data-subcategory="eggs" data-tooltip="Gold Egg · 1 gold">
+        <img class="item-slot__icon" src="../assets/sprites/items/egg_gold.png" alt="Gold Egg">
+        <span class="item-slot__name">Gold Egg</span>
+        <span class="item-slot__badge item-slot__badge--gold">6</span>
+      </div>
+
+      <!-- CROPS -->
+      <div class="item-slot" data-category="crops" data-subcategory="vegetables" data-tooltip="Apple · 3 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/apple.png" alt="Apple">
+        <span class="item-slot__name">Apple</span>
+        <span class="item-slot__badge">18</span>
+      </div>
+
+      <div class="item-slot" data-category="crops" data-subcategory="vegetables" data-tooltip="Pear · 3 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/pear.png" alt="Pear">
+        <span class="item-slot__name">Pear</span>
+        <span class="item-slot__badge">9</span>
+      </div>
+
+      <div class="item-slot" data-category="crops" data-subcategory="vegetables" data-tooltip="Peach · 3 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/peach.png" alt="Peach">
+        <span class="item-slot__name">Peach</span>
+        <span class="item-slot__badge">11</span>
+      </div>
+
+      <div class="item-slot" data-category="crops" data-subcategory="vegetables" data-tooltip="Lemon · 3 silver">
+        <img class="item-slot__icon" src="../assets/sprites/items/lemon.png" alt="Lemon">
+        <span class="item-slot__name">Lemon</span>
+        <span class="item-slot__badge">6</span>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="item-slot item-slot--uncommon" data-category="tools" data-subcategory="axes" data-tooltip="Iron Axe · chops trees">
+        <img class="item-slot__icon" src="../assets/sprites/items/tool_axe_iron.png" alt="Iron Axe">
+        <span class="item-slot__name">Iron Axe</span>
+        <span class="item-slot__badge">1</span>
+      </div>
+
+      <div class="item-slot item-slot--rare" data-category="tools" data-subcategory="axes" data-tooltip="Silver Axe · 2 gold">
+        <img class="item-slot__icon" src="../assets/sprites/items/tool_axe_silver.png" alt="Silver Axe">
+        <span class="item-slot__name">Silver Axe</span>
+        <span class="item-slot__badge">1</span>
+      </div>
+
+      <div class="item-slot item-slot--legendary" data-category="tools" data-subcategory="axes" data-tooltip="Gold Axe · 5 gold">
+        <img class="item-slot__icon" src="../assets/sprites/items/tool_axe_gold.png" alt="Gold Axe">
+        <span class="item-slot__name">Gold Axe</span>
+        <span class="item-slot__badge item-slot__badge--gold">1</span>
+      </div>
+
+    </div><!-- /grid -->
+  </div><!-- /scroll -->
+
+</div><!-- /inventory -->
+
+<script src="inventory.js"></script>
+</body>
+</html>

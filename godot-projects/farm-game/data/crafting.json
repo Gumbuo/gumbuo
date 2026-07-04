@@ -1,0 +1,62 @@
+{
+  "tools": [
+    {
+      "output_id": "tool_rod_basic",
+      "name": "Fishing Rod",
+      "station": "workshop",
+      "ingredients": [
+        { "item_id": "wood", "amount": 8 },
+        { "item_id": "cotton", "amount": 4 }
+      ]
+    }
+  ],
+  "smelt": [
+    {
+      "output_id": "gold",
+      "output_currency": "gold",
+      "output_amount": 1,
+      "name": "Smelt Gold",
+      "station": "furnace",
+      "ingredients": [
+        { "item_id": "gold_ore", "amount": 3 },
+        { "item_id": "iron_ingot", "amount": 5 }
+      ]
+    },
+    {
+      "output_id": "iron_ingot_smelt",
+      "output_item": "iron_ingot",
+      "output_amount": 2,
+      "name": "Smelt Iron Ingots",
+      "station": "furnace",
+      "ingredients": [
+        { "item_id": "iron_ore", "amount": 3 }
+      ]
+    }
+  ],
+  "coop_crafting": [
+    {
+      "id": "wheat_mill",
+      "name": "Mill Wheat Flour",
+      "station": "wheat_mill",
+      "players_required": 2,
+      "player_slots": [
+        { "slot": 1, "item_id": "wheat", "amount": 5, "label": "Add Wheat" },
+        { "slot": 2, "item_id": "wood", "amount": 2, "label": "Add Fuel" }
+      ],
+      "output_id": "wheat_flour",
+      "output_amount": 4
+    },
+    {
+      "id": "bread_oven_basic",
+      "name": "Bake Bread",
+      "station": "bread_oven",
+      "players_required": 2,
+      "player_slots": [
+        { "slot": 1, "item_id": "wheat_flour", "amount": 5, "label": "Add Flour" },
+        { "slot": 2, "item_id": "egg", "amount": 3, "label": "Add Eggs" }
+      ],
+      "output_id": "bread",
+      "output_amount": 4
+    },
+  ]
+}
