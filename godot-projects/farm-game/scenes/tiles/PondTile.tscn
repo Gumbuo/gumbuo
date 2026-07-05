@@ -15,7 +15,7 @@ color = Color(0.22, 0.55, 0.88, 1)
 z_index = -10
 
 [node name="IslandSprite" type="Sprite2D" parent="."]
-position = Vector2(640, 360)
+position = Vector2(640, 496)
 scale = Vector2(4.0, 4.0)
 texture = ExtResource("2")
 z_index = -4
@@ -29,7 +29,7 @@ text = "Pond Tile"
 theme_override_font_sizes/font_size = 11
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
-position = Vector2(640, 280)
+position = Vector2(640, 416)
 
 [node name="UI" type="CanvasLayer" parent="."]
 

@@ -17,7 +17,21 @@ extends CanvasLayer
 
 const HOTBAR_SLOTS := 8
 
+const MUSIC_TRACKS := [
+	{"name": "Alien Vibes",      "file": "res://assets/audio/music/demon.mp3"},
+	{"name": "Space Odyssey",    "file": "res://assets/audio/music/gumbuobeets.mp3"},
+	{"name": "UFO Transmission", "file": "res://assets/audio/music/success.mp3"},
+	{"name": "Cosmic Energy",    "file": "res://assets/audio/music/arena.mp3"},
+	{"name": "Galactic Groove",  "file": "res://assets/audio/music/home.mp3"},
+]
+
 var _hotbar_items: Array = []
+var _music_player: AudioStreamPlayer = null
+var _music_track_index: int = 4  # Galactic Groove default
+var _music_expanded: bool = false
+var _music_panel: PanelContainer = null
+var _music_toggle_btn: Button = null
+var _music_track_lbl: Label = null
 
 func _ready() -> void:
 	PlayerData.xp_changed.connect(_on_xp_changed)
@@ -32,12 +46,42 @@ func _ready() -> void:
 	_update_time()
 	_update_claim_btn()
 	_add_settings_btn()
+	_apply_hud_icons()
+	_build_music_player()
 
 	var timer := Timer.new()
 	timer.wait_time = 30.0
 	timer.autostart = true
 	timer.timeout.connect(_on_clock_tick)
 	add_child(timer)
+
+func _apply_hud_icons() -> void:
+	_set_btn_icon(backpack_btn,  "res://assets/sprites/ui/icon_backpack.png")
+	_set_btn_icon(map_btn,       "res://assets/sprites/ui/icon_world_map.png")
+	var market_btn: Button = get_node_or_null("Bottom/Buttons/MarketBtn")
+	if market_btn:
+		_set_btn_icon(market_btn, "res://assets/sprites/ui/icon_market.png")
+	var currency_row: HBoxContainer = get_node_or_null("TopLeft/CurrencyRow")
+	if currency_row:
+		_prepend_currency_icon(currency_row, "res://assets/sprites/ui/icon_silver.png", silver_label)
+		_prepend_currency_icon(currency_row, "res://assets/sprites/ui/icon_gold.png",   gold_label)
+
+func _set_btn_icon(btn: Button, path: String) -> void:
+	if not btn or not ResourceLoader.exists(path): return
+	btn.icon = load(path) as Texture2D
+	btn.expand_icon = true
+	btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	btn.text = ""
+
+func _prepend_currency_icon(row: HBoxContainer, path: String, before_lbl: Label) -> void:
+	if not ResourceLoader.exists(path): return
+	var img := TextureRect.new()
+	img.texture = load(path) as Texture2D
+	img.custom_minimum_size = Vector2(18, 18)
+	img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	row.add_child(img)
+	row.move_child(img, before_lbl.get_index())
 
 func _on_clock_tick() -> void:
 	_update_time()
@@ -212,3 +256,176 @@ func show_credits() -> void:
 	_credits = credits_scene.instantiate()
 	_credits.closed.connect(func(): _credits = null)
 	add_child(_credits)
+
+# ── Music Player ─────────────────────────────────────────────────────────────
+
+func _build_music_player() -> void:
+	_music_player = AudioStreamPlayer.new()
+	_music_player.bus = "Master"
+	add_child(_music_player)
+	_music_player.finished.connect(_on_music_finished)
+	_load_track(_music_track_index)
+
+	# Collapsed toggle button — bottom-left
+	_music_toggle_btn = Button.new()
+	_music_toggle_btn.text = "MUS"
+	_music_toggle_btn.flat = false
+	_music_toggle_btn.custom_minimum_size = Vector2(46, 46)
+	_music_toggle_btn.position = Vector2(14, 720 - 60)
+	_music_toggle_btn.add_theme_font_size_override("font_size", 22)
+	var tsb := StyleBoxFlat.new()
+	tsb.bg_color = Color(0.07, 0.07, 0.15, 0.92)
+	tsb.border_color = Color(0.0, 0.83, 1.0)
+	tsb.set_border_width_all(2)
+	tsb.set_corner_radius_all(23)
+	_music_toggle_btn.add_theme_stylebox_override("normal", tsb)
+	_music_toggle_btn.pressed.connect(_on_music_toggle)
+	add_child(_music_toggle_btn)
+
+	# Expanded panel (hidden initially)
+	_music_panel = PanelContainer.new()
+	var psb := StyleBoxFlat.new()
+	psb.bg_color = Color(0.07, 0.07, 0.15, 0.95)
+	psb.border_color = Color(0.0, 0.83, 1.0)
+	psb.set_border_width_all(2)
+	psb.set_corner_radius_all(10)
+	_music_panel.add_theme_stylebox_override("panel", psb)
+	_music_panel.position = Vector2(14, 720 - 200)
+	_music_panel.visible = false
+	add_child(_music_panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	vbox.custom_minimum_size = Vector2(240, 0)
+	_music_panel.add_child(vbox)
+
+	# Header row
+	var hdr := HBoxContainer.new()
+	vbox.add_child(hdr)
+	var hdr_lbl := Label.new()
+	hdr_lbl.text = "MUSIC PLAYER"
+	hdr_lbl.add_theme_font_size_override("font_size", 10)
+	hdr_lbl.modulate = Color(0.0, 0.83, 1.0)
+	hdr_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hdr.add_child(hdr_lbl)
+	var close_btn := Button.new()
+	close_btn.text = "X"
+	close_btn.flat = true
+	close_btn.add_theme_font_size_override("font_size", 16)
+	close_btn.modulate = Color(0.6, 0.6, 0.6)
+	close_btn.pressed.connect(_on_music_toggle)
+	hdr.add_child(close_btn)
+
+	# Track name
+	_music_track_lbl = Label.new()
+	_music_track_lbl.text = MUSIC_TRACKS[_music_track_index]["name"]
+	_music_track_lbl.add_theme_font_size_override("font_size", 12)
+	_music_track_lbl.modulate = Color(0.2, 1.0, 0.6)
+	_music_track_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(_music_track_lbl)
+
+	# Controls row
+	var ctrl := HBoxContainer.new()
+	ctrl.alignment = BoxContainer.ALIGNMENT_CENTER
+	ctrl.add_theme_constant_override("separation", 8)
+	vbox.add_child(ctrl)
+
+	var prev_btn := Button.new()
+	prev_btn.text = "|<"
+	prev_btn.custom_minimum_size = Vector2(34, 34)
+	prev_btn.add_theme_font_size_override("font_size", 14)
+	_style_music_ctrl_btn(prev_btn, false)
+	prev_btn.pressed.connect(_on_music_prev)
+	ctrl.add_child(prev_btn)
+
+	var play_btn := Button.new()
+	play_btn.text = ">"
+	play_btn.name = "PlayBtn"
+	play_btn.custom_minimum_size = Vector2(46, 46)
+	play_btn.add_theme_font_size_override("font_size", 18)
+	_style_music_ctrl_btn(play_btn, true)
+	play_btn.pressed.connect(_on_music_play_pause)
+	ctrl.add_child(play_btn)
+
+	var next_btn := Button.new()
+	next_btn.text = ">|"
+	next_btn.custom_minimum_size = Vector2(34, 34)
+	next_btn.add_theme_font_size_override("font_size", 14)
+	_style_music_ctrl_btn(next_btn, false)
+	next_btn.pressed.connect(_on_music_next)
+	ctrl.add_child(next_btn)
+
+	# Track selector
+	var opt := OptionButton.new()
+	opt.name = "TrackSelect"
+	opt.add_theme_font_size_override("font_size", 10)
+	for i in MUSIC_TRACKS.size():
+		opt.add_item(MUSIC_TRACKS[i]["name"], i)
+	opt.select(_music_track_index)
+	opt.item_selected.connect(func(idx: int) -> void:
+		_music_track_index = idx
+		_load_track(idx)
+		if _music_player.playing:
+			_music_player.play()
+		if _music_track_lbl:
+			_music_track_lbl.text = MUSIC_TRACKS[idx]["name"]
+	)
+	vbox.add_child(opt)
+
+func _style_music_ctrl_btn(btn: Button, is_play: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.0, 0.83, 1.0, 0.15) if not is_play else Color(0.2, 1.0, 0.6, 0.9)
+	sb.border_color = Color(0.0, 0.83, 1.0)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(23 if is_play else 6)
+	btn.add_theme_stylebox_override("normal", sb)
+	if is_play:
+		btn.modulate = Color(0.0, 0.0, 0.0)
+
+func _load_track(idx: int) -> void:
+	var path: String = MUSIC_TRACKS[idx]["file"]
+	if ResourceLoader.exists(path):
+		_music_player.stream = load(path) as AudioStream
+		_music_player.stop()
+
+func _on_music_toggle() -> void:
+	_music_expanded = not _music_expanded
+	_music_panel.visible = _music_expanded
+	_music_toggle_btn.text = "MUS"
+
+func _on_music_play_pause() -> void:
+	if _music_player.playing:
+		_music_player.stop()
+		_music_toggle_btn.text = "MUS"
+	else:
+		_music_player.play()
+		_music_toggle_btn.text = "🎵"
+	_update_play_btn()
+
+func _on_music_prev() -> void:
+	_music_track_index = (_music_track_index - 1 + MUSIC_TRACKS.size()) % MUSIC_TRACKS.size()
+	_load_track(_music_track_index)
+	if _music_track_lbl:
+		_music_track_lbl.text = MUSIC_TRACKS[_music_track_index]["name"]
+	var opt: OptionButton = _music_panel.get_node_or_null("VBoxContainer/TrackSelect")
+	if opt: opt.select(_music_track_index)
+	if _music_player.stream:
+		_music_player.play()
+
+func _on_music_next() -> void:
+	_music_track_index = (_music_track_index + 1) % MUSIC_TRACKS.size()
+	_load_track(_music_track_index)
+	if _music_track_lbl:
+		_music_track_lbl.text = MUSIC_TRACKS[_music_track_index]["name"]
+	var opt: OptionButton = _music_panel.get_node_or_null("VBoxContainer/TrackSelect")
+	if opt: opt.select(_music_track_index)
+	if _music_player.stream:
+		_music_player.play()
+
+func _on_music_finished() -> void:
+	_on_music_next()
+
+func _update_play_btn() -> void:
+	var btn: Button = _music_panel.get_node_or_null("VBoxContainer/HBoxContainer2/PlayBtn") if _music_panel else null
+	if btn:
+		btn.text = "||" if _music_player.playing else ">"

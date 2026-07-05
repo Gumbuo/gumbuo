@@ -3,17 +3,19 @@ extends CanvasLayer
 var _tile_id: String = ""
 var _name_input: LineEdit = null
 var _access_btns: Array = []   # [public_btn, guild_btn, private_btn]
+var _selected_access_mode: int = 0
 
 func open(tile_id: String) -> void:
 	_tile_id = tile_id
 	var tile: Dictionary = LandManager.tiles.get(tile_id, {})
-	if tile.is_empty():
+	if tile.is_empty() or tile.get("owner_id", "") != PlayerData.player_id:
 		queue_free()
 		return
 	_name_input.text = tile.get("name", "")
 	_set_active_access(tile.get("access_mode", LandManager.AccessMode.PUBLIC))
 
 func _ready() -> void:
+	add_to_group("action_windows")
 	_build_ui()
 
 func _build_ui() -> void:
@@ -118,14 +120,40 @@ func _build_ui() -> void:
 	)
 
 func _set_active_access(mode: int) -> void:
+	_selected_access_mode = mode
 	for btn in _access_btns:
 		var is_active: bool = int(btn.meta_get("mode")) == mode
+		var active_col: Color = btn.meta_get("active_color")
+		var states: Array = [
+			["normal",  0.0],
+			["hover",   0.12],
+			["pressed", -0.15],
+			["focus",   0.0],
+		]
+		for sd in states:
+			var s := StyleBoxFlat.new()
+			s.corner_radius_top_left     = 6
+			s.corner_radius_top_right    = 6
+			s.corner_radius_bottom_left  = 6
+			s.corner_radius_bottom_right = 6
+			s.border_width_left   = 1
+			s.border_width_right  = 1
+			s.border_width_top    = 1
+			s.border_width_bottom = 1
+			if is_active:
+				var c: Color = active_col.lightened(sd[1]) if sd[1] > 0 else active_col.darkened(-sd[1])
+				s.bg_color     = c
+				s.border_color = active_col.darkened(0.25)
+			else:
+				var base := Color(0.88, 0.88, 0.90)
+				var c: Color = base.lightened(sd[1]) if sd[1] > 0 else base.darkened(-sd[1])
+				s.bg_color     = c
+				s.border_color = Color(0.60, 0.60, 0.64)
+			btn.add_theme_stylebox_override(sd[0], s)
 		if is_active:
-			btn.modulate = btn.meta_get("active_color")
 			btn.add_theme_color_override("font_color", Color.WHITE)
 		else:
-			btn.modulate = Color.WHITE
-			btn.remove_theme_color_override("font_color")
+			btn.add_theme_color_override("font_color", Color(0.12, 0.12, 0.14))
 
 func _on_access_btn(btn: Button) -> void:
 	_set_active_access(int(btn.meta_get("mode")))
@@ -134,11 +162,7 @@ func _on_save() -> void:
 	var new_name: String = _name_input.text.strip_edges()
 	if new_name != "":
 		LandManager.set_tile_name(_tile_id, new_name)
-	# find which access button is "active" (has color modulate set)
-	for btn in _access_btns:
-		if btn.modulate != Color.WHITE:
-			LandManager.set_tile_access(_tile_id, btn.meta_get("mode") as LandManager.AccessMode)
-			break
+	LandManager.set_tile_access(_tile_id, _selected_access_mode as LandManager.AccessMode)
 	queue_free()
 
 func _on_overlay_input(event: InputEvent) -> void:

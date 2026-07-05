@@ -128,7 +128,7 @@ func _make_recipe_row(act: Dictionary) -> Control:
 			var have_enough: bool = ResourceManager.has_item(iid, amt)
 			ing.add_child(_item_icon(iid, 16))
 			var amt_lbl := Label.new()
-			amt_lbl.text = "×%d" % amt
+			amt_lbl.text = "x%d" % amt
 			amt_lbl.add_theme_font_size_override("font_size", 9)
 			amt_lbl.modulate = Color(0.3, 1.0, 0.4) if have_enough else Color(1.0, 0.4, 0.4)
 			ing.add_child(amt_lbl)
@@ -162,7 +162,7 @@ func _get_actions() -> Array:
 		"wheat_mill", "mill":
 			return [{"label": "Co-op station (2+ players needed)", "disabled": true}]
 		"bread_oven":
-			return [{"label": "Bake Bread  (collab × 3)", "action": "open_bread_oven"}]
+			return [{"label": "Bake Bread  (collab x3)", "action": "open_bread_oven"}]
 		"silo":
 			return [{"label": "Collect from Silo", "action": "silo_check"}]
 		"chicken_coop":
@@ -176,7 +176,7 @@ func _get_actions() -> Array:
 		"anvil":
 			return [{"label": "Craft Metal Objects (coming soon)", "disabled": true}]
 		"barrel":
-			return [{"label": "Ferment Wine  (collab × 3)", "action": "open_barrel"}]
+			return [{"label": "Ferment Wine  (collab x3)", "action": "open_barrel"}]
 		"beehive":
 			return [{"label": "Collect Honey (coming soon)", "disabled": true}]
 		"box":

@@ -21,9 +21,12 @@ var TYPE_COLORS: Dictionary = {}
 var _tile_id: String = ""
 var _npc_id: String = ""
 var _is_empty: bool = true
+var _is_owner: bool = false
 var _select_overlay: ColorRect = null
 var _drop_overlay: ColorRect = null
 var _edit_btn: Button = null
+var _name_edit: LineEdit = null
+var _name_confirm: Button = null
 
 func _ready() -> void:
 	TYPE_COLORS = {
@@ -48,7 +51,7 @@ func _ready() -> void:
 	add_child(_drop_overlay)
 
 	_edit_btn = Button.new()
-	_edit_btn.text = "✎"
+	_edit_btn.text = "~"
 	_edit_btn.flat = true
 	_edit_btn.custom_minimum_size = Vector2(18, 18)
 	_edit_btn.position = Vector2(size.x - 20, 2)
@@ -57,15 +60,47 @@ func _ready() -> void:
 	_edit_btn.pressed.connect(_on_edit_pressed)
 	add_child(_edit_btn)
 
+	# Inline rename: LineEdit + confirm button, shown when owner clicks name label
+	_name_edit = LineEdit.new()
+	_name_edit.placeholder_text = "Enter name…"
+	_name_edit.max_length = 24
+	_name_edit.position = Vector2(4, 52)
+	_name_edit.size     = Vector2(68, 18)
+	_name_edit.add_theme_font_size_override("font_size", 8)
+	_name_edit.visible = false
+	_name_edit.text_submitted.connect(func(_s): _confirm_rename())
+	_name_edit.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventKey and ev.pressed and ev.keycode == KEY_ESCAPE:
+			_hide_rename_edit())
+	add_child(_name_edit)
+
+	_name_confirm = Button.new()
+	_name_confirm.text = "OK"
+	_name_confirm.flat = true
+	_name_confirm.custom_minimum_size = Vector2(16, 18)
+	_name_confirm.position = Vector2(74, 52)
+	_name_confirm.add_theme_font_size_override("font_size", 9)
+	_name_confirm.visible = false
+	_name_confirm.mouse_filter = Control.MOUSE_FILTER_STOP
+	_name_confirm.pressed.connect(_confirm_rename)
+	add_child(_name_confirm)
+
+	# Make name label clickable so owners can tap it to rename
+	tile_name_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	tile_name_label.gui_input.connect(_on_name_label_input)
+
 	set_empty()
 
 func set_empty() -> void:
 	_tile_id = ""
 	_npc_id = ""
 	_is_empty = true
+	_is_owner = false
+	_hide_rename_edit()
 	bg_rect.color = Color(0, 0, 0, 0)
 	tile_type_label.text = ""
 	tile_name_label.text = ""
+	tile_name_label.modulate = Color(1, 1, 1)
 	vault_label.text = ""
 	empty_label.text = ""
 	empty_label.visible = false
@@ -77,10 +112,18 @@ func set_tile(tile_data: Dictionary) -> void:
 	_tile_id = tile_data["id"]
 	_npc_id = ""
 	_is_empty = false
+	_is_owner = tile_data.get("owner_id", "") == PlayerData.player_id
+	_hide_rename_edit()
 	var type_str: String = tile_data.get("type_str", "FARM")
 	bg_rect.color = TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3))
 	tile_type_label.text = type_str.capitalize()
-	tile_name_label.text = tile_data.get("name", "")
+	var cur_name: String = tile_data.get("name", "")
+	if _is_owner and cur_name == "":
+		tile_name_label.text = "~ name this tile"
+		tile_name_label.modulate = Color(0.6, 0.6, 0.6)
+	else:
+		tile_name_label.text = cur_name
+		tile_name_label.modulate = Color(1, 1, 1)
 	empty_label.text = ""
 	empty_label.visible = false
 	enter_button.text = "Enter"
@@ -89,8 +132,7 @@ func set_tile(tile_data: Dictionary) -> void:
 	_update_access_icon(tile_data.get("access_mode", 0))
 	_update_vault_label(tile_data.get("passive_vault", {}))
 	if _edit_btn:
-		var is_owner: bool = tile_data.get("owner_id", "") == PlayerData.player_id
-		_edit_btn.visible = is_owner
+		_edit_btn.visible = _is_owner
 		_edit_btn.position = Vector2(size.x - 20, 2)
 
 func set_npc_tile(npc_data: Dictionary) -> void:
@@ -100,8 +142,9 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
 	bg_rect.color = Color(col[0], col[1], col[2])
 	tile_type_label.text = "NPC"
-	tile_name_label.text = npc_data.get("shop_name", npc_data.get("name", ""))
-	vault_label.text = npc_data.get("name", "")
+	tile_name_label.text = npc_data.get("name", "")
+	tile_name_label.modulate = Color(1, 1, 1)
+	vault_label.text = ""
 	empty_label.text = ""
 	empty_label.visible = false
 	enter_button.text = "Visit"
@@ -124,6 +167,15 @@ func is_empty_cell() -> bool:
 
 func is_npc_tile() -> bool:
 	return _npc_id != ""
+
+func set_deed_hint(show: bool) -> void:
+	if not _is_empty:
+		return
+	if empty_label:
+		empty_label.text = "+" if show else ""
+		empty_label.visible = show
+		empty_label.add_theme_font_size_override("font_size", 28)
+		empty_label.modulate = Color(0.55, 0.85, 0.40, 0.70)
 
 func _update_access_icon(mode: int) -> void:
 	if mode == LandManager.AccessMode.PUBLIC:
@@ -151,6 +203,40 @@ func _on_enter_button_pressed() -> void:
 		npc_shop_requested.emit(_npc_id)
 	elif _tile_id != "":
 		enter_requested.emit(_tile_id)
+
+func _on_name_label_input(event: InputEvent) -> void:
+	if not _is_owner or _tile_id == "":
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		_show_rename_edit()
+
+func _show_rename_edit() -> void:
+	if not _name_edit or not _name_confirm:
+		return
+	var current: String = tile_name_label.text
+	if current == "~ name this tile":
+		current = ""
+	_name_edit.text = current
+	tile_name_label.visible = false
+	_name_edit.visible = true
+	_name_confirm.visible = true
+	_name_edit.grab_focus()
+	_name_edit.select_all()
+
+func _hide_rename_edit() -> void:
+	if _name_edit:   _name_edit.visible = false
+	if _name_confirm: _name_confirm.visible = false
+	tile_name_label.visible = true
+
+func _confirm_rename() -> void:
+	if not _name_edit or _tile_id == "":
+		_hide_rename_edit()
+		return
+	var new_name: String = _name_edit.text.strip_edges()
+	if new_name != "":
+		LandManager.set_tile_name(_tile_id, new_name)
+	_hide_rename_edit()
 
 func _gui_input(event: InputEvent) -> void:
 	if not event is InputEventMouseButton or not event.pressed:

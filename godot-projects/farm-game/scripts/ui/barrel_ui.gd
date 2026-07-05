@@ -124,6 +124,7 @@ func _build_ui() -> void:
 	close_btn.size     = Vector2(38, 26)
 	close_btn.text     = "X"
 	close_btn.pressed.connect(_close)
+	_pill(close_btn)
 	panel.add_child(close_btn)
 
 	var desc := Label.new()
@@ -158,20 +159,35 @@ func _build_ui() -> void:
 		var pill_labels: Array = []
 		for res_id in RECIPE_ING:
 			var req: int = RECIPE_ING[res_id]
-			var dot := ColorRect.new()
-			dot.position = Vector2(ing_x, sy + 38)
-			dot.size     = Vector2(10, 10)
-			dot.color    = RES_COLOR.get(res_id, Color(0.4, 0.4, 0.4))
-			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			panel.add_child(dot)
+			var icon_path := "res://assets/sprites/items/%s.png" % res_id
+			var icon_box := Control.new()
+			icon_box.position = Vector2(ing_x, sy + 26)
+			icon_box.size     = Vector2(34, 34)
+			icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			if ResourceLoader.exists(icon_path):
+				var tex := TextureRect.new()
+				tex.texture      = load(icon_path)
+				tex.set_anchors_preset(Control.PRESET_FULL_RECT)
+				tex.expand_mode  = TextureRect.EXPAND_IGNORE_SIZE
+				tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				icon_box.add_child(tex)
+			else:
+				var dot := ColorRect.new()
+				dot.set_anchors_preset(Control.PRESET_FULL_RECT)
+				dot.color        = RES_COLOR.get(res_id, Color(0.4, 0.4, 0.4))
+				dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				icon_box.add_child(dot)
+			panel.add_child(icon_box)
 			var lbl := Label.new()
-			lbl.position = Vector2(ing_x + 14, sy + 34)
-			lbl.size     = Vector2(220, 18)
-			lbl.add_theme_font_size_override("font_size", 9)
-			lbl.text     = "%s  %d/%d" % [RES_NAME.get(res_id, res_id), 0, req]
+			lbl.position = Vector2(ing_x - 2, sy + 62)
+			lbl.size     = Vector2(38, 14)
+			lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			lbl.add_theme_font_size_override("font_size", 8)
+			lbl.text     = "x%d" % req
 			panel.add_child(lbl)
 			pill_labels.append({"lbl": lbl, "res_id": res_id, "req": req})
-			ing_x += 240.0
+			ing_x += 50.0
 		_slot_labels.append(pill_labels)
 
 		var btn := Button.new()
@@ -218,7 +234,7 @@ func _refresh_ui() -> void:
 		if not is_instance_valid(btn): continue
 		var is_filled: bool = (i < filled.size() and filled[i]) or state == "cooking" or state == "ready"
 		if is_filled:
-			btn.text     = "✓ Contributed"
+			btn.text     = "Done"
 			btn.disabled = true
 		else:
 			btn.text     = "CONTRIBUTE"
@@ -231,11 +247,11 @@ func _refresh_ui() -> void:
 			var lbl: Label = p["lbl"]
 			if not is_instance_valid(lbl): continue
 			var have: int = ResourceManager.get_count(p["res_id"])
-			lbl.text = "%s  %d/%d" % [RES_NAME.get(p["res_id"], p["res_id"]), have, p["req"]]
+			lbl.text = "%d/%d" % [have, p["req"]]
 			if is_filled:
 				lbl.modulate = Color(0.3, 1.0, 0.4)
 			else:
-				lbl.modulate = Color(0.3, 0.7, 1.0) if have >= p["req"] else Color(1.0, 0.4, 0.4)
+				lbl.modulate = Color(0.35, 0.85, 0.45) if have >= p["req"] else Color(1.0, 0.35, 0.35)
 
 	if is_instance_valid(_timer_lbl):
 		match state:
@@ -282,3 +298,22 @@ func _do_auto_collect() -> void:
 			_timer_lbl.modulate = Color(0.3, 1.0, 0.4)
 		_claimed = false
 		_refresh_ui()
+
+func _pill(btn: Button) -> void:
+	for sd in [
+		["normal",  Color(0.09, 0.11, 0.14), Color(BORDER_COLOR.r * 0.7, BORDER_COLOR.g * 0.7, BORDER_COLOR.b * 0.7)],
+		["hover",   Color(0.15, 0.18, 0.22), BORDER_COLOR],
+		["pressed", Color(0.05, 0.06, 0.08), Color(BORDER_COLOR.r * 0.5, BORDER_COLOR.g * 0.5, BORDER_COLOR.b * 0.5)],
+		["disabled",Color(0.08, 0.08, 0.10), Color(0.22, 0.22, 0.25)]]:
+		var s := StyleBoxFlat.new()
+		s.corner_radius_top_left     = 13
+		s.corner_radius_top_right    = 13
+		s.corner_radius_bottom_left  = 13
+		s.corner_radius_bottom_right = 13
+		s.border_width_left   = 1
+		s.border_width_right  = 1
+		s.border_width_top    = 1
+		s.border_width_bottom = 1
+		s.bg_color     = sd[1]
+		s.border_color = sd[2]
+		btn.add_theme_stylebox_override(sd[0], s)

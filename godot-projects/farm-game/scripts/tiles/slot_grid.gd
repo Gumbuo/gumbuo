@@ -14,7 +14,8 @@ var _hovered_slot: Vector2i = Vector2i(-1, -1)
 var _slot_nodes:   Dictionary = {}  # key -> Control
 var _item_colors:  Dictionary = {}
 var _picker_btns:  Array      = []
-var _picker_panel: Control    = null
+var _picker_panel:     Control    = null
+var _picker_container: Control    = null
 var _picker_bgs:   Dictionary = {}  # item_id -> Button
 var _seed_bgs:     Dictionary = {}  # seed_id -> Button
 var _root:         Control    = null
@@ -32,6 +33,15 @@ var _seedling_imgs:   Dictionary = {}    # crop_id -> Image, loaded lazily at st
 var _medium_imgs:     Dictionary = {}    # crop_id -> Image, loaded lazily at stage 1
 var _ready_imgs:      Dictionary = {}    # crop_id -> Image, loaded lazily at stage 2
 var _active_crafting_ui: CanvasLayer = null
+
+const PLACEABLE_CATEGORIES: Array = [
+	["FARM",     ["soil_plot","boulder","beehive","silo","chicken_coop"]],
+	["TREES",    ["tree","apple_tree","pear_tree","peach_tree","lemon_tree"]],
+	["CRAFTING", ["workbench","workshop","furnace","bonfire","campfire","burner_station",
+	              "anvil","alchemy_table","bread_oven","wheat_mill","dyeing_vat",
+	              "spinning_wheel","stonecutter","sawmill","wine_press","barrel"]],
+	["STORAGE",  ["box","dropbox","mailbox"]],
+]
 
 const CRAFTING_STATIONS: Dictionary = {
 	"workbench":      "res://scripts/ui/workbench_ui.gd",
@@ -128,6 +138,10 @@ func setup(tid: String) -> void:
 	LandManager.collab_state_changed.connect(func(_a, _b, _c): _refresh())
 	_refresh()
 	_refresh_picker()
+	# Hide the picker bar when visiting a tile the player does not own
+	var _tile_info: Dictionary = LandManager.tiles.get(tile_id, {})
+	if _picker_panel and _tile_info.get("owner_id", "") != PlayerData.player_id:
+		_picker_panel.visible = false
 
 func set_held_item(item_id: String) -> void:
 	_held_item = item_id
@@ -227,15 +241,17 @@ func _input(event: InputEvent) -> void:
 		return
 	get_viewport().set_input_as_handled()
 
-	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+	var _td: Dictionary = LandManager.tiles.get(tile_id, {})
+	var is_tile_owner: bool = _td.get("owner_id", "") == PlayerData.player_id
+	var slots: Dictionary = _td.get("slots", {})
 	var key: String = LandManager.slot_key(slot_pos)
 
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		var occupied: bool = slots.has(key)
 
-		# ── seed planting ──
+		# ── seed planting (owner only) ──
 		if _held_seed != "":
-			if occupied:
+			if occupied and is_tile_owner:
 				var d: Dictionary = slots[key]
 				if d.get("is_anchor", false) and d.get("item_id","") == "soil_plot" and not d.has("crop"):
 					if LandManager.plant_seed(tile_id, slot_pos, _held_seed):
@@ -275,8 +291,8 @@ func _input(event: InputEvent) -> void:
 			elif not event.double_click:
 				return  # non-soil occupied: need double-click to return
 
-		# ── double-click on non-soil occupied slot → return to backpack ──
-		if occupied and event.double_click:
+		# ── double-click on occupied slot → return to backpack (owner only) ──
+		if occupied and event.double_click and is_tile_owner:
 			var data: Dictionary = slots[key]
 			var anchor_key: String = data.get("anchor", key)
 			var ap := anchor_key.split(",")
@@ -288,8 +304,8 @@ func _input(event: InputEvent) -> void:
 				_show_return_popup(anchor_pos, adat.get("item_id",""))
 			return
 
-		# ── place held item in empty slot ──
-		if not occupied and not event.double_click:
+		# ── place held item in empty slot (owner only) ──
+		if not occupied and not event.double_click and is_tile_owner:
 			if _held_item != "" and ResourceManager.has_item(_held_item):
 				if LandManager.place_slot_item(tile_id, slot_pos, _held_item):
 					ResourceManager.remove_item(_held_item)
@@ -298,10 +314,12 @@ func _input(event: InputEvent) -> void:
 					_refresh_picker()
 
 	elif event.button_index == MOUSE_BUTTON_RIGHT:
-		if not slots.has(key): return
+		if not slots.has(key) or not is_tile_owner: return
 		var d: Dictionary = slots[key]
 		if d.get("item_id","") == "soil_plot" and d.has("crop"):
 			return  # harvest or wait — can't pull soil while crop lives
+		if d.get("item_id","") == "oak_tree":
+			return  # oak trees are non-tradeable, can't remove to backpack
 		var removed := LandManager.remove_slot_item(tile_id, slot_pos)
 		if removed != "":
 			ResourceManager.add_item(removed, 1)
@@ -451,10 +469,26 @@ func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 				var from_pos := Vector2i(data.get("from_x", -1), data.get("from_y", -1))
 				if from_tile == "" or from_pos.x < 0: return
 				if from_tile == tile_id and from_pos == cap_pos: return
+				var from_slots: Dictionary = LandManager.tiles.get(from_tile, {}).get("slots", {})
+				var from_slot_data: Dictionary = from_slots.get(LandManager.slot_key(from_pos), {})
+				var moving_item: String = from_slot_data.get("item_id","")
+				if moving_item == "oak_tree" and from_tile != tile_id:
+					return  # oak trees can only move within their own tile
+				var home: String = from_slot_data.get("home_tile", from_tile)
 				var removed := LandManager.remove_slot_item(from_tile, from_pos)
 				if removed == "": return
 				if not LandManager.place_slot_item(tile_id, cap_pos, removed):
-					ResourceManager.add_item(removed, 1)
+					if from_tile == tile_id:
+						LandManager.place_slot_item(from_tile, from_pos, removed)
+					else:
+						ResourceManager.add_item(removed, 1)
+				elif moving_item == "oak_tree":
+					# Restore home_tile tag so it stays bound to its forest
+					var new_key: String = LandManager.slot_key(cap_pos)
+					var t_slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+					if t_slots.has(new_key):
+						t_slots[new_key]["home_tile"] = home
+					LandManager.save_land_data()
 			"picker":
 				if ResourceManager.has_item(iid):
 					if LandManager.place_slot_item(tile_id, cap_pos, iid):
@@ -496,13 +530,20 @@ func _build_picker(parent: Control, origin: Vector2, height: float) -> Control:
 	held_lbl.modulate = Color(0.6, 0.6, 0.6)
 	panel.add_child(held_lbl)
 
+	var scroll := ScrollContainer.new()
+	scroll.name = "PickerScroll"
+	scroll.position = Vector2(4, 54)
+	scroll.size = Vector2(112, height - 58)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode   = ScrollContainer.SCROLL_MODE_AUTO
+	panel.add_child(scroll)
+
 	var items_container := VBoxContainer.new()
 	items_container.name = "ItemsContainer"
-	items_container.position = Vector2(4, 54)
-	items_container.size = Vector2(112, height - 58)
-	items_container.mouse_filter = Control.MOUSE_FILTER_PASS
-	items_container.add_theme_constant_override("separation", 4)
-	panel.add_child(items_container)
+	items_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	items_container.add_theme_constant_override("separation", 3)
+	scroll.add_child(items_container)
+	_picker_container = items_container
 
 	return panel
 
@@ -517,24 +558,41 @@ func _refresh_picker() -> void:
 	_picker_bgs.clear()
 	_seed_bgs.clear()
 
-	var container: Control = _picker_panel.get_node_or_null("ItemsContainer")
+	var container: Control = _picker_container
 	if not container: return
 
-	# ── placeables ──
-	for item_id in _get_player_placeables():
-		var btn := _make_picker_btn(item_id, ResourceManager.get_count(item_id), false)
-		container.add_child(btn)
-		_picker_btns.append(btn)
-		_picker_bgs[item_id] = btn
+	# ── categorised placeables ──
+	for cat_pair in PLACEABLE_CATEGORIES:
+		var cat_name: String = cat_pair[0]
+		var cat_ids:  Array  = cat_pair[1]
+		var available: Array = []
+		for id in cat_ids:
+			if ResourceManager.get_count(id) > 0:
+				available.append(id)
+		if available.is_empty(): continue
 
-	# ── seeds separator + seed buttons ──
+		var hdr := Label.new()
+		hdr.text = "- %s -" % cat_name
+		hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		hdr.add_theme_font_size_override("font_size", 7)
+		hdr.modulate = Color(0.85, 0.78, 0.40)
+		container.add_child(hdr)
+		_picker_btns.append(hdr)
+
+		for item_id in available:
+			var btn := _make_picker_btn(item_id, ResourceManager.get_count(item_id), false)
+			container.add_child(btn)
+			_picker_btns.append(btn)
+			_picker_bgs[item_id] = btn
+
+	# ── seeds ──
 	var seeds := _get_player_seeds()
 	if not seeds.is_empty():
 		var sep := Label.new()
-		sep.text = "── SEEDS ──"
+		sep.text = "─ SEEDS ─"
 		sep.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		sep.add_theme_font_size_override("font_size", 7)
-		sep.modulate = Color(0.6, 0.9, 0.6)
+		sep.modulate = Color(0.55, 0.90, 0.55)
 		container.add_child(sep)
 		_picker_btns.append(sep)
 

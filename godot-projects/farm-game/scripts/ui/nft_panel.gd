@@ -1,10 +1,11 @@
-﻿extends CanvasLayer
+extends CanvasLayer
 
 var _tab: int = 0
 var _tab_btns: Array = []
 var _content: VBoxContainer = null
 
 func _ready() -> void:
+	add_to_group("action_windows")
 	layer = 25
 	_build_ui()
 

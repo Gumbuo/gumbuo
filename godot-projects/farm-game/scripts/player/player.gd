@@ -47,15 +47,27 @@ func _setup_sprite() -> void:
 	var frames := SpriteFrames.new()
 	frames.remove_animation("default")
 
-	# Idle + walk — single rotation PNG per direction (no walk cycle in this pack)
+	# Idle — single static frame per direction
 	for dir in DIRS:
 		var tex: Texture2D = load(BASE_PATH + "rotations/%s.png" % dir)
-		for prefix in ["idle_", "walk_"]:
-			var anim: String = prefix + dir
-			frames.add_animation(anim)
-			frames.set_animation_loop(anim, true)
-			frames.set_animation_speed(anim, 4.0)
-			frames.add_frame(anim, tex)
+		var idle_anim: String = "idle_" + dir
+		frames.add_animation(idle_anim)
+		frames.set_animation_loop(idle_anim, true)
+		frames.set_animation_speed(idle_anim, 4.0)
+		frames.add_frame(idle_anim, tex)
+
+	# Walk — 6-frame cycle per direction
+	for dir in DIRS:
+		var walk_anim: String = "walk_" + dir
+		frames.add_animation(walk_anim)
+		frames.set_animation_loop(walk_anim, true)
+		frames.set_animation_speed(walk_anim, 10.0)
+		for i in 6:
+			var path: String = BASE_PATH + "walk/%s/frame_%03d.png" % [dir, i]
+			if ResourceLoader.exists(path):
+				frames.add_frame(walk_anim, load(path))
+			else:
+				frames.add_frame(walk_anim, load(BASE_PATH + "rotations/%s.png" % dir))
 
 	# Action animations — individual frame PNGs per direction
 	for cfg in ACTION_CONFIGS:

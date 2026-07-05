@@ -82,6 +82,8 @@ func place_tile(tile_type: TileType, grid_pos: Vector2i) -> bool:
 	}
 	tiles[tile_id] = tile_data
 	grid[grid_pos] = tile_id
+	if tile_type == TileType.FOREST:
+		_init_forest_trees(tile_id)
 	tile_placed.emit(tile_data)
 	save_land_data()
 	return true
@@ -113,42 +115,22 @@ func set_tile_name(tile_id: String, new_name: String) -> void:
 	tile_settings_changed.emit(tile_id)
 	save_land_data()
 
-func place_forest_tile(density: String, grid_pos: Vector2i) -> bool:
-	if grid.has(grid_pos): return false
-	var deed_key: String = "FOREST_DENSE" if density == "dense" else "FOREST_SPARSE"
-	if deed_inventory.get(deed_key, 0) <= 0: return false
-	deed_inventory[deed_key] -= 1
-	var tile_id := _generate_tile_id()
-	var label: String = "Dense Forest" if density == "dense" else "Sparse Forest"
-	var tile_data: Dictionary = {
-		"id": tile_id, "type": TileType.FOREST, "type_str": "FOREST",
-		"density": density, "position": grid_pos,
-		"access_mode": AccessMode.PUBLIC, "yield_rate": 70,
-		"passive_vault": {}, "slots": {},
-		"name": label, "owner_id": PlayerData.player_id,
-		"placed_at": int(Time.get_unix_time_from_system())
-	}
-	tiles[tile_id] = tile_data
-	grid[grid_pos] = tile_id
-	_init_forest_trees(tile_id, density)
-	tile_placed.emit(tile_data)
-	save_land_data()
-	return true
-
-func _init_forest_trees(tile_id: String, density: String) -> void:
+func _init_forest_trees(tile_id: String) -> void:
 	var slots: Dictionary = tiles[tile_id]["slots"]
 	for key in slots:
-		if slots[key].get("item_id", "").ends_with("tree"): return  # already seeded
-	var positions: Array = []
-	if density == "dense":
-		positions = [
-			Vector2i(0,0), Vector2i(2,0), Vector2i(4,0),
-			Vector2i(1,2), Vector2i(3,2), Vector2i(5,2),
-			Vector2i(0,4), Vector2i(2,4), Vector2i(4,4)
-		]
-	else:
-		positions = [Vector2i(1,1), Vector2i(4,1), Vector2i(2,4)]
-	for pos in positions:
+		if slots[key].get("item_id", "").ends_with("tree"): return
+	# All valid slot positions matching ROW_LAYOUT [4,6,6,6,6,4]
+	var all_valid: Array = []
+	var row_layout := [4, 6, 6, 6, 6, 4]
+	var full_cols := 6
+	for row in row_layout.size():
+		var num_cols: int = row_layout[row]
+		var col_offset: int = (full_cols - num_cols) / 2
+		for i in num_cols:
+			all_valid.append(Vector2i(col_offset + i, row))
+	all_valid.shuffle()
+	for i in 9:
+		var pos: Vector2i = all_valid[i]
 		var k: String = slot_key(pos)
 		slots[k] = {"item_id": "oak_tree", "anchor": k, "is_anchor": true,
 					 "size": [1, 1], "home_tile": tile_id}
@@ -235,7 +217,7 @@ func _ensure_global_tile() -> void:
 		place_slot_item(GLOBAL_TILE_ID, Vector2i(2, 2), "npc_vendor")
 	save_land_data()
 
-func _grant_starter_tile() -> void:
+func grant_starter_pack() -> void:
 	var tile_id: String = _generate_tile_id()
 	var tile_data: Dictionary = {
 		"id": tile_id,
@@ -252,6 +234,11 @@ func _grant_starter_tile() -> void:
 	}
 	tiles[tile_id] = tile_data
 	grid[Vector2i(0, 0)] = tile_id
+	# Give one deed of each tile type to place
+	deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
+	deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
+	deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1
+	deed_inventory["FOREST"]   = deed_inventory.get("FOREST",   0) + 1
 	save_land_data()
 
 func get_slot_item_size(item_id: String) -> Vector2i:
@@ -539,10 +526,9 @@ func _dev_grant_test_tiles() -> void:
 
 	var pid: String = PlayerData.player_id
 	var test_tiles: Array = [
-		{"pos": Vector2i(1,0), "type": TileType.FOREST,   "type_str": "FOREST",   "density": "sparse", "name": "Sparse Forest"},
-		{"pos": Vector2i(2,0), "type": TileType.FOREST,   "type_str": "FOREST",   "density": "dense",  "name": "Dense Forest"},
-		{"pos": Vector2i(3,0), "type": TileType.MOUNTAIN, "type_str": "MOUNTAIN", "density": "",       "name": "Mountain"},
-		{"pos": Vector2i(4,0), "type": TileType.POND,     "type_str": "POND",     "density": "",       "name": "Pond"},
+		{"pos": Vector2i(1,0), "type": TileType.FOREST,   "type_str": "FOREST",   "density": "dense", "name": "Forest"},
+		{"pos": Vector2i(2,0), "type": TileType.MOUNTAIN, "type_str": "MOUNTAIN", "density": "",      "name": "Mountain"},
+		{"pos": Vector2i(3,0), "type": TileType.POND,     "type_str": "POND",     "density": "",      "name": "Pond"},
 	]
 	for t in test_tiles:
 		var gpos: Vector2i = t["pos"]
@@ -560,38 +546,84 @@ func _dev_grant_test_tiles() -> void:
 		tiles[tile_id] = tile_data
 		grid[gpos] = tile_id
 		if t["type"] == TileType.FOREST:
-			_init_forest_trees(tile_id, t["density"])
+			_init_forest_trees(tile_id)
 
 func _generate_tile_id() -> String:
 	return "tile_" + str(randi()) + "_" + str(Time.get_unix_time_from_system())
 
 func save_land_data() -> void:
 	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)  # Load existing so other players' deed sections are preserved
 	cfg.set_value("tiles", "data", var_to_str(tiles))
-	cfg.set_value("grid", "data", var_to_str(grid))
-	cfg.set_value("deeds", "inventory", var_to_str(deed_inventory))
+	cfg.set_value("grid",  "data", var_to_str(grid))
+	var pid: String = PlayerData.player_id
+	if pid != "":
+		cfg.set_value("deed_player", pid, var_to_str(deed_inventory))
+	else:
+		cfg.set_value("deeds", "inventory", var_to_str(deed_inventory))
 	cfg.save(SAVE_PATH)
 
 func load_land_data() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(SAVE_PATH) != OK:
-		_grant_starter_tile()
-		return
+		return  # new player — PlayerData._init_new_player() will call grant_starter_pack()
 	tiles = str_to_var(cfg.get_value("tiles", "data", "{}"))
-	grid = str_to_var(cfg.get_value("grid", "data", "{}"))
-	deed_inventory = str_to_var(cfg.get_value("deeds", "inventory", "{}"))
+	grid  = str_to_var(cfg.get_value("grid",  "data", "{}"))
+	deed_inventory = _read_deed_inventory(cfg)
 	if tiles.is_empty():
-		_grant_starter_tile()
 		return
-	var pid: String = PlayerData.player_id
-	var has_tile := false
+	# Migration: convert any sparse forest tiles to dense (clear old 3-tree layout first)
 	for tid in tiles:
-		if tiles[tid].get("owner_id", "") == pid:
-			has_tile = true
-			break
-	if not has_tile:
-		for tid in tiles:
-			tiles[tid]["owner_id"] = pid
+		if tiles[tid].get("type_str","") == "FOREST" and tiles[tid].get("density","") == "sparse":
+			tiles[tid]["density"] = "dense"
+			tiles[tid]["name"]    = "Forest"
+			var sl: Dictionary = tiles[tid]["slots"]
+			for k in sl.keys():
+				if sl[k].get("item_id","") == "oak_tree":
+					sl.erase(k)
+			_init_forest_trees(tid)
+	_run_deed_migrations()
 	_ensure_global_tile()
 	_dev_grant_test_tiles()
 	save_land_data()
+
+# Called by PlayerData.set_username() after identity is set, so deed_inventory
+# is loaded for the newly-logged-in player without reloading tiles/grid.
+func reload_player_deeds() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(SAVE_PATH) != OK:
+		deed_inventory = {}
+		return
+	deed_inventory = _read_deed_inventory(cfg)
+	_run_deed_migrations()
+	save_land_data()
+
+func _read_deed_inventory(cfg: ConfigFile) -> Dictionary:
+	var pid: String = PlayerData.player_id
+	if pid != "":
+		var inv: Dictionary = str_to_var(cfg.get_value("deed_player", pid, "{}"))
+		if not inv.is_empty():
+			return inv
+	return {}
+
+func _run_deed_migrations() -> void:
+	# Fold old FOREST_DENSE/FOREST_SPARSE keys into FOREST
+	if deed_inventory.has("FOREST_DENSE"):
+		deed_inventory["FOREST"] = deed_inventory.get("FOREST", 0) + deed_inventory["FOREST_DENSE"]
+		deed_inventory.erase("FOREST_DENSE")
+	deed_inventory.erase("FOREST_SPARSE")
+	# Give starter deeds if this player owns tiles but has no deeds (migration for old accounts)
+	var pid: String = PlayerData.player_id
+	var has_player_tile := false
+	for tid in tiles:
+		if tiles[tid].get("owner_id", "") == pid:
+			has_player_tile = true
+			break
+	var total_deeds := 0
+	for v in deed_inventory.values():
+		total_deeds += int(v)
+	if total_deeds == 0 and has_player_tile:
+		deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
+		deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
+		deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1
+		deed_inventory["FOREST"]   = deed_inventory.get("FOREST",   0) + 1

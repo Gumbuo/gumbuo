@@ -10,9 +10,9 @@ config_version=5
 
 [application]
 
-config/name="Farm Kingdom"
-config/description="A browser-based farming and kingdom building game"
-run/main_scene="res://scenes/world_map/WorldMap.tscn"
+config/name="Foxstead"
+config/description="A browser-based farming and kingdom building game inspired by Nomstead"
+run/main_scene="res://scenes/ui/StartScreen.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://assets/sprites/ui/icon.png"
 

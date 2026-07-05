@@ -4,7 +4,8 @@ signal xp_changed(new_xp: int, level: int)
 signal energy_changed(new_energy: int, max_energy: int)
 signal level_up(new_level: int)
 
-const SAVE_PATH := "user://player_data.cfg"
+const IDENTITY_PATH := "user://identity.cfg"
+const SAVE_PATH     := "user://player_data.cfg"
 const BASE_MAX_ENERGY := 50
 const XP_PER_LEVEL_BASE := 100
 const XP_LEVEL_SCALE := 1.4
@@ -28,7 +29,56 @@ var last_food_time: float = 0.0
 var farming_boost_until: float = 0.0
 
 func _ready() -> void:
+	var saved_name := _load_identity()  # also restores wallet_address from stored hash
+	if saved_name != "" and wallet_address != "":
+		player_name = saved_name
+		load_data()
+	# else: no identity yet — start screen will call set_username()
+
+func has_identity() -> bool:
+	return wallet_address != ""
+
+func set_username(name: String, password: String) -> void:
+	player_name = name.strip_edges()
+	wallet_address = _name_pass_to_id(player_name, password)
+	_save_identity(player_name, wallet_address)
 	load_data()
+	LandManager.reload_player_deeds()
+
+func check_password(name: String, password: String) -> bool:
+	var expected_id := _name_pass_to_id(name.strip_edges(), password)
+	var cfg := ConfigFile.new()
+	if cfg.load(IDENTITY_PATH) != OK:
+		return false
+	var accounts: Dictionary = cfg.get_value("accounts", "data", {})
+	return accounts.get(name.strip_edges().to_lower(), "") == expected_id
+
+func _name_pass_to_id(name: String, password: String) -> String:
+	var raw := (name.strip_edges().to_lower() + ":" + password).sha256_text()
+	return "local_" + raw.substr(0, 16)
+
+func _save_identity(name: String, pid: String) -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(IDENTITY_PATH)  # load existing so we don't wipe other accounts
+	var accounts: Dictionary = cfg.get_value("accounts", "data", {})
+	accounts[name.to_lower()] = pid
+	cfg.set_value("accounts", "data", accounts)
+	cfg.set_value("identity", "last_username", name)
+	cfg.save(IDENTITY_PATH)
+
+func _load_identity() -> String:
+	var cfg := ConfigFile.new()
+	if cfg.load(IDENTITY_PATH) != OK:
+		return ""
+	var last: String = cfg.get_value("identity", "last_username", "")
+	if last == "":
+		return ""
+	var accounts: Dictionary = cfg.get_value("accounts", "data", {})
+	# Restore wallet_address from stored hash so we use the right save file
+	var stored_id: String = accounts.get(last.to_lower(), "")
+	if stored_id != "":
+		wallet_address = stored_id
+	return last
 
 func _is_edt() -> bool:
 	var m: int = Time.get_datetime_dict_from_system(true)["month"]
@@ -154,11 +204,12 @@ func load_data() -> void:
 	if cfg.load(SAVE_PATH) != OK:
 		_init_new_player()
 		return
-	wallet_address = cfg.get_value("player", "wallet", "")
-	player_name = cfg.get_value("player", "name", "Farmer")
-	if wallet_address == "":
+	var saved_wallet: String = cfg.get_value("player", "wallet", "")
+	if saved_wallet != "" and saved_wallet != wallet_address:
+		# Save file belongs to a different identity — start fresh for this user
 		_init_new_player()
 		return
+	player_name = cfg.get_value("player", "name", player_name)
 	level = cfg.get_value("progress", "level", 1)
 	xp = cfg.get_value("progress", "xp", 0)
 	energy = cfg.get_value("progress", "energy", BASE_MAX_ENERGY)
@@ -173,8 +224,6 @@ func load_data() -> void:
 		silver = 5000
 
 func _init_new_player() -> void:
-	if wallet_address == "":
-		wallet_address = "0xtest000000000000000000000000000000000001"
 	energy = BASE_MAX_ENERGY
 	max_energy = BASE_MAX_ENERGY
 	xp_to_next_level = XP_PER_LEVEL_BASE
@@ -182,3 +231,4 @@ func _init_new_player() -> void:
 	gold = 0
 	last_claim_unix = 0
 	save_data()
+	LandManager.grant_starter_pack()

@@ -1,14 +1,15 @@
-ï»¿extends CanvasLayer
+extends CanvasLayer
 
 var _tab: int = 0
 var _sell_item_id: String = ""
 var _sell_qty: int = 1
-var _sell_price: int = 1
+var _sell_price: float = 0.1
 var _list_panel: Control = null
 var _status_lbl: Label = null
 var _option_btn: OptionButton = null
 
 func _ready() -> void:
+	add_to_group("action_windows")
 	layer = 25
 	_build_ui()
 
@@ -97,7 +98,7 @@ func _refresh_listings() -> void:
 	if _tab == 0:
 		var listings := MarketManager.resource_listings
 		if listings.is_empty():
-			lbl.text = "No listings yet â€” be the first to sell!"
+			lbl.text = "No listings yet — be the first to sell!"
 			_list_panel.add_child(lbl)
 			return
 		var scroll := ScrollContainer.new()
@@ -113,7 +114,7 @@ func _refresh_listings() -> void:
 	else:
 		var listings := MarketManager.deed_listings
 		if listings.is_empty():
-			lbl.text = "No deed listings â€” earn deeds via BurnerStation."
+			lbl.text = "No deed listings — earn deeds via BurnerStation."
 			_list_panel.add_child(lbl)
 			return
 		var scroll := ScrollContainer.new()
@@ -129,24 +130,35 @@ func _refresh_listings() -> void:
 func _make_resource_row(lid: String, entry: Dictionary) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
+	row.custom_minimum_size = Vector2(0, 40)
 
 	var info: Dictionary = ResourceManager.get_item_info(entry["item_id"])
+
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(36, 36)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_path := "res://assets/sprites/items/%s.png" % entry["item_id"]
+	if ResourceLoader.exists(icon_path):
+		icon.texture = load(icon_path)
+	row.add_child(icon)
+
 	var name_lbl := Label.new()
 	name_lbl.text = info.get("name", entry["item_id"])
-	name_lbl.custom_minimum_size = Vector2(120, 0)
+	name_lbl.custom_minimum_size = Vector2(110, 0)
 	name_lbl.add_theme_font_size_override("font_size", 10)
 	row.add_child(name_lbl)
 
 	var qty_lbl := Label.new()
 	qty_lbl.text = "x%d" % entry["quantity"]
-	qty_lbl.custom_minimum_size = Vector2(40, 0)
+	qty_lbl.custom_minimum_size = Vector2(36, 0)
 	qty_lbl.add_theme_font_size_override("font_size", 10)
 	row.add_child(qty_lbl)
 
 	var price_lbl := Label.new()
-	price_lbl.text = "%d Silver" % entry["price_silver"]
-	price_lbl.custom_minimum_size = Vector2(80, 0)
-	price_lbl.modulate = Color(1.0, 0.92, 0.4)
+	price_lbl.text = "%g G" % entry["price_gold"]
+	price_lbl.custom_minimum_size = Vector2(60, 0)
+	price_lbl.modulate = Color(1.0, 0.80, 0.15)
 	price_lbl.add_theme_font_size_override("font_size", 10)
 	row.add_child(price_lbl)
 
@@ -165,10 +177,9 @@ func _make_resource_row(lid: String, entry: Dictionary) -> HBoxContainer:
 		row.add_child(cancel_btn)
 	else:
 		var buy_btn := Button.new()
-		buy_btn.text = "Buy  (%d S)" % entry["price_silver"]
+		buy_btn.text = "Buy  (%g G)" % entry["price_gold"]
 		buy_btn.add_theme_font_size_override("font_size", 9)
-		if PlayerData.silver < entry["price_silver"]:
-			buy_btn.disabled = true
+		buy_btn.disabled = PlayerData.gold < float(entry["price_gold"])
 		buy_btn.pressed.connect(func(): _buy_resource(lid))
 		row.add_child(buy_btn)
 
@@ -229,16 +240,18 @@ func _build_sell_form(parent: VBoxContainer) -> void:
 	form.add_child(qty_spin)
 
 	var price_lbl := Label.new()
-	price_lbl.text = "Price (S):"
+	price_lbl.text = "Price (G):"
 	price_lbl.add_theme_font_size_override("font_size", 10)
+	price_lbl.modulate = Color(1.0, 0.80, 0.15)
 	form.add_child(price_lbl)
 
 	var price_spin := SpinBox.new()
-	price_spin.min_value = 1
-	price_spin.max_value = 9999
-	price_spin.value = 1
-	price_spin.custom_minimum_size = Vector2(65, 0)
-	price_spin.value_changed.connect(func(v: float): _sell_price = int(v))
+	price_spin.min_value = 0.01
+	price_spin.max_value = 9999.0
+	price_spin.step     = 0.05
+	price_spin.value    = 0.1
+	price_spin.custom_minimum_size = Vector2(75, 0)
+	price_spin.value_changed.connect(func(v: float): _sell_price = v)
 	form.add_child(price_spin)
 
 	var post_btn := Button.new()
@@ -246,6 +259,8 @@ func _build_sell_form(parent: VBoxContainer) -> void:
 	post_btn.add_theme_font_size_override("font_size", 10)
 	post_btn.pressed.connect(_on_post_pressed)
 	form.add_child(post_btn)
+
+const MARKET_CATEGORIES: Array = ["crops","materials","fish","food","livestock","consumables","seeds","recipes"]
 
 func _populate_sellable_items() -> void:
 	if not _option_btn:
@@ -256,6 +271,8 @@ func _populate_sellable_items() -> void:
 		if ResourceManager.inventory[iid] <= 0:
 			continue
 		var info: Dictionary = ResourceManager.get_item_info(iid)
+		if not MARKET_CATEGORIES.has(info.get("category", "")):
+			continue
 		var n: String = info.get("name", iid)
 		_option_btn.add_item("%s (x%d)" % [n, ResourceManager.inventory[iid]])
 		_option_btn.set_item_metadata(_option_btn.item_count - 1, iid)
@@ -272,7 +289,7 @@ func _on_post_pressed() -> void:
 	if not ResourceManager.has_item(_sell_item_id, _sell_qty):
 		_show_status("Not enough %s in backpack." % _sell_item_id)
 		return
-	if MarketManager.list_resource(_sell_item_id, _sell_qty, _sell_price):
+	if MarketManager.list_resource(_sell_item_id, _sell_qty, _sell_price as float):
 		_show_status("Listed successfully!")
 		_populate_sellable_items()
 		_refresh_listings()
@@ -284,7 +301,7 @@ func _buy_resource(lid: String) -> void:
 		_show_status("Purchased!")
 		_refresh_listings()
 	else:
-		_show_status("Not enough Silver.")
+		_show_status("Not enough Gold.")
 
 func _buy_deed(lid: String) -> void:
 	if MarketManager.buy_deed(lid):

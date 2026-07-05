@@ -82,6 +82,7 @@ func _build_ui() -> void:
 	close_btn.size     = Vector2(38, 26)
 	close_btn.text     = "X"
 	close_btn.pressed.connect(func(): closed.emit(); queue_free())
+	_pill(close_btn)
 	panel.add_child(close_btn)
 
 	_inv_lbl = Label.new()
@@ -119,7 +120,7 @@ func _build_ui() -> void:
 
 func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Dictionary:
 	var card := Control.new()
-	card.custom_minimum_size = Vector2(0, 110)
+	card.custom_minimum_size = Vector2(0, 115)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(card)
 
@@ -136,15 +137,26 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(strip)
 
+	var out_icon := TextureRect.new()
+	out_icon.position     = Vector2(6, 8)
+	out_icon.size         = Vector2(38, 38)
+	out_icon.expand_mode  = TextureRect.EXPAND_IGNORE_SIZE
+	out_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	out_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var _out_path := "res://assets/sprites/items/%s.png" % recipe_id
+	if ResourceLoader.exists(_out_path):
+		out_icon.texture = load(_out_path)
+	card.add_child(out_icon)
+
 	var name_lbl := Label.new()
-	name_lbl.position = Vector2(14, 8)
+	name_lbl.position = Vector2(48, 8)
 	name_lbl.size     = Vector2(600, 20)
 	name_lbl.text     = recipe_id.replace("_", " ").to_upper()
 	name_lbl.add_theme_font_size_override("font_size", 11)
 	card.add_child(name_lbl)
 
 	var desc_lbl := Label.new()
-	desc_lbl.position  = Vector2(14, 28)
+	desc_lbl.position  = Vector2(48, 28)
 	desc_lbl.size      = Vector2(600, 18)
 	desc_lbl.text      = data.get("desc", "")
 	desc_lbl.add_theme_font_size_override("font_size", 8)
@@ -157,20 +169,37 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 	var pills: Array = []
 	for res_id in ing:
 		var req: int = ing[res_id]
-		var dot := ColorRect.new()
-		dot.position = Vector2(ing_x, 54)
-		dot.size     = Vector2(10, 10)
-		dot.color    = RES_COLOR.get(res_id, Color(0.4, 0.4, 0.4))
-		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		card.add_child(dot)
+		var icon_path := "res://assets/sprites/items/%s.png" % res_id
+		var icon_box := Control.new()
+		icon_box.position = Vector2(ing_x, 46)
+		icon_box.size     = Vector2(40, 40)
+		icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if ResourceLoader.exists(icon_path):
+			var tex := TextureRect.new()
+			tex.texture      = load(icon_path)
+			tex.set_anchors_preset(Control.PRESET_FULL_RECT)
+			tex.expand_mode  = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			icon_box.add_child(tex)
+		else:
+			var dot := ColorRect.new()
+			dot.set_anchors_preset(Control.PRESET_FULL_RECT)
+			dot.color        = RES_COLOR.get(res_id, Color(0.4, 0.4, 0.4))
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			icon_box.add_child(dot)
+		card.add_child(icon_box)
+
 		var lbl := Label.new()
-		lbl.position = Vector2(ing_x + 13, 50)
-		lbl.size     = Vector2(155, 16)
-		lbl.add_theme_font_size_override("font_size", 9)
-		lbl.text     = "%s %d" % [RES_NAME.get(res_id, res_id), req]
+		lbl.position = Vector2(ing_x - 2, 88)
+		lbl.size     = Vector2(44, 14)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.add_theme_font_size_override("font_size", 8)
+		lbl.text     = "x%d" % req
 		card.add_child(lbl)
-		pills.append({"lbl": lbl, "dot": dot, "res_id": res_id, "req": req})
-		ing_x += 170.0
+
+		pills.append({"lbl": lbl, "res_id": res_id, "req": req})
+		ing_x += 50.0
 
 	var cap_id := recipe_id; var cap_data := data
 
@@ -180,6 +209,7 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 	act_btn.text     = ACTION_LABEL
 	act_btn.add_theme_font_size_override("font_size", 10)
 	act_btn.pressed.connect(func(): _try_craft(cap_id, cap_data, 1))
+	_pill(act_btn)
 	card.add_child(act_btn)
 
 	var act10_btn := Button.new()
@@ -188,6 +218,7 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 	act10_btn.text     = "x10"
 	act10_btn.add_theme_font_size_override("font_size", 9)
 	act10_btn.pressed.connect(func(): _try_craft(cap_id, cap_data, 10))
+	_pill(act10_btn)
 	card.add_child(act10_btn)
 
 	var act100_btn := Button.new()
@@ -196,6 +227,7 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 	act100_btn.text     = "x100"
 	act100_btn.add_theme_font_size_override("font_size", 9)
 	act100_btn.pressed.connect(func(): _try_craft(cap_id, cap_data, 100))
+	_pill(act100_btn)
 	card.add_child(act100_btn)
 
 	var sep := ColorRect.new()
@@ -249,8 +281,8 @@ func _refresh_states() -> void:
 			var lbl: Label = p["lbl"]
 			if not is_instance_valid(lbl): continue
 			var have: int = ResourceManager.get_count(p["res_id"])
-			lbl.text     = "%s %d/%d" % [RES_NAME.get(p["res_id"], p["res_id"]), have, p["req"]]
-			lbl.modulate = Color(0.3, 0.7, 1.0) if have >= p["req"] else Color(1.0, 0.4, 0.4)
+			lbl.text     = "%d/%d" % [have, p["req"]]
+			lbl.modulate = Color(0.35, 0.85, 0.45) if have >= p["req"] else Color(1.0, 0.35, 0.35)
 
 func _update_inv_lbl() -> void:
 	if not is_instance_valid(_inv_lbl): return
@@ -263,3 +295,22 @@ func _update_inv_lbl() -> void:
 		if c > 0:
 			parts.append("%s: %d" % [RES_NAME[res_id], c])
 	_inv_lbl.text = "Materials: " + (", ".join(parts) if not parts.is_empty() else "none")
+
+func _pill(btn: Button) -> void:
+	for sd in [
+		["normal",  Color(0.09, 0.11, 0.14), Color(BORDER_COLOR.r * 0.7, BORDER_COLOR.g * 0.7, BORDER_COLOR.b * 0.7)],
+		["hover",   Color(0.15, 0.18, 0.22), BORDER_COLOR],
+		["pressed", Color(0.05, 0.06, 0.08), Color(BORDER_COLOR.r * 0.5, BORDER_COLOR.g * 0.5, BORDER_COLOR.b * 0.5)],
+		["disabled",Color(0.08, 0.08, 0.10), Color(0.22, 0.22, 0.25)]]:
+		var s := StyleBoxFlat.new()
+		s.corner_radius_top_left     = 13
+		s.corner_radius_top_right    = 13
+		s.corner_radius_bottom_left  = 13
+		s.corner_radius_bottom_right = 13
+		s.border_width_left   = 1
+		s.border_width_right  = 1
+		s.border_width_top    = 1
+		s.border_width_bottom = 1
+		s.bg_color     = sd[1]
+		s.border_color = sd[2]
+		btn.add_theme_stylebox_override(sd[0], s)

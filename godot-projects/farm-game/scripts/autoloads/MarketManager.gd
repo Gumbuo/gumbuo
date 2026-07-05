@@ -5,14 +5,14 @@ signal listing_removed(listing_id: String)
 signal trade_completed(listing_id: String, buyer_id: String)
 
 # In-game resource market listings
-# { listing_id -> { seller_id, item_id, quantity, price_silver, price_gold, listed_at } }
+# { listing_id -> { seller_id, item_id, quantity, price_gold, listed_at } }
 var resource_listings: Dictionary = {}
 
 # P2P NFT deed listings (land tiles)
 # { listing_id -> { seller_id, tile_id, tile_type, price_gold, listed_at } }
 var deed_listings: Dictionary = {}
 
-func list_resource(item_id: String, quantity: int, price_silver: int, price_gold: float = 0.0) -> bool:
+func list_resource(item_id: String, quantity: int, price_gold: float) -> bool:
 	if not ResourceManager.has_item(item_id, quantity):
 		return false
 	ResourceManager.remove_item(item_id, quantity)
@@ -22,7 +22,6 @@ func list_resource(item_id: String, quantity: int, price_silver: int, price_gold
 		"seller_id": PlayerData.player_id,
 		"item_id": item_id,
 		"quantity": quantity,
-		"price_silver": price_silver,
 		"price_gold": price_gold,
 		"listed_at": Time.get_unix_time_from_system()
 	}
@@ -33,12 +32,7 @@ func buy_resource(listing_id: String) -> bool:
 	if not resource_listings.has(listing_id):
 		return false
 	var listing: Dictionary = resource_listings[listing_id]
-	var silver_cost: int = listing["price_silver"]
-	var gold_cost: float = float(listing["price_gold"])
-	if not PlayerData.spend_silver(silver_cost):
-		return false
-	if gold_cost > 0.0 and not PlayerData.spend_gold(gold_cost):
-		PlayerData.add_silver(silver_cost)
+	if not PlayerData.spend_gold(float(listing["price_gold"])):
 		return false
 	ResourceManager.add_item(listing["item_id"], listing["quantity"])
 	resource_listings.erase(listing_id)
