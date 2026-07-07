@@ -47,7 +47,6 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "twcguild-site"
+    "node_modules"
   ]
 }
