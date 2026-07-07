@@ -27,6 +27,9 @@ var gold: float = 0.0
 var last_claim_unix: int = 0
 var last_food_time: float = 0.0
 var farming_boost_until: float = 0.0
+var apple_boost_until: float = 0.0   # +1 crop per harvest
+var grow_faster_until: float = 0.0   # crops grow 15% faster (pear + lemon)
+var peach_boost_until: float = 0.0   # harvest yields at least 6 crops
 
 func _ready() -> void:
 	var saved_name := _load_identity()  # also restores wallet_address from stored hash
@@ -37,6 +40,18 @@ func _ready() -> void:
 
 func has_identity() -> bool:
 	return wallet_address != ""
+
+func logout() -> void:
+	wallet_address = ""
+	player_name = "Farmer"
+	LandManager.deed_inventory = {}
+	# Clear auto-login but keep all account entries intact
+	var cfg := ConfigFile.new()
+	cfg.load(IDENTITY_PATH)
+	var accounts: Dictionary = cfg.get_value("accounts", "data", {})
+	cfg.set_value("accounts", "data", accounts)
+	cfg.set_value("identity", "last_username", "")
+	cfg.save(IDENTITY_PATH)
 
 func set_username(name: String, password: String) -> void:
 	player_name = name.strip_edges()
@@ -74,10 +89,12 @@ func _load_identity() -> String:
 	if last == "":
 		return ""
 	var accounts: Dictionary = cfg.get_value("accounts", "data", {})
-	# Restore wallet_address from stored hash so we use the right save file
 	var stored_id: String = accounts.get(last.to_lower(), "")
 	if stored_id != "":
 		wallet_address = stored_id
+	elif last.begins_with("0x"):
+		# Wallet address stored directly as last_username
+		wallet_address = last.to_lower()
 	return last
 
 func _is_edt() -> bool:
@@ -158,9 +175,14 @@ func eat_food(item_id: String) -> bool:
 	var restore: int = info.get("energy_restore", 0)
 	if restore > 0:
 		restore_energy(restore)
+	var now: float = Time.get_unix_time_from_system()
 	if info.get("farming_boost", false):
-		farming_boost_until = Time.get_unix_time_from_system() + 1800.0
-	last_food_time = Time.get_unix_time_from_system()
+		farming_boost_until = now + 1800.0
+	match info.get("fruit_boost", ""):
+		"apple":        apple_boost_until = now + 900.0
+		"pear", "lemon": grow_faster_until = now + 900.0
+		"peach":        peach_boost_until  = now + 900.0
+	last_food_time = now
 	save_data()
 	return true
 
@@ -169,6 +191,15 @@ func food_cooldown_remaining() -> int:
 
 func has_farming_boost() -> bool:
 	return Time.get_unix_time_from_system() < farming_boost_until
+
+func has_apple_boost() -> bool:
+	return Time.get_unix_time_from_system() < apple_boost_until
+
+func has_grow_faster() -> bool:
+	return Time.get_unix_time_from_system() < grow_faster_until
+
+func has_peach_boost() -> bool:
+	return Time.get_unix_time_from_system() < peach_boost_until
 
 func farming_boost_remaining() -> int:
 	return max(0, int(farming_boost_until - Time.get_unix_time_from_system()))
@@ -193,11 +224,20 @@ func save_data() -> void:
 	cfg.set_value("economy", "last_claim_unix", last_claim_unix)
 	cfg.set_value("economy", "last_food_time", last_food_time)
 	cfg.set_value("economy", "farming_boost_until", farming_boost_until)
+	cfg.set_value("economy", "apple_boost_until", apple_boost_until)
+	cfg.set_value("economy", "grow_faster_until", grow_faster_until)
+	cfg.set_value("economy", "peach_boost_until", peach_boost_until)
 	cfg.save(SAVE_PATH)
 
 func set_wallet(address: String) -> void:
 	wallet_address = address.to_lower()
+	# Use shortened address as display name (0x1234…abcd)
+	if player_name == "Farmer" or player_name == "":
+		var a := wallet_address
+		player_name = a.substr(0, 6) + "..." + a.substr(a.length() - 4)
+	_save_identity(wallet_address, wallet_address)
 	load_data()
+	LandManager.reload_player_deeds()
 
 func load_data() -> void:
 	var cfg := ConfigFile.new()
@@ -205,8 +245,8 @@ func load_data() -> void:
 		_init_new_player()
 		return
 	var saved_wallet: String = cfg.get_value("player", "wallet", "")
-	if saved_wallet != "" and saved_wallet != wallet_address:
-		# Save file belongs to a different identity — start fresh for this user
+	if saved_wallet != wallet_address:
+		# Save file belongs to a different identity (or was created without a wallet) — start fresh
 		_init_new_player()
 		return
 	player_name = cfg.get_value("player", "name", player_name)
@@ -220,6 +260,9 @@ func load_data() -> void:
 	last_claim_unix = cfg.get_value("economy", "last_claim_unix", 0)
 	last_food_time = cfg.get_value("economy", "last_food_time", 0.0)
 	farming_boost_until = cfg.get_value("economy", "farming_boost_until", 0.0)
+	apple_boost_until = cfg.get_value("economy", "apple_boost_until", 0.0)
+	grow_faster_until = cfg.get_value("economy", "grow_faster_until", 0.0)
+	peach_boost_until = cfg.get_value("economy", "peach_boost_until", 0.0)
 	if silver < 5000:
 		silver = 5000
 

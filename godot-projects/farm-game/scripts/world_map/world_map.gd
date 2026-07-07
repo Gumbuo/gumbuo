@@ -1,10 +1,12 @@
 extends Node2D
 
 const TILE_CARD_SCENE := preload("res://scenes/world_map/TileCard.tscn")
+const HUD_SCENE        := preload("res://scenes/ui/HUD.tscn")
 const TILE_CARD_SIZE := Vector2(90, 90)
 const TILE_CARD_GAP := Vector2(0, 0)
 const GRID_COLS := 10
 const GRID_ROWS := 10
+const API_URL := "https://gamehole.ink/api/farm-world"
 
 @onready var grid_container: Control = $UI/Scroll/GridContainer
 @onready var kingdom_label: Label = $UI/KingdomLabel
@@ -15,17 +17,32 @@ var _dragging_tile_id: String = ""
 var _drag_origin: Vector2i = Vector2i(-1, -1)
 var _shop_ui: CanvasLayer = null
 var _npc_positions: Array = []
-var _deed_picker: Control = null
+var _deed_picker: CanvasLayer = null
+var _world_req: HTTPRequest = null
+var _sync_req: HTTPRequest = null
 
 func _ready() -> void:
 	LandManager.tile_placed.connect(_on_tile_placed)
 	LandManager.tile_moved.connect(_on_tile_moved)
+	LandManager.tile_removed.connect(_on_tile_removed)
 	LandManager.tile_settings_changed.connect(_on_tile_settings_changed)
 	_build_grid()
 	_refresh_all_tiles()
 	_place_npc_tiles()
 	_update_kingdom_label()
 	_refresh_deed_hints()
+	_spawn_hud()
+	_world_req = HTTPRequest.new()
+	add_child(_world_req)
+	_world_req.request_completed.connect(_on_world_tiles_received)
+	_sync_req = HTTPRequest.new()
+	add_child(_sync_req)
+	_world_req.request(API_URL, ["Accept: application/json"])
+
+func _spawn_hud() -> void:
+	var hud := HUD_SCENE.instantiate()
+	add_child(hud)
+
 
 func _build_grid() -> void:
 	grid_container.custom_minimum_size = Vector2(GRID_COLS * TILE_CARD_SIZE.x, GRID_ROWS * TILE_CARD_SIZE.y)
@@ -191,6 +208,10 @@ func _show_deed_picker(grid_pos: Vector2i) -> void:
 		"POND":     Color(0.20, 0.40, 0.70),
 	}
 
+	_deed_picker = CanvasLayer.new()
+	_deed_picker.layer = 30
+	add_child(_deed_picker)
+
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.10, 0.12, 0.10, 0.96)
@@ -199,7 +220,7 @@ func _show_deed_picker(grid_pos: Vector2i) -> void:
 	sb.set_corner_radius_all(8)
 	panel.add_theme_stylebox_override("panel", sb)
 	panel.custom_minimum_size = Vector2(160, 0)
-	panel.position = Vector2(560, 270)
+	_deed_picker.add_child(panel)
 
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 6)
@@ -237,8 +258,40 @@ func _show_deed_picker(grid_pos: Vector2i) -> void:
 	close_btn.pressed.connect(_close_deed_picker)
 	vbox.add_child(close_btn)
 
-	_deed_picker = panel
-	_ui_layer.add_child(panel)
+	# Fixed size — get_combined_minimum_size() returns height=0 before layout
+	panel.size = Vector2(160, 250)
+	panel.position = Vector2(560, 235)
+
+func _on_world_tiles_received(_result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	if not is_inside_tree():
+		return
+	var parsed = JSON.parse_string(body.get_string_from_utf8())
+	if not parsed is Dictionary:
+		return
+	var remote: Array = parsed.get("tiles", [])
+	if remote.is_empty():
+		return
+	LandManager.merge_remote_tiles(remote)
+	_refresh_all_tiles()
+	_place_npc_tiles()
+
+func _sync_tile(tile_id: String) -> void:
+	if LandManager.is_remote_tile(tile_id):
+		return
+	var td: Dictionary = LandManager.tiles.get(tile_id, {})
+	if td.is_empty():
+		return
+	var pos: Vector2i = td.get("position", Vector2i(-1, -1))
+	var body := JSON.stringify({
+		"id":          tile_id,
+		"type":        td.get("type", 0),
+		"type_str":    td.get("type_str", "FARM"),
+		"position":    {"x": pos.x, "y": pos.y},
+		"owner_id":    td.get("owner_id", ""),
+		"name":        td.get("name", "Tile"),
+		"access_mode": td.get("access_mode", 0),
+	})
+	_sync_req.request(API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 
 func _on_tile_placed(tile_data: Dictionary) -> void:
 	var pos: Vector2i = tile_data["position"]
@@ -247,6 +300,7 @@ func _on_tile_placed(tile_data: Dictionary) -> void:
 	_place_npc_tiles()
 	_update_kingdom_label()
 	_refresh_deed_hints()
+	_sync_tile(tile_data.get("id", ""))
 
 func _refresh_deed_hints() -> void:
 	var has_deeds := false
@@ -259,8 +313,15 @@ func _refresh_deed_hints() -> void:
 		if card.is_empty_cell():
 			card.set_deed_hint(has_deeds)
 
-func _on_tile_moved(_tile_id: String, _new_pos: Vector2i) -> void:
+func _on_tile_removed(_tile_id: String, pos: Vector2i) -> void:
+	if _cards.has(pos):
+		_cards[pos].set_empty()
 	_update_kingdom_label()
+	_refresh_deed_hints()
+
+func _on_tile_moved(tile_id: String, _new_pos: Vector2i) -> void:
+	_update_kingdom_label()
+	_sync_tile(tile_id)
 
 func _on_tile_settings_changed(tile_id: String) -> void:
 	var tile_data: Dictionary = LandManager.tiles.get(tile_id, {})

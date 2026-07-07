@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal slot_activated(grid_pos: Vector2i, item_id: String)
+signal pond_water_clicked(screen_pos: Vector2)
 
 const SLOT_PX  := 64.0
 const SLOT_GAP := 4.0
@@ -24,7 +25,15 @@ var _crop_sprites:    Dictionary = {}  # key -> {rect, tween, stage}
 var _tree_sprites:    Dictionary = {}  # key -> TextureRect
 var _tree_chop_state: Dictionary = {}  # key -> bool  (last known chopped state, drives animation)
 var _tree_idle_tweens: Dictionary = {}  # key -> Tween (gentle idle sway for full trees)
+var _rock_sprites: Dictionary = {}  # key -> TextureRect
+var _rock_stage:   Dictionary = {}  # key -> int  0=full 1=cracked 2=mined/dust
+var _rock_tweens:  Dictionary = {}  # key -> Tween (active animation)
 var _item_sprites:  Dictionary = {}  # key -> TextureRect (generic item pixels)
+var _beehive_sprites:    Dictionary = {}  # key -> TextureRect
+var _beehive_tweens:     Dictionary = {}  # key -> Tween (looping frame animation)
+var _beehive_ready_state: Dictionary = {} # key -> bool
+var _chicken_sprites: Array = []    # TextureRect nodes for chickens on tile
+var _masked_positions: Dictionary = {}  # key -> true for slots hidden on pond tile
 var _grow_timer:    float      = 0.0
 var _timer_label:   Label      = null
 var _crop_sheet:      Image      = null  # loaded from crops.png
@@ -58,7 +67,13 @@ const CRAFTING_STATIONS: Dictionary = {
 	"sawmill":        "res://scripts/ui/sawmill_ui.gd",
 }
 
-const ACTION_ITEMS: Array = ["tree", "oak_tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree", "boulder", "mailbox", "chicken_coop"]
+const ACTION_ITEMS: Array = ["tree", "oak_tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree", "boulder", "mailbox", "chicken_coop", "egg_white", "egg_gold"]
+
+# Maps item_id to the sprite folder name when they differ
+const TREE_SPRITE_FOLDER: Dictionary = {
+	"tree":       "oak_tree",
+	"lemon_tree": "pear_tree",
+}
 
 # Band index (row) in crops.png — each band is 48px tall.
 # Adjust these if crops appear wrong in-game.
@@ -138,10 +153,7 @@ func setup(tid: String) -> void:
 	LandManager.collab_state_changed.connect(func(_a, _b, _c): _refresh())
 	_refresh()
 	_refresh_picker()
-	# Hide the picker bar when visiting a tile the player does not own
-	var _tile_info: Dictionary = LandManager.tiles.get(tile_id, {})
-	if _picker_panel and _tile_info.get("owner_id", "") != PlayerData.player_id:
-		_picker_panel.visible = false
+	_apply_pond_mask()
 
 func set_held_item(item_id: String) -> void:
 	_held_item = item_id
@@ -238,6 +250,9 @@ func _input(event: InputEvent) -> void:
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	var slot_pos := _screen_to_slot(mouse_pos)
 	if slot_pos.x < 0:
+		if event.button_index == MOUSE_BUTTON_LEFT and _is_pond_tile() and _is_in_pond_water(mouse_pos.y):
+			pond_water_clicked.emit(mouse_pos)
+			get_viewport().set_input_as_handled()
 		return
 	get_viewport().set_input_as_handled()
 
@@ -274,9 +289,11 @@ func _input(event: InputEvent) -> void:
 			if adat.get("item_id","") == "soil_plot" and adat.get("state","") == "ready":
 				var crop := LandManager.harvest_crop(tile_id, anchor_pos)
 				if crop != "":
-					var yield_amount: int = randi_range(6, 8)
-					if PlayerData.has_farming_boost():
+					var yield_amount: int = randi_range(4, 7)
+					if PlayerData.has_farming_boost() or PlayerData.has_apple_boost():
 						yield_amount += 1
+					if PlayerData.has_peach_boost():
+						yield_amount = max(6, yield_amount)
 					ResourceManager.add_item(crop, yield_amount)
 					_refresh_picker()
 				return
@@ -363,7 +380,34 @@ func _screen_to_slot(screen_pos: Vector2) -> Vector2i:
 	if col < col_offset or col >= col_offset + num_cols: return Vector2i(-1, -1)
 	var local_in_slot := local - Vector2(col * step, row * step)
 	if local_in_slot.x >= SLOT_PX or local_in_slot.y >= SLOT_PX: return Vector2i(-1, -1)
+	if _masked_positions.has(LandManager.slot_key(Vector2i(col, row))):
+		return Vector2i(-1, -1)
 	return Vector2i(col, row)
+
+# ─────────────────────────── POND MASK ──────────────────────
+
+func _is_pond_tile() -> bool:
+	return LandManager.tiles.get(tile_id, {}).get("type_str", "") == "POND"
+
+func _is_in_pond_water(y: float) -> bool:
+	var step := SLOT_PX + SLOT_GAP
+	var origin_y := 558.0 - (ROW_LAYOUT.size() * step - SLOT_GAP)
+	return y > origin_y + step and y < origin_y + (ROW_LAYOUT.size() - 1) * step
+
+func _apply_pond_mask() -> void:
+	_masked_positions.clear()
+	if not _is_pond_tile():
+		return
+	# Rows 1–4 sit over the pond water — hide and block them
+	for row in range(1, 5):
+		for col in range(0, 6):
+			var key := LandManager.slot_key(Vector2i(col, row))
+			var ctrl: Control = _slot_nodes.get(key)
+			if ctrl == null:
+				continue
+			ctrl.modulate.a = 0.0
+			ctrl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_masked_positions[key] = true
 
 # ─────────────────────────── BUILD UI ───────────────────────
 
@@ -727,6 +771,9 @@ func _refresh() -> void:
 						if item_id.ends_with("tree"):
 							fill.color = Color(0, 0, 0, 0)
 							lbl.text = ""
+						elif item_id == "boulder":
+							fill.color = Color(0, 0, 0, 0)  # sprite handles all visual stages
+							lbl.text = ""
 						elif item_id == "npc_vendor":
 							fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
 							lbl.text = "NPC"
@@ -743,10 +790,13 @@ func _refresh() -> void:
 		else:
 			fill.color = Color(0.05, 0.05, 0.05, 0.55)
 			lbl.text = ""
+	_refresh_item_sprites()
 	_refresh_crop_sprites()
 	_refresh_tree_sprites()
-	_refresh_item_sprites()
+	_refresh_rock_sprites()
+	_refresh_beehive_sprites()
 	_refresh_coop_labels()
+	_refresh_chicken_sprites()
 
 # ─────────────────────────── CROP SPRITES ───────────────────
 
@@ -890,16 +940,17 @@ func _play_chop_animation(key: String, item_id: String) -> void:
 	if not _slot_nodes.has(key): return
 
 	# Load all 9 chop frames then all 9 stump frames
+	var sprite_id: String = TREE_SPRITE_FOLDER.get(item_id, item_id)
 	var frames: Array[Texture2D] = []
 	for i in 9:
-		var path: String = "res://assets/sprites/trees/%s/chop_%03d.png" % [item_id, i]
+		var path: String = "res://assets/sprites/trees/%s/chop_%03d.png" % [sprite_id, i]
 		if not ResourceLoader.exists(path):
 			path = "res://assets/sprites/trees/apple_tree/chop_%03d.png" % i
 		if ResourceLoader.exists(path):
 			var t := load(path) as Texture2D
 			if t: frames.append(t)
 	for i in 9:
-		var path: String = "res://assets/sprites/trees/%s/stump_%03d.png" % [item_id, i]
+		var path: String = "res://assets/sprites/trees/%s/stump_%03d.png" % [sprite_id, i]
 		if not ResourceLoader.exists(path):
 			path = "res://assets/sprites/trees/apple_tree/stump_%03d.png" % i
 		if ResourceLoader.exists(path):
@@ -921,12 +972,139 @@ func _play_chop_animation(key: String, item_id: String) -> void:
 			tween.tween_interval(0.07)
 
 func _make_tree_texture(item_id: String, is_chopped: bool) -> Texture2D:
+	var sprite_id: String = TREE_SPRITE_FOLDER.get(item_id, item_id)
 	var file: String = "stump_008" if is_chopped else "full"
-	var path: String = "res://assets/sprites/trees/%s/%s.png" % [item_id, file]
+	var path: String = "res://assets/sprites/trees/%s/%s.png" % [sprite_id, file]
 	if not ResourceLoader.exists(path):
 		path = "res://assets/sprites/trees/apple_tree/%s.png" % file
 	if not ResourceLoader.exists(path):
 		return null
+	return load(path) as Texture2D
+
+# ─────────────────────────── ROCK / BOULDER STAGES ──────────
+
+func _rock_current_stage(data: Dictionary) -> int:
+	var now: int = int(Time.get_unix_time_from_system())
+	var mined_at: int  = data.get("boulder_mined_at",  0)
+	var crack_at: int  = data.get("boulder_cracked_at", 0)
+	if mined_at > 0 and now - mined_at < 14400:
+		return 2  # fully mined / dust
+	if crack_at > 0 and mined_at == 0:
+		return 1  # cracked
+	return 0      # full intact rock
+
+func _refresh_rock_sprites() -> void:
+	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+
+	var to_remove: Array = []
+	for key in _rock_sprites:
+		var d: Dictionary = slots.get(key, {})
+		if not d.get("is_anchor", false) or d.get("item_id", "") != "boulder":
+			to_remove.append(key)
+	for key in to_remove:
+		var r: Variant = _rock_sprites[key]
+		if is_instance_valid(r): (r as TextureRect).queue_free()
+		_rock_sprites.erase(key)
+		_rock_stage.erase(key)
+		if _rock_tweens.has(key):
+			if is_instance_valid(_rock_tweens[key]): _rock_tweens[key].kill()
+			_rock_tweens.erase(key)
+
+	for key in slots:
+		var data: Dictionary = slots[key]
+		if not data.get("is_anchor", false): continue
+		if data.get("item_id", "") != "boulder": continue
+		if not _slot_nodes.has(key): continue
+
+		var stage: int = _rock_current_stage(data)
+
+		if not _rock_sprites.has(key):
+			_create_rock_rect(key, stage)
+			_rock_stage[key] = stage
+		else:
+			var prev: int = _rock_stage.get(key, 0)
+			if stage != prev:
+				_rock_stage[key] = stage
+				_play_rock_animation(key, prev, stage)
+
+func _create_rock_rect(key: String, stage: int) -> void:
+	var tex: Texture2D = _make_rock_texture(stage)
+	if tex == null: return
+	var slot_ctrl: Control = _slot_nodes[key]
+	var rect := TextureRect.new()
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rect.texture = tex
+	slot_ctrl.add_child(rect)
+	_rock_sprites[key] = rect
+
+func _play_rock_animation(key: String, from_stage: int, to_stage: int) -> void:
+	if not _rock_sprites.has(key): return
+	var r: Variant = _rock_sprites.get(key)
+	if not is_instance_valid(r): return
+	var rect := r as TextureRect
+
+	if _rock_tweens.has(key) and is_instance_valid(_rock_tweens[key]):
+		_rock_tweens[key].kill()
+
+	# Clear the boulder image immediately — don't wait for tween's first callback
+	rect.texture = null
+	# Belt-and-suspenders: destroy any stale item sprite for this slot
+	if _item_sprites.has(key):
+		var ir = _item_sprites[key]
+		if is_instance_valid(ir): ir.queue_free()
+		_item_sprites.erase(key)
+	# Clear the fill so nothing shows through transparent animation frames
+	if _slot_nodes.has(key):
+		var fill: ColorRect = _slot_nodes[key].get_node_or_null("Fill")
+		if fill: fill.color = Color(0, 0, 0, 0)
+
+	var frames: Array[Texture2D] = []
+
+	if from_stage == 0 and to_stage == 1:
+		# Full → cracked: rustling then crack_in_half
+		for i in 9:
+			var p := "res://assets/sprites/rocks/rustling_%03d.png" % i
+			if ResourceLoader.exists(p): frames.append(load(p) as Texture2D)
+		for i in 9:
+			var p := "res://assets/sprites/rocks/crack_%03d.png" % i
+			if ResourceLoader.exists(p): frames.append(load(p) as Texture2D)
+	elif from_stage == 1 and to_stage == 2:
+		# Cracked → dust: broken_to_dust
+		for i in 9:
+			var p := "res://assets/sprites/rocks/break_%03d.png" % i
+			if ResourceLoader.exists(p): frames.append(load(p) as Texture2D)
+	else:
+		# Any respawn or stage skip: just snap to new texture
+		rect.texture = _make_rock_texture(to_stage)
+		return
+
+	if frames.is_empty():
+		rect.texture = _make_rock_texture(to_stage)
+		return
+
+	var final_tex: Texture2D = _make_rock_texture(to_stage)
+	var tween := create_tween()
+	for i in frames.size():
+		tween.tween_callback(_rock_set_tex.bind(rect, frames[i]))
+		if i < frames.size() - 1:
+			tween.tween_interval(0.07)
+	tween.tween_callback(_rock_set_tex.bind(rect, final_tex))
+	_rock_tweens[key] = tween
+
+func _rock_set_tex(rect: TextureRect, tex: Texture2D) -> void:
+	if is_instance_valid(rect): rect.texture = tex
+
+func _make_rock_texture(stage: int) -> Texture2D:
+	var name: String
+	match stage:
+		1: name = "rock_cracked"
+		2: name = "rock_dust"
+		_: name = "rock_full"
+	var path := "res://assets/sprites/rocks/%s.png" % name
+	if not ResourceLoader.exists(path): return null
 	return load(path) as Texture2D
 
 # ─────────────────────────── ITEM SPRITES ───────────────────
@@ -940,7 +1118,8 @@ func _refresh_item_sprites() -> void:
 		var iid: String = data.get("item_id", "")
 		var still_valid: bool = data.get("is_anchor", false) \
 			and not iid.ends_with("tree") \
-			and not iid.begins_with("soil_") \
+			and iid != "boulder" \
+			and iid != "beehive" \
 			and ResourceLoader.exists("res://assets/sprites/items/%s.png" % iid)
 		if not still_valid:
 			var rect = _item_sprites[key]
@@ -953,7 +1132,7 @@ func _refresh_item_sprites() -> void:
 		var data: Dictionary = slots[key]
 		if not data.get("is_anchor", false): continue
 		var item_id: String = data.get("item_id", "")
-		if item_id.is_empty() or item_id.ends_with("tree") or item_id.begins_with("soil_"): continue
+		if item_id.is_empty() or item_id.ends_with("tree") or item_id == "boulder" or item_id == "beehive": continue
 		var path: String = "res://assets/sprites/items/%s.png" % item_id
 		if not ResourceLoader.exists(path): continue
 
@@ -995,24 +1174,53 @@ func _refresh_coop_labels() -> void:
 		if not _slot_nodes.has(key): continue
 		var lbl: Label = _slot_nodes[key].get_node_or_null("Lbl")
 		if not lbl: continue
-		var coop_slots: Array = data.get("coop_slots", [])
-		var has_chicken := false
-		for cs in coop_slots:
-			if cs != null and cs.get("kind", "") == "chicken":
-				has_chicken = true
-				break
+		var chickens: Array = data.get("chickens", [])
 		var feed: int = data.get("coop_feed", 0)
-		if has_chicken and feed == 0:
+		if chickens.size() > 0 and feed == 0:
 			lbl.text = "HUNGRY"
 			lbl.add_theme_color_override("font_color", Color(1.0, 0.25, 0.25))
 			lbl.add_theme_font_size_override("font_size", 8)
-		elif has_chicken:
+		elif chickens.size() > 0:
 			lbl.text = "FED"
 			lbl.add_theme_color_override("font_color", Color(0.3, 1.0, 0.4))
 			lbl.add_theme_font_size_override("font_size", 8)
 		else:
 			lbl.text = ""
 			lbl.remove_theme_color_override("font_color")
+
+func _refresh_chicken_sprites() -> void:
+	# Clear old sprites
+	for r in _chicken_sprites:
+		if is_instance_valid(r): r.queue_free()
+	_chicken_sprites.clear()
+
+	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+	var chickens: Array = []
+	for key in slots:
+		var data: Dictionary = slots[key]
+		if data.get("is_anchor", false) and data.get("item_id", "") == "chicken_coop":
+			chickens = data.get("chickens", [])
+			break
+	if chickens.is_empty(): return
+
+	# Positions above slot grid (center area of tile, above y=154)
+	const CHICK_POSITIONS: Array = [
+		Vector2(540, 120), Vector2(640, 100), Vector2(740, 120),
+	]
+	for i in min(chickens.size(), CHICK_POSITIONS.size()):
+		var ch: Dictionary = chickens[i]
+		var ctype: String = ch.get("type", "white")
+		var path := "res://assets/sprites/items/chicken_%s.png" % ctype
+		if not ResourceLoader.exists(path): continue
+		var rect := TextureRect.new()
+		rect.texture = load(path) as Texture2D
+		rect.custom_minimum_size = Vector2(40, 40)
+		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rect.position = CHICK_POSITIONS[i] - Vector2(20, 20)
+		_root.add_child(rect)
+		_chicken_sprites.append(rect)
 
 # ─────────────────────────── PIXEL ART ──────────────────────
 
@@ -1252,3 +1460,92 @@ func _make_popup_box() -> Control:
 	no.position = Vector2(160,66); no.size = Vector2(110,30); box.add_child(no)
 
 	return box
+
+# ─────────────────────────── BEEHIVE SPRITES ─────────────────
+
+func _refresh_beehive_sprites() -> void:
+	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+	var now: int = int(Time.get_unix_time_from_system())
+
+	var to_remove: Array = []
+	for key in _beehive_sprites:
+		var d: Dictionary = slots.get(key, {})
+		if not d.get("is_anchor", false) or d.get("item_id", "") != "beehive":
+			to_remove.append(key)
+	for key in to_remove:
+		_beehive_cleanup(key)
+
+	for key in slots:
+		var data: Dictionary = slots[key]
+		if not data.get("is_anchor", false): continue
+		if data.get("item_id", "") != "beehive": continue
+		if not _slot_nodes.has(key): continue
+
+		var last_collected: int = data.get("last_collected", 0)
+		var is_ready: bool = last_collected == 0 or (now - last_collected) >= 86400
+		var was_ready: bool = _beehive_ready_state.get(key, !is_ready)
+
+		if is_ready == was_ready and _beehive_sprites.has(key):
+			continue
+
+		_beehive_ready_state[key] = is_ready
+		_beehive_cleanup(key)
+		var slot_ctrl: Control = _slot_nodes[key]
+		if is_ready:
+			_start_beehive_animation(key, slot_ctrl)
+		else:
+			_start_beehive_static(key, slot_ctrl)
+
+func _beehive_cleanup(key: String) -> void:
+	if _beehive_tweens.has(key):
+		if is_instance_valid(_beehive_tweens[key]): _beehive_tweens[key].kill()
+		_beehive_tweens.erase(key)
+	if _beehive_sprites.has(key):
+		var r = _beehive_sprites[key]
+		if is_instance_valid(r): (r as TextureRect).queue_free()
+		_beehive_sprites.erase(key)
+	_beehive_ready_state.erase(key)
+
+func _start_beehive_static(key: String, slot_ctrl: Control) -> void:
+	var path := "res://assets/sprites/items/beehive.png"
+	if not ResourceLoader.exists(path): return
+	var tex := load(path) as Texture2D
+	if tex == null: return
+	var rect := _make_beehive_rect(slot_ctrl)
+	rect.texture = tex
+	_beehive_sprites[key] = rect
+
+func _start_beehive_animation(key: String, slot_ctrl: Control) -> void:
+	var frames: Array[Texture2D] = []
+	for i in 9:
+		var path := "res://assets/sprites/beehive/frame_%03d.png" % i
+		if not ResourceLoader.exists(path):
+			_start_beehive_static(key, slot_ctrl)
+			return
+		var tex := load(path) as Texture2D
+		if tex == null:
+			_start_beehive_static(key, slot_ctrl)
+			return
+		frames.append(tex)
+
+	var rect := _make_beehive_rect(slot_ctrl)
+	rect.texture = frames[0]
+	_beehive_sprites[key] = rect
+
+	var tween: Tween = create_tween().set_loops()
+	_beehive_tweens[key] = tween
+	for i in frames.size():
+		var f: Texture2D = frames[i]
+		tween.tween_callback(func():
+			if is_instance_valid(rect): rect.texture = f
+		)
+		tween.tween_interval(0.15)
+
+func _make_beehive_rect(slot_ctrl: Control) -> TextureRect:
+	var rect := TextureRect.new()
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slot_ctrl.add_child(rect)
+	return rect

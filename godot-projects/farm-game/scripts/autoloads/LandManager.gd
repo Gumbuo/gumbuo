@@ -2,12 +2,14 @@ extends Node
 
 signal tile_placed(tile_data: Dictionary)
 signal tile_moved(tile_id: String, new_position: Vector2i)
+signal tile_removed(tile_id: String, position: Vector2i)
 signal tile_settings_changed(tile_id: String)
 signal deed_earned(tile_type: String)
 signal slot_item_placed(tile_id: String, slot_key: String, item_id: String)
 signal slot_item_removed(tile_id: String, slot_key: String)
 signal crop_state_changed(tile_id: String, slot_key: String, new_state: String)
 signal collab_state_changed(tile_id: String, slot_key: String, new_state: String)
+signal passive_vault_updated(tile_id: String)
 
 # Duration in seconds for each co-op station
 const COLLAB_DURATION_SEC: Dictionary = {
@@ -48,6 +50,8 @@ var tiles: Dictionary = {}
 var grid: Dictionary = {}
 # unplaced deeds in inventory { tile_type_str -> count }
 var deed_inventory: Dictionary = {}
+# tile IDs fetched from the world server (not saved locally)
+var _remote_tile_ids: Dictionary = {}
 
 func _ready() -> void:
 	load_land_data()
@@ -101,6 +105,18 @@ func move_tile(tile_id: String, new_pos: Vector2i) -> bool:
 	tile_moved.emit(tile_id, new_pos)
 	save_land_data()
 	return true
+
+func remove_tile(tile_id: String) -> void:
+	if not tiles.has(tile_id): return
+	var tdata: Dictionary = tiles[tile_id]
+	var pos: Vector2i = tdata.get("position", Vector2i(-1, -1))
+	var type_str: String = tdata.get("type_str", "FARM")
+	if pos.x >= 0:
+		grid.erase(pos)
+	tiles.erase(tile_id)
+	deed_inventory[type_str] = deed_inventory.get(type_str, 0) + 1
+	save_land_data()
+	tile_removed.emit(tile_id, pos)
 
 func set_tile_access(tile_id: String, mode: AccessMode) -> void:
 	if not tiles.has(tile_id):
@@ -168,6 +184,7 @@ func add_to_passive_vault(tile_id: String, item_id: String, amount: int) -> void
 	var vault: Dictionary = tiles[tile_id]["passive_vault"]
 	vault[item_id] = vault.get(item_id, 0) + amount
 	save_land_data()
+	passive_vault_updated.emit(tile_id)
 
 func claim_passive_vault(tile_id: String) -> Dictionary:
 	if not tiles.has(tile_id):
@@ -218,42 +235,15 @@ func _ensure_global_tile() -> void:
 	save_land_data()
 
 func grant_starter_pack() -> void:
-	var tile_id: String = _generate_tile_id()
-	var tile_data: Dictionary = {
-		"id": tile_id,
-		"type": TileType.FARM,
-		"type_str": "FARM",
-		"position": Vector2i(0, 0),
-		"access_mode": AccessMode.PUBLIC,
-		"yield_rate": 70,
-		"passive_vault": {},
-		"slots": {},
-		"name": "Starter Farm",
-		"owner_id": PlayerData.player_id,
-		"placed_at": Time.get_unix_time_from_system()
-	}
-	tiles[tile_id] = tile_data
-	grid[Vector2i(0, 0)] = tile_id
-	# Give one deed of each tile type to place
+	# Give one deed of each tile type — player places their own tiles
 	deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
 	deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
 	deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1
 	deed_inventory["FOREST"]   = deed_inventory.get("FOREST",   0) + 1
 	save_land_data()
 
-func get_slot_item_size(item_id: String) -> Vector2i:
-	match item_id:
-		"chicken_coop", "workshop", "furnace", "burner_station", \
-		"alchemy_table", "anvil_station", "stonecutter", "wine_press", "spinning_wheel":
-			return Vector2i(2, 1)
-		"silo":
-			return Vector2i(1, 2)
-		"wheat_mill", "bread_oven", "mill", "sawmill":
-			return Vector2i(2, 2)
-		"npc_vendor":
-			return Vector2i(2, 2)
-		_:
-			return Vector2i(1, 1)
+func get_slot_item_size(_item_id: String) -> Vector2i:
+	return Vector2i(1, 1)
 
 func slot_key(pos: Vector2i) -> String:
 	return "%d,%d" % [pos.x, pos.y]
@@ -452,6 +442,9 @@ func update_tree_states() -> bool:
 		save_land_data()
 	return changed
 
+const COOP_LAY_SECS    := 86400   # 24 hrs — egg-laying cycle
+const COOP_STARVE_SECS := 259200  # 72 hrs — chicken wanders off without feed
+
 func update_coop_states() -> bool:
 	var changed := false
 	var now := int(Time.get_unix_time_from_system())
@@ -461,47 +454,56 @@ func update_coop_states() -> bool:
 			var data: Dictionary = tslots[k]
 			if not data.get("is_anchor", false): continue
 			if data.get("item_id", "") != "chicken_coop": continue
-			var coop_slots: Array = data.get("coop_slots", [null, null, null])
 			var coop_changed := false
 
-			# Hatch eggs that have completed incubation
-			for i in coop_slots.size():
-				var cs = coop_slots[i]
-				if cs == null or cs.get("kind", "") != "egg": continue
-				if now - cs.get("placed_at", 0) < 129600: continue  # 36 hrs
-				var result: String = _hatch_egg(cs.get("type", "white"))
-				coop_slots[i] = {"kind": "chicken", "type": result, "last_laid_at": 0} if result != "" else null
-				coop_changed = true
-
-			# Starvation check — chickens wander off after 72hrs with no feed
+			var chickens: Array = data.get("chickens", [])
 			var feed: int = data.get("coop_feed", 0)
 			var feed_empty_since: int = data.get("feed_empty_since", 0)
-			var has_chicken := false
-			for cs in coop_slots:
-				if cs != null and cs.get("kind", "") == "chicken":
-					has_chicken = true
-					break
-			if has_chicken and feed == 0:
+
+			# Egg laying — each chicken lays one egg per day into an open tile slot
+			for i in chickens.size():
+				if feed <= 0: break
+				var ch: Dictionary = chickens[i]
+				if now - ch.get("last_laid_at", 0) < COOP_LAY_SECS: continue
+				var egg_pos := _find_empty_slot(tid)
+				if egg_pos == Vector2i(-1, -1): break
+				var egg_type := "egg_gold" if randf() < 0.10 else "egg_white"
+				var egg_key := slot_key(egg_pos)
+				tslots[egg_key] = {"item_id": egg_type, "is_anchor": true, "size": [1, 1], "anchor": egg_key}
+				chickens[i]["last_laid_at"] = now
+				feed -= 1
+				coop_changed = true
+
+			# Starvation — chickens wander off after 72hrs with no feed
+			if chickens.size() > 0 and feed == 0:
 				if feed_empty_since == 0:
-					data["feed_empty_since"] = now  # start the clock
+					data["feed_empty_since"] = now
 					coop_changed = true
-				elif now - feed_empty_since >= 259200:  # 72 hrs
-					for i in coop_slots.size():
-						if coop_slots[i] != null and coop_slots[i].get("kind", "") == "chicken":
-							coop_slots[i] = null
+				elif now - feed_empty_since >= COOP_STARVE_SECS:
+					chickens.clear()
 					data["feed_empty_since"] = 0
 					coop_changed = true
 			elif feed > 0 and feed_empty_since != 0:
-				data["feed_empty_since"] = 0  # reset clock when fed
+				data["feed_empty_since"] = 0
 				coop_changed = true
 
 			if coop_changed:
-				data["coop_slots"] = coop_slots
+				data["chickens"] = chickens
+				data["coop_feed"] = feed
 				changed = true
 				slot_item_placed.emit(tid, k, "chicken_coop")
 	if changed:
 		save_land_data()
 	return changed
+
+func _find_empty_slot(tile_id: String) -> Vector2i:
+	var slots: Dictionary = tiles[tile_id].get("slots", {})
+	for row in SLOT_ROWS:
+		for col in SLOT_COLS:
+			var pos := Vector2i(col, row)
+			if not slots.has(slot_key(pos)):
+				return pos
+	return Vector2i(-1, -1)
 
 func _hatch_egg(egg_type: String) -> String:
 	var roll := randf()
@@ -517,45 +519,67 @@ func _hatch_egg(egg_type: String) -> String:
 
 # ─────────────────────────────────────────────────────────────────────────────
 
-func _dev_grant_test_tiles() -> void:
-	var cfg := ConfigFile.new()
-	cfg.load(SAVE_PATH)
-	if cfg.get_value("meta", "dev_tiles_v1", false): return
-	cfg.set_value("meta", "dev_tiles_v1", true)
-	cfg.save(SAVE_PATH)
-
+func _reclaim_local_tiles() -> void:
 	var pid: String = PlayerData.player_id
-	var test_tiles: Array = [
-		{"pos": Vector2i(1,0), "type": TileType.FOREST,   "type_str": "FOREST",   "density": "dense", "name": "Forest"},
-		{"pos": Vector2i(2,0), "type": TileType.MOUNTAIN, "type_str": "MOUNTAIN", "density": "",      "name": "Mountain"},
-		{"pos": Vector2i(3,0), "type": TileType.POND,     "type_str": "POND",     "density": "",      "name": "Pond"},
-	]
-	for t in test_tiles:
-		var gpos: Vector2i = t["pos"]
-		if grid.has(gpos): continue
-		var tile_id := _generate_tile_id()
-		var tile_data: Dictionary = {
-			"id": tile_id, "type": t["type"], "type_str": t["type_str"],
-			"position": gpos, "access_mode": AccessMode.PUBLIC,
-			"yield_rate": 70, "passive_vault": {}, "slots": {},
-			"name": t["name"], "owner_id": pid,
-			"placed_at": int(Time.get_unix_time_from_system())
-		}
-		if t["density"] != "":
-			tile_data["density"] = t["density"]
-		tiles[tile_id] = tile_data
-		grid[gpos] = tile_id
-		if t["type"] == TileType.FOREST:
-			_init_forest_trees(tile_id)
+	if pid == "":
+		return
+	for tid in tiles:
+		var oid: String = tiles[tid].get("owner_id", "")
+		if oid.begins_with("local_") and oid != pid:
+			tiles[tid]["owner_id"] = pid
+
+func _purge_unclaimed_tiles() -> void:
+	for tid in tiles.keys():
+		if tiles[tid].get("owner_id", "") == "":
+			var pos: Vector2i = tiles[tid].get("position", Vector2i(-1, -1))
+			if pos.x >= 0:
+				grid.erase(pos)
+			tiles.erase(tid)
 
 func _generate_tile_id() -> String:
 	return "tile_" + str(randi()) + "_" + str(Time.get_unix_time_from_system())
 
+func is_remote_tile(tile_id: String) -> bool:
+	return _remote_tile_ids.has(tile_id)
+
+func merge_remote_tiles(remote_tiles: Array) -> void:
+	for td in remote_tiles:
+		var tid: String = td.get("id", "")
+		if tid == "" or tiles.has(tid):
+			continue
+		var pos_dict: Dictionary = td.get("position", {})
+		var pos := Vector2i(int(pos_dict.get("x", -1)), int(pos_dict.get("y", -1)))
+		if pos.x < 0 or grid.has(pos):
+			continue
+		tiles[tid] = {
+			"id":           tid,
+			"type":         int(td.get("type", 0)),
+			"type_str":     str(td.get("type_str", "FARM")),
+			"position":     pos,
+			"owner_id":     str(td.get("owner_id", "")),
+			"name":         str(td.get("name", "Tile")),
+			"access_mode":  int(td.get("access_mode", AccessMode.PUBLIC)),
+			"yield_rate":   70,
+			"placed_at":    0,
+			"passive_vault": {},
+			"slots":         {},
+		}
+		grid[pos] = tid
+		_remote_tile_ids[tid] = true
+
 func save_land_data() -> void:
 	var cfg := ConfigFile.new()
 	cfg.load(SAVE_PATH)  # Load existing so other players' deed sections are preserved
-	cfg.set_value("tiles", "data", var_to_str(tiles))
-	cfg.set_value("grid",  "data", var_to_str(grid))
+	var local_tiles := {}
+	var local_grid := {}
+	for tid in tiles:
+		if not _remote_tile_ids.has(tid):
+			local_tiles[tid] = tiles[tid]
+	for pos in grid:
+		if not _remote_tile_ids.has(grid[pos]):
+			local_grid[pos] = grid[pos]
+	cfg.set_value("tiles", "data", var_to_str(local_tiles))
+	cfg.set_value("grid",  "data", var_to_str(local_grid))
 	var pid: String = PlayerData.player_id
 	if pid != "":
 		cfg.set_value("deed_player", pid, var_to_str(deed_inventory))
@@ -582,9 +606,10 @@ func load_land_data() -> void:
 				if sl[k].get("item_id","") == "oak_tree":
 					sl.erase(k)
 			_init_forest_trees(tid)
+	_purge_unclaimed_tiles()
+	_reclaim_local_tiles()
 	_run_deed_migrations()
 	_ensure_global_tile()
-	_dev_grant_test_tiles()
 	save_land_data()
 
 # Called by PlayerData.set_username() after identity is set, so deed_inventory
@@ -612,17 +637,11 @@ func _run_deed_migrations() -> void:
 		deed_inventory["FOREST"] = deed_inventory.get("FOREST", 0) + deed_inventory["FOREST_DENSE"]
 		deed_inventory.erase("FOREST_DENSE")
 	deed_inventory.erase("FOREST_SPARSE")
-	# Give starter deeds if this player owns tiles but has no deeds (migration for old accounts)
-	var pid: String = PlayerData.player_id
-	var has_player_tile := false
-	for tid in tiles:
-		if tiles[tid].get("owner_id", "") == pid:
-			has_player_tile = true
-			break
+	# Give starter deeds to any player with zero deeds (new wallet, old account, or save gap)
 	var total_deeds := 0
 	for v in deed_inventory.values():
 		total_deeds += int(v)
-	if total_deeds == 0 and has_player_tile:
+	if total_deeds == 0:
 		deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
 		deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
 		deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1

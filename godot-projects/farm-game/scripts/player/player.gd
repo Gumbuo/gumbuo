@@ -11,6 +11,7 @@ const ACTION_CONFIGS: Array = [
 	{"name": "fish",    "folder": "fishing",    "frame_count": 9, "fps": 5.0},
 	{"name": "harvest", "folder": "picking_up", "frame_count": 5, "fps": 8.0},
 	{"name": "drink",   "folder": "drinking",   "frame_count": 6, "fps": 6.0},
+	{"name": "mine",    "folder": "mining",     "frame_count": 9, "fps": 8.0},
 ]
 
 @onready var sprite:      AnimatedSprite2D = $AnimatedSprite2D
@@ -163,8 +164,26 @@ func play_harvest() -> void:
 func play_fish() -> void:
 	_play_action("fish")
 
+func start_fish_loop() -> void:
+	var anim: String = "fish_" + facing
+	if not sprite.sprite_frames.has_animation(anim): return
+	sprite.sprite_frames.set_animation_loop(anim, true)
+	_is_acting = true
+	sprite.play(anim)
+
+func stop_fish_loop() -> void:
+	var anim: String = "fish_" + facing
+	if sprite.sprite_frames.has_animation(anim):
+		sprite.sprite_frames.set_animation_loop(anim, false)
+	_is_acting = false
+	sprite.stop()
+	_play_idle()
+
 func play_drink() -> void:
 	_play_action("drink")
+
+func play_mine() -> void:
+	_play_action("mine")
 
 func _play_action(action_name: String) -> void:
 	if _is_acting: return
