@@ -1116,11 +1116,13 @@ func _refresh_item_sprites() -> void:
 	for key in _item_sprites:
 		var data: Dictionary = slots.get(key, {})
 		var iid: String = data.get("item_id", "")
+		var iid_base := iid.trim_prefix("wild_")
 		var still_valid: bool = data.get("is_anchor", false) \
 			and not iid.ends_with("tree") \
 			and iid != "boulder" \
 			and iid != "beehive" \
-			and ResourceLoader.exists("res://assets/sprites/items/%s.png" % iid)
+			and (ResourceLoader.exists("res://assets/sprites/items/%s.png" % iid) \
+				or ResourceLoader.exists("res://assets/sprites/items/%s.png" % iid_base))
 		if not still_valid:
 			var rect = _item_sprites[key]
 			if is_instance_valid(rect): rect.queue_free()
@@ -1134,6 +1136,8 @@ func _refresh_item_sprites() -> void:
 		var item_id: String = data.get("item_id", "")
 		if item_id.is_empty() or item_id.ends_with("tree") or item_id == "boulder" or item_id == "beehive": continue
 		var path: String = "res://assets/sprites/items/%s.png" % item_id
+		if not ResourceLoader.exists(path):
+			path = "res://assets/sprites/items/%s.png" % item_id.trim_prefix("wild_")
 		if not ResourceLoader.exists(path): continue
 
 		var tex := _load_item_texture(path)
