@@ -1,9 +1,4 @@
-extends "res://scripts/tiles/wild_tile_base.gd"
-
-const WILD_CROPS := [
-	"cucumber", "tomato", "carrot", "potato",
-	"red_flower", "blue_flower", "yellow_flower", "cotton",
-]
+extends "res://scripts/tiles/tile_base.gd"
 
 const FISH_DURATION := 5.0
 
@@ -23,6 +18,12 @@ const FISH_TABLE := [
 	{ "item": "golden_koi",      "weight": 1  },
 ]
 
+# Pond water area in screen space (matches collision walls)
+const POND_Y_MIN := 222.0
+const POND_Y_MAX := 494.0
+const POND_X_MIN := 307.0
+const POND_X_MAX := 963.0
+
 var _pending_fish: bool = false
 var _fish_world_pos: Vector2 = Vector2.ZERO
 var _fishing: bool = false
@@ -30,19 +31,16 @@ var _fish_timer: float = 0.0
 
 func _ready() -> void:
 	super._ready()
-	_check_wild_spawn("pond_last_spawn", WILD_CROPS)
-	_slot_grid.pond_water_clicked.connect(_on_pond_water_clicked)
 
-# Only allow wild spawns in the grassland rows (top and bottom of the slot grid)
-func _get_empty_slots() -> Array:
-	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
-	var empty: Array = []
-	for y in [0, 5]:
-		for x in range(1, 5):  # cols 1–4, the only displayed slots in rows 0 and 5
-			var pos := Vector2i(x, y)
-			if not slots.has(LandManager.slot_key(pos)):
-				empty.append(pos)
-	return empty
+func _spawn_slot_grid() -> void:
+	pass  # no slot grid on pond tile
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var mp: Vector2 = get_viewport().get_mouse_position()
+		if mp.x >= POND_X_MIN and mp.x <= POND_X_MAX and mp.y >= POND_Y_MIN and mp.y <= POND_Y_MAX:
+			_on_pond_water_clicked(mp)
+			get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
 	if not _fishing:
@@ -56,7 +54,6 @@ func _on_pond_water_clicked(_screen_pos: Vector2) -> void:
 		return
 	if not PlayerData.spend_energy(1):
 		return
-	# Walk to the south shore of the pond (bottom center grassland slot)
 	_fish_world_pos = _slot_center_world(Vector2i(3, 5))
 	_player.move_to(_fish_world_pos)
 	_pending_fish = true
