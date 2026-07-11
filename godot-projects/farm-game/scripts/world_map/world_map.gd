@@ -22,6 +22,7 @@ var _world_req: HTTPRequest = null
 var _sync_req: HTTPRequest = null
 
 func _ready() -> void:
+	LandManager.current_tile_id = ""
 	LandManager.tile_placed.connect(_on_tile_placed)
 	LandManager.tile_moved.connect(_on_tile_moved)
 	LandManager.tile_removed.connect(_on_tile_removed)

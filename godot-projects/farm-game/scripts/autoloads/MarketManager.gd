@@ -4,13 +4,9 @@ signal listing_added(listing: Dictionary)
 signal listing_removed(listing_id: String)
 signal trade_completed(listing_id: String, buyer_id: String)
 
-# In-game resource market listings
-# { listing_id -> { seller_id, item_id, quantity, price_gold, listed_at } }
+# In-game resource market — crops, fish, food, materials, etc.
+# { listing_id -> { id, seller_id, item_id, quantity, price_gold, listed_at } }
 var resource_listings: Dictionary = {}
-
-# P2P NFT deed listings (land tiles)
-# { listing_id -> { seller_id, tile_id, tile_type, price_gold, listed_at } }
-var deed_listings: Dictionary = {}
 
 func list_resource(item_id: String, quantity: int, price_gold: float) -> bool:
 	if not ResourceManager.has_item(item_id, quantity):
@@ -18,12 +14,12 @@ func list_resource(item_id: String, quantity: int, price_gold: float) -> bool:
 	ResourceManager.remove_item(item_id, quantity)
 	var listing_id := _gen_id()
 	resource_listings[listing_id] = {
-		"id": listing_id,
-		"seller_id": PlayerData.player_id,
-		"item_id": item_id,
-		"quantity": quantity,
+		"id":         listing_id,
+		"seller_id":  PlayerData.player_id,
+		"item_id":    item_id,
+		"quantity":   quantity,
 		"price_gold": price_gold,
-		"listed_at": Time.get_unix_time_from_system()
+		"listed_at":  Time.get_unix_time_from_system()
 	}
 	listing_added.emit(resource_listings[listing_id])
 	return true
@@ -36,28 +32,6 @@ func buy_resource(listing_id: String) -> bool:
 		return false
 	ResourceManager.add_item(listing["item_id"], listing["quantity"])
 	resource_listings.erase(listing_id)
-	trade_completed.emit(listing_id, PlayerData.player_id)
-	return true
-
-func list_deed(tile_id: String, price_gold: float) -> bool:
-	var listing_id := _gen_id()
-	deed_listings[listing_id] = {
-		"id": listing_id,
-		"seller_id": PlayerData.player_id,
-		"tile_id": tile_id,
-		"price_gold": price_gold,
-		"listed_at": Time.get_unix_time_from_system()
-	}
-	listing_added.emit(deed_listings[listing_id])
-	return true
-
-func buy_deed(listing_id: String) -> bool:
-	if not deed_listings.has(listing_id):
-		return false
-	var listing: Dictionary = deed_listings[listing_id]
-	if not PlayerData.spend_gold(listing["price_gold"]):
-		return false
-	deed_listings.erase(listing_id)
 	trade_completed.emit(listing_id, PlayerData.player_id)
 	return true
 

@@ -8,7 +8,7 @@ var _selected_access_mode: int = 0
 func open(tile_id: String) -> void:
 	_tile_id = tile_id
 	var tile: Dictionary = LandManager.tiles.get(tile_id, {})
-	if tile.is_empty() or tile.get("owner_id", "") != PlayerData.player_id:
+	if tile.is_empty():
 		queue_free()
 		return
 	_name_input.text = tile.get("name", "")
@@ -27,15 +27,8 @@ func _build_ui() -> void:
 	overlay.gui_input.connect(_on_overlay_input)
 	add_child(overlay)
 
-	# panel
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(320, 0)
-	panel.anchor_left   = 0.5
-	panel.anchor_top    = 0.5
-	panel.anchor_right  = 0.5
-	panel.anchor_bottom = 0.5
-	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.grow_vertical   = Control.GROW_DIRECTION_BOTH
 	add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -102,6 +95,13 @@ func _build_ui() -> void:
 	btn_row.add_theme_constant_override("separation", 8)
 	inner.add_child(btn_row)
 
+	var delete_btn := Button.new()
+	delete_btn.text = "Delete Tile"
+	delete_btn.add_theme_font_size_override("font_size", 10)
+	delete_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+	delete_btn.pressed.connect(_on_delete)
+	btn_row.add_child(delete_btn)
+
 	var cancel_btn := Button.new()
 	cancel_btn.text = "Cancel"
 	cancel_btn.pressed.connect(queue_free)
@@ -112,12 +112,9 @@ func _build_ui() -> void:
 	save_btn.pressed.connect(_on_save)
 	btn_row.add_child(save_btn)
 
-	# position panel after layout
-	await get_tree().process_frame
-	panel.position = Vector2(
-		(get_viewport().get_visible_rect().size.x - panel.size.x) / 2.0,
-		(get_viewport().get_visible_rect().size.y - panel.size.y) / 2.0
-	)
+	# Fixed size — get_combined_minimum_size() returns height=0 before layout
+	panel.size = Vector2(320, 290)
+	panel.position = Vector2(480, 215)
 
 func _set_active_access(mode: int) -> void:
 	_selected_access_mode = mode
@@ -163,6 +160,10 @@ func _on_save() -> void:
 	if new_name != "":
 		LandManager.set_tile_name(_tile_id, new_name)
 	LandManager.set_tile_access(_tile_id, _selected_access_mode as LandManager.AccessMode)
+	queue_free()
+
+func _on_delete() -> void:
+	LandManager.remove_tile(_tile_id)
 	queue_free()
 
 func _on_overlay_input(event: InputEvent) -> void:

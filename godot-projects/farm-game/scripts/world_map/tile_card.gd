@@ -8,7 +8,15 @@ signal edit_requested(tile_id: String)
 
 @export var grid_position: Vector2i = Vector2i(0, 0)
 
+@onready var bg_image: TextureRect = $BgImage
 @onready var bg_rect: ColorRect = $BgRect
+
+const TILE_TEXTURES: Dictionary = {
+	"FARM":     "res://assets/sprites/tiles/world_tile_farm.png",
+	"FOREST":   "res://assets/sprites/tiles/world_tile_forest.png",
+	"MOUNTAIN": "res://assets/sprites/tiles/world_tile_mountain.png",
+	"POND":     "res://assets/sprites/tiles/world_tile_pond.png",
+}
 @onready var tile_type_label: Label = $TileTypeLabel
 @onready var tile_name_label: Label = $TileNameLabel
 @onready var access_icon: ColorRect = $AccessIcon
@@ -25,6 +33,8 @@ var _is_owner: bool = false
 var _select_overlay: ColorRect = null
 var _drop_overlay: ColorRect = null
 var _edit_btn: Button = null
+var _move_btn: Button = null
+var _drop_btn: Button = null
 var _name_edit: LineEdit = null
 var _name_confirm: Button = null
 
@@ -50,6 +60,16 @@ func _ready() -> void:
 	_drop_overlay.visible = false
 	add_child(_drop_overlay)
 
+	# Invisible full-rect button for reliable HTML5 click detection on drop targets
+	_drop_btn = Button.new()
+	_drop_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_drop_btn.flat = true
+	_drop_btn.modulate = Color(1, 1, 1, 0)
+	_drop_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	_drop_btn.visible = false
+	_drop_btn.pressed.connect(func() -> void: drop_requested.emit(grid_position))
+	add_child(_drop_btn)
+
 	_edit_btn = Button.new()
 	_edit_btn.text = "~"
 	_edit_btn.flat = true
@@ -59,6 +79,31 @@ func _ready() -> void:
 	_edit_btn.mouse_filter = Control.MOUSE_FILTER_STOP
 	_edit_btn.pressed.connect(_on_edit_pressed)
 	add_child(_edit_btn)
+
+	_move_btn = Button.new()
+	_move_btn.text = "Move"
+	_move_btn.flat = false
+	_move_btn.add_theme_font_size_override("font_size", 8)
+	_move_btn.custom_minimum_size = Vector2(34, 34)
+	_move_btn.position = Vector2(28, 28)
+	_move_btn.visible = false
+	_move_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	var msb := StyleBoxFlat.new()
+	msb.bg_color = Color(0.0, 0.05, 0.15, 0.72)
+	msb.border_color = Color(0.45, 0.75, 1.0)
+	msb.set_border_width_all(1)
+	msb.set_corner_radius_all(17)
+	_move_btn.add_theme_stylebox_override("normal", msb)
+	_move_btn.add_theme_stylebox_override("hover", msb)
+	_move_btn.add_theme_stylebox_override("pressed", msb)
+	_move_btn.add_theme_color_override("font_color", Color(0.5, 0.85, 1.0))
+	_move_btn.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+	_move_btn.add_theme_constant_override("outline_size", 2)
+	_move_btn.pressed.connect(func() -> void:
+		if _tile_id != "":
+			drag_started.emit(_tile_id, grid_position)
+	)
+	add_child(_move_btn)
 
 	# Inline rename: LineEdit + confirm button, shown when owner clicks name label
 	_name_edit = LineEdit.new()
@@ -97,6 +142,8 @@ func set_empty() -> void:
 	_is_empty = true
 	_is_owner = false
 	_hide_rename_edit()
+	bg_image.visible = false
+	bg_image.texture = null
 	bg_rect.color = Color(0, 0, 0, 0)
 	tile_type_label.text = ""
 	tile_name_label.text = ""
@@ -107,6 +154,8 @@ func set_empty() -> void:
 	enter_button.visible = false
 	access_icon.visible = false
 	if _edit_btn: _edit_btn.visible = false
+	if _move_btn: _move_btn.visible = false
+	if _drop_btn: _drop_btn.visible = true   # always clickable on empty cells
 
 func set_tile(tile_data: Dictionary) -> void:
 	_tile_id = tile_data["id"]
@@ -115,18 +164,24 @@ func set_tile(tile_data: Dictionary) -> void:
 	_is_owner = tile_data.get("owner_id", "") == PlayerData.player_id
 	_hide_rename_edit()
 	var type_str: String = tile_data.get("type_str", "FARM")
-	bg_rect.color = TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3))
+	var tex_path: String = TILE_TEXTURES.get(type_str, "")
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		bg_image.texture = load(tex_path) as Texture2D
+		bg_image.visible = true
+		bg_rect.color = Color(0, 0, 0, 0)
+	else:
+		bg_image.visible = false
+		bg_rect.color = TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3))
 	tile_type_label.text = type_str.capitalize()
 	var cur_name: String = tile_data.get("name", "")
 	if _is_owner and cur_name == "":
 		tile_name_label.text = "~ name this tile"
-		tile_name_label.modulate = Color(0.6, 0.6, 0.6)
+		tile_name_label.add_theme_color_override("font_color", Color(0.2, 0.4, 0.8))
 	else:
 		tile_name_label.text = cur_name
-		tile_name_label.modulate = Color(1, 1, 1)
+		tile_name_label.add_theme_color_override("font_color", Color(0.25, 0.55, 1.0))
 	empty_label.text = ""
 	empty_label.visible = false
-	enter_button.text = "Enter"
 	enter_button.visible = true
 	access_icon.visible = true
 	_update_access_icon(tile_data.get("access_mode", 0))
@@ -134,22 +189,28 @@ func set_tile(tile_data: Dictionary) -> void:
 	if _edit_btn:
 		_edit_btn.visible = _is_owner
 		_edit_btn.position = Vector2(size.x - 20, 2)
+	if _move_btn:
+		_move_btn.visible = _is_owner
+		_move_btn.position = Vector2(size.x - 22, 20)
+	if _drop_btn: _drop_btn.visible = false  # not clickable on filled tiles
 
 func set_npc_tile(npc_data: Dictionary) -> void:
 	_npc_id = npc_data.get("id", "")
 	_tile_id = ""
 	_is_empty = false
+	bg_image.visible = false
+	bg_image.texture = null
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
 	bg_rect.color = Color(col[0], col[1], col[2])
 	tile_type_label.text = "NPC"
 	tile_name_label.text = npc_data.get("name", "")
-	tile_name_label.modulate = Color(1, 1, 1)
+	tile_name_label.add_theme_color_override("font_color", Color(0.25, 0.55, 1.0))
 	vault_label.text = ""
 	empty_label.text = ""
 	empty_label.visible = false
-	enter_button.text = "Visit"
 	enter_button.visible = true
 	access_icon.visible = false
+	if _drop_btn: _drop_btn.visible = false
 
 func set_selected(selected: bool) -> void:
 	if _select_overlay:
@@ -158,6 +219,7 @@ func set_selected(selected: bool) -> void:
 func set_drop_target(is_target: bool) -> void:
 	if _drop_overlay:
 		_drop_overlay.visible = is_target
+	# _drop_btn stays always-visible on empty cells; overlay handles visual feedback
 	if _is_empty and empty_label:
 		empty_label.text = "+" if is_target else ""
 		empty_label.visible = is_target
@@ -243,8 +305,7 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if event.button_index != MOUSE_BUTTON_LEFT:
 		return
-	if _is_empty:
-		drop_requested.emit(grid_position)
-	elif _tile_id != "":
+	# Empty cells: _drop_btn (Button) handles drop_requested — more reliable in HTML5
+	if not _is_empty and _tile_id != "":
 		drag_started.emit(_tile_id, grid_position)
 	# NPC tiles (_npc_id set, _tile_id empty): no drag emitted — fixed in place

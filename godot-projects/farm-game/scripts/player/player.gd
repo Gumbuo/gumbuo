@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 signal arrived(at_pos: Vector2)
+signal path_cancelled
 
 const SPEED    := 130.0
 const BASE_PATH := "res://assets/sprites/characters/farmer_tom/"
@@ -82,7 +83,7 @@ func _setup_sprite() -> void:
 				frames.add_frame(anim, load(path))
 
 	sprite.sprite_frames = frames
-	sprite.scale  = Vector2(0.75, 0.75)
+	sprite.scale  = Vector2(1.2, 1.2)
 	sprite.offset = Vector2(0, -46)
 	sprite.animation_finished.connect(_on_action_finished)
 	sprite.play("idle_south")
@@ -106,6 +107,8 @@ func _physics_process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT): wasd.x += 1.0
 
 	if wasd != Vector2.ZERO:
+		if _has_target:
+			path_cancelled.emit()
 		_has_target = false
 		velocity = wasd.normalized() * SPEED
 		_update_facing(velocity)

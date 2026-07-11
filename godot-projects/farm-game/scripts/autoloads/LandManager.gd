@@ -10,6 +10,7 @@ signal slot_item_removed(tile_id: String, slot_key: String)
 signal crop_state_changed(tile_id: String, slot_key: String, new_state: String)
 signal collab_state_changed(tile_id: String, slot_key: String, new_state: String)
 signal passive_vault_updated(tile_id: String)
+signal passive_income_received(tile_id: String, visitor_id: String, item_id: String, amount: int)
 
 # Duration in seconds for each co-op station
 const COLLAB_DURATION_SEC: Dictionary = {
@@ -43,6 +44,7 @@ const GROW_TIMES := {
 }
 
 var current_tile_id: String = ""
+var home_tile_id: String = ""
 
 # { tile_id -> TileData dict }
 var tiles: Dictionary = {}
@@ -88,6 +90,8 @@ func place_tile(tile_type: TileType, grid_pos: Vector2i) -> bool:
 	grid[grid_pos] = tile_id
 	if tile_type == TileType.FOREST:
 		_init_forest_trees(tile_id)
+	if home_tile_id == "":
+		home_tile_id = tile_id
 	tile_placed.emit(tile_data)
 	save_land_data()
 	return true
@@ -178,13 +182,14 @@ func can_enter_tile(tile_id: String, visitor_id: String, _visitor_alliance: Stri
 		return tile["owner_id"] == visitor_id
 	return false
 
-func add_to_passive_vault(tile_id: String, item_id: String, amount: int) -> void:
+func add_to_passive_vault(tile_id: String, item_id: String, amount: int, visitor_id: String = "") -> void:
 	if not tiles.has(tile_id):
 		return
 	var vault: Dictionary = tiles[tile_id]["passive_vault"]
 	vault[item_id] = vault.get(item_id, 0) + amount
 	save_land_data()
 	passive_vault_updated.emit(tile_id)
+	passive_income_received.emit(tile_id, visitor_id, item_id, amount)
 
 func claim_passive_vault(tile_id: String) -> Dictionary:
 	if not tiles.has(tile_id):
@@ -519,6 +524,26 @@ func _hatch_egg(egg_type: String) -> String:
 
 # ─────────────────────────────────────────────────────────────────────────────
 
+func _remove_legacy_starter_tile() -> void:
+	# One-time migration: remove any single auto-placed FARM tile at (0,0) that
+	# existed before the deed system. Players now place tiles themselves from inventory.
+	var to_remove: Array = []
+	for tid in tiles:
+		var td: Dictionary = tiles[tid]
+		var pos: Vector2i = td.get("position", Vector2i(-1, -1))
+		if td.get("type_str", "") == "FARM" and pos == Vector2i(0, 0) \
+				and td.get("placed_at", 1) == 0:
+			to_remove.append(tid)
+	for tid in to_remove:
+		var pos: Vector2i = tiles[tid].get("position", Vector2i(-1, -1))
+		if pos.x >= 0:
+			grid.erase(pos)
+		# Refund deed so player still has it to place
+		deed_inventory["FARM"] = deed_inventory.get("FARM", 0) + 1
+		tiles.erase(tid)
+		if home_tile_id == tid:
+			home_tile_id = ""
+
 func _reclaim_local_tiles() -> void:
 	var pid: String = PlayerData.player_id
 	if pid == "":
@@ -580,6 +605,7 @@ func save_land_data() -> void:
 			local_grid[pos] = grid[pos]
 	cfg.set_value("tiles", "data", var_to_str(local_tiles))
 	cfg.set_value("grid",  "data", var_to_str(local_grid))
+	cfg.set_value("tiles", "home_tile_id", home_tile_id)
 	var pid: String = PlayerData.player_id
 	if pid != "":
 		cfg.set_value("deed_player", pid, var_to_str(deed_inventory))
@@ -593,6 +619,7 @@ func load_land_data() -> void:
 		return  # new player — PlayerData._init_new_player() will call grant_starter_pack()
 	tiles = str_to_var(cfg.get_value("tiles", "data", "{}"))
 	grid  = str_to_var(cfg.get_value("grid",  "data", "{}"))
+	home_tile_id = cfg.get_value("tiles", "home_tile_id", "")
 	deed_inventory = _read_deed_inventory(cfg)
 	if tiles.is_empty():
 		return
@@ -608,6 +635,7 @@ func load_land_data() -> void:
 			_init_forest_trees(tid)
 	_purge_unclaimed_tiles()
 	_reclaim_local_tiles()
+	_remove_legacy_starter_tile()
 	_run_deed_migrations()
 	_ensure_global_tile()
 	save_land_data()

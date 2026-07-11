@@ -2,17 +2,18 @@ extends CanvasLayer
 
 @onready var level_label: Label = $TopLeft/LevelLabel
 @onready var xp_bar: ProgressBar = $TopLeft/XPBar
-@onready var energy_bar: ProgressBar = $TopLeft/EnergyBar
 @onready var energy_label: Label = $TopLeft/EnergyLabel
 @onready var silver_label: Label = $TopLeft/CurrencyRow/SilverLabel
 @onready var gold_label: Label = $TopLeft/CurrencyRow/GoldLabel
 @onready var time_label: Label = $TopLeft/TimeLabel
+@onready var dau_label: Label = $TopLeft/DauLabel
 @onready var hotbar: HBoxContainer = $Bottom/Hotbar
 @onready var backpack_btn: Button = $Bottom/Buttons/BackpackBtn
 @onready var map_btn: Button = $Bottom/Buttons/MapBtn
 @onready var nft_btn: Button = $Bottom/Buttons/NFTBtn
 @onready var claim_btn: Button = $Bottom/Buttons/ClaimBtn
-@onready var npc_strip: VBoxContainer = $NPCStrip
+@onready var home_btn: Button = $Bottom/Buttons/HomeBtn
+@onready var bell_btn: Button = $Bottom/Buttons/BellBtn
 @onready var no_energy_label: Label = $NoEnergyLabel
 
 const HOTBAR_SLOTS := 8
@@ -25,7 +26,14 @@ const MUSIC_TRACKS := [
 	{"name": "Galactic Groove",  "file": "res://assets/audio/music/home.mp3"},
 ]
 
+const PRESENCE_URL := "https://gamehole.ink/api/presence"
+
 var _hotbar_items: Array = []
+var _presence_req: HTTPRequest = null
+var _xp_sync_req:  HTTPRequest = null
+var _compact_applied: bool = false
+var _rotate_overlay: CanvasLayer = null
+var _lb_panel: CanvasLayer = null
 var _music_player: AudioStreamPlayer = null
 var _music_track_index: int = 4  # Galactic Groove default
 var _music_expanded: bool = false
@@ -37,23 +45,45 @@ func _ready() -> void:
 	PlayerData.xp_changed.connect(_on_xp_changed)
 	PlayerData.energy_changed.connect(_on_energy_changed)
 	PlayerData.level_up.connect(_on_level_up)
-	NPCManager.npc_discovered.connect(_on_npc_discovered)
+	ResourceManager.item_added.connect(_on_item_added)
+	LandManager.passive_vault_updated.connect(_on_passive_vault_updated)
 
 	_hotbar_items.resize(HOTBAR_SLOTS)
 	_hotbar_items.fill("")
 	_refresh_all()
-	_build_npc_strip()
 	_update_time()
 	_update_claim_btn()
+	_style_home_btns()
+	_refresh_home_btn()
 	_add_settings_btn()
 	_apply_hud_icons()
 	_build_music_player()
+	_setup_xp_row()
+	LandManager.tile_placed.connect(func(_td): _refresh_home_btn())
+	_spawn_activity_log()
+
+	_xp_sync_req = HTTPRequest.new()
+	add_child(_xp_sync_req)
 
 	var timer := Timer.new()
 	timer.wait_time = 30.0
 	timer.autostart = true
 	timer.timeout.connect(_on_clock_tick)
 	add_child(timer)
+
+	_presence_req = HTTPRequest.new()
+	add_child(_presence_req)
+	_presence_req.request_completed.connect(_on_presence_response)
+	_send_presence_heartbeat()
+
+	var dau_timer := Timer.new()
+	dau_timer.wait_time = 120.0
+	dau_timer.autostart = true
+	dau_timer.timeout.connect(_send_presence_heartbeat)
+	add_child(dau_timer)
+
+	get_tree().get_root().size_changed.connect(_on_window_resized)
+	call_deferred("_check_mobile")
 
 func _apply_hud_icons() -> void:
 	_set_btn_icon(backpack_btn,  "res://assets/sprites/ui/icon_backpack.png")
@@ -83,12 +113,105 @@ func _prepend_currency_icon(row: HBoxContainer, path: String, before_lbl: Label)
 	row.add_child(img)
 	row.move_child(img, before_lbl.get_index())
 
+func _setup_xp_row() -> void:
+	# Move LevelLabel + XPBar into an HBox so we can squeeze a leaderboard button in
+	var top_left: Node = level_label.get_parent()
+	if not is_instance_valid(top_left): return
+	var insert_idx: int = level_label.get_index()
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	top_left.add_child(row)
+	top_left.move_child(row, insert_idx)
+
+	level_label.reparent(row)
+	level_label.add_theme_font_size_override("font_size", 9)
+
+	xp_bar.reparent(row)
+	xp_bar.custom_minimum_size = Vector2(70, 12)
+	xp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var lb_btn := Button.new()
+	lb_btn.text = "LB"
+	lb_btn.custom_minimum_size = Vector2(26, 18)
+	lb_btn.add_theme_font_size_override("font_size", 8)
+	var lsb := StyleBoxFlat.new()
+	lsb.bg_color     = Color(0.12, 0.10, 0.02, 0.90)
+	lsb.border_color = Color(0.9, 0.75, 0.2)
+	lsb.set_border_width_all(1)
+	lsb.set_corner_radius_all(3)
+	lb_btn.add_theme_stylebox_override("normal", lsb)
+	lb_btn.add_theme_color_override("font_color", Color(1.0, 0.88, 0.3))
+	lb_btn.pressed.connect(_on_lb_btn_pressed)
+	row.add_child(lb_btn)
+
+func _on_lb_btn_pressed() -> void:
+	if _lb_panel != null and is_instance_valid(_lb_panel):
+		_lb_panel.queue_free()
+		_lb_panel = null
+		return
+	var scr: GDScript = load("res://scripts/ui/farm_xp_leaderboard.gd")
+	_lb_panel = CanvasLayer.new()
+	_lb_panel.set_script(scr)
+	get_tree().current_scene.add_child(_lb_panel)
+	_lb_panel.tree_exiting.connect(func(): _lb_panel = null)
+
+func _sync_xp_to_server() -> void:
+	if _xp_sync_req == null: return
+	if _xp_sync_req.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED: return
+	var wallet: String = PlayerData.wallet_address
+	if wallet == "" or not wallet.begins_with("0x"): return
+	var body := JSON.stringify({
+		"wallet": wallet.to_lower(),
+		"name":   PlayerData.player_name,
+		"level":  PlayerData.level,
+		"xp":     PlayerData.xp,
+	})
+	_xp_sync_req.request(
+		"https://gamehole.ink/api/farm-xp",
+		["Content-Type: application/json"],
+		HTTPClient.METHOD_POST,
+		body
+	)
+
+func _on_item_added(_item_id: String, _amount: int) -> void:
+	_pulse_button(backpack_btn, Color(0.4, 1.0, 0.55))
+
+func _on_passive_vault_updated(tile_id: String) -> void:
+	var owner: String = LandManager.tiles.get(tile_id, {}).get("owner_id", "")
+	if owner == PlayerData.player_id:
+		_pulse_button(claim_btn, Color(1.0, 0.88, 0.3))
+
+func _pulse_button(btn: Button, flash_color: Color) -> void:
+	if not is_instance_valid(btn): return
+	btn.pivot_offset = btn.size / 2.0
+	var tw1 := create_tween()
+	tw1.tween_property(btn, "scale", Vector2(1.22, 1.22), 0.09)
+	tw1.tween_property(btn, "scale", Vector2(1.0, 1.0), 0.28)
+	var tw2 := create_tween()
+	tw2.tween_property(btn, "modulate", flash_color, 0.09)
+	tw2.tween_property(btn, "modulate", Color(1.0, 1.0, 1.0), 0.28)
+
 func _on_clock_tick() -> void:
 	_update_time()
 	_update_claim_btn()
 
 func _update_time() -> void:
 	time_label.text = PlayerData.get_eastern_time_string()
+
+func _send_presence_heartbeat() -> void:
+	if _presence_req == null or _presence_req.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:
+		return
+	var body := JSON.stringify({"id": PlayerData.player_id})
+	_presence_req.request(PRESENCE_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
+	_sync_xp_to_server()
+
+func _on_presence_response(_result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	var json := JSON.new()
+	if json.parse(body.get_string_from_utf8()) == OK:
+		var data = json.get_data()
+		if data is Dictionary and data.has("online"):
+			dau_label.text = "Online: %d" % int(data["online"])
 
 func _update_claim_btn() -> void:
 	if PlayerData.can_claim_daily():
@@ -126,43 +249,12 @@ func _on_xp_changed(xp: int, level: int) -> void:
 	xp_bar.tooltip_text = "%d / %d XP" % [xp, PlayerData.xp_to_next_level]
 
 func _on_energy_changed(energy: int, max_energy: int) -> void:
-	energy_bar.max_value = max_energy
-	energy_bar.value = energy
-	energy_label.text = "%d/%d" % [energy, max_energy]
-	if energy <= 10:
-		energy_bar.modulate = Color.RED
-	else:
-		energy_bar.modulate = Color.WHITE
+	energy_label.text = "HP %d/%d" % [energy, max_energy]
+	energy_label.modulate = Color(1.0, 0.2, 0.2) if energy <= 10 else Color(1.0, 0.35, 0.35)
 
 func _on_level_up(new_level: int) -> void:
 	_refresh_all()
-
-func _build_npc_strip() -> void:
-	for child in npc_strip.get_children():
-		child.queue_free()
-	for npc in NPCManager.get_all_npcs_for_hud():
-		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(48, 48)
-		btn.tooltip_text = npc.get("shop_name", npc["name"])
-		btn.pressed.connect(_on_visit_npc.bind(npc["id"]))
-		var portrait_path: String = npc.get("portrait", "")
-		if portrait_path != "" and ResourceLoader.exists(portrait_path):
-			btn.icon = load(portrait_path) as Texture2D
-			btn.expand_icon = true
-			btn.text = ""
-		else:
-			btn.text = npc["name"].substr(0, 2)
-		npc_strip.add_child(btn)
-
-func _on_npc_discovered(_npc_id: String) -> void:
-	_build_npc_strip()
-
-func _on_visit_npc(npc_id: String) -> void:
-	PlayerData.save_data()
-	ResourceManager.save_inventory()
-	LandManager.save_land_data()
-	LandManager.current_tile_id = "npc_" + npc_id
-	get_tree().change_scene_to_file("res://scenes/tiles/NPCTile.tscn")
+	_sync_xp_to_server()
 
 func set_hotbar_item(slot: int, item_id: String) -> void:
 	if slot < 0 or slot >= HOTBAR_SLOTS:
@@ -174,11 +266,13 @@ func _refresh_hotbar() -> void:
 	var slots := hotbar.get_children()
 	for i in min(slots.size(), HOTBAR_SLOTS):
 		var item_id: String = _hotbar_items[i]
-		var label: Label = slots[i].get_node_or_null("Label")
-		if label:
-			if item_id == "":
-				label.text = ""
-			else:
+		var slot_node: Control = slots[i]
+		if item_id == "":
+			slot_node.visible = false
+		else:
+			slot_node.visible = true
+			var label: Label = slot_node.get_node_or_null("Label")
+			if label:
 				var info := ResourceManager.get_item_info(item_id)
 				label.text = info.get("name", item_id).substr(0, 4)
 
@@ -187,11 +281,76 @@ func show_no_energy() -> void:
 	await get_tree().create_timer(1.5).timeout
 	no_energy_label.visible = false
 
+func _on_window_resized() -> void:
+	call_deferred("_check_mobile")
+
+func _check_mobile() -> void:
+	var win := DisplayServer.window_get_size()
+	if win.x < 10 or win.y < 10:
+		return
+	if win.y > win.x:
+		_ensure_rotate_overlay()
+	else:
+		_remove_rotate_overlay()
+		if win.x < 900 and not _compact_applied:
+			_setup_compact_layout()
+
+func _ensure_rotate_overlay() -> void:
+	if _rotate_overlay != null:
+		return
+	_rotate_overlay = CanvasLayer.new()
+	_rotate_overlay.layer = 50
+	get_tree().current_scene.add_child(_rotate_overlay)
+	var bg := ColorRect.new()
+	bg.color = Color(0.0, 0.0, 0.0, 0.95)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_rotate_overlay.add_child(bg)
+	var lbl := Label.new()
+	lbl.text = "Rotate your device\nto play"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lbl.add_theme_font_size_override("font_size", 28)
+	lbl.modulate = Color(0.6, 1.0, 0.7)
+	_rotate_overlay.add_child(lbl)
+
+func _remove_rotate_overlay() -> void:
+	if _rotate_overlay != null and is_instance_valid(_rotate_overlay):
+		_rotate_overlay.queue_free()
+	_rotate_overlay = null
+
+func _setup_compact_layout() -> void:
+	_compact_applied = true
+	var compact := Vector2(38, 44)
+	# Shrink all buttons in the Buttons row
+	var buttons_row := get_node_or_null("Bottom/Buttons")
+	if buttons_row:
+		for child in buttons_row.get_children():
+			if child is Button:
+				child.custom_minimum_size = compact
+	# Shrink hotbar slots
+	for slot in hotbar.get_children():
+		slot.custom_minimum_size = compact
+	# Shrink music toggle
+	if _music_toggle_btn:
+		_music_toggle_btn.custom_minimum_size = Vector2(34, 44)
+	# Hide NFT (least essential on mobile)
+	if nft_btn:
+		nft_btn.visible = false
+
+var _activity_log: Node = null
+
+func _spawn_activity_log() -> void:
+	_activity_log = Node.new()
+	_activity_log.set_script(load("res://scripts/ui/activity_log.gd"))
+	add_child(_activity_log)
+
 var _backpack: CanvasLayer = null
 var _nft_panel: CanvasLayer = null
 var _market: CanvasLayer = null
 var _credits: Control = null
 var _tile_settings: CanvasLayer = null
+var _tile_chooser: CanvasLayer = null
 
 func _toggle_panel(field_name: String, script_path: String) -> void:
 	var current: CanvasLayer = get(field_name)
@@ -212,16 +371,214 @@ func _on_backpack_btn_pressed() -> void:
 func _on_market_btn_pressed() -> void:
 	_toggle_panel("_market", "res://scripts/ui/market_ui.gd")
 
+func _style_home_btns() -> void:
+	# Home button — green tint
+	if home_btn:
+		home_btn.add_theme_font_size_override("font_size", 9)
+		var hsb := StyleBoxFlat.new()
+		hsb.bg_color     = Color(0.12, 0.26, 0.10, 0.92)
+		hsb.border_color = Color(0.40, 0.85, 0.30)
+		hsb.set_border_width_all(1)
+		hsb.set_corner_radius_all(4)
+		home_btn.add_theme_stylebox_override("normal", hsb)
+		home_btn.add_theme_color_override("font_color", Color(0.55, 1.0, 0.40))
+	# Bell button — gold tint
+	if bell_btn:
+		bell_btn.add_theme_font_size_override("font_size", 9)
+		var bsb := StyleBoxFlat.new()
+		bsb.bg_color     = Color(0.18, 0.14, 0.06, 0.92)
+		bsb.border_color = Color(0.90, 0.75, 0.20)
+		bsb.set_border_width_all(1)
+		bsb.set_corner_radius_all(4)
+		bell_btn.add_theme_stylebox_override("normal", bsb)
+		bell_btn.add_theme_color_override("font_color", Color(1.0, 0.88, 0.30))
+
+func _refresh_home_btn() -> void:
+	if home_btn:
+		var has_tiles: bool = not LandManager.get_player_tiles().is_empty()
+		home_btn.disabled = not has_tiles
+		home_btn.modulate = Color(1, 1, 1, 1) if has_tiles else Color(0.5, 0.5, 0.5, 0.7)
+
+func _on_home_btn_pressed() -> void:
+	if _tile_chooser != null and is_instance_valid(_tile_chooser):
+		_tile_chooser.queue_free()
+		_tile_chooser = null
+		return
+	_open_tile_chooser()
+
+func _open_tile_chooser() -> void:
+	_tile_chooser = CanvasLayer.new()
+	_tile_chooser.layer = 30
+	get_tree().current_scene.add_child(_tile_chooser)
+
+	var overlay := ColorRect.new()
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.color = Color(0, 0, 0, 0.50)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed:
+			if is_instance_valid(_tile_chooser): _tile_chooser.queue_free()
+			_tile_chooser = null
+	)
+	_tile_chooser.add_child(overlay)
+
+	var panel := PanelContainer.new()
+	var psb := StyleBoxFlat.new()
+	psb.bg_color = Color(0.06, 0.09, 0.06, 0.97)
+	psb.border_color = Color(0.35, 0.70, 0.25)
+	psb.set_border_width_all(2)
+	psb.set_corner_radius_all(8)
+	panel.add_theme_stylebox_override("panel", psb)
+	panel.custom_minimum_size = Vector2(420, 300)
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.offset_left   = -210.0
+	panel.offset_right  =  210.0
+	panel.offset_top    = -150.0
+	panel.offset_bottom =  150.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_tile_chooser.add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	panel.add_child(vbox)
+
+	# Header row
+	var hdr := HBoxContainer.new()
+	vbox.add_child(hdr)
+	var title := Label.new()
+	title.text = "YOUR TILES"
+	title.add_theme_font_size_override("font_size", 15)
+	title.modulate = Color(0.55, 1.0, 0.40)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hdr.add_child(title)
+	var close_btn := Button.new()
+	close_btn.text = "X"
+	close_btn.custom_minimum_size = Vector2(28, 28)
+	close_btn.pressed.connect(func():
+		if is_instance_valid(_tile_chooser): _tile_chooser.queue_free()
+		_tile_chooser = null
+	)
+	hdr.add_child(close_btn)
+	vbox.add_child(HSeparator.new())
+
+	# Scrollable tile list
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
+
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 4)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+
+	var player_tiles: Array = LandManager.get_player_tiles()
+	if player_tiles.is_empty():
+		var empty := Label.new()
+		empty.text = "No tiles placed yet.\nVisit the World Map to place your first tile."
+		empty.modulate = Color(0.6, 0.6, 0.6)
+		empty.add_theme_font_size_override("font_size", 11)
+		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		list.add_child(empty)
+	else:
+		var TYPE_COLORS: Dictionary = {
+			"FARM":     Color(0.22, 0.52, 0.18, 0.6),
+			"FOREST":   Color(0.12, 0.35, 0.12, 0.6),
+			"MOUNTAIN": Color(0.40, 0.32, 0.22, 0.6),
+			"POND":     Color(0.15, 0.30, 0.55, 0.6),
+		}
+		for tile in player_tiles:
+			var tid: String     = tile.get("id", "")
+			var ttype: int      = tile.get("type", 0)
+			var ttype_str: String = tile.get("type_str", "")
+			var tname: String   = tile.get("name", ttype_str.capitalize())
+			var is_home: bool   = tid == LandManager.home_tile_id
+			var is_cur: bool    = tid == LandManager.current_tile_id
+
+			var row := Button.new()
+			var rsb := StyleBoxFlat.new()
+			rsb.bg_color = TYPE_COLORS.get(ttype_str, Color(0.25, 0.25, 0.25, 0.6))
+			if is_cur: rsb.bg_color.a = 0.25
+			rsb.set_corner_radius_all(4)
+			rsb.content_margin_left  = 10.0
+			rsb.content_margin_right = 10.0
+			rsb.content_margin_top   = 5.0
+			rsb.content_margin_bottom = 5.0
+			row.add_theme_stylebox_override("normal", rsb)
+			row.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			row.custom_minimum_size = Vector2(0, 42)
+			var star: String = "★ " if is_home else "     "
+			var cur_tag: String = "  [HERE]" if is_cur else ""
+			row.text = "%s%s    (%s)%s" % [star, tname, ttype_str.capitalize(), cur_tag]
+			row.add_theme_font_size_override("font_size", 12)
+			row.disabled = is_cur
+			if not is_cur:
+				var cap_tid := tid
+				var cap_type := ttype
+				row.pressed.connect(func(): _travel_to_tile(cap_tid, cap_type))
+			list.add_child(row)
+
+	vbox.add_child(HSeparator.new())
+	var hint := Label.new()
+	hint.text = "★ = home tile     click any row to fast-travel"
+	hint.add_theme_font_size_override("font_size", 9)
+	hint.modulate = Color(0.50, 0.50, 0.50)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(hint)
+
+func _travel_to_tile(tile_id: String, tile_type: int) -> void:
+	if is_instance_valid(_tile_chooser):
+		_tile_chooser.queue_free()
+	_tile_chooser = null
+	var scene_path: String = _tile_type_to_scene(tile_type)
+	if scene_path == "":
+		return
+	PlayerData.save_data()
+	ResourceManager.save_inventory()
+	LandManager.save_land_data()
+	LandManager.current_tile_id = tile_id
+	get_tree().change_scene_to_file(scene_path)
+
+func _on_bell_btn_pressed() -> void:
+	if _activity_log != null and is_instance_valid(_activity_log):
+		_activity_log.toggle_history()
+
+func _tile_type_to_scene(tile_type: int) -> String:
+	match tile_type:
+		LandManager.TileType.FARM:     return "res://scenes/tiles/FarmTile.tscn"
+		LandManager.TileType.FOREST:   return "res://scenes/tiles/ForestTile.tscn"
+		LandManager.TileType.MOUNTAIN: return "res://scenes/tiles/MountainTile.tscn"
+		LandManager.TileType.POND:     return "res://scenes/tiles/PondTile.tscn"
+	return ""
+
 func _add_settings_btn() -> void:
 	var buttons_row: Node = get_node_or_null("Bottom/Buttons")
 	if not buttons_row:
 		return
 	var btn := Button.new()
-	btn.text = "⚙ Tile"
+	btn.text = "Tile"
 	btn.custom_minimum_size = Vector2(56, 32)
 	btn.add_theme_font_size_override("font_size", 10)
 	btn.pressed.connect(_on_settings_btn_pressed)
 	buttons_row.add_child(btn)
+
+	var logout_btn := Button.new()
+	logout_btn.text = "Logout"
+	logout_btn.custom_minimum_size = Vector2(56, 32)
+	logout_btn.add_theme_font_size_override("font_size", 10)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.35, 0.10, 0.10, 0.90)
+	sb.border_color = Color(0.70, 0.20, 0.20)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(4)
+	logout_btn.add_theme_stylebox_override("normal", sb)
+	logout_btn.add_theme_color_override("font_color", Color(1.0, 0.6, 0.6))
+	logout_btn.pressed.connect(_on_logout_pressed)
+	buttons_row.add_child(logout_btn)
+
+func _on_logout_pressed() -> void:
+	PlayerData.logout()
+	get_tree().change_scene_to_file("res://scenes/ui/StartScreen.tscn")
 
 func _on_map_btn_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/world_map/WorldMap.tscn")
@@ -266,21 +623,27 @@ func _build_music_player() -> void:
 	_music_player.finished.connect(_on_music_finished)
 	_load_track(_music_track_index)
 
-	# Collapsed toggle button — bottom-left
+	# Toggle button — inserted as first item in the bottom buttons bar
 	_music_toggle_btn = Button.new()
 	_music_toggle_btn.text = "MUS"
 	_music_toggle_btn.flat = false
-	_music_toggle_btn.custom_minimum_size = Vector2(46, 46)
-	_music_toggle_btn.position = Vector2(14, 720 - 60)
-	_music_toggle_btn.add_theme_font_size_override("font_size", 22)
+	_music_toggle_btn.custom_minimum_size = Vector2(46, 32)
+	_music_toggle_btn.add_theme_font_size_override("font_size", 10)
 	var tsb := StyleBoxFlat.new()
 	tsb.bg_color = Color(0.07, 0.07, 0.15, 0.92)
 	tsb.border_color = Color(0.0, 0.83, 1.0)
 	tsb.set_border_width_all(2)
-	tsb.set_corner_radius_all(23)
+	tsb.set_corner_radius_all(4)
 	_music_toggle_btn.add_theme_stylebox_override("normal", tsb)
+	_music_toggle_btn.add_theme_color_override("font_color", Color(0.0, 0.83, 1.0))
 	_music_toggle_btn.pressed.connect(_on_music_toggle)
-	add_child(_music_toggle_btn)
+	var bottom_row: Node = get_node_or_null("Bottom")
+	if bottom_row:
+		bottom_row.add_child(_music_toggle_btn)
+		bottom_row.move_child(_music_toggle_btn, 0)
+	else:
+		_music_toggle_btn.position = Vector2(14, 720 - 60)
+		add_child(_music_toggle_btn)
 
 	# Expanded panel (hidden initially)
 	_music_panel = PanelContainer.new()

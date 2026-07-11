@@ -24,7 +24,7 @@ func harvest(tile_id: String, item_id: String, total_amount: int, visitor_id: St
 
 	ResourceManager.add_item(item_id, visitor_share)
 	if owner_share > 0:
-		LandManager.add_to_passive_vault(tile_id, item_id, owner_share)
+		LandManager.add_to_passive_vault(tile_id, item_id, owner_share, visitor_id)
 
 	PlayerData.add_xp(1)
 	harvest_completed.emit(tile_id, visitor_id, item_id, visitor_share, owner_share)

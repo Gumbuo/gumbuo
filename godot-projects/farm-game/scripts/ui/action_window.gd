@@ -178,7 +178,7 @@ func _get_actions() -> Array:
 		"barrel":
 			return [{"label": "Ferment Wine  (collab x3)", "action": "open_barrel"}]
 		"beehive":
-			return [{"label": "Collect Honey (coming soon)", "disabled": true}]
+			return [{"label": "Open Beehive", "action": "open_beehive"}]
 		"box":
 			return [{"label": "Open Storage (coming soon)", "disabled": true}]
 		"dyeing_vat":
@@ -249,12 +249,28 @@ func _tree_actions() -> Array:
 	return [{"label": "Need an Iron+ Axe to chop", "disabled": true}]
 
 func _boulder_actions() -> Array:
+	var tile_slots: Dictionary = LandManager.tiles.get(_tile_id, {}).get("slots", {})
+	var slot_data: Dictionary = tile_slots.get(LandManager.slot_key(_grid_pos), {})
+	var now: int = int(Time.get_unix_time_from_system())
+	var mined_at: int  = slot_data.get("boulder_mined_at",  0)
+	var crack_at: int  = slot_data.get("boulder_cracked_at", 0)
+	if mined_at > 0:
+		var elapsed: int = now - mined_at
+		var remaining: int = max(0, 14400 - elapsed)
+		if remaining > 0:
+			var h: int = remaining / 3600
+			var m: int = (remaining % 3600) / 60
+			var time_str: String = "%dh %dm" % [h, m] if h > 0 else "%dm" % m
+			return [{"label": "Regrowing... (%s)" % time_str, "disabled": true}]
 	var has_pick: bool = ResourceManager.has_item("tool_pickaxe_iron") or \
 		ResourceManager.has_item("tool_pickaxe_silver") or \
 		ResourceManager.has_item("tool_pickaxe_gold")
-	if has_pick:
-		return [{"label": "Mine Rock  (-1 energy)", "action": "mine_boulder"}]
-	return [{"label": "Need an Iron+ Pickaxe to mine", "disabled": true}]
+	if not has_pick:
+		return [{"label": "Need an Iron+ Pickaxe to mine", "disabled": true}]
+	var is_cracked: bool = crack_at > 0 and mined_at == 0
+	if is_cracked:
+		return [{"label": "Finish Mining  (-1 energy)", "action": "mine_boulder", "highlight": true}]
+	return [{"label": "Mine Rock  (-1 energy)", "action": "mine_boulder", "highlight": true}]
 
 func _fishing_actions() -> Array:
 	var has_rod: bool = ResourceManager.has_item("tool_rod_basic") or \
@@ -303,7 +319,6 @@ func _workshop_actions() -> Array:
 		{"name": "Watering Can", "gives": "watering_can", "needs": [["wood", 4], ["stone", 5]]},
 		{"name": "Axe", "gives": "axe", "needs": [["wood", 4], ["stone", 8]]},
 		{"name": "Pickaxe", "gives": "pickaxe", "needs": [["wood", 3], ["stone", 10]]},
-		{"name": "Fishing Rod", "gives": "fishing_rod", "needs": [["wood", 8]]},
 	]
 	var acts: Array = []
 	for r in recipes:
@@ -345,6 +360,7 @@ func _do_action(act: Dictionary) -> void:
 		"forage_wild":  _do_forage_wild()
 		"open_mailbox":    _do_open_mailbox()
 		"open_coop":       _do_open_coop()
+		"open_beehive":    _do_open_beehive()
 		"open_wine_press": _do_open_wine_press()
 		"open_barrel":     _do_open_barrel()
 		"open_bread_oven": _do_open_bread_oven()
@@ -452,17 +468,48 @@ func _do_chop() -> void:
 
 func _do_mine() -> void:
 	if not PlayerData.spend_energy(1):
+		_show_drops_popup([{"label": "No energy!", "color": Color(1.0, 0.3, 0.3), "items": [{"id": "stone", "count": 0}]}])
 		return
 	PlayerData.add_xp(1)
-	ResourceManager.add_item("stone", randi_range(2, 4))
-	LandManager.remove_slot_item(_tile_id, _grid_pos)
+	var slots: Dictionary = LandManager.tiles.get(_tile_id, {}).get("slots", {})
+	var key: String = LandManager.slot_key(_grid_pos)
+	if not (slots.has(key) and slots[key].get("is_anchor", false)):
+		return
+	var slot: Dictionary = slots[key]
+	var now: int = int(Time.get_unix_time_from_system())
+	var mined_at: int = slot.get("boulder_mined_at", 0)
+	var crack_at: int = slot.get("boulder_cracked_at", 0)
+	# Stage 1 (cracked) only when crack_at set this cycle and not yet mined
+	var is_cracked: bool = crack_at > 0 and mined_at == 0
+	var player_node: Node = get_tree().get_first_node_in_group("player")
+	if player_node and player_node.has_method("play_mine"):
+		player_node.call("play_mine")
+	if is_cracked:
+		# Second hit: fully mine, give main stone yield
+		var stone_amt: int = randi_range(3, 6)
+		ResourceManager.add_item("stone", stone_amt)
+		slot["boulder_mined_at"] = now
+		LandManager.save_land_data()
+		LandManager.slot_item_placed.emit(_tile_id, key, "boulder")
+		_show_drops_popup([{"label": "You", "color": Color(0.55, 0.85, 0.55), "items": [{"id": "stone", "count": stone_amt}]}])
+	else:
+		# First hit (full or respawned): crack the rock, clear stale data, small yield
+		var stone_amt: int = randi_range(1, 2)
+		ResourceManager.add_item("stone", stone_amt)
+		slot["boulder_cracked_at"] = now
+		slot["boulder_mined_at"] = 0  # clear stale mined_at from previous cycle
+		LandManager.save_land_data()
+		LandManager.slot_item_placed.emit(_tile_id, key, "boulder")
+		_show_drops_popup([{"label": "You", "color": Color(0.55, 0.85, 0.55), "items": [{"id": "stone", "count": stone_amt}]}])
 
 func _do_forage_wild() -> void:
 	if not PlayerData.spend_energy(1):
 		return
 	PlayerData.add_xp(1)
-	ResourceManager.add_item(_item_id.trim_prefix("wild_"), 1)
+	var foraged: String = _item_id.trim_prefix("wild_")
+	ResourceManager.add_item(foraged, 1)
 	LandManager.remove_slot_item(_tile_id, _grid_pos)
+	_show_drops_popup([{"label": "Foraged", "color": Color(0.55, 1.0, 0.55), "items": [{"id": foraged, "count": 1}]}])
 
 const FISH_TABLE := [
 	{ "item": "tadpole",         "weight": 20 },
@@ -491,11 +538,15 @@ func _do_fish() -> void:
 		total_weight += entry["weight"]
 	var roll: int = randi_range(1, total_weight)
 	var running: int = 0
+	var caught: String = ""
 	for entry in FISH_TABLE:
 		running += entry["weight"]
 		if roll <= running:
-			ResourceManager.add_item(entry["item"], 1)
-			return
+			caught = entry["item"]
+			break
+	if caught != "":
+		ResourceManager.add_item(caught, 1)
+		_show_drops_popup([{"label": "Caught", "color": Color(0.4, 0.75, 1.0), "items": [{"id": caught, "count": 1}]}])
 
 func _do_cook(recipe: Dictionary) -> void:
 	var needs: Array = recipe.get("needs", [])
@@ -547,7 +598,9 @@ func _do_collect_eggs() -> void:
 	if not PlayerData.spend_energy(1):
 		return
 	PlayerData.add_xp(1)
-	ResourceManager.add_item("egg_white", randi_range(1, 3))
+	var amt: int = randi_range(1, 3)
+	ResourceManager.add_item("egg_white", amt)
+	_show_drops_popup([{"label": "Collected", "color": Color(1.0, 0.95, 0.65), "items": [{"id": "egg_white", "count": amt}]}])
 
 func _show_drops_popup(drops: Array) -> void:
 	var popup = (load("res://scripts/ui/drops_popup.gd") as GDScript).new()
@@ -555,10 +608,14 @@ func _show_drops_popup(drops: Array) -> void:
 	popup.show_drops(drops)
 
 func _do_open_coop() -> void:
-	var ui = (load("res://scripts/ui/chicken_coop_ui.gd") as GDScript).new()
-	ui.tile_id   = _tile_id
-	ui.grid_pos  = _grid_pos
+	var ui: CanvasLayer = (load("res://scripts/ui/chicken_coop_ui.gd") as GDScript).new()
 	get_tree().root.add_child(ui)
+	ui.setup(_tile_id, _grid_pos)
+
+func _do_open_beehive() -> void:
+	var ui: CanvasLayer = (load("res://scripts/ui/beehive_ui.gd") as GDScript).new()
+	get_tree().root.add_child(ui)
+	ui.setup(_tile_id, _grid_pos)
 
 func _do_open_wine_press() -> void:
 	var tile_owner: String = LandManager.tiles.get(_tile_id, {}).get("owner_id", "")

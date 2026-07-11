@@ -26,6 +26,11 @@ var _cell_nodes: Array = []
 var _content_box: VBoxContainer = null
 var _silver_lbl: Label = null
 var _cat_btns: Array = []
+var _consume_bar: Control = null
+var _consume_lbl: Label = null
+var _consume_btn: Button = null
+var _selected_food: String = ""
+var _selected_food_info: Dictionary = {}
 
 func _ready() -> void:
 	add_to_group("action_windows")
@@ -126,6 +131,10 @@ func _build_ui() -> void:
 	_content_box.add_theme_constant_override("separation", int(CELL_GAP))
 	scroll.add_child(_content_box)
 
+	# ── Consume bar (hidden until food selected) ──
+	_consume_bar = _build_consume_bar()
+	vbox.add_child(_consume_bar)
+
 	_rebuild_items()
 
 func _switch_cat(idx: int) -> void:
@@ -138,6 +147,10 @@ func _rebuild_items() -> void:
 	for child in _content_box.get_children():
 		child.queue_free()
 	_cell_nodes.clear()
+
+	if _selected_food != "" and ResourceManager.get_count(_selected_food) <= 0:
+		_selected_food = ""
+		if _consume_bar: _consume_bar.visible = false
 
 	if _silver_lbl:
 		_silver_lbl.text = "Silver: %d" % PlayerData.silver
@@ -280,94 +293,66 @@ func _make_item_cell(item_id: String, info: Dictionary, count: int) -> Control:
 		var cap_info := info
 		cell.gui_input.connect(func(ev: InputEvent) -> void:
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
-				_show_eat_popup(cap_id, cap_info, ev.global_position)
+				_select_food(cap_id, cap_info)
 		)
 
 	return cell
 
-# ── Eat popup ────────────────────────────────────────────────────────────
+# ── Consume bar ──────────────────────────────────────────────────────────
 
-func _show_eat_popup(item_id: String, info: Dictionary, screen_pos: Vector2) -> void:
-	for child in get_tree().root.get_children():
-		if child.name == "EatPopup":
-			child.queue_free()
-
-	var popup := CanvasLayer.new()
-	popup.name  = "EatPopup"
-	popup.layer = 35
-	get_tree().root.add_child(popup)
-
-	var overlay := ColorRect.new()
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.color = Color(0, 0, 0, 0.0)
-	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	overlay.gui_input.connect(func(ev: InputEvent) -> void:
-		if ev is InputEventMouseButton and ev.pressed:
-			popup.queue_free()
-	)
-	popup.add_child(overlay)
-
-	var pw := 210.0; var ph := 120.0
-	var panel := Control.new()
-	panel.position = Vector2(clamp(screen_pos.x, 0, 1280 - pw), clamp(screen_pos.y - ph - 10, 0, 720 - ph))
-	panel.size     = Vector2(pw, ph)
-	popup.add_child(panel)
-
-	var bg := ColorRect.new()
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = C_BG
-	panel.add_child(bg)
-	panel.add_child(_make_border_rect(pw, ph))
-
-	var vbox := VBoxContainer.new()
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.add_theme_constant_override("separation", 6)
-	var pad := _make_padding_container(vbox, 12, 10, 12, 10)
-	panel.add_child(pad)
-
-	var name_lbl := Label.new()
-	name_lbl.text = info.get("name", item_id)
-	name_lbl.add_theme_font_size_override("font_size", 11)
-	name_lbl.add_theme_color_override("font_color", C_ACCENT)
-	vbox.add_child(name_lbl)
-
-	var energy: int = info.get("energy_restore", 0)
-	var desc_lbl := Label.new()
-	desc_lbl.text = ("Restores %d energy" % energy) if energy > 0 else info.get("description", "")
-	desc_lbl.add_theme_font_size_override("font_size", 8)
-	desc_lbl.add_theme_color_override("font_color", C_TEXT_DIM)
-	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vbox.add_child(desc_lbl)
+func _build_consume_bar() -> Control:
+	var bar := VBoxContainer.new()
+	bar.visible = false
+	bar.add_theme_constant_override("separation", 0)
 
 	var sep := ColorRect.new()
 	sep.color = C_SEP
 	sep.custom_minimum_size = Vector2(0, 1)
-	vbox.add_child(sep)
+	bar.add_child(sep)
 
-	var btn_row := HBoxContainer.new()
-	btn_row.add_theme_constant_override("separation", 6)
-	vbox.add_child(btn_row)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var pad := _make_padding_container(row, 12, 6, 12, 6)
+	bar.add_child(pad)
 
-	var eat_btn := _make_action_btn("EAT")
+	_consume_lbl = Label.new()
+	_consume_lbl.add_theme_font_size_override("font_size", 9)
+	_consume_lbl.add_theme_color_override("font_color", C_TEXT)
+	_consume_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_consume_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(_consume_lbl)
+
+	_consume_btn = _make_action_btn("EAT")
+	_consume_btn.custom_minimum_size = Vector2(80, 28)
+	_consume_btn.pressed.connect(_on_eat_pressed)
+	row.add_child(_consume_btn)
+
+	return bar
+
+func _select_food(item_id: String, info: Dictionary) -> void:
+	_selected_food = item_id
+	_selected_food_info = info
+	var energy: int = info.get("energy_restore", 0)
+	var name_str: String = info.get("name", item_id)
+	_consume_lbl.text = "%s  +%d energy" % [name_str, energy] if energy > 0 else name_str
 	var remaining: int = PlayerData.food_cooldown_remaining()
 	if remaining > 0:
-		eat_btn.text     = "Cooldown %ds" % remaining
-		eat_btn.disabled = true
+		_consume_btn.text = "Wait %ds" % remaining
+		_consume_btn.disabled = true
 	else:
-		var cap_id := item_id
-		eat_btn.pressed.connect(func():
-			if PlayerData.eat_food(cap_id):
-				ResourceManager.remove_item(cap_id)
-				_rebuild_items()
-				var _p: Node = get_tree().get_first_node_in_group("player")
-				if _p and _p.has_method("play_drink"): _p.call("play_drink")
-			popup.queue_free()
-		)
-	btn_row.add_child(eat_btn)
+		_consume_btn.text = "EAT"
+		_consume_btn.disabled = false
+	_consume_bar.visible = true
 
-	var cancel_btn := _make_action_btn("Cancel", true)
-	cancel_btn.pressed.connect(func(): popup.queue_free())
-	btn_row.add_child(cancel_btn)
+func _on_eat_pressed() -> void:
+	if _selected_food == "": return
+	if PlayerData.eat_food(_selected_food):
+		ResourceManager.remove_item(_selected_food)
+		var p: Node = get_tree().get_first_node_in_group("player")
+		if p and p.has_method("play_drink"): p.call("play_drink")
+	_selected_food = ""
+	_consume_bar.visible = false
+	_rebuild_items()
 
 # ── Helper builders ──────────────────────────────────────────────────────
 

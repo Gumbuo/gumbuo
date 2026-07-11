@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-signal slot_activated(grid_pos: Vector2i, item_id: String)
+signal slot_activated(grid_pos: Vector2i, action: String, item_id: String)
 signal pond_water_clicked(screen_pos: Vector2)
 
 const SLOT_PX  := 64.0
@@ -35,6 +35,7 @@ var _beehive_ready_state: Dictionary = {} # key -> bool
 var _chicken_sprites: Array = []    # TextureRect nodes for chickens on tile
 var _masked_positions: Dictionary = {}  # key -> true for slots hidden on pond tile
 var _grow_timer:    float      = 0.0
+var _display_timer: float      = 0.0
 var _timer_label:   Label      = null
 var _crop_sheet:      Image      = null  # loaded from crops.png
 var _seed_phase_img:  Image      = null  # seed bag fallback for stage 0
@@ -47,8 +48,8 @@ const PLACEABLE_CATEGORIES: Array = [
 	["FARM",     ["soil_plot","boulder","beehive","silo","chicken_coop"]],
 	["TREES",    ["tree","apple_tree","pear_tree","peach_tree","lemon_tree"]],
 	["CRAFTING", ["workbench","workshop","furnace","bonfire","campfire","burner_station",
-	              "anvil","alchemy_table","bread_oven","wheat_mill","dyeing_vat",
-	              "spinning_wheel","stonecutter","sawmill","wine_press","barrel"]],
+				  "anvil","alchemy_table","bread_oven","wheat_mill","dyeing_vat",
+				  "spinning_wheel","stonecutter","sawmill","wine_press","barrel"]],
 	["STORAGE",  ["box","dropbox","mailbox"]],
 ]
 
@@ -176,6 +177,11 @@ func _process(delta: float) -> void:
 		LandManager.update_tree_states()
 		LandManager.update_coop_states()
 
+	_display_timer += delta
+	if _display_timer >= 1.0:
+		_display_timer = 0.0
+		_update_crop_timers()
+
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	var new_hover := Vector2i(-1, -1)
 
@@ -264,16 +270,13 @@ func _input(event: InputEvent) -> void:
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		var occupied: bool = slots.has(key)
 
-		# ── seed planting (owner only) ──
+		# ── seed planting (owner only) — queue character walk ──
 		if _held_seed != "":
 			if occupied and is_tile_owner:
 				var d: Dictionary = slots[key]
 				if d.get("is_anchor", false) and d.get("item_id","") == "soil_plot" and not d.has("crop"):
-					if LandManager.plant_seed(tile_id, slot_pos, _held_seed):
-						ResourceManager.remove_item(_held_seed)
-						if not ResourceManager.has_item(_held_seed):
-							_held_seed = ""
-						_refresh_picker()
+					if ResourceManager.has_item(_held_seed):
+						slot_activated.emit(slot_pos, "plant", _held_seed)
 			return
 
 		# ── single click on planted soil → harvest if ready ──
@@ -287,15 +290,7 @@ func _input(event: InputEvent) -> void:
 			var adat: Dictionary = slots.get(anchor_key, data)
 
 			if adat.get("item_id","") == "soil_plot" and adat.get("state","") == "ready":
-				var crop := LandManager.harvest_crop(tile_id, anchor_pos)
-				if crop != "":
-					var yield_amount: int = randi_range(4, 7)
-					if PlayerData.has_farming_boost() or PlayerData.has_apple_boost():
-						yield_amount += 1
-					if PlayerData.has_peach_boost():
-						yield_amount = max(6, yield_amount)
-					ResourceManager.add_item(crop, yield_amount)
-					_refresh_picker()
+				slot_activated.emit(anchor_pos, "harvest", adat.get("crop", ""))
 				return
 			elif adat.get("item_id","") == "soil_plot" and adat.has("crop"):
 				return  # still growing — do nothing
@@ -303,7 +298,14 @@ func _input(event: InputEvent) -> void:
 				_open_crafting_station(adat.get("item_id",""), anchor_pos)
 				return
 			elif adat.get("item_id","") in ACTION_ITEMS and not event.double_click:
-				slot_activated.emit(anchor_pos, adat.get("item_id",""))
+				var aid: String = adat.get("item_id","")
+				if aid in ["egg_white", "egg_gold"]:
+					slot_activated.emit(anchor_pos, "pickup", aid)
+				else:
+					slot_activated.emit(anchor_pos, "action", aid)
+				return
+			elif adat.get("item_id","").begins_with("wild_") and not event.double_click:
+				slot_activated.emit(anchor_pos, "pickup", adat.get("item_id",""))
 				return
 			elif not event.double_click:
 				return  # non-soil occupied: need double-click to return
@@ -321,14 +323,10 @@ func _input(event: InputEvent) -> void:
 				_show_return_popup(anchor_pos, adat.get("item_id",""))
 			return
 
-		# ── place held item in empty slot (owner only) ──
+		# ── place held item in empty slot (owner only) — queue character walk ──
 		if not occupied and not event.double_click and is_tile_owner:
 			if _held_item != "" and ResourceManager.has_item(_held_item):
-				if LandManager.place_slot_item(tile_id, slot_pos, _held_item):
-					ResourceManager.remove_item(_held_item)
-					if not ResourceManager.has_item(_held_item):
-						_held_item = ""
-					_refresh_picker()
+				slot_activated.emit(slot_pos, "place", _held_item)
 
 	elif event.button_index == MOUSE_BUTTON_RIGHT:
 		if not slots.has(key) or not is_tile_owner: return
@@ -472,6 +470,20 @@ func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl.name = "Lbl"
 	c.add_child(lbl)
+
+	var tim := Label.new()
+	tim.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	tim.offset_top = -13.0
+	tim.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tim.add_theme_font_size_override("font_size", 7)
+	tim.add_theme_color_override("font_color", Color(1.0, 0.90, 0.35))
+	tim.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.90))
+	tim.add_theme_constant_override("shadow_offset_x", 1)
+	tim.add_theme_constant_override("shadow_offset_y", 1)
+	tim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tim.name = "Timer"
+	tim.visible = false
+	c.add_child(tim)
 
 	var cap_pos: Vector2i = grid_pos
 	var get_drag_fn := func(_p: Vector2) -> Variant:
@@ -797,6 +809,46 @@ func _refresh() -> void:
 	_refresh_beehive_sprites()
 	_refresh_coop_labels()
 	_refresh_chicken_sprites()
+	_update_crop_timers()
+
+func _update_crop_timers() -> void:
+	var now := int(Time.get_unix_time_from_system())
+	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+	for key in _slot_nodes:
+		var slot: Control = _slot_nodes[key]
+		var tim: Label = slot.get_node_or_null("Timer")
+		if not is_instance_valid(tim):
+			continue
+		if _masked_positions.has(key):
+			tim.visible = false
+			continue
+		var data: Dictionary = slots.get(key, {})
+		if not (data.get("is_anchor", false) and data.get("item_id", "") == "soil_plot" and data.has("crop")):
+			tim.visible = false
+			continue
+		if data.get("state", "") == "ready":
+			tim.visible = false
+			continue
+		var crop: String  = data.get("crop", "")
+		var planted: int  = data.get("planted_at", now)
+		var elapsed: int  = now - planted
+		if data.get("fast_grow", false):
+			elapsed = int(float(elapsed) / 0.85)
+		var times: Array  = LandManager.GROW_TIMES.get(crop, [30, 90])
+		var secs_left: int = maxi(0, times[1] - elapsed)
+		if secs_left <= 0:
+			tim.visible = false
+		else:
+			tim.text    = _fmt_time(secs_left)
+			tim.visible = true
+
+func _fmt_time(secs: int) -> String:
+	var h := secs / 3600
+	var m := (secs % 3600) / 60
+	var s := secs % 60
+	if h > 0: return "%dh%dm" % [h, m]
+	if m > 0: return "%dm%ds" % [m, s]
+	return "%ds" % s
 
 # ─────────────────────────── CROP SPRITES ───────────────────
 

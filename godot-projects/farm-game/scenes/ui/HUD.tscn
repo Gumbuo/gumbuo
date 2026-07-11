@@ -5,45 +5,55 @@
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1")
 
-[node name="TopLeft" type="VBoxContainer" parent="."]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 220.0
-offset_bottom = 100.0
+[node name="TopLeft" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = -6.0
+offset_bottom = 26.0
+theme_override_constants/separation = 10
 
 [node name="LevelLabel" type="Label" parent="TopLeft"]
 text = "Lv.1"
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 11
+size_flags_vertical = 4
 
 [node name="XPBar" type="ProgressBar" parent="TopLeft"]
-custom_minimum_size = Vector2(200, 12)
+custom_minimum_size = Vector2(60, 10)
+size_flags_horizontal = 3
+size_flags_vertical = 4
 max_value = 100.0
 show_percentage = false
 
-[node name="EnergyBar" type="ProgressBar" parent="TopLeft"]
-custom_minimum_size = Vector2(200, 12)
-max_value = 50.0
-value = 50.0
-show_percentage = false
-
 [node name="EnergyLabel" type="Label" parent="TopLeft"]
-text = "50/50"
-theme_override_font_sizes/font_size = 10
+text = "HP 50/50"
+theme_override_font_sizes/font_size = 11
+modulate = Color(1.0, 0.35, 0.35, 1.0)
+size_flags_vertical = 4
 
 [node name="CurrencyRow" type="HBoxContainer" parent="TopLeft"]
+size_flags_vertical = 4
+theme_override_constants/separation = 4
 
 [node name="SilverLabel" type="Label" parent="TopLeft/CurrencyRow"]
 text = "Silver: 0"
 theme_override_font_sizes/font_size = 11
 
 [node name="GoldLabel" type="Label" parent="TopLeft/CurrencyRow"]
-text = "  Gold: 0"
+text = "Gold: 0"
 theme_override_font_sizes/font_size = 11
 
 [node name="TimeLabel" type="Label" parent="TopLeft"]
 text = "--:-- -- ---"
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 11
 modulate = Color(0.75, 0.90, 1.0, 1)
+size_flags_vertical = 4
+
+[node name="DauLabel" type="Label" parent="TopLeft"]
+text = "Online: --"
+theme_override_font_sizes/font_size = 11
+modulate = Color(0.60, 1.0, 0.70, 1)
+size_flags_vertical = 4
 
 [node name="Bottom" type="HBoxContainer" parent="."]
 anchors_preset = 12
@@ -196,26 +206,26 @@ custom_minimum_size = Vector2(48, 48)
 text = "Map"
 [connection signal="pressed" from="Bottom/Buttons/MapBtn" to="." method="_on_map_btn_pressed"]
 
+[node name="HomeBtn" type="Button" parent="Bottom/Buttons"]
+custom_minimum_size = Vector2(48, 48)
+text = "Home"
+[connection signal="pressed" from="Bottom/Buttons/HomeBtn" to="." method="_on_home_btn_pressed"]
+
+[node name="BellBtn" type="Button" parent="Bottom/Buttons"]
+custom_minimum_size = Vector2(48, 48)
+text = "Bell"
+[connection signal="pressed" from="Bottom/Buttons/BellBtn" to="." method="_on_bell_btn_pressed"]
+
 [node name="NFTBtn" type="Button" parent="Bottom/Buttons"]
 custom_minimum_size = Vector2(48, 48)
 text = "NFT"
+visible = false
 [connection signal="pressed" from="Bottom/Buttons/NFTBtn" to="." method="_on_nft_btn_pressed"]
 
 [node name="ClaimBtn" type="Button" parent="Bottom/Buttons"]
 custom_minimum_size = Vector2(56, 48)
 text = "Claim!"
 [connection signal="pressed" from="Bottom/Buttons/ClaimBtn" to="." method="_on_claim_btn_pressed"]
-
-[node name="NPCStrip" type="VBoxContainer" parent="."]
-offset_left = 4.0
-offset_top = 120.0
-offset_right = 48.0
-offset_bottom = 400.0
-
-[node name="StripLabel" type="Label" parent="NPCStrip"]
-text = "NPC"
-theme_override_font_sizes/font_size = 8
-horizontal_alignment = 1
 
 [node name="NoEnergyLabel" type="Label" parent="."]
 anchors_preset = 8
