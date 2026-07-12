@@ -20,6 +20,7 @@ var _npc_positions: Array = []
 var _deed_picker: CanvasLayer = null
 var _world_req: HTTPRequest = null
 var _sync_req: HTTPRequest = null
+var _deed_banner: Label = null
 
 func _ready() -> void:
 	LandManager.current_tile_id = ""
@@ -32,7 +33,9 @@ func _ready() -> void:
 	_place_npc_tiles()
 	_update_kingdom_label()
 	_refresh_deed_hints()
+	_spawn_deed_banner()
 	_spawn_hud()
+	LandManager.deed_earned.connect(func(_t): _refresh_deed_banner())
 	_world_req = HTTPRequest.new()
 	add_child(_world_req)
 	_world_req.request_completed.connect(_on_world_tiles_received)
@@ -43,6 +46,33 @@ func _ready() -> void:
 func _spawn_hud() -> void:
 	var hud := HUD_SCENE.instantiate()
 	add_child(hud)
+
+func _spawn_deed_banner() -> void:
+	_deed_banner = Label.new()
+	_deed_banner.add_theme_font_size_override("font_size", 10)
+	_deed_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_deed_banner.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_deed_banner.offset_top  = 4.0
+	_deed_banner.offset_bottom = 24.0
+	_deed_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ui_layer.add_child(_deed_banner)
+	_refresh_deed_banner()
+
+func _refresh_deed_banner() -> void:
+	if not is_instance_valid(_deed_banner):
+		return
+	var parts: Array = []
+	for ts in ["FARM", "FOREST", "MOUNTAIN", "POND"]:
+		var cnt: int = LandManager.deed_inventory.get(ts, 0)
+		if cnt > 0:
+			parts.append("%s x%d" % [ts.capitalize(), cnt])
+	if parts.is_empty():
+		_deed_banner.text = ""
+		_deed_banner.visible = false
+	else:
+		_deed_banner.text = "Deeds in wallet: %s  —  tap any empty cell to place" % "  |  ".join(parts)
+		_deed_banner.modulate = Color(0.55, 1.0, 0.40)
+		_deed_banner.visible = true
 
 
 func _build_grid() -> void:
@@ -263,13 +293,17 @@ func _show_deed_picker(grid_pos: Vector2i) -> void:
 	panel.size = Vector2(160, 250)
 	panel.position = Vector2(560, 235)
 
-func _on_world_tiles_received(_result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+func _on_world_tiles_received(_result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if not is_inside_tree():
 		return
-	var parsed = JSON.parse_string(body.get_string_from_utf8())
+	var raw := body.get_string_from_utf8()
+	print("[WorldMap] tile fetch HTTP %d  body_len=%d" % [code, raw.length()])
+	var parsed = JSON.parse_string(raw)
 	if not parsed is Dictionary:
+		print("[WorldMap] tile fetch parse failed — raw: ", raw.substr(0, 200))
 		return
 	var remote: Array = parsed.get("tiles", [])
+	print("[WorldMap] remote tiles received: %d" % remote.size())
 	if remote.is_empty():
 		return
 	LandManager.merge_remote_tiles(remote)
@@ -301,6 +335,7 @@ func _on_tile_placed(tile_data: Dictionary) -> void:
 	_place_npc_tiles()
 	_update_kingdom_label()
 	_refresh_deed_hints()
+	_refresh_deed_banner()
 	_sync_tile(tile_data.get("id", ""))
 
 func _refresh_deed_hints() -> void:

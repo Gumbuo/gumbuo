@@ -121,7 +121,16 @@ func _request_wallet() -> void:
 					        || providers.find(p => p.isMetaMask)
 					        || providers[0];
 				}
-				const accounts = await provider.request({ method: 'eth_requestAccounts' });
+				// Request account picker so player can switch wallets
+				await provider.request({
+					method: 'wallet_requestPermissions',
+					params: [{ eth_accounts: {} }]
+				});
+				const accounts = await provider.request({ method: 'eth_accounts' });
+				if (!accounts || accounts.length === 0) {
+					window._godotWallet = '__rejected__';
+					return;
+				}
 				window._godotWallet = accounts[0].toLowerCase();
 			} catch(e) {
 				window._godotWallet = e.code === 4001 ? '__rejected__' : '__error__';

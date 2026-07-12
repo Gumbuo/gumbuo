@@ -18,14 +18,6 @@ extends CanvasLayer
 
 const HOTBAR_SLOTS := 8
 
-const MUSIC_TRACKS := [
-	{"name": "Alien Vibes",      "file": "res://assets/audio/music/demon.mp3"},
-	{"name": "Space Odyssey",    "file": "res://assets/audio/music/gumbuobeets.mp3"},
-	{"name": "UFO Transmission", "file": "res://assets/audio/music/success.mp3"},
-	{"name": "Cosmic Energy",    "file": "res://assets/audio/music/arena.mp3"},
-	{"name": "Galactic Groove",  "file": "res://assets/audio/music/home.mp3"},
-]
-
 const PRESENCE_URL := "https://gamehole.ink/api/presence"
 
 var _hotbar_items: Array = []
@@ -34,8 +26,7 @@ var _xp_sync_req:  HTTPRequest = null
 var _compact_applied: bool = false
 var _rotate_overlay: CanvasLayer = null
 var _lb_panel: CanvasLayer = null
-var _music_player: AudioStreamPlayer = null
-var _music_track_index: int = 4  # Galactic Groove default
+var _music_track_index: int = 1  # synced from MusicManager on init
 var _music_expanded: bool = false
 var _music_panel: PanelContainer = null
 var _music_toggle_btn: Button = null
@@ -564,21 +555,24 @@ func _add_settings_btn() -> void:
 	btn.pressed.connect(_on_settings_btn_pressed)
 	buttons_row.add_child(btn)
 
-	var logout_btn := Button.new()
-	logout_btn.text = "Logout"
-	logout_btn.custom_minimum_size = Vector2(56, 32)
-	logout_btn.add_theme_font_size_override("font_size", 10)
+	var home_menu_btn := Button.new()
+	home_menu_btn.text = "Home"
+	home_menu_btn.custom_minimum_size = Vector2(56, 32)
+	home_menu_btn.add_theme_font_size_override("font_size", 10)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.35, 0.10, 0.10, 0.90)
-	sb.border_color = Color(0.70, 0.20, 0.20)
+	sb.bg_color     = Color(0.08, 0.14, 0.30, 0.92)
+	sb.border_color = Color(0.30, 0.55, 1.00)
 	sb.set_border_width_all(1)
 	sb.set_corner_radius_all(4)
-	logout_btn.add_theme_stylebox_override("normal", sb)
-	logout_btn.add_theme_color_override("font_color", Color(1.0, 0.6, 0.6))
-	logout_btn.pressed.connect(_on_logout_pressed)
-	buttons_row.add_child(logout_btn)
+	home_menu_btn.add_theme_stylebox_override("normal", sb)
+	home_menu_btn.add_theme_color_override("font_color", Color(0.65, 0.85, 1.0))
+	home_menu_btn.pressed.connect(_on_home_menu_pressed)
+	buttons_row.add_child(home_menu_btn)
 
-func _on_logout_pressed() -> void:
+func _on_home_menu_pressed() -> void:
+	PlayerData.save_data()
+	ResourceManager.save_inventory()
+	LandManager.save_land_data()
 	PlayerData.logout()
 	get_tree().change_scene_to_file("res://scenes/ui/StartScreen.tscn")
 
@@ -617,20 +611,27 @@ func show_credits() -> void:
 	add_child(_credits)
 
 # ── Music Player ─────────────────────────────────────────────────────────────
+# Audio lives in MusicManager autoload so it persists across scene changes.
+# This HUD builds only the UI controls and delegates all playback to MusicManager.
 
 func _build_music_player() -> void:
-	_music_player = AudioStreamPlayer.new()
-	_music_player.bus = "Master"
-	add_child(_music_player)
-	_music_player.finished.connect(_on_music_finished)
-	_load_track(_music_track_index)
+	_music_track_index = MusicManager.track_index
 
 	# Toggle button — inserted as first item in the bottom buttons bar
 	_music_toggle_btn = Button.new()
-	_music_toggle_btn.text = "MUS"
 	_music_toggle_btn.flat = false
 	_music_toggle_btn.custom_minimum_size = Vector2(46, 32)
 	_music_toggle_btn.add_theme_font_size_override("font_size", 10)
+	const _MUSIC_ICON_PATH := "res://assets/sprites/ui/icon_music.png"
+	if ResourceLoader.exists(_MUSIC_ICON_PATH):
+		_music_toggle_btn.icon = load(_MUSIC_ICON_PATH) as Texture2D
+		_music_toggle_btn.expand_icon = true
+		_music_toggle_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_music_toggle_btn.text = ""
+		if not MusicManager.is_playing():
+			_music_toggle_btn.modulate = Color(0.5, 0.5, 0.5, 0.8)
+	else:
+		_music_toggle_btn.text = "🎵" if MusicManager.is_playing() else "MUS"
 	var tsb := StyleBoxFlat.new()
 	tsb.bg_color = Color(0.07, 0.07, 0.15, 0.92)
 	tsb.border_color = Color(0.0, 0.83, 1.0)
@@ -683,7 +684,7 @@ func _build_music_player() -> void:
 
 	# Track name
 	_music_track_lbl = Label.new()
-	_music_track_lbl.text = MUSIC_TRACKS[_music_track_index]["name"]
+	_music_track_lbl.text = MusicManager.get_track_name()
 	_music_track_lbl.add_theme_font_size_override("font_size", 12)
 	_music_track_lbl.modulate = Color(0.2, 1.0, 0.6)
 	_music_track_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -704,7 +705,7 @@ func _build_music_player() -> void:
 	ctrl.add_child(prev_btn)
 
 	var play_btn := Button.new()
-	play_btn.text = ">"
+	play_btn.text = "||" if MusicManager.is_playing() else ">"
 	play_btn.name = "PlayBtn"
 	play_btn.custom_minimum_size = Vector2(46, 46)
 	play_btn.add_theme_font_size_override("font_size", 18)
@@ -724,18 +725,15 @@ func _build_music_player() -> void:
 	var opt := OptionButton.new()
 	opt.name = "TrackSelect"
 	opt.add_theme_font_size_override("font_size", 10)
-	for i in MUSIC_TRACKS.size():
-		opt.add_item(MUSIC_TRACKS[i]["name"], i)
-	opt.select(_music_track_index)
+	for i in MusicManager.MUSIC_TRACKS.size():
+		opt.add_item(MusicManager.MUSIC_TRACKS[i]["name"], i)
+	opt.select(MusicManager.track_index)
 	opt.item_selected.connect(func(idx: int) -> void:
-		_music_track_index = idx
-		_load_track(idx)
-		if _music_player.playing:
-			_music_player.play()
-		if _music_track_lbl:
-			_music_track_lbl.text = MUSIC_TRACKS[idx]["name"]
+		MusicManager.select_track(idx)
 	)
 	vbox.add_child(opt)
+
+	MusicManager.track_changed.connect(_on_manager_track_changed)
 
 func _style_music_ctrl_btn(btn: Button, is_play: bool) -> void:
 	var sb := StyleBoxFlat.new()
@@ -747,50 +745,40 @@ func _style_music_ctrl_btn(btn: Button, is_play: bool) -> void:
 	if is_play:
 		btn.modulate = Color(0.0, 0.0, 0.0)
 
-func _load_track(idx: int) -> void:
-	var path: String = MUSIC_TRACKS[idx]["file"]
-	if ResourceLoader.exists(path):
-		_music_player.stream = load(path) as AudioStream
-		_music_player.stop()
-
 func _on_music_toggle() -> void:
 	_music_expanded = not _music_expanded
 	_music_panel.visible = _music_expanded
-	_music_toggle_btn.text = "MUS"
 
 func _on_music_play_pause() -> void:
-	if _music_player.playing:
-		_music_player.stop()
-		_music_toggle_btn.text = "MUS"
-	else:
-		_music_player.play()
-		_music_toggle_btn.text = "🎵"
+	var playing := MusicManager.play_pause()
+	_sync_music_btn_state(playing)
 	_update_play_btn()
 
+func _sync_music_btn_state(playing: bool) -> void:
+	if not is_instance_valid(_music_toggle_btn):
+		return
+	if _music_toggle_btn.icon != null:
+		_music_toggle_btn.modulate = Color(1, 1, 1, 1) if playing else Color(0.5, 0.5, 0.5, 0.8)
+	else:
+		_music_toggle_btn.text = "🎵" if playing else "MUS"
+
 func _on_music_prev() -> void:
-	_music_track_index = (_music_track_index - 1 + MUSIC_TRACKS.size()) % MUSIC_TRACKS.size()
-	_load_track(_music_track_index)
-	if _music_track_lbl:
-		_music_track_lbl.text = MUSIC_TRACKS[_music_track_index]["name"]
-	var opt: OptionButton = _music_panel.get_node_or_null("VBoxContainer/TrackSelect")
-	if opt: opt.select(_music_track_index)
-	if _music_player.stream:
-		_music_player.play()
+	MusicManager.prev_track()
 
 func _on_music_next() -> void:
-	_music_track_index = (_music_track_index + 1) % MUSIC_TRACKS.size()
-	_load_track(_music_track_index)
-	if _music_track_lbl:
-		_music_track_lbl.text = MUSIC_TRACKS[_music_track_index]["name"]
-	var opt: OptionButton = _music_panel.get_node_or_null("VBoxContainer/TrackSelect")
-	if opt: opt.select(_music_track_index)
-	if _music_player.stream:
-		_music_player.play()
+	MusicManager.next_track()
 
-func _on_music_finished() -> void:
-	_on_music_next()
+func _on_manager_track_changed(index: int, track_name: String) -> void:
+	_music_track_index = index
+	if _music_track_lbl:
+		_music_track_lbl.text = track_name
+	var opt: OptionButton = _music_panel.get_node_or_null("VBoxContainer/TrackSelect") if _music_panel else null
+	if opt:
+		opt.select(index)
+	_sync_music_btn_state(MusicManager.is_playing())
+	_update_play_btn()
 
 func _update_play_btn() -> void:
 	var btn: Button = _music_panel.get_node_or_null("VBoxContainer/HBoxContainer2/PlayBtn") if _music_panel else null
 	if btn:
-		btn.text = "||" if _music_player.playing else ">"
+		btn.text = "||" if MusicManager.is_playing() else ">"
