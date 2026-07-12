@@ -68,7 +68,7 @@ const CRAFTING_STATIONS: Dictionary = {
 	"sawmill":        "res://scripts/ui/sawmill_ui.gd",
 }
 
-const ACTION_ITEMS: Array = ["tree", "oak_tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree", "boulder", "mailbox", "chicken_coop", "egg_white", "egg_gold"]
+const ACTION_ITEMS: Array = ["tree", "oak_tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree", "boulder", "mailbox", "chicken_coop", "beehive", "egg_white", "egg_gold"]
 
 # Maps item_id to the sprite folder name when they differ
 const TREE_SPRITE_FOLDER: Dictionary = {

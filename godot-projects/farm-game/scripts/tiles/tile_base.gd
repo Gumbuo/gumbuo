@@ -21,9 +21,21 @@ var _proxy_anim:          AnimatedSprite2D = null
 # action values: "harvest" | "plant" | "place" | "pickup" | "action"
 var _action_queue:  Array      = []
 var _current_task:  Dictionary = {}
+var _repath_attempt: int       = 0
+var _dot_layer:  CanvasLayer  = null
+var _queue_dots: Dictionary   = {}
 
 const _SLOT_PX  := 64.0
 const _SLOT_GAP := 4.0
+# Standard non-pond grid dimensions (matches slot_grid.gd ROW_LAYOUT which has 6 entries)
+const _GRID_COLS := 6
+const _GRID_ROWS := 6
+# Approach offsets tried when direct path is blocked (world units = screen px at 1:1 zoom)
+const _REPATH_OFFSETS: Array = [
+	Vector2(  0, -68), Vector2(  0,  68),
+	Vector2(-68,   0), Vector2( 68,   0),
+	Vector2(-68, -68), Vector2( 68,  68),
+]
 
 func _ready() -> void:
 	tile_id   = LandManager.current_tile_id
@@ -32,6 +44,7 @@ func _ready() -> void:
 	_spawn_player()
 	_spawn_hud()
 	_spawn_slot_grid()
+	_spawn_dot_layer()
 	_player.arrived.connect(_on_player_arrived)
 	_player.path_cancelled.connect(_on_path_cancelled)
 
@@ -80,14 +93,13 @@ func _spawn_slot_grid() -> void:
 # ── World position for a slot cell ───────────────────────────
 
 func _slot_center_world(grid_pos: Vector2i) -> Vector2:
-	var cols: int   = LandManager.SLOT_COLS
-	var rows: int   = LandManager.SLOT_ROWS
-	var grid_w: float = cols * (_SLOT_PX + _SLOT_GAP) - _SLOT_GAP
-	var grid_h: float = rows * (_SLOT_PX + _SLOT_GAP) - _SLOT_GAP
+	var step: float   = _SLOT_PX + _SLOT_GAP
+	var grid_w: float = _GRID_COLS * step - _SLOT_GAP
+	var grid_h: float = _GRID_ROWS * step - _SLOT_GAP
 	var origin := Vector2((1280.0 - grid_w) / 2.0, 558.0 - grid_h)
 	var screen_pos := origin + Vector2(
-		grid_pos.x * (_SLOT_PX + _SLOT_GAP) + _SLOT_PX * 0.5,
-		grid_pos.y * (_SLOT_PX + _SLOT_GAP) + _SLOT_PX * 0.5
+		grid_pos.x * step + _SLOT_PX * 0.5,
+		grid_pos.y * step + _SLOT_PX * 0.5
 	)
 	return get_viewport().get_canvas_transform().affine_inverse() * screen_pos
 
@@ -101,16 +113,27 @@ func _on_slot_activated(grid_pos: Vector2i, action: String, item_id: String) -> 
 		"item_id":   item_id,
 		"world_pos": world_pos,
 	})
+	_add_queue_dot(grid_pos)
 	if _current_task.is_empty():
 		_start_next_task()
 
 func _on_path_cancelled() -> void:
-	_action_queue.clear()
+	if not _current_task.is_empty() and _repath_attempt < _REPATH_OFFSETS.size():
+		# Try an offset approach angle to the same target before giving up
+		var base: Vector2 = _current_task.get("world_pos", Vector2.ZERO)
+		_player.move_to(base + _REPATH_OFFSETS[_repath_attempt])
+		_repath_attempt += 1
+		return
+	# All offsets exhausted — skip this task and try the next queued one
+	_remove_queue_dot(_current_task.get("grid_pos", Vector2i(-1, -1)))
+	_repath_attempt = 0
 	_current_task = {}
+	_start_next_task()
 
 func _start_next_task() -> void:
 	if _action_queue.is_empty():
 		return
+	_repath_attempt = 0
 	_current_task = _action_queue.pop_front()
 	_player.move_to(_current_task["world_pos"])
 
@@ -121,11 +144,14 @@ func _on_player_arrived(at_pos: Vector2) -> void:
 	if at_pos.distance_to(world_pos) > 80.0:
 		_finish_task()
 		return
+	_repath_attempt = 0
 	_execute_current_task()
 
 func _finish_task() -> void:
 	if _current_task.is_empty():
 		return
+	_remove_queue_dot(_current_task.get("grid_pos", Vector2i(-1, -1)))
+	_repath_attempt = 0
 	_current_task = {}
 	_start_next_task()
 
@@ -153,7 +179,8 @@ func _execute_current_task() -> void:
 					amt += 1
 				if PlayerData.has_peach_boost():
 					amt = max(6, amt)
-				ResourceManager.add_item(crop, amt)
+				ResourceManager.add_item(crop, amt, true)  # silent — drops_popup handles notification
+				_show_drops_popup("Harvested", crop, amt)
 				if is_instance_valid(_slot_grid):
 					_slot_grid.call("_refresh_picker")
 
@@ -193,7 +220,9 @@ func _execute_current_task() -> void:
 			await _player.sprite.animation_finished
 			var removed: String = LandManager.remove_slot_item(tile_id, gp)
 			if removed != "":
-				ResourceManager.add_item(removed.trim_prefix("wild_"), 1)
+				var picked_id: String = removed.trim_prefix("wild_")
+				ResourceManager.add_item(picked_id, 1, true)  # silent — drops_popup handles notification
+				_show_drops_popup("Picked up", picked_id, 1)
 
 		"action":
 			_player.play_harvest()
@@ -226,3 +255,48 @@ func fast_travel_to_npc(npc_id: String) -> void:
 		return
 	PlayerData.save_data()
 	get_tree().change_scene_to_file("res://scenes/world_map/WorldMap.tscn")
+
+func _show_drops_popup(label: String, item_id: String, count: int) -> void:
+	var ui: CanvasLayer = (load("res://scripts/ui/drops_popup.gd") as GDScript).new()
+	get_tree().root.add_child(ui)
+	ui.show_drops([{"label": label, "items": [{"id": item_id, "count": count}]}])
+
+# ── Slot queue dot indicators ─────────────────────────────────
+
+func _spawn_dot_layer() -> void:
+	_dot_layer = CanvasLayer.new()
+	_dot_layer.layer = 4
+	add_child(_dot_layer)
+
+func _slot_screen_pos(grid_pos: Vector2i) -> Vector2:
+	var step := _SLOT_PX + _SLOT_GAP
+	var grid_w := _GRID_COLS * step - _SLOT_GAP
+	var grid_h := _GRID_ROWS * step - _SLOT_GAP
+	var origin := Vector2((1280.0 - grid_w) / 2.0, 558.0 - grid_h)
+	return origin + Vector2(grid_pos.x * step + _SLOT_PX * 0.5, grid_pos.y * step + _SLOT_PX * 0.5)
+
+func _add_queue_dot(grid_pos: Vector2i) -> void:
+	var key := "%d,%d" % [grid_pos.x, grid_pos.y]
+	if _queue_dots.has(key) or not is_instance_valid(_dot_layer):
+		return
+	var sp := _slot_screen_pos(grid_pos)
+	var highlight := ColorRect.new()
+	highlight.color       = Color(0.10, 0.90, 0.55, 0.45)
+	highlight.position    = sp - Vector2(_SLOT_PX * 0.5, _SLOT_PX * 0.5)
+	highlight.size        = Vector2(_SLOT_PX, _SLOT_PX)
+	highlight.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dot_layer.add_child(highlight)
+	# Gentle pulse so it's easy to spot
+	var tw := highlight.create_tween()
+	tw.set_loops()
+	tw.tween_property(highlight, "modulate:a", 0.45, 0.55).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(highlight, "modulate:a", 1.00, 0.55).set_ease(Tween.EASE_IN_OUT)
+	_queue_dots[key] = highlight
+
+func _remove_queue_dot(grid_pos: Vector2i) -> void:
+	var key := "%d,%d" % [grid_pos.x, grid_pos.y]
+	if _queue_dots.has(key):
+		var node = _queue_dots[key]
+		if is_instance_valid(node):
+			node.queue_free()
+		_queue_dots.erase(key)

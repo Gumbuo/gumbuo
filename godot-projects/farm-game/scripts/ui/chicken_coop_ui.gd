@@ -13,6 +13,7 @@ var _slot_panels: Array = []
 var _icon_rects:  Array = []
 var _feed_bar:    ColorRect = null
 var _feed_lbl:    Label = null
+var _slot_remind_lbl: Label = null
 var _status_lbl:  Label = null
 var _chicken_rows_vb: VBoxContainer = null
 
@@ -105,6 +106,7 @@ func _process(_dt: float) -> void:
 # ─────────────────────────── BUILD UI ───────────────────────
 
 func _build_ui() -> void:
+	# Full-screen dark overlay — click outside panel to close
 	var overlay := ColorRect.new()
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	overlay.color = Color(0, 0, 0, 0.65)
@@ -114,168 +116,193 @@ func _build_ui() -> void:
 	)
 	add_child(overlay)
 
-	var panel := PanelContainer.new()
+	# Main panel — 550×550 square (matches 256×256 bg image at ≈2.15× scale)
+	var panel := Control.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.custom_minimum_size = Vector2(550, 550)
 	panel.offset_left   = -275
-	panel.offset_top    = -270
-	panel.offset_right  = 275
-	panel.offset_bottom = 270
+	panel.offset_top    = -275
+	panel.offset_right  =  275
+	panel.offset_bottom =  275
 	panel.mouse_filter  = Control.MOUSE_FILTER_STOP
-	var _style := StyleBoxFlat.new()
-	_style.bg_color = Color(0.11, 0.11, 0.15, 0.97)
-	_style.border_width_left   = 1; _style.border_width_right  = 1
-	_style.border_width_top    = 1; _style.border_width_bottom = 1
-	_style.border_color        = Color(0.35, 0.35, 0.45)
-	_style.set_content_margin_all(10)
-	panel.add_theme_stylebox_override("panel", _style)
 	overlay.add_child(panel)
 
-	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 8)
-	panel.add_child(root)
+	# Background image
+	const BG_PATH := "res://assets/sprites/ui/chicken_coop_bg.png"
+	if ResourceLoader.exists(BG_PATH):
+		var bg := TextureRect.new()
+		bg.texture = load(BG_PATH) as Texture2D
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bg.stretch_mode = TextureRect.STRETCH_SCALE
+		panel.add_child(bg)
 
-	# Header
-	var hdr := HBoxContainer.new()
-	root.add_child(hdr)
-	var title := Label.new()
-	title.text = "  CHICKEN COOP"
-	title.add_theme_font_size_override("font_size", 14)
-	title.modulate = Color(1.0, 0.85, 0.3)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hdr.add_child(title)
-	var x_btn := Button.new()
-	x_btn.text = " X "
-	x_btn.pressed.connect(func(): queue_free())
-	hdr.add_child(x_btn)
-	root.add_child(HSeparator.new())
-
+	# Status / starvation warning (over the top sign area)
 	_status_lbl = Label.new()
-	_status_lbl.add_theme_font_size_override("font_size", 9)
-	_status_lbl.modulate = Color(0.4, 1.0, 0.6)
+	_status_lbl.add_theme_font_size_override("font_size", 8)
+	_status_lbl.modulate = Color(0.3, 1.0, 0.5)
 	_status_lbl.visible = false
-	root.add_child(_status_lbl)
+	_status_lbl.position = Vector2(5, 3)
+	_status_lbl.custom_minimum_size = Vector2(540, 0)
+	_status_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(_status_lbl)
 
-	# Incubation slots
-	var slots_hdr := Label.new()
-	slots_hdr.text = "  Incubation  (place an egg · 36hr hatch · click HATCH when ready)"
-	slots_hdr.add_theme_font_size_override("font_size", 10)
-	slots_hdr.modulate = Color(0.75, 0.85, 1.0)
-	root.add_child(slots_hdr)
-
-	var slots_row := HBoxContainer.new()
-	slots_row.add_theme_constant_override("separation", 8)
-	root.add_child(slots_row)
+	# 3 incubation slots — egg icon floats over chamber window, action panel below
+	# Image 256×256 at 2.148× → chamber viewing-window centres at panel y≈141
+	# Chamber x-centres in image: ~44, 128, 212 → panel: ~95, 275, 456
 	_slot_panels.clear()
+	_icon_rects.clear()
+	var slot_cx := [100, 280, 461]
 	for i in 3:
-		slots_row.add_child(_make_slot_panel(i))
+		var cx: int = slot_cx[i]
+		# Egg icon — standalone TextureRect over the chamber viewing window (no container)
+		var ir := TextureRect.new()
+		ir.custom_minimum_size = Vector2(64, 64)
+		ir.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ir.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ir.position = Vector2(cx - 27, 162)
+		ir.size = Vector2(64, 64)
+		panel.add_child(ir)
+		_icon_rects.append(ir)
+		# Slot panel — visible, styled, in the lower portion of the chamber frame
+		var sp := _make_slot_section(i, cx)
+		panel.add_child(sp)
+		_slot_panels.append(sp)
 
-	root.add_child(HSeparator.new())
+	# Chickens section — compact scrollable list between chambers and feed bin
+	var chick_panel := PanelContainer.new()
+	chick_panel.position = Vector2(90, 330)
+	chick_panel.custom_minimum_size = Vector2(370, 10)
+	var cpb := StyleBoxFlat.new()
+	cpb.bg_color = Color(0.06, 0.04, 0.02, 0.85)
+	cpb.set_corner_radius_all(4)
+	cpb.set_content_margin_all(4)
+	chick_panel.add_theme_stylebox_override("panel", cpb)
+	panel.add_child(chick_panel)
 
-	# Chickens section
+	var chick_outer := VBoxContainer.new()
+	chick_outer.add_theme_constant_override("separation", 2)
+	chick_panel.add_child(chick_outer)
+
 	var chick_hdr := Label.new()
-	chick_hdr.text = "  Chickens  (hatch an egg to get one · lays 1 egg/day into tile slots · pick up to collect)"
-	chick_hdr.add_theme_font_size_override("font_size", 10)
-	chick_hdr.modulate = Color(0.75, 0.85, 1.0)
-	root.add_child(chick_hdr)
+	chick_hdr.text = "Chickens  (lays 1 egg/day into tile slots)"
+	chick_hdr.add_theme_font_size_override("font_size", 9)
+	chick_hdr.modulate = Color(1.0, 0.85, 0.3)
+	chick_outer.add_child(chick_hdr)
+
+	var chick_scroll := ScrollContainer.new()
+	chick_scroll.custom_minimum_size = Vector2(362, 44)
+	chick_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	chick_outer.add_child(chick_scroll)
 
 	_chicken_rows_vb = VBoxContainer.new()
-	_chicken_rows_vb.add_theme_constant_override("separation", 4)
-	root.add_child(_chicken_rows_vb)
+	_chicken_rows_vb.add_theme_constant_override("separation", 2)
+	_chicken_rows_vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	chick_scroll.add_child(_chicken_rows_vb)
 
-	root.add_child(HSeparator.new())
+	# Feed info — inside the same card, below the chickens list
+	chick_outer.add_child(HSeparator.new())
 
-	# Feed section
-	var feed_hdr := Label.new()
-	feed_hdr.text = "  Feed Bin  (deposit 10 bags · 1 feed consumed per egg laid)"
-	feed_hdr.add_theme_font_size_override("font_size", 10)
-	feed_hdr.modulate = Color(0.75, 0.85, 1.0)
-	root.add_child(feed_hdr)
-	root.add_child(_make_feed_section())
+	_feed_lbl = Label.new()
+	_feed_lbl.add_theme_font_size_override("font_size", 9)
+	_feed_lbl.add_theme_color_override("font_color", Color(0.72, 0.90, 0.65))
+	_feed_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	chick_outer.add_child(_feed_lbl)
+
+	_slot_remind_lbl = Label.new()
+	_slot_remind_lbl.add_theme_font_size_override("font_size", 9)
+	_slot_remind_lbl.add_theme_color_override("font_color", Color(0.40, 0.75, 1.0))
+	_slot_remind_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_slot_remind_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	chick_outer.add_child(_slot_remind_lbl)
+
+	# Feed bar — dark mask slides right to reveal the image's own grain bar beneath
+	# Mask starts at x=22 (full width = all hidden), shrinks left as feed increases
+	# Image bar area: x≈10-205 → panel x≈22-440, y≈415-437
+	_feed_bar = ColorRect.new()
+	_feed_bar.color = Color(0.05, 0.03, 0.01, 0.92)
+	_feed_bar.position = Vector2(22, 415)
+	_feed_bar.size = Vector2(418, 22)  # starts fully opaque (feed = 0 → all hidden)
+	panel.add_child(_feed_bar)
+
+	# Feed (+) button — transparent, overlaid on bottom-left bag art
+	# Image: x=0-65, y=208-256 → panel: x=0-140, y=447-550
+	var feed_btn := Button.new()
+	feed_btn.position = Vector2(5, 452)
+	feed_btn.custom_minimum_size = Vector2(132, 90)
+	feed_btn.text = ""
+	feed_btn.tooltip_text = "Deposit %d bags of chicken feed" % DEPOSIT_AMT
+	_style_transparent_btn(feed_btn)
+	feed_btn.pressed.connect(_do_add_feed)
+	panel.add_child(feed_btn)
+
+	# Close button — transparent, overlaid on bottom-right close art
+	# Image: x=191-256, y=217-256 → panel: x=411-550, y=466-550
+	var close_btn := Button.new()
+	close_btn.position = Vector2(415, 466)
+	close_btn.custom_minimum_size = Vector2(127, 77)
+	close_btn.text = ""
+	_style_transparent_btn(close_btn)
+	close_btn.pressed.connect(func(): queue_free())
+	panel.add_child(close_btn)
 
 	_refresh_static()
 
-func _make_slot_panel(idx: int) -> PanelContainer:
+func _make_slot_section(idx: int, cx: int) -> PanelContainer:
+	# Visible panel sitting in the lower portion of the chamber frame (y≈248-318)
 	var sp := PanelContainer.new()
-	sp.custom_minimum_size = Vector2(162, 165)
-	_slot_panels.append(sp)
-
-	var slot_style := StyleBoxFlat.new()
-	slot_style.bg_color = Color(0.16, 0.16, 0.22, 1.0)
-	slot_style.border_width_left   = 1; slot_style.border_width_right  = 1
-	slot_style.border_width_top    = 1; slot_style.border_width_bottom = 1
-	slot_style.border_color        = Color(0.4, 0.4, 0.55)
-	slot_style.set_content_margin_all(6)
-	sp.add_theme_stylebox_override("panel", slot_style)
+	sp.position = Vector2(cx - 82, 248)
+	var ssb := StyleBoxFlat.new()
+	ssb.bg_color = Color(0.08, 0.06, 0.03, 0.92)
+	ssb.border_width_left = 1; ssb.border_width_right  = 1
+	ssb.border_width_top  = 1; ssb.border_width_bottom = 1
+	ssb.border_color = Color(0.60, 0.48, 0.22)
+	ssb.set_corner_radius_all(4)
+	ssb.set_content_margin_all(5)
+	sp.add_theme_stylebox_override("panel", ssb)
 
 	var vb := VBoxContainer.new()
+	vb.name = "VBoxContainer"  # explicit name so get_node_or_null path is reliable
 	vb.add_theme_constant_override("separation", 3)
 	sp.add_child(vb)
-
-	var icon_rect := TextureRect.new()
-	icon_rect.name = "IconRect"
-	icon_rect.custom_minimum_size = Vector2(64, 64)
-	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	vb.add_child(icon_rect)
-	_icon_rects.append(icon_rect)
 
 	var kind_lbl := Label.new()
 	kind_lbl.name = "KindLbl"
 	kind_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	kind_lbl.add_theme_font_size_override("font_size", 11)
+	kind_lbl.add_theme_font_size_override("font_size", 9)
+	kind_lbl.add_theme_color_override("font_color", Color(0.92, 0.85, 0.70))
 	vb.add_child(kind_lbl)
 
 	var timer_lbl := Label.new()
 	timer_lbl.name = "TimerLbl"
 	timer_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	timer_lbl.add_theme_font_size_override("font_size", 10)
+	timer_lbl.add_theme_font_size_override("font_size", 8)
+	timer_lbl.add_theme_color_override("font_color", Color(0.75, 0.88, 1.0))
 	vb.add_child(timer_lbl)
 
 	var action_btn := Button.new()
 	action_btn.name = "ActionBtn"
 	action_btn.add_theme_font_size_override("font_size", 10)
+	action_btn.custom_minimum_size = Vector2(150, 28)
 	action_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_btn.pressed.connect(func(): _on_slot_pressed(idx))
 	vb.add_child(action_btn)
 
 	return sp
 
-func _make_feed_section() -> VBoxContainer:
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 4)
-
-	var bar_bg := PanelContainer.new()
-	bar_bg.custom_minimum_size = Vector2(510, 20)
-	vb.add_child(bar_bg)
-
-	_feed_bar = ColorRect.new()
-	_feed_bar.color = Color(0.3, 0.8, 0.3)
-	_feed_bar.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	bar_bg.add_child(_feed_bar)
-
-	var row := HBoxContainer.new()
-	vb.add_child(row)
-	_feed_lbl = Label.new()
-	_feed_lbl.add_theme_font_size_override("font_size", 9)
-	_feed_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(_feed_lbl)
-
-	var feed_icon := TextureRect.new()
-	var _ftp := "res://assets/sprites/items/chicken_feed.png"
-	if ResourceLoader.exists(_ftp): feed_icon.texture = load(_ftp)
-	feed_icon.custom_minimum_size = Vector2(24, 24)
-	feed_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	feed_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	row.add_child(feed_icon)
-
-	var add_feed_btn := Button.new()
-	add_feed_btn.text = "+ Deposit 10 Bags"
-	add_feed_btn.add_theme_font_size_override("font_size", 9)
-	add_feed_btn.pressed.connect(_do_add_feed)
-	row.add_child(add_feed_btn)
-
-	return vb
+func _style_transparent_btn(btn: Button) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color     = Color(0, 0, 0, 0)
+	sb.border_color = Color(0, 0, 0, 0)
+	btn.add_theme_stylebox_override("normal", sb)
+	var sb_hover := StyleBoxFlat.new()
+	sb_hover.bg_color = Color(1, 1, 1, 0.18)
+	sb_hover.set_corner_radius_all(4)
+	btn.add_theme_stylebox_override("hover", sb_hover)
+	var sb_press := StyleBoxFlat.new()
+	sb_press.bg_color = Color(1, 1, 1, 0.28)
+	sb_press.set_corner_radius_all(4)
+	btn.add_theme_stylebox_override("pressed", sb_press)
 
 # ─────────────────── STATIC REFRESH ─────────────────────────
 
@@ -294,7 +321,7 @@ func _refresh_static() -> void:
 	for i in 3:
 		if i >= _slot_panels.size(): break
 		var sp: PanelContainer = _slot_panels[i]
-		var icon_rect: TextureRect = sp.get_node_or_null("VBoxContainer/IconRect")
+		var icon_rect: TextureRect = _icon_rects[i] if i < _icon_rects.size() else null
 		var kind_lbl: Label        = sp.get_node_or_null("VBoxContainer/KindLbl")
 		var action_btn: Button     = sp.get_node_or_null("VBoxContainer/ActionBtn")
 		var cs: Variant = coop_slots[i]
@@ -312,7 +339,7 @@ func _refresh_static() -> void:
 			if kind_lbl:
 				kind_lbl.text = ("Gold Egg" if etype == "gold" else "White Egg")
 				kind_lbl.modulate = Color(1.0, 0.88, 0.3) if etype == "gold" else Color(1.0, 1.0, 0.9)
-			var ready := now - (cs as Dictionary).get("placed_at", now) >= HATCH_SECS
+			var ready: bool = now - (cs as Dictionary).get("placed_at", now) >= HATCH_SECS
 			if action_btn:
 				if ready:
 					action_btn.text = "HATCH!"
@@ -337,15 +364,22 @@ func _refresh_static() -> void:
 			for i in chickens.size():
 				_chicken_rows_vb.add_child(_make_chicken_row(chickens[i]))
 
-	# Feed bar
+	# Feed bar — dark mask slides right as fill increases, revealing image's grain bar below
 	var fill_pct := float(feed) / float(MAX_FEED)
 	if is_instance_valid(_feed_bar):
-		_feed_bar.size = Vector2(510.0 * fill_pct, 20)
-		_feed_bar.color = Color(0.3, 0.8, 0.3) if feed > 0 else Color(0.65, 0.2, 0.2)
+		var fill_w := 418.0 * fill_pct
+		_feed_bar.position = Vector2(22.0 + fill_w, 415)
+		_feed_bar.size = Vector2(418.0 - fill_w, 22)
 	if is_instance_valid(_feed_lbl):
 		var have := ResourceManager.get_count("chicken_feed")
 		_feed_lbl.text = "  Feed: %d / %d    (You have %d bags)" % [feed, MAX_FEED, have]
 		_feed_lbl.modulate = Color(0.3, 1.0, 0.4) if feed > 0 else Color(1.0, 0.35, 0.35)
+	if is_instance_valid(_slot_remind_lbl):
+		var n := chickens.size()
+		if n == 0:
+			_slot_remind_lbl.text = "  Keep 1+ tile slots free so chickens can lay eggs."
+		else:
+			_slot_remind_lbl.text = "  Keep %d tile slot%s free — 1 per chicken for egg laying." % [n, "s" if n > 1 else ""]
 
 func _make_chicken_row(ch: Dictionary) -> HBoxContainer:
 	var row := HBoxContainer.new()
@@ -361,7 +395,7 @@ func _make_chicken_row(ch: Dictionary) -> HBoxContainer:
 	var icon := TextureRect.new()
 	var tex := _load_icon("chicken_" + ctype)
 	if tex: icon.texture = tex
-	icon.custom_minimum_size = Vector2(28, 28)
+	icon.custom_minimum_size = Vector2(20, 20)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	row.add_child(icon)
@@ -369,13 +403,13 @@ func _make_chicken_row(ch: Dictionary) -> HBoxContainer:
 	var name_lbl := Label.new()
 	name_lbl.text = ctype.capitalize() + " Chicken"
 	name_lbl.modulate = clrs.get(ctype, Color(1, 1, 1))
-	name_lbl.add_theme_font_size_override("font_size", 10)
+	name_lbl.add_theme_font_size_override("font_size", 9)
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(name_lbl)
 
 	var tlbl := Label.new()
 	tlbl.name = "TimerLbl"
-	tlbl.add_theme_font_size_override("font_size", 9)
+	tlbl.add_theme_font_size_override("font_size", 8)
 	tlbl.modulate = Color(0.75, 0.85, 0.75)
 	row.add_child(tlbl)
 

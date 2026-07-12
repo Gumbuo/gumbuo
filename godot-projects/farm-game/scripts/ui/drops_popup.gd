@@ -26,6 +26,11 @@ func show_drops(drops: Array) -> void:
 		queue_free()
 		return
 
+	# Log to activity history (bell icon) without showing the live panel
+	var log_node: Node = get_tree().get_first_node_in_group("activity_log")
+	if is_instance_valid(log_node):
+		log_node.record_drops(drops)
+
 	# Plain ColorRect background — no PanelContainer padding so height stays tight
 	var vp_size := get_viewport().get_visible_rect().size
 	const CARD_H   := 38.0   # fits in the ~48 px gap between bottom slots (y≈612) and HUD (y≈660)

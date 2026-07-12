@@ -17,6 +17,7 @@ var _vbox:    VBoxContainer  = null
 var _history: CanvasLayer    = null   # full scrollable history overlay
 
 func _ready() -> void:
+	add_to_group("activity_log")
 	_build_live_panel()
 	ResourceManager.item_added.connect(_on_item_added)
 	LandManager.passive_income_received.connect(_on_passive_income)
@@ -194,6 +195,26 @@ func _open_history() -> void:
 			lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			vbox.add_child(lbl)
+
+# ── Called by drops_popup to record every notification in history ─────────────
+
+func record_drops(drops: Array) -> void:
+	for group in drops:
+		var label: String = group.get("label", "")
+		var color: Color  = group.get("color", Color(0.6, 1.0, 0.6))
+		var items: Array  = group.get("items", [])
+		var parts: Array  = []
+		for it in items:
+			if it.get("count", 0) <= 0:
+				continue
+			var info: Dictionary = ResourceManager.get_item_info(str(it.get("id", "")))
+			parts.append("%s x%d" % [info.get("name", it.get("id", "?")), it.get("count", 0)])
+		if parts.is_empty():
+			continue
+		var text: String = "%s: %s" % [label, ", ".join(parts)]
+		_entries.append({"text": text, "color": color})
+		if _entries.size() > MAX_ENTRIES:
+			_entries.pop_front()
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
 

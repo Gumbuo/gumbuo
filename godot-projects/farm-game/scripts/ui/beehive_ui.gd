@@ -1,13 +1,43 @@
 extends CanvasLayer
 
-const COLLECT_SECS := 86400  # 24 hours
+const COLLECT_SECS := 86400  # 24 h production cycle
 
-var _tile_id:  String  = ""
-var _grid_pos: Vector2i = Vector2i.ZERO
-var _slot_key: String  = ""
+# ── Position constants — image is ~230×150 px shown at ≈2× in a 460×300 panel ──
+const PANEL_W    := 460
+const PANEL_H    := 300
+# Dark mask over the amber bar (row 2 of the image)
+# Honey jar icon is on the left; amber bar spans ~x60-404, y82-116
+const BAR_X      := 60.0
+const BAR_Y      := 82.0
+const BAR_W      := 344.0
+const BAR_H      := 34.0
+# Timer label centred on the bar area
+const STATUS_X   := 60.0
+const STATUS_Y   := 88.0
+const STATUS_W   := 344.0
+# COLLECT button (row 3 — wide amber button)
+const COLLECT_X  := 8.0
+const COLLECT_Y  := 136.0
+const COLLECT_BW := 444.0
+const COLLECT_BH := 68.0
+# X CLOSE button (bottom-right corner)
+const CLOSE_X    := 308.0
+const CLOSE_Y    := 224.0
+const CLOSE_BW   := 148.0
+const CLOSE_BH   := 52.0
+# ─────────────────────────────────────────────────────────────────────────
+
+var _tile_id:      String   = ""
+var _grid_pos:     Vector2i = Vector2i.ZERO
+var _slot_key:     String   = ""
+
+var _progress_bar: ColorRect = null  # dark mask — slides right as bar fills
+var _status_lbl:   Label     = null
+var _collect_btn:  Button    = null
 
 func _ready() -> void:
 	layer = 40
+	add_to_group("action_windows")  # prevents slot_grid._input() from firing through this UI
 
 func setup(t_id: String, g_pos: Vector2i) -> void:
 	_tile_id  = t_id
@@ -15,139 +45,160 @@ func setup(t_id: String, g_pos: Vector2i) -> void:
 	_slot_key = LandManager.slot_key(_grid_pos)
 	_build_ui()
 
-# ── UI ────────────────────────────────────────────────────────
+# ── Live update ───────────────────────────────────────────────────────────
+
+func _process(_dt: float) -> void:
+	_refresh_ui()
+
+# ── Helpers ───────────────────────────────────────────────────────────────
+
+func _get_slot_data() -> Dictionary:
+	return LandManager.tiles.get(_tile_id, {}).get("slots", {}).get(_slot_key, {})
+
+func _elapsed() -> int:
+	var last: int = _get_slot_data().get("last_collected", 0)
+	if last == 0:
+		return COLLECT_SECS  # never collected → ready immediately
+	return int(Time.get_unix_time_from_system()) - last
+
+func _is_ready() -> bool:
+	return _elapsed() >= COLLECT_SECS
+
+func _fill_pct() -> float:
+	return clampf(float(_elapsed()) / float(COLLECT_SECS), 0.0, 1.0)
+
+# ── Build UI ──────────────────────────────────────────────────────────────
+
 func _build_ui() -> void:
+	# Dark overlay — click outside panel to close
 	var overlay := ColorRect.new()
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	overlay.color = Color(0, 0, 0, 0.65)
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed: queue_free()
+	)
 	add_child(overlay)
 
-	var panel := PanelContainer.new()
+	# Main panel — square, centered
+	var panel := Control.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -160; panel.offset_top  = -130
-	panel.offset_right =  160; panel.offset_bottom = 130
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	var sty := StyleBoxFlat.new()
-	sty.bg_color = Color(0.12, 0.09, 0.02, 0.97)
-	sty.border_color = Color(0.92, 0.75, 0.10)
-	sty.set_border_width_all(2)
-	sty.set_corner_radius_all(8)
-	sty.set_content_margin_all(12)
-	panel.add_theme_stylebox_override("panel", sty)
+	panel.custom_minimum_size = Vector2(PANEL_W, PANEL_H)
+	panel.offset_left   = -230
+	panel.offset_top    = -150
+	panel.offset_right  =  230
+	panel.offset_bottom =  150
+	panel.mouse_filter  = Control.MOUSE_FILTER_STOP
 	overlay.add_child(panel)
 
-	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 10)
-	panel.add_child(root)
-
-	# Title row
-	var hdr := HBoxContainer.new()
-	root.add_child(hdr)
-	var title := Label.new()
-	title.text = "Beehive"
-	title.add_theme_font_size_override("font_size", 14)
-	title.modulate = Color(0.95, 0.80, 0.15)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hdr.add_child(title)
-	var x_btn := Button.new()
-	x_btn.text = " X "
-	x_btn.pressed.connect(func(): queue_free())
-	hdr.add_child(x_btn)
-
-	root.add_child(HSeparator.new())
-
-	# Status label (updated in _refresh_status)
-	var status_lbl := Label.new()
-	status_lbl.name = "StatusLbl"
-	status_lbl.add_theme_font_size_override("font_size", 11)
-	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	root.add_child(status_lbl)
-
-	# Yield row
-	var yield_hb := HBoxContainer.new()
-	yield_hb.alignment = BoxContainer.ALIGNMENT_CENTER
-	yield_hb.add_theme_constant_override("separation", 16)
-	root.add_child(yield_hb)
-	_add_yield_item(yield_hb, "Honey", "x 2")
-	_add_yield_item(yield_hb, "Beeswax", "x 1")
-
-	root.add_child(HSeparator.new())
-
-	# Collect button
-	var collect_btn := Button.new()
-	collect_btn.name = "CollectBtn"
-	collect_btn.text = "Collect"
-	collect_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	collect_btn.pressed.connect(_on_collect_pressed)
-	root.add_child(collect_btn)
-
-	_refresh_status()
-
-func _add_yield_item(parent: HBoxContainer, item_name: String, qty: String) -> void:
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 2)
-	parent.add_child(vb)
-	var name_lbl := Label.new()
-	name_lbl.text = item_name
-	name_lbl.add_theme_font_size_override("font_size", 10)
-	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vb.add_child(name_lbl)
-	var qty_lbl := Label.new()
-	qty_lbl.text = qty
-	qty_lbl.add_theme_font_size_override("font_size", 12)
-	qty_lbl.modulate = Color(0.95, 0.80, 0.15)
-	qty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vb.add_child(qty_lbl)
-
-# ── State ─────────────────────────────────────────────────────
-func _get_slot_data() -> Dictionary:
-	return LandManager.tiles.get(_tile_id, {}).get("slots", {}).get(_slot_key, {})
-
-func _is_ready() -> bool:
-	var last: int = _get_slot_data().get("last_collected", 0)
-	return last == 0 or (int(Time.get_unix_time_from_system()) - last) >= COLLECT_SECS
-
-func _refresh_status() -> void:
-	var status_lbl: Label = get_node_or_null("*/StatusLbl")
-	if status_lbl == null:
-		for child in get_children():
-			status_lbl = _find_named(child, "StatusLbl")
-			if status_lbl: break
-	var collect_btn: Button = null
-	for child in get_children():
-		collect_btn = _find_named(child, "CollectBtn")
-		if collect_btn: break
-
-	if _is_ready():
-		if status_lbl:
-			status_lbl.text = "Ready to collect!"
-			status_lbl.modulate = Color(0.35, 1.0, 0.4)
-		if collect_btn: collect_btn.disabled = false
+	# Background image
+	const BG_PATH := "res://assets/sprites/ui/beehive_ui_bg.png"
+	if ResourceLoader.exists(BG_PATH):
+		var bg := TextureRect.new()
+		bg.texture = load(BG_PATH) as Texture2D
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bg.stretch_mode = TextureRect.STRETCH_SCALE
+		panel.add_child(bg)
 	else:
-		var last: int = _get_slot_data().get("last_collected", 0)
-		var remaining: int = COLLECT_SECS - (int(Time.get_unix_time_from_system()) - last)
-		var hrs: int  = remaining / 3600
-		var mins: int = (remaining % 3600) / 60
-		if status_lbl:
-			status_lbl.text = "Next collection in %dh %dm" % [hrs, mins]
-			status_lbl.modulate = Color(0.75, 0.75, 0.75)
-		if collect_btn: collect_btn.disabled = true
+		# Fallback solid background when image is missing
+		var bg := ColorRect.new()
+		bg.color = Color(0.12, 0.09, 0.02, 0.97)
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		panel.add_child(bg)
+		var title := Label.new()
+		title.text = "Beehive"
+		title.add_theme_font_size_override("font_size", 18)
+		title.modulate = Color(0.95, 0.80, 0.15)
+		title.position = Vector2(20, 20)
+		panel.add_child(title)
 
-func _find_named(node: Node, n: String) -> Node:
-	if node.name == n: return node
-	for c in node.get_children():
-		var found := _find_named(c, n)
-		if found: return found
-	return null
+	# Dark mask — starts covering the full amber bar (0 % done) and slides right as time passes
+	_progress_bar = ColorRect.new()
+	_progress_bar.color       = Color(0.06, 0.04, 0.01, 0.88)
+	_progress_bar.position    = Vector2(BAR_X, BAR_Y)
+	_progress_bar.size        = Vector2(BAR_W, BAR_H)
+	_progress_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(_progress_bar)
 
-# ── Collect ───────────────────────────────────────────────────
+	# Status / timer label — added AFTER dark mask so it renders on top of it
+	_status_lbl = Label.new()
+	_status_lbl.position = Vector2(STATUS_X, STATUS_Y)
+	_status_lbl.custom_minimum_size = Vector2(STATUS_W, 0)
+	_status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_lbl.add_theme_font_size_override("font_size", 11)
+	_status_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.40))
+	_status_lbl.add_theme_constant_override("outline_size", 2)
+	_status_lbl.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.00, 0.95))
+	panel.add_child(_status_lbl)
+
+	# Collect button — transparent overlay over image art
+	_collect_btn = Button.new()
+	_collect_btn.position           = Vector2(COLLECT_X, COLLECT_Y)
+	_collect_btn.custom_minimum_size = Vector2(COLLECT_BW, COLLECT_BH)
+	_collect_btn.text = ""
+	_collect_btn.tooltip_text = "Collect honey and beeswax"
+	_style_transparent_btn(_collect_btn, true)
+	_collect_btn.pressed.connect(_on_collect_pressed)
+	panel.add_child(_collect_btn)
+
+	# Close button — transparent overlay over image art
+	var close_btn := Button.new()
+	close_btn.position           = Vector2(CLOSE_X, CLOSE_Y)
+	close_btn.custom_minimum_size = Vector2(CLOSE_BW, CLOSE_BH)
+	close_btn.text = ""
+	_style_transparent_btn(close_btn, false)
+	close_btn.pressed.connect(func(): queue_free())
+	panel.add_child(close_btn)
+
+	_refresh_ui()
+
+func _style_transparent_btn(btn: Button, highlight: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0); sb.border_color = Color(0, 0, 0, 0)
+	btn.add_theme_stylebox_override("normal", sb)
+	var sb_h := StyleBoxFlat.new()
+	sb_h.bg_color = Color(1, 1, 1, 0.20 if highlight else 0.12)
+	sb_h.set_corner_radius_all(6)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	var sb_p := StyleBoxFlat.new()
+	sb_p.bg_color = Color(1, 1, 1, 0.30 if highlight else 0.20)
+	sb_p.set_corner_radius_all(6)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+
+# ── Refresh (called every frame) ──────────────────────────────────────────
+
+func _refresh_ui() -> void:
+	var pct   := _fill_pct()
+	var ready := _is_ready()
+
+	# Slide the dark mask right to reveal the image's bar as production fills
+	if is_instance_valid(_progress_bar):
+		var filled := BAR_W * pct
+		_progress_bar.position = Vector2(BAR_X + filled, BAR_Y)
+		_progress_bar.size     = Vector2(BAR_W - filled, BAR_H)
+
+	if is_instance_valid(_status_lbl):
+		if ready:
+			_status_lbl.text = "Ready to collect!"
+		else:
+			var rem := COLLECT_SECS - _elapsed()
+			_status_lbl.text = "%dh %dm" % [rem / 3600, (rem % 3600) / 60]
+
+	if is_instance_valid(_collect_btn):
+		_collect_btn.disabled = not ready
+
+# ── Collect ───────────────────────────────────────────────────────────────
+
 func _on_collect_pressed() -> void:
 	if not _is_ready(): return
 
-	ResourceManager.add_item("honey", 2)
-	ResourceManager.add_item("beeswax", 1)
+	ResourceManager.add_item("honey",   2, true)
+	ResourceManager.add_item("beeswax", 1, true)
 	PlayerData.add_xp(2)
+	var popup = (load("res://scripts/ui/drops_popup.gd") as GDScript).new()
+	get_tree().root.add_child(popup)
+	popup.show_drops([{"label": "Collected", "color": Color(1.0, 0.88, 0.20), "items": [{"id": "honey", "count": 2}, {"id": "beeswax", "count": 1}]}])
 
 	var slots: Dictionary = LandManager.tiles.get(_tile_id, {}).get("slots", {})
 	var data: Dictionary  = slots.get(_slot_key, {})

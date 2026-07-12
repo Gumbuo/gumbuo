@@ -393,7 +393,7 @@ func _do_harvest() -> void:
 	var harvester_amt: int = 0
 	if crop != "":
 		harvester_amt = randi_range(2, 5)
-		ResourceManager.add_item(crop, harvester_amt)
+		ResourceManager.add_item(crop, harvester_amt, true)
 	tile_slots[key].erase("state")
 	tile_slots[key].erase("crop")
 	tile_slots[key].erase("planted_at")
@@ -441,8 +441,8 @@ func _do_chop() -> void:
 		owner_wood = randi_range(w[4], w[5])
 		if has_fruit: owner_fruit = 2
 
-	ResourceManager.add_item("wood", you_wood)
-	if has_fruit and you_fruit > 0: ResourceManager.add_item(fruit, you_fruit)
+	ResourceManager.add_item("wood", you_wood, true)
+	if has_fruit and you_fruit > 0: ResourceManager.add_item(fruit, you_fruit, true)
 	if owner_wood > 0: LandManager.add_to_passive_vault(_tile_id, "wood", owner_wood)
 	if owner_fruit > 0: LandManager.add_to_passive_vault(_tile_id, fruit, owner_fruit)
 
@@ -480,7 +480,7 @@ func _do_mine() -> void:
 	if player_node and player_node.has_method("play_mine"):
 		player_node.call("play_mine")
 	var stone_amt: int = randi_range(4, 8)
-	ResourceManager.add_item("stone", stone_amt)
+	ResourceManager.add_item("stone", stone_amt, true)
 	_show_drops_popup([{"label": "You", "color": Color(0.55, 0.85, 0.55), "items": [{"id": "stone", "count": stone_amt}]}])
 	# Stage 0 → 1: crack animation plays (~1.3s of rustling + crack frames)
 	slot["boulder_cracked_at"] = now
@@ -505,7 +505,7 @@ func _do_forage_wild() -> void:
 		return
 	PlayerData.add_xp(1)
 	var foraged: String = _item_id.trim_prefix("wild_")
-	ResourceManager.add_item(foraged, 1)
+	ResourceManager.add_item(foraged, 1, true)
 	LandManager.remove_slot_item(_tile_id, _grid_pos)
 	_show_drops_popup([{"label": "Foraged", "color": Color(0.55, 1.0, 0.55), "items": [{"id": foraged, "count": 1}]}])
 
@@ -560,7 +560,7 @@ func _do_collect_eggs() -> void:
 		return
 	PlayerData.add_xp(1)
 	var amt: int = randi_range(1, 3)
-	ResourceManager.add_item("egg_white", amt)
+	ResourceManager.add_item("egg_white", amt, true)
 	_show_drops_popup([{"label": "Collected", "color": Color(1.0, 0.95, 0.65), "items": [{"id": "egg_white", "count": amt}]}])
 
 func _show_drops_popup(drops: Array) -> void:
