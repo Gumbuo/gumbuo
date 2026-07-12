@@ -252,8 +252,8 @@ func _boulder_actions() -> Array:
 	var tile_slots: Dictionary = LandManager.tiles.get(_tile_id, {}).get("slots", {})
 	var slot_data: Dictionary = tile_slots.get(LandManager.slot_key(_grid_pos), {})
 	var now: int = int(Time.get_unix_time_from_system())
-	var mined_at: int  = slot_data.get("boulder_mined_at",  0)
-	var crack_at: int  = slot_data.get("boulder_cracked_at", 0)
+	var mined_at: int = slot_data.get("boulder_mined_at", 0)
+	var crack_at: int = slot_data.get("boulder_cracked_at", 0)
 	if mined_at > 0:
 		var elapsed: int = now - mined_at
 		var remaining: int = max(0, 14400 - elapsed)
@@ -262,14 +262,14 @@ func _boulder_actions() -> Array:
 			var m: int = (remaining % 3600) / 60
 			var time_str: String = "%dh %dm" % [h, m] if h > 0 else "%dm" % m
 			return [{"label": "Regrowing... (%s)" % time_str, "disabled": true}]
+	# Animation in progress — block double-click
+	if crack_at > 0 and mined_at == 0:
+		return [{"label": "Mining...", "disabled": true}]
 	var has_pick: bool = ResourceManager.has_item("tool_pickaxe_iron") or \
 		ResourceManager.has_item("tool_pickaxe_silver") or \
 		ResourceManager.has_item("tool_pickaxe_gold")
 	if not has_pick:
 		return [{"label": "Need an Iron+ Pickaxe to mine", "disabled": true}]
-	var is_cracked: bool = crack_at > 0 and mined_at == 0
-	if is_cracked:
-		return [{"label": "Finish Mining  (-1 energy)", "action": "mine_boulder", "highlight": true}]
 	return [{"label": "Mine Rock  (-1 energy)", "action": "mine_boulder", "highlight": true}]
 
 func _fishing_actions() -> Array:
@@ -350,7 +350,6 @@ func _do_action(act: Dictionary) -> void:
 		"harvest": _do_harvest()
 		"chop_tree": _do_chop()
 		"mine_boulder": _do_mine()
-		"fish": _do_fish()
 		"cook": _do_cook(act["recipe"])
 		"workbench_craft": _do_workbench_craft(act["recipe"])
 		"craft": _do_craft(act["recipe"])
@@ -477,30 +476,29 @@ func _do_mine() -> void:
 		return
 	var slot: Dictionary = slots[key]
 	var now: int = int(Time.get_unix_time_from_system())
-	var mined_at: int = slot.get("boulder_mined_at", 0)
-	var crack_at: int = slot.get("boulder_cracked_at", 0)
-	# Stage 1 (cracked) only when crack_at set this cycle and not yet mined
-	var is_cracked: bool = crack_at > 0 and mined_at == 0
 	var player_node: Node = get_tree().get_first_node_in_group("player")
 	if player_node and player_node.has_method("play_mine"):
 		player_node.call("play_mine")
-	if is_cracked:
-		# Second hit: fully mine, give main stone yield
-		var stone_amt: int = randi_range(3, 6)
-		ResourceManager.add_item("stone", stone_amt)
-		slot["boulder_mined_at"] = now
-		LandManager.save_land_data()
-		LandManager.slot_item_placed.emit(_tile_id, key, "boulder")
-		_show_drops_popup([{"label": "You", "color": Color(0.55, 0.85, 0.55), "items": [{"id": "stone", "count": stone_amt}]}])
-	else:
-		# First hit (full or respawned): crack the rock, clear stale data, small yield
-		var stone_amt: int = randi_range(1, 2)
-		ResourceManager.add_item("stone", stone_amt)
-		slot["boulder_cracked_at"] = now
-		slot["boulder_mined_at"] = 0  # clear stale mined_at from previous cycle
-		LandManager.save_land_data()
-		LandManager.slot_item_placed.emit(_tile_id, key, "boulder")
-		_show_drops_popup([{"label": "You", "color": Color(0.55, 0.85, 0.55), "items": [{"id": "stone", "count": stone_amt}]}])
+	var stone_amt: int = randi_range(4, 8)
+	ResourceManager.add_item("stone", stone_amt)
+	_show_drops_popup([{"label": "You", "color": Color(0.55, 0.85, 0.55), "items": [{"id": "stone", "count": stone_amt}]}])
+	# Stage 0 → 1: crack animation plays (~1.3s of rustling + crack frames)
+	slot["boulder_cracked_at"] = now
+	slot.erase("boulder_mined_at")
+	LandManager.save_land_data()
+	LandManager.slot_item_placed.emit(_tile_id, key, "boulder")
+	# Stage 1 → 2: auto-finish after crack animation completes
+	var tid := _tile_id
+	get_tree().create_timer(1.5).timeout.connect(func():
+		var live_slots: Dictionary = LandManager.tiles.get(tid, {}).get("slots", {})
+		if not live_slots.has(key): return
+		var live_slot: Dictionary = live_slots[key]
+		if live_slot.get("boulder_cracked_at", 0) > 0 and live_slot.get("boulder_mined_at", 0) == 0:
+			live_slot["boulder_mined_at"] = int(Time.get_unix_time_from_system())
+			live_slot.erase("boulder_cracked_at")
+			LandManager.save_land_data()
+			LandManager.slot_item_placed.emit(tid, key, "boulder")
+	)
 
 func _do_forage_wild() -> void:
 	if not PlayerData.spend_energy(1):
@@ -510,43 +508,6 @@ func _do_forage_wild() -> void:
 	ResourceManager.add_item(foraged, 1)
 	LandManager.remove_slot_item(_tile_id, _grid_pos)
 	_show_drops_popup([{"label": "Foraged", "color": Color(0.55, 1.0, 0.55), "items": [{"id": foraged, "count": 1}]}])
-
-const FISH_TABLE := [
-	{ "item": "tadpole",         "weight": 20 },
-	{ "item": "grey_chubfish",   "weight": 15 },
-	{ "item": "yellow_chubfish", "weight": 15 },
-	{ "item": "red_chubfish",    "weight": 12 },
-	{ "item": "catfish",         "weight": 8  },
-	{ "item": "black_crappie",   "weight": 7  },
-	{ "item": "orange_bluegill", "weight": 6  },
-	{ "item": "blue_bluegill",   "weight": 6  },
-	{ "item": "yellow_bluegill", "weight": 5  },
-	{ "item": "crucian_carp",    "weight": 5  },
-	{ "item": "lotus_carp",      "weight": 3  },
-	{ "item": "albino_catfish",  "weight": 2  },
-	{ "item": "golden_koi",      "weight": 1  },
-]
-
-func _do_fish() -> void:
-	if not PlayerData.spend_energy(1):
-		return
-	PlayerData.add_xp(1)
-	var _p: Node = get_tree().get_first_node_in_group("player")
-	if _p and _p.has_method("play_fish"): _p.call("play_fish")
-	var total_weight: int = 0
-	for entry in FISH_TABLE:
-		total_weight += entry["weight"]
-	var roll: int = randi_range(1, total_weight)
-	var running: int = 0
-	var caught: String = ""
-	for entry in FISH_TABLE:
-		running += entry["weight"]
-		if roll <= running:
-			caught = entry["item"]
-			break
-	if caught != "":
-		ResourceManager.add_item(caught, 1)
-		_show_drops_popup([{"label": "Caught", "color": Color(0.4, 0.75, 1.0), "items": [{"id": caught, "count": 1}]}])
 
 func _do_cook(recipe: Dictionary) -> void:
 	var needs: Array = recipe.get("needs", [])

@@ -88,6 +88,8 @@ func _ready() -> void:
 func _apply_hud_icons() -> void:
 	_set_btn_icon(backpack_btn,  "res://assets/sprites/ui/icon_backpack.png")
 	_set_btn_icon(map_btn,       "res://assets/sprites/ui/icon_world_map.png")
+	_set_btn_icon(home_btn,      "res://assets/sprites/ui/icon_home.png")
+	_set_btn_icon(bell_btn,      "res://assets/sprites/ui/icon_bell.png")
 	var market_btn: Button = get_node_or_null("Bottom/Buttons/MarketBtn")
 	if market_btn:
 		_set_btn_icon(market_btn, "res://assets/sprites/ui/icon_market.png")

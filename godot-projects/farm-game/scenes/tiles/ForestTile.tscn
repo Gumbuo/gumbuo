@@ -1,26 +1,27 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/tiles/forest_tile.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/tiles/grass.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/forest_map.png" id="2"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(40, 640)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(40, 640)
+
+[sub_resource type="RectangleShape2D" id="3"]
+size = Vector2(640, 40)
+
+[sub_resource type="RectangleShape2D" id="4"]
+size = Vector2(640, 40)
 
 [node name="ForestTile" type="Node2D"]
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 1280.0
-offset_bottom = 720.0
-color = Color(0.53, 0.80, 0.96, 1)
+[node name="Background" type="Sprite2D" parent="."]
 z_index = -10
-
-[node name="IslandSprite" type="Sprite2D" parent="."]
 position = Vector2(640, 360)
-scale = Vector2(4.0, 4.0)
 texture = ExtResource("2")
-region_enabled = true
-region_rect = Rect2(160, 0, 160, 160)
-z_index = -4
 
 [node name="TileLabel" type="Label" parent="."]
 offset_left = 8.0
@@ -32,6 +33,24 @@ theme_override_font_sizes/font_size = 11
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(640, 280)
+
+[node name="Walls" type="StaticBody2D" parent="."]
+
+[node name="WallLeft" type="CollisionShape2D" parent="Walls"]
+position = Vector2(390, 356)
+shape = SubResource("1")
+
+[node name="WallRight" type="CollisionShape2D" parent="Walls"]
+position = Vector2(890, 356)
+shape = SubResource("2")
+
+[node name="WallTop" type="CollisionShape2D" parent="Walls"]
+position = Vector2(640, 108)
+shape = SubResource("3")
+
+[node name="WallBottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(640, 610)
+shape = SubResource("4")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

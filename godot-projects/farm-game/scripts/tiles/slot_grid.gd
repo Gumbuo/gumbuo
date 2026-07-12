@@ -131,7 +131,6 @@ func _ready() -> void:
 			"red_flower", "blue_flower", "yellow_flower", "cotton"]:
 		_item_colors["wild_" + _wc] = Color(0.22, 0.68, 0.22)
 	add_to_group("slot_grid")
-	_build_ui()
 
 func setup(tid: String) -> void:
 	tile_id = tid
@@ -139,6 +138,10 @@ func setup(tid: String) -> void:
 		var player_tiles := LandManager.get_player_tiles()
 		if not player_tiles.is_empty():
 			tile_id = player_tiles[0]["id"]
+
+	# Build UI now that tile_id is known — pond vs standard layout chosen here.
+	_build_ui()
+
 	var sheet_tex: Texture2D = load("res://assets/sprites/crops/crops.png")
 	if sheet_tex:
 		_crop_sheet = sheet_tex.get_image()
@@ -256,10 +259,7 @@ func _input(event: InputEvent) -> void:
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	var slot_pos := _screen_to_slot(mouse_pos)
 	if slot_pos.x < 0:
-		if event.button_index == MOUSE_BUTTON_LEFT and _is_pond_tile() and _is_in_pond_water(mouse_pos.y):
-			pond_water_clicked.emit(mouse_pos)
-			get_viewport().set_input_as_handled()
-		return
+		return  # let non-slot clicks bubble to pond_tile._unhandled_input for fishing
 	get_viewport().set_input_as_handled()
 
 	var _td: Dictionary = LandManager.tiles.get(tile_id, {})
@@ -361,7 +361,29 @@ func _spawn_crafting_ui(script_path: String) -> CanvasLayer:
 
 # ─────────────────────────── SCREEN → SLOT ──────────────────
 
+# Pond ring: 8-slot top/bottom rows + 1 side column on each side.
+# All col values are 0-9 (non-negative) so the (-1,-1) "no slot" sentinel still works.
+# Col formula: x = 302 + col * 68.
+# Col 0 = x=302 (left side only), cols 1-8 = x=370..846 (top/bottom rows), col 9 = x=914 (right side only).
+# Cols 1-8 in rows 1-5 are over the pond — masked so they cannot be clicked.
+const _POND_SLOTS: Array = [
+	# Row 0 — top strip (above pond), cols 1-8 at x=370..846
+	[1, 0, 370, 112], [2, 0, 438, 112], [3, 0, 506, 112], [4, 0, 574, 112],
+	[5, 0, 642, 112], [6, 0, 710, 112], [7, 0, 778, 112], [8, 0, 846, 112],
+	# Rows 1-5 — col 0 left (x=302), col 9 right (x=914)
+	[0, 1, 302, 180], [9, 1, 914, 180],
+	[0, 2, 302, 248], [9, 2, 914, 248],
+	[0, 3, 302, 316], [9, 3, 914, 316],
+	[0, 4, 302, 384], [9, 4, 914, 384],
+	[0, 5, 302, 452], [9, 5, 914, 452],
+	# Row 6 — bottom strip (below pond), cols 1-8 at x=370..846
+	[1, 6, 370, 548], [2, 6, 438, 548], [3, 6, 506, 548], [4, 6, 574, 548],
+	[5, 6, 642, 548], [6, 6, 710, 548], [7, 6, 778, 548], [8, 6, 846, 548],
+]
+
 func _screen_to_slot(screen_pos: Vector2) -> Vector2i:
+	if _is_pond_tile():
+		return _pond_screen_to_slot(screen_pos)
 	var full_cols := 6
 	var step := SLOT_PX + SLOT_GAP
 	var grid_w: float = full_cols * step - SLOT_GAP
@@ -382,30 +404,28 @@ func _screen_to_slot(screen_pos: Vector2) -> Vector2i:
 		return Vector2i(-1, -1)
 	return Vector2i(col, row)
 
+func _pond_screen_to_slot(screen_pos: Vector2) -> Vector2i:
+	for entry in _POND_SLOTS:
+		var sx: float = float(entry[2])
+		var sy: float = float(entry[3])
+		if screen_pos.x >= sx and screen_pos.x < sx + SLOT_PX \
+				and screen_pos.y >= sy and screen_pos.y < sy + SLOT_PX:
+			return Vector2i(entry[0], entry[1])
+	return Vector2i(-1, -1)
+
 # ─────────────────────────── POND MASK ──────────────────────
 
 func _is_pond_tile() -> bool:
 	return LandManager.tiles.get(tile_id, {}).get("type_str", "") == "POND"
 
-func _is_in_pond_water(y: float) -> bool:
-	var step := SLOT_PX + SLOT_GAP
-	var origin_y := 558.0 - (ROW_LAYOUT.size() * step - SLOT_GAP)
-	return y > origin_y + step and y < origin_y + (ROW_LAYOUT.size() - 1) * step
-
 func _apply_pond_mask() -> void:
 	_masked_positions.clear()
 	if not _is_pond_tile():
 		return
-	# Rows 1–4 sit over the pond water — hide and block them
-	for row in range(1, 5):
-		for col in range(0, 6):
-			var key := LandManager.slot_key(Vector2i(col, row))
-			var ctrl: Control = _slot_nodes.get(key)
-			if ctrl == null:
-				continue
-			ctrl.modulate.a = 0.0
-			ctrl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			_masked_positions[key] = true
+	# Cols 1-8 in rows 1-5 are over the pond water — only cols 0 and 9 are valid side slots.
+	for row in range(1, 6):
+		for col in range(1, 9):
+			_masked_positions[LandManager.slot_key(Vector2i(col, row))] = true
 
 # ─────────────────────────── BUILD UI ───────────────────────
 
@@ -426,6 +446,10 @@ func _build_ui() -> void:
 	_timer_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(_timer_label)
 
+	if _is_pond_tile():
+		_build_pond_ring_ui()
+		return
+
 	var full_cols := 6
 	var step := SLOT_PX + SLOT_GAP
 	var grid_w: float = full_cols * step - SLOT_GAP
@@ -443,6 +467,15 @@ func _build_ui() -> void:
 			_slot_nodes[LandManager.slot_key(pos)] = slot
 
 	_picker_panel = _build_picker(_root, Vector2(1280.0 - 130.0, origin.y), grid_h)
+
+func _build_pond_ring_ui() -> void:
+	for entry in _POND_SLOTS:
+		var pos := Vector2i(entry[0], entry[1])
+		var slot := _make_slot(Vector2(float(entry[2]), float(entry[3])), pos)
+		_root.add_child(slot)
+		_slot_nodes[LandManager.slot_key(pos)] = slot
+	# Picker to the right of the right side column (col 8 ends at x=978, wall at x=1260)
+	_picker_panel = _build_picker(_root, Vector2(984.0, 180.0), 340.0)
 
 func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 	var c := Control.new()

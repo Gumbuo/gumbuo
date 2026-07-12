@@ -15,9 +15,10 @@ func _ready() -> void:
 	_load_item_data()
 	load_inventory()
 
-func add_item(item_id: String, amount: int = 1) -> void:
+func add_item(item_id: String, amount: int = 1, silent: bool = false) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
-	item_added.emit(item_id, amount)
+	if not silent:
+		item_added.emit(item_id, amount)
 	inventory_changed.emit(item_id, inventory[item_id])
 
 func remove_item(item_id: String, amount: int = 1) -> bool:
