@@ -6,7 +6,7 @@ const TILE_CARD_SIZE := Vector2(90, 90)
 const TILE_CARD_GAP := Vector2(0, 0)
 const GRID_COLS := 30
 const GRID_ROWS := 25
-const API_URL := "https://gamehole.ink/api/farm-world"
+const API_URL := "https://univershole.ink/api/farm-world"
 
 @onready var grid_container: Control = $UI/Scroll/GridContainer
 @onready var kingdom_label: Label = $UI/KingdomLabel
@@ -42,6 +42,8 @@ func _ready() -> void:
 	_sync_req = HTTPRequest.new()
 	add_child(_sync_req)
 	_world_req.request(API_URL, ["Accept: application/json"])
+	# Push all locally-owned tiles so the server stays in sync on every load
+	_sync_all_local_tiles()
 
 func _spawn_hud() -> void:
 	var hud := HUD_SCENE.instantiate()
@@ -309,6 +311,29 @@ func _on_world_tiles_received(_result: int, code: int, _headers: PackedStringArr
 	LandManager.merge_remote_tiles(remote)
 	_refresh_all_tiles()
 	_place_npc_tiles()
+
+func _sync_all_local_tiles() -> void:
+	for tile_id in LandManager.tiles:
+		if LandManager.is_remote_tile(tile_id) or tile_id == LandManager.GLOBAL_TILE_ID:
+			continue
+		var td: Dictionary = LandManager.tiles.get(tile_id, {})
+		if td.is_empty():
+			continue
+		var pos: Vector2i = td.get("position", Vector2i(-1, -1))
+		var body := JSON.stringify({
+			"id":          tile_id,
+			"type":        td.get("type", 0),
+			"type_str":    td.get("type_str", "FARM"),
+			"position":    {"x": pos.x, "y": pos.y},
+			"owner_id":    td.get("owner_id", ""),
+			"name":        td.get("name", "Tile"),
+			"access_mode": td.get("access_mode", 0),
+		})
+		var req := HTTPRequest.new()
+		add_child(req)
+		req.request_completed.connect(func(_r,_c,_h,_b): req.queue_free())
+		req.request(API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
+		await get_tree().create_timer(0.1).timeout  # stagger to avoid hammering the API
 
 func _sync_tile(tile_id: String) -> void:
 	if LandManager.is_remote_tile(tile_id):

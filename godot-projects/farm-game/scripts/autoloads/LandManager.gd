@@ -665,12 +665,21 @@ func _run_deed_migrations() -> void:
 		deed_inventory["FOREST"] = deed_inventory.get("FOREST", 0) + deed_inventory["FOREST_DENSE"]
 		deed_inventory.erase("FOREST_DENSE")
 	deed_inventory.erase("FOREST_SPARSE")
-	# Give starter deeds to any player with zero deeds (new wallet, old account, or save gap)
+	# Give starter deeds only if zero deeds AND zero placed tiles for this player
+	# (prevents re-granting on refresh after player has placed all their deeds)
 	var total_deeds := 0
 	for v in deed_inventory.values():
 		total_deeds += int(v)
 	if total_deeds == 0:
-		deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
-		deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
-		deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1
-		deed_inventory["FOREST"]   = deed_inventory.get("FOREST",   0) + 1
+		var pid := PlayerData.player_id
+		var has_placed_tiles := false
+		if pid != "":
+			for tid in tiles:
+				if tiles[tid].get("owner_id", "") == pid:
+					has_placed_tiles = true
+					break
+		if not has_placed_tiles:
+			deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
+			deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
+			deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1
+			deed_inventory["FOREST"]   = deed_inventory.get("FOREST",   0) + 1
