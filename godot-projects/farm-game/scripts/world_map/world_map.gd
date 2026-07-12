@@ -4,8 +4,8 @@ const TILE_CARD_SCENE := preload("res://scenes/world_map/TileCard.tscn")
 const HUD_SCENE        := preload("res://scenes/ui/HUD.tscn")
 const TILE_CARD_SIZE := Vector2(90, 90)
 const TILE_CARD_GAP := Vector2(0, 0)
-const GRID_COLS := 10
-const GRID_ROWS := 10
+const GRID_COLS := 30
+const GRID_ROWS := 25
 const API_URL := "https://gamehole.ink/api/farm-world"
 
 @onready var grid_container: Control = $UI/Scroll/GridContainer

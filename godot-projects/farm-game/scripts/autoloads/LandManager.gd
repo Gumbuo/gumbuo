@@ -23,7 +23,7 @@ enum TileType { FARM, FOREST, MOUNTAIN, POND, GUILD }
 enum AccessMode { PUBLIC, PRIVATE, GUILD_ONLY }
 
 const SAVE_PATH := "user://land_data.cfg"
-const MAX_GRID_SIZE := Vector2i(20, 20)
+const MAX_GRID_SIZE := Vector2i(30, 25)
 const SLOT_COLS := 10
 const SLOT_ROWS := 7
 const GLOBAL_TILE_ID := "npc_global"
