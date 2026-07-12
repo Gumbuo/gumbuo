@@ -31,6 +31,7 @@ var _music_expanded: bool = false
 var _music_panel: PanelContainer = null
 var _music_toggle_btn: Button = null
 var _music_track_lbl: Label = null
+var _name_btn: Button = null
 
 func _ready() -> void:
 	PlayerData.xp_changed.connect(_on_xp_changed)
@@ -50,6 +51,7 @@ func _ready() -> void:
 	_apply_hud_icons()
 	_build_music_player()
 	_setup_xp_row()
+	_add_name_display()
 	LandManager.tile_placed.connect(func(_td): _refresh_home_btn())
 	_spawn_activity_log()
 
@@ -543,6 +545,125 @@ func _tile_type_to_scene(tile_type: int) -> String:
 		LandManager.TileType.MOUNTAIN: return "res://scenes/tiles/MountainTile.tscn"
 		LandManager.TileType.POND:     return "res://scenes/tiles/PondTile.tscn"
 	return ""
+
+func _add_name_display() -> void:
+	var top_left: Node = get_node_or_null("TopLeft")
+	if not top_left:
+		return
+	_name_btn = Button.new()
+	_name_btn.flat = true
+	_name_btn.add_theme_font_size_override("font_size", 10)
+	_name_btn.add_theme_color_override("font_color", Color(0.75, 0.95, 0.70))
+	_name_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_name_btn.tooltip_text = "Click to change your name"
+	_name_btn.pressed.connect(_open_rename_dialog)
+	top_left.add_child(_name_btn)
+	top_left.move_child(_name_btn, 0)
+	_refresh_name_btn()
+
+func _refresh_name_btn() -> void:
+	if not is_instance_valid(_name_btn):
+		return
+	var name_str := PlayerData.player_name
+	# Truncate long wallet addresses for display
+	if name_str.length() > 20:
+		name_str = name_str.substr(0, 8) + "..." + name_str.substr(name_str.length() - 4)
+	_name_btn.text = "👤 %s  ✏" % name_str
+
+func _open_rename_dialog() -> void:
+	var dialog := CanvasLayer.new()
+	dialog.layer = 50
+	get_tree().current_scene.add_child(dialog)
+
+	var dim := ColorRect.new()
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0, 0, 0, 0.65)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	dim.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed:
+			dialog.queue_free()
+	)
+	dialog.add_child(dim)
+
+	var panel := PanelContainer.new()
+	var psb := StyleBoxFlat.new()
+	psb.bg_color     = Color(0.07, 0.10, 0.07, 0.97)
+	psb.border_color = Color(0.35, 0.70, 0.25)
+	psb.set_border_width_all(2)
+	psb.set_corner_radius_all(8)
+	panel.add_theme_stylebox_override("panel", psb)
+	panel.custom_minimum_size = Vector2(340, 0)
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical   = Control.GROW_DIRECTION_BOTH
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	dialog.add_child(panel)
+
+	await get_tree().process_frame
+	panel.position = Vector2(
+		(get_viewport().get_visible_rect().size.x - panel.size.x) / 2.0,
+		(get_viewport().get_visible_rect().size.y - panel.size.y) / 2.0
+	)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 10)
+	panel.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "Change Display Name"
+	title.add_theme_font_size_override("font_size", 14)
+	title.modulate = Color(0.55, 1.0, 0.40)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	var hint := Label.new()
+	hint.text = "This is what other players see. Max 24 characters."
+	hint.add_theme_font_size_override("font_size", 9)
+	hint.modulate = Color(0.55, 0.55, 0.55)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.custom_minimum_size = Vector2(300, 0)
+	vbox.add_child(hint)
+
+	var edit := LineEdit.new()
+	edit.text = PlayerData.player_name if PlayerData.player_name.length() <= 24 else ""
+	edit.placeholder_text = "Enter your name..."
+	edit.max_length = 24
+	edit.custom_minimum_size = Vector2(300, 36)
+	edit.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(edit)
+
+	var btns := HBoxContainer.new()
+	btns.add_theme_constant_override("separation", 8)
+	btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(btns)
+
+	var save_btn := Button.new()
+	save_btn.text = "Save Name"
+	save_btn.custom_minimum_size = Vector2(130, 36)
+	save_btn.add_theme_font_size_override("font_size", 12)
+	save_btn.pressed.connect(func() -> void:
+		var new_name := edit.text.strip_edges()
+		if new_name.length() == 0:
+			return
+		PlayerData.player_name = new_name
+		PlayerData.save_data()
+		_refresh_name_btn()
+		dialog.queue_free()
+	)
+	btns.add_child(save_btn)
+
+	var cancel_btn := Button.new()
+	cancel_btn.text = "Cancel"
+	cancel_btn.custom_minimum_size = Vector2(90, 36)
+	cancel_btn.add_theme_font_size_override("font_size", 12)
+	cancel_btn.pressed.connect(func(): dialog.queue_free())
+	btns.add_child(cancel_btn)
+
+	edit.grab_focus()
+	edit.select_all()
+	# Enter key confirms
+	edit.text_submitted.connect(func(_t) -> void: save_btn.emit_signal("pressed"))
 
 func _add_settings_btn() -> void:
 	var buttons_row: Node = get_node_or_null("Bottom/Buttons")
