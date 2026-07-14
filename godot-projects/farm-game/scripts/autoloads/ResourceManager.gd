@@ -79,6 +79,7 @@ func _load_item_data() -> void:
 
 func save_inventory() -> void:
 	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)  # preserve meta flags; error on missing file is harmless
 	cfg.set_value("inventory", "data", var_to_str(inventory))
 	cfg.save(SAVE_PATH)
 
@@ -167,14 +168,56 @@ func load_inventory() -> void:
 			inventory.erase("egg")  # plain egg replaced by egg_white / egg_gold
 			cfg.set_value("inventory", "data", var_to_str(inventory))
 			cfg.save(SAVE_PATH)
+		if not cfg.get_value("meta", "inventory_reset_v1", false):
+			cfg.set_value("meta", "inventory_reset_v1", true)
+			_apply_inventory_reset_v1()
+			dirty = false  # we save below; skip save_inventory() which would wipe meta
+			cfg.set_value("inventory", "data", var_to_str(inventory))
+			cfg.save(SAVE_PATH)
 		if dirty:
 			save_inventory()
 
 func _grant_starter_items() -> void:
-	inventory["workbench"] = 1
-	inventory["soil_plot"] = 100
-	inventory["mailbox"] = 1
-	inventory["seed_wheat"] = 5
-	inventory["seed_carrot"] = 3
-	inventory["seed_potato"] = 3
+	_apply_inventory_reset_v1()
 	save_inventory()
+
+func _apply_inventory_reset_v1() -> void:
+	inventory.clear()
+	# Seeds × 1000
+	for seed in [
+		"seed_wheat","seed_carrot","seed_pumpkin","seed_red_flower","seed_yellow_flower",
+		"seed_blue_flower","seed_cotton","seed_grapes","seed_tomato","seed_fern",
+		"seed_cucumber","seed_potato","seed_roses"
+	]:
+		inventory[seed] = 1000
+	# Food × 200
+	for food in [
+		"bread","wine","wrapped_potato","french_fries","veggie_salad","fruit_salad",
+		"mushroom_soup","tomato_omelette","mushroom_omelette","pumpkin_bread",
+		"carrot_cake","golden_potato_cake","upside_down_tomato_cake","pumpkin_spice_cake",
+		"grape_tart_cake","combat_health_potion","combat_stamina_potion"
+	]:
+		inventory[food] = 200
+	# Placeables
+	inventory["soil_plot"] = 30
+	for pl in [
+		"tree","apple_tree","pear_tree","peach_tree","lemon_tree","boulder","workbench",
+		"alchemy_table","anvil","barrel","beehive","bonfire","box","dyeing_vat",
+		"sawmill","spinning_wheel","stonecutter","wine_press","mailbox"
+	]:
+		inventory[pl] = 1
+	# Recipes × 1
+	for r in [
+		"recipe_soil_plot","recipe_hoe","recipe_watering_can","recipe_axe","recipe_pickaxe",
+		"recipe_fishing_rod","recipe_peach_jam","recipe_wrapped_potato","recipe_french_fries",
+		"recipe_veggie_salad","recipe_mushroom_soup","recipe_tomato_omelette",
+		"recipe_mushroom_omelette","recipe_pumpkin_bread","recipe_carrot_cake",
+		"recipe_golden_potato_cake","recipe_upside_down_tomato_cake","recipe_pumpkin_spice_cake",
+		"recipe_grape_tart_cake","recipe_combat_health_potion","recipe_combat_stamina_potion",
+		"recipe_chicken_feed"
+	]:
+		inventory[r] = 1
+	# Iron tools × 1
+	inventory["tool_axe_iron"]     = 1
+	inventory["tool_pickaxe_iron"] = 1
+	inventory["tool_rod_iron"]     = 1
