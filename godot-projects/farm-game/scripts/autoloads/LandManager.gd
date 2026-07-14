@@ -115,6 +115,16 @@ func remove_tile(tile_id: String) -> void:
 	var tdata: Dictionary = tiles[tile_id]
 	var pos: Vector2i = tdata.get("position", Vector2i(-1, -1))
 	var type_str: String = tdata.get("type_str", "FARM")
+	# Return all player-placed anchor items from slots back to backpack
+	var slots: Dictionary = tdata.get("slots", {})
+	for k in slots:
+		var sd: Dictionary = slots[k]
+		if not sd.get("is_anchor", false):
+			continue
+		var item_id: String = sd.get("item_id", "")
+		if item_id == "" or item_id.ends_with("_tree") or item_id.begins_with("npc_"):
+			continue
+		ResourceManager.add_item(item_id, 1)
 	if pos.x >= 0:
 		grid.erase(pos)
 	tiles.erase(tile_id)
@@ -240,11 +250,17 @@ func _ensure_global_tile() -> void:
 	save_land_data()
 
 func grant_starter_pack() -> void:
-	# Give one deed of each tile type — player places their own tiles
 	deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
 	deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
 	deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1
 	deed_inventory["FOREST"]   = deed_inventory.get("FOREST",   0) + 1
+	# Mark permanently so _run_deed_migrations never re-grants
+	var pid := PlayerData.player_id
+	if pid != "":
+		var cfg := ConfigFile.new()
+		cfg.load(SAVE_PATH)
+		cfg.set_value("starter_granted", pid, true)
+		cfg.save(SAVE_PATH)
 	save_land_data()
 
 func get_slot_item_size(_item_id: String) -> Vector2i:
@@ -568,14 +584,23 @@ func is_remote_tile(tile_id: String) -> bool:
 	return _remote_tile_ids.has(tile_id)
 
 func merge_remote_tiles(remote_tiles: Array) -> void:
+	var my_id: String = PlayerData.player_id
 	for td in remote_tiles:
 		var tid: String = td.get("id", "")
 		if tid == "" or tiles.has(tid):
+			continue
+		# Never re-add own tiles from server — local save is authoritative.
+		# Prevents a GET response in-flight before a delete from resurrecting it.
+		if my_id != "" and str(td.get("owner_id", "")) == my_id:
 			continue
 		var pos_dict: Dictionary = td.get("position", {})
 		var pos := Vector2i(int(pos_dict.get("x", -1)), int(pos_dict.get("y", -1)))
 		if pos.x < 0 or grid.has(pos):
 			continue
+		var remote_slots: Dictionary = {}
+		var raw_slots = td.get("slots", {})
+		if raw_slots is Dictionary:
+			remote_slots = raw_slots
 		tiles[tid] = {
 			"id":           tid,
 			"type":         int(td.get("type", 0)),
@@ -584,10 +609,10 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 			"owner_id":     str(td.get("owner_id", "")),
 			"name":         str(td.get("name", "Tile")),
 			"access_mode":  int(td.get("access_mode", AccessMode.PUBLIC)),
-			"yield_rate":   70,
+			"yield_rate":   int(td.get("yield_rate", 70)),
 			"placed_at":    0,
 			"passive_vault": {},
-			"slots":         {},
+			"slots":        remote_slots,
 		}
 		grid[pos] = tid
 		_remote_tile_ids[tid] = true
@@ -665,20 +690,26 @@ func _run_deed_migrations() -> void:
 		deed_inventory["FOREST"] = deed_inventory.get("FOREST", 0) + deed_inventory["FOREST_DENSE"]
 		deed_inventory.erase("FOREST_DENSE")
 	deed_inventory.erase("FOREST_SPARSE")
-	# Give starter deeds only if zero deeds AND zero placed tiles for this player
-	# (prevents re-granting on refresh after player has placed all their deeds)
+	# Only grant starter deeds once per player — check the permanent flag first
 	var total_deeds := 0
 	for v in deed_inventory.values():
 		total_deeds += int(v)
 	if total_deeds == 0:
 		var pid := PlayerData.player_id
-		var has_placed_tiles := false
+		var already_granted := false
 		if pid != "":
-			for tid in tiles:
-				if tiles[tid].get("owner_id", "") == pid:
-					has_placed_tiles = true
-					break
-		if not has_placed_tiles:
+			var cfg := ConfigFile.new()
+			cfg.load(SAVE_PATH)
+			already_granted = cfg.get_value("starter_granted", pid, false)
+			# Also retroactively mark existing accounts that already placed tiles
+			if not already_granted:
+				for tid in tiles:
+					if tiles[tid].get("owner_id", "") == pid:
+						already_granted = true
+						cfg.set_value("starter_granted", pid, true)
+						cfg.save(SAVE_PATH)
+						break
+		if not already_granted:
 			deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1
 			deed_inventory["MOUNTAIN"] = deed_inventory.get("MOUNTAIN", 0) + 1
 			deed_inventory["POND"]     = deed_inventory.get("POND",     0) + 1

@@ -35,6 +35,8 @@ var _drop_overlay: ColorRect = null
 var _edit_btn: Button = null
 var _move_btn: Button = null
 var _drop_btn: Button = null
+var _location_dot: Label = null
+var _access_label: Label = null
 var _name_edit: LineEdit = null
 var _name_confirm: Button = null
 
@@ -70,13 +72,28 @@ func _ready() -> void:
 	_drop_btn.pressed.connect(func() -> void: drop_requested.emit(grid_position))
 	add_child(_drop_btn)
 
+	var _circle_sb := func() -> StyleBoxFlat:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.0, 0.05, 0.15, 0.72)
+		sb.border_color = Color(0.45, 0.75, 1.0)
+		sb.set_border_width_all(1)
+		sb.set_corner_radius_all(17)
+		return sb
+
 	_edit_btn = Button.new()
-	_edit_btn.text = "~"
-	_edit_btn.flat = true
-	_edit_btn.custom_minimum_size = Vector2(18, 18)
-	_edit_btn.position = Vector2(size.x - 20, 2)
+	_edit_btn.text = "Edit"
+	_edit_btn.flat = false
+	_edit_btn.add_theme_font_size_override("font_size", 8)
+	_edit_btn.custom_minimum_size = Vector2(34, 34)
+	_edit_btn.position = Vector2(size.x - 38, 2)
 	_edit_btn.visible = false
 	_edit_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	_edit_btn.add_theme_stylebox_override("normal",  _circle_sb.call())
+	_edit_btn.add_theme_stylebox_override("hover",   _circle_sb.call())
+	_edit_btn.add_theme_stylebox_override("pressed", _circle_sb.call())
+	_edit_btn.add_theme_color_override("font_color", Color(0.5, 0.85, 1.0))
+	_edit_btn.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+	_edit_btn.add_theme_constant_override("outline_size", 2)
 	_edit_btn.pressed.connect(_on_edit_pressed)
 	add_child(_edit_btn)
 
@@ -85,17 +102,12 @@ func _ready() -> void:
 	_move_btn.flat = false
 	_move_btn.add_theme_font_size_override("font_size", 8)
 	_move_btn.custom_minimum_size = Vector2(34, 34)
-	_move_btn.position = Vector2(28, 28)
+	_move_btn.position = Vector2(size.x - 38, 38)
 	_move_btn.visible = false
 	_move_btn.mouse_filter = Control.MOUSE_FILTER_STOP
-	var msb := StyleBoxFlat.new()
-	msb.bg_color = Color(0.0, 0.05, 0.15, 0.72)
-	msb.border_color = Color(0.45, 0.75, 1.0)
-	msb.set_border_width_all(1)
-	msb.set_corner_radius_all(17)
-	_move_btn.add_theme_stylebox_override("normal", msb)
-	_move_btn.add_theme_stylebox_override("hover", msb)
-	_move_btn.add_theme_stylebox_override("pressed", msb)
+	_move_btn.add_theme_stylebox_override("normal",  _circle_sb.call())
+	_move_btn.add_theme_stylebox_override("hover",   _circle_sb.call())
+	_move_btn.add_theme_stylebox_override("pressed", _circle_sb.call())
 	_move_btn.add_theme_color_override("font_color", Color(0.5, 0.85, 1.0))
 	_move_btn.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
 	_move_btn.add_theme_constant_override("outline_size", 2)
@@ -104,6 +116,26 @@ func _ready() -> void:
 			drag_started.emit(_tile_id, grid_position)
 	)
 	add_child(_move_btn)
+
+	# Access mode bubble (Public / Guild Only / Private)
+	_access_label = Label.new()
+	_access_label.add_theme_font_size_override("font_size", 7)
+	_access_label.position = Vector2(2, 76)
+	_access_label.size = Vector2(86, 14)
+	_access_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_access_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_access_label.visible = false
+	add_child(_access_label)
+
+	# Red dot shows on the player's home tile in the world map
+	_location_dot = Label.new()
+	_location_dot.text = "●"
+	_location_dot.modulate = Color(1.0, 0.15, 0.15, 0.95)
+	_location_dot.add_theme_font_size_override("font_size", 14)
+	_location_dot.position = Vector2(3, 2)
+	_location_dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_location_dot.visible = false
+	add_child(_location_dot)
 
 	# Inline rename: LineEdit + confirm button, shown when owner clicks name label
 	_name_edit = LineEdit.new()
@@ -155,6 +187,8 @@ func set_empty() -> void:
 	access_icon.visible = false
 	if _edit_btn: _edit_btn.visible = false
 	if _move_btn: _move_btn.visible = false
+	if _location_dot: _location_dot.visible = false
+	if _access_label: _access_label.visible = false
 	if _drop_btn: _drop_btn.visible = true   # always clickable on empty cells
 
 func set_tile(tile_data: Dictionary) -> void:
@@ -188,10 +222,12 @@ func set_tile(tile_data: Dictionary) -> void:
 	_update_vault_label(tile_data.get("passive_vault", {}))
 	if _edit_btn:
 		_edit_btn.visible = _is_owner
-		_edit_btn.position = Vector2(size.x - 20, 2)
+		_edit_btn.position = Vector2(size.x - 38, 2)
 	if _move_btn:
 		_move_btn.visible = _is_owner
-		_move_btn.position = Vector2(size.x - 22, 20)
+		_move_btn.position = Vector2(size.x - 38, 38)
+	if _location_dot:
+		_location_dot.visible = _is_owner and _tile_id == LandManager.home_tile_id
 	if _drop_btn: _drop_btn.visible = false  # not clickable on filled tiles
 
 func set_npc_tile(npc_data: Dictionary) -> void:
@@ -240,12 +276,24 @@ func set_deed_hint(show: bool) -> void:
 		empty_label.modulate = Color(0.55, 0.85, 0.40, 0.70)
 
 func _update_access_icon(mode: int) -> void:
+	var label_text: String
+	var label_color: Color
 	if mode == LandManager.AccessMode.PUBLIC:
 		access_icon.color = Color.GREEN
+		label_text = "Public"
+		label_color = Color(0.2, 1.0, 0.45)
 	elif mode == LandManager.AccessMode.PRIVATE:
 		access_icon.color = Color.RED
+		label_text = "Private"
+		label_color = Color(1.0, 0.35, 0.35)
 	else:
 		access_icon.color = Color.YELLOW
+		label_text = "Guild Only"
+		label_color = Color(1.0, 0.85, 0.2)
+	if _access_label:
+		_access_label.text = label_text
+		_access_label.add_theme_color_override("font_color", label_color)
+		_access_label.visible = true
 
 func _update_vault_label(vault: Dictionary) -> void:
 	if vault.is_empty():
