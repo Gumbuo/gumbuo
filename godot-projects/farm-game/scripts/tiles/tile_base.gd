@@ -37,6 +37,30 @@ const _REPATH_OFFSETS: Array = [
 	Vector2(-68, -68), Vector2( 68,  68),
 ]
 
+# ── Tile-to-tile navigation ───────────────────────────────────
+const _NAV_DIRS := {
+	"up":    Vector2i( 0, -1),
+	"down":  Vector2i( 0,  1),
+	"left":  Vector2i(-1,  0),
+	"right": Vector2i( 1,  0),
+}
+# Screen px the character walks to before the scene transition fires
+const _NAV_WALK_SCREEN := {
+	"up":    Vector2(640, 110),
+	"down":  Vector2(640, 610),
+	"left":  Vector2(160, 360),
+	"right": Vector2(1120, 360),
+}
+const _NAV_ARROW := { "up": "▲", "down": "▼", "left": "◄", "right": "►" }
+# Top-left position of each button inside the CanvasLayer (1280×720)
+const _NAV_BTN_POS := {
+	"up":    Vector2(570,   4),
+	"down":  Vector2(570, 684),
+	"left":  Vector2(  4, 332),
+	"right": Vector2(1136, 332),
+}
+var _nav_layer: CanvasLayer = null
+
 func _ready() -> void:
 	tile_id   = LandManager.current_tile_id
 	tile_data = LandManager.tiles.get(tile_id, {})
@@ -45,6 +69,7 @@ func _ready() -> void:
 	_spawn_hud()
 	_spawn_slot_grid()
 	_spawn_dot_layer()
+	_spawn_nav_arrows()
 	_player.arrived.connect(_on_player_arrived)
 	_player.path_cancelled.connect(_on_path_cancelled)
 
@@ -97,9 +122,12 @@ func _slot_center_world(grid_pos: Vector2i) -> Vector2:
 	var grid_w: float = _GRID_COLS * step - _SLOT_GAP
 	var grid_h: float = _GRID_ROWS * step - _SLOT_GAP
 	var origin := Vector2((1280.0 - grid_w) / 2.0, 558.0 - grid_h)
+	# Sprite offset is (0,-46) at scale 1.2 → visual center is ~55px above position.
+	# Shift target down so the sprite body centers on the slot instead of floating above it.
+	const SPRITE_VISUAL_OFFSET_Y := 46.0 * 1.2  # 55.2 px
 	var screen_pos := origin + Vector2(
 		grid_pos.x * step + _SLOT_PX * 0.5,
-		grid_pos.y * step + _SLOT_PX * 0.5
+		grid_pos.y * step + _SLOT_PX * 0.5 + SPRITE_VISUAL_OFFSET_Y
 	)
 	return get_viewport().get_canvas_transform().affine_inverse() * screen_pos
 
@@ -241,6 +269,16 @@ func _execute_current_task() -> void:
 			aw.tree_exiting.connect(func(): _finish_task())
 			return
 
+		"travel":
+			PlayerData.save_data()
+			ResourceManager.save_inventory()
+			LandManager.save_land_data()
+			LandManager.current_tile_id = iid
+			var scene_path: String = _tile_scene_path(LandManager.tiles.get(iid, {}).get("type", 0))
+			if scene_path != "":
+				get_tree().change_scene_to_file(scene_path)
+			return
+
 	_finish_task()
 
 func _on_back_button_pressed() -> void:
@@ -248,6 +286,66 @@ func _on_back_button_pressed() -> void:
 	ResourceManager.save_inventory()
 	LandManager.save_land_data()
 	get_tree().change_scene_to_file("res://scenes/world_map/WorldMap.tscn")
+
+# ── Tile-to-tile navigation ───────────────────────────────────
+
+func _spawn_nav_arrows() -> void:
+	_nav_layer = CanvasLayer.new()
+	_nav_layer.layer = 8
+	add_child(_nav_layer)
+	var my_pos: Vector2i = tile_data.get("position", Vector2i(-1, -1))
+	if my_pos.x < 0:
+		return
+	for dir in _NAV_DIRS:
+		var nbr_pos: Vector2i = my_pos + _NAV_DIRS[dir]
+		var nbr_id: String = LandManager.grid.get(nbr_pos, "")
+		if nbr_id == "" or nbr_id == LandManager.GLOBAL_TILE_ID:
+			continue
+		if not LandManager.can_enter_tile(nbr_id, PlayerData.player_id, ""):
+			continue
+		var nbr: Dictionary = LandManager.tiles.get(nbr_id, {})
+		var nbr_name: String = nbr.get("name", "")
+		if nbr_name == "":
+			nbr_name = nbr.get("type_str", "Tile").capitalize()
+		var btn := Button.new()
+		btn.text = "%s  %s" % [_NAV_ARROW[dir], nbr_name]
+		btn.add_theme_font_size_override("font_size", 9)
+		btn.custom_minimum_size = Vector2(140, 32)
+		btn.position = _NAV_BTN_POS[dir]
+		btn.mouse_filter = Control.MOUSE_FILTER_STOP
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.0, 0.05, 0.15, 0.82)
+		sb.border_color = Color(0.35, 0.70, 1.0, 0.90)
+		sb.set_border_width_all(1)
+		sb.set_corner_radius_all(6)
+		btn.add_theme_stylebox_override("normal",  sb)
+		btn.add_theme_stylebox_override("hover",   sb)
+		btn.add_theme_stylebox_override("pressed", sb)
+		btn.add_theme_color_override("font_color", Color(0.55, 0.88, 1.0))
+		var dest_id: String = nbr_id
+		var d: String = dir
+		btn.pressed.connect(func() -> void: _queue_travel(dest_id, d))
+		_nav_layer.add_child(btn)
+
+func _queue_travel(dest_tile_id: String, dir: String) -> void:
+	var sp: Vector2 = _NAV_WALK_SCREEN.get(dir, Vector2(640, 360))
+	var world_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * sp
+	_action_queue.append({
+		"grid_pos":  Vector2i(-1, -1),
+		"action":    "travel",
+		"item_id":   dest_tile_id,
+		"world_pos": world_pos,
+	})
+	if _current_task.is_empty():
+		_start_next_task()
+
+func _tile_scene_path(tile_type: int) -> String:
+	match tile_type:
+		LandManager.TileType.FARM:     return "res://scenes/tiles/FarmTile.tscn"
+		LandManager.TileType.FOREST:   return "res://scenes/tiles/ForestTile.tscn"
+		LandManager.TileType.MOUNTAIN: return "res://scenes/tiles/MountainTile.tscn"
+		LandManager.TileType.POND:     return "res://scenes/tiles/PondTile.tscn"
+	return ""
 
 func fast_travel_to_npc(npc_id: String) -> void:
 	var target_tile_id := NPCManager.get_npc_tile_id(npc_id)
