@@ -28,7 +28,7 @@ export default function Home() {
           margin: "0 -20px 0",
         }}
       >
-        OFFICIAL LAUNCH: JULY 4TH, 2026 — INDEPENDENCE DAY
+        OFFICIAL LAUNCH: SEPTEMBER 9TH, 2026
       </div>
 
       {/* Header */}
