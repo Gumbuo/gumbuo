@@ -97,7 +97,7 @@ export default function Home() {
             borderRadius: 4,
           }}
         >
-          {sorted.length} {sorted.length === 1 ? "RECORD" : "RECORDS"}
+          {sorted.length} {sorted.length === 1 ? "RECORD" : "RECORDS"} Ferrell
         </span>
         <span>Sorted newest first. Updated as new incidents are verified.</span>
       </div>
