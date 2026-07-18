@@ -298,6 +298,7 @@ func _execute_current_task() -> void:
 			return
 
 		"travel":
+			_close_stray_popups()
 			PlayerData.save_data()
 			ResourceManager.save_inventory()
 			LandManager.save_land_data()
@@ -311,7 +312,20 @@ func _execute_current_task() -> void:
 
 	_finish_task()
 
+# Several popups (chicken coop, beehive, mailbox, wine press, barrel,
+# bread oven) are parented directly to get_tree().root so they render
+# above everything — but that also means change_scene_to_file() never
+# frees them if they're left open. Any node still stuck in the
+# "action_windows" group would then block all input on every tile
+# visited afterward, forever. Force-close them before any scene change.
+func _close_stray_popups() -> void:
+	for node in get_tree().get_nodes_in_group("action_windows"):
+		if is_instance_valid(node):
+			node.remove_from_group("action_windows")
+			node.queue_free()
+
 func _on_back_button_pressed() -> void:
+	_close_stray_popups()
 	PlayerData.save_data()
 	ResourceManager.save_inventory()
 	LandManager.save_land_data()
