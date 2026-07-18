@@ -107,12 +107,22 @@ func _build_grid() -> void:
 			grid_container.add_child(card)
 			_cards[pos] = card
 
+func _npc_position_set() -> Dictionary:
+	var result: Dictionary = {}
+	for npc_data in NPCManager.get_all_map_npcs():
+		var pos: Vector2i = npc_data.get("map_position", Vector2i(-1, -1))
+		if pos.x >= 0:
+			result[pos] = true
+	return result
+
 func _refresh_all_tiles() -> void:
+	var npc_positions := _npc_position_set()
 	for tid in LandManager.tiles:
 		var tile_data: Dictionary = LandManager.tiles[tid]
 		var pos: Vector2i = tile_data.get("position", Vector2i(-1, -1))
-		if pos.x >= 0 and _cards.has(pos):
-			_cards[pos].set_tile(tile_data)
+		if pos.x < 0 or not _cards.has(pos): continue
+		if npc_positions.has(pos): continue  # NPC spots always render via _place_npc_tiles()
+		_cards[pos].set_tile(tile_data)
 
 func _place_npc_tiles() -> void:
 	for pos in _npc_positions:
@@ -417,7 +427,7 @@ func _on_tile_settings_changed(tile_id: String) -> void:
 	if tile_data.is_empty():
 		return
 	var pos: Vector2i = tile_data["position"]
-	if _cards.has(pos):
+	if _cards.has(pos) and not _npc_position_set().has(pos):
 		_cards[pos].set_tile(tile_data)
 	_sync_tile(tile_id)
 
