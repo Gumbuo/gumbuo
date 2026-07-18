@@ -61,6 +61,11 @@ var _ready_imgs:      Dictionary = {}    # crop_id -> Image, loaded lazily at st
 var _active_crafting_ui: CanvasLayer = null
 var _tool_slot_nodes: Dictionary = {}  # idx -> Control
 var _tool_slot_sprites: Dictionary = {}  # idx -> TextureRect (item icon)
+# True while a choice popup (seed/tool/farm) is open. The popup is built as
+# part of this same CanvasLayer rather than a separate node with its own
+# _ready(), so it can't join the "action_windows" group the other popups
+# use to block slot_grid's raw _input() — this flag does the same job.
+var _choice_popup_open: bool = false
 
 # soil_plot/boulder (empty-land popup), all TREES (empty-land popup), and
 # CRAFTING (tool slot popup) are no longer offered here — clicking the
@@ -275,6 +280,8 @@ func _process(delta: float) -> void:
 # ─────────────────────────── INPUT ──────────────────────────
 
 func _input(event: InputEvent) -> void:
+	if _choice_popup_open:
+		return
 	if _active_crafting_ui != null and is_instance_valid(_active_crafting_ui):
 		return
 	if not get_tree().get_nodes_in_group("action_windows").is_empty():
@@ -1753,10 +1760,12 @@ func show_choice_popup(kind: String) -> bool:
 	return true
 
 func _build_choice_popup(choices: Array, title: String) -> void:
+	_choice_popup_open = true
 	var overlay := ColorRect.new()
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	overlay.color = Color(0, 0, 0, 0.6)
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.tree_exiting.connect(func(): _choice_popup_open = false)
 	_root.add_child(overlay)
 
 	var cols: int = min(4, choices.size())
