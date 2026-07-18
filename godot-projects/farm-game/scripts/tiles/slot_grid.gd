@@ -2,6 +2,12 @@ extends CanvasLayer
 
 signal slot_activated(grid_pos: Vector2i, action: String, item_id: String)
 signal pond_water_clicked(screen_pos: Vector2)
+signal item_chosen(item_id: String)
+
+# Items offered by the "choose_farm" popup for empty land slots.
+const FARM_POPUP_ITEMS: Array = [
+	"soil_plot", "boulder", "tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree",
+]
 
 const SLOT_PX  := 64.0
 const SLOT_GAP := 4.0
@@ -56,12 +62,12 @@ var _active_crafting_ui: CanvasLayer = null
 var _tool_slot_nodes: Dictionary = {}  # idx -> Control
 var _tool_slot_sprites: Dictionary = {}  # idx -> TextureRect (item icon)
 
+# soil_plot/boulder (empty-land popup), all TREES (empty-land popup), and
+# CRAFTING (tool slot popup) are no longer offered here — clicking the
+# relevant empty slot now pops up a choice instead. Seeds are also gone;
+# see the "choose_seed" popup triggered by clicking empty soil.
 const PLACEABLE_CATEGORIES: Array = [
-	["FARM",     ["soil_plot","boulder","beehive","silo","chicken_coop"]],
-	["TREES",    ["tree","apple_tree","pear_tree","peach_tree","lemon_tree"]],
-	["CRAFTING", ["workbench","workshop","furnace","bonfire","campfire","burner_station",
-				  "anvil","alchemy_table","bread_oven","wheat_mill","dyeing_vat",
-				  "spinning_wheel","stonecutter","sawmill","wine_press","barrel"]],
+	["FARM",     ["beehive","silo","chicken_coop"]],
 	["STORAGE",  ["box","dropbox","mailbox"]],
 ]
 
@@ -321,6 +327,11 @@ func _input(event: InputEvent) -> void:
 				return
 			elif adat.get("item_id","") == "soil_plot" and adat.has("crop"):
 				return  # still growing — do nothing
+			elif adat.get("item_id","") == "soil_plot" and not event.double_click:
+				# Empty, plantable soil — walk over, then pop up a seed choice.
+				if is_tile_owner:
+					slot_activated.emit(anchor_pos, "choose_seed", "")
+				return
 			elif CRAFTING_STATIONS.has(adat.get("item_id","")) and not event.double_click:
 				_open_crafting_station(adat.get("item_id",""), anchor_pos)
 				return
@@ -350,11 +361,16 @@ func _input(event: InputEvent) -> void:
 				_show_return_popup(anchor_pos, adat.get("item_id",""))
 			return
 
-		# ── place held item in empty slot (owner only) — queue character walk ──
+		# ── empty slot (owner only) — queue character walk ──
 		if not occupied and not event.double_click and is_tile_owner:
 			if _held_item != "" and ResourceManager.has_item(_held_item) \
 					and not LandManager.CRAFTING_ITEM_IDS.has(_held_item):
+				# Legacy path — still used for picker categories that keep the
+				# old pick-first flow (e.g. STORAGE).
 				slot_activated.emit(slot_pos, "place", _held_item)
+			elif _held_item == "":
+				# New way — walk over, then pop up a soil/tree/rock choice.
+				slot_activated.emit(slot_pos, "choose_farm", "")
 
 	elif event.button_index == MOUSE_BUTTON_RIGHT:
 		if not slots.has(key) or not is_tile_owner: return
@@ -386,11 +402,9 @@ func _handle_tool_slot_click(idx: int, is_double_click: bool) -> void:
 			_open_crafting_station(item_id, pos)
 		return
 
-	# Empty tool slot — queue a walk-over + pickup animation, same as regular slots.
-	if not is_double_click and is_tile_owner and _held_item != "" \
-			and LandManager.CRAFTING_ITEM_IDS.has(_held_item) \
-			and ResourceManager.has_item(_held_item):
-		slot_activated.emit(pos, "place", _held_item)
+	# Empty tool slot — walk over, then pop up a tool choice.
+	if not is_double_click and is_tile_owner:
+		slot_activated.emit(pos, "choose_tool", "")
 
 # ─────────────────────────── CRAFTING STATIONS ──────────────
 
@@ -817,23 +831,6 @@ func _refresh_picker() -> void:
 			_picker_btns.append(btn)
 			_picker_bgs[item_id] = btn
 
-	# ── seeds ──
-	var seeds := _get_player_seeds()
-	if not seeds.is_empty():
-		var sep := Label.new()
-		sep.text = "─ SEEDS ─"
-		sep.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sep.add_theme_font_size_override("font_size", 7)
-		sep.modulate = Color(0.55, 0.90, 0.55)
-		container.add_child(sep)
-		_picker_btns.append(sep)
-
-		for seed_id in seeds:
-			var btn := _make_picker_btn(seed_id, ResourceManager.get_count(seed_id), true)
-			container.add_child(btn)
-			_picker_btns.append(btn)
-			_seed_bgs[seed_id] = btn
-
 	_update_picker_visuals()
 
 func _make_picker_btn(item_id: String, count: int, is_seed: bool) -> Button:
@@ -988,10 +985,12 @@ func _refresh() -> void:
 	_refresh_tool_slots()
 	_update_crop_timers()
 
-func _tool_item_icon_path(item_id: String) -> String:
+func _item_icon_path(item_id: String) -> String:
 	var path := "res://assets/sprites/items/%s.png" % item_id
 	if ResourceLoader.exists(path): return path
 	path = "res://assets/sprites/buildings/%s.png" % item_id
+	if ResourceLoader.exists(path): return path
+	path = "res://assets/sprites/environment/%s.png" % item_id
 	if ResourceLoader.exists(path): return path
 	return ""
 
@@ -1013,7 +1012,7 @@ func _refresh_tool_slots() -> void:
 			continue
 
 		var item_id: String = slots[key].get("item_id", "")
-		var icon_path := _tool_item_icon_path(item_id)
+		var icon_path := _item_icon_path(item_id)
 
 		if icon_path == "":
 			fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
@@ -1718,6 +1717,126 @@ func _show_harvest_popup(anchor_pos: Vector2i, crop: String) -> void:
 	box.get_node("No").pressed.connect(func(): dim.queue_free(); box.queue_free())
 	dim.gui_input.connect(func(ev: InputEvent):
 		if ev is InputEventMouseButton and ev.pressed: dim.queue_free(); box.queue_free())
+
+# ─────────────────────────── CHOICE POPUPS ───────────────────
+
+func _gather_choices(kind: String) -> Array:
+	var result: Array = []
+	match kind:
+		"seed":
+			for s in _get_player_seeds():
+				result.append({"id": s["id"], "name": s["name"], "count": s["count"]})
+		"tool":
+			for id in LandManager.CRAFTING_ITEM_IDS:
+				var c: int = ResourceManager.get_count(id)
+				if c > 0:
+					result.append({"id": id, "name": id.replace("_", " ").capitalize(), "count": c})
+		"farm":
+			for id in FARM_POPUP_ITEMS:
+				var c: int = ResourceManager.get_count(id)
+				if c > 0:
+					result.append({"id": id, "name": id.replace("_", " ").capitalize(), "count": c})
+	return result
+
+# Called after the player has already walked over. Builds the popup and
+# returns true, or false if there was nothing to choose from (nothing shown).
+# The caller awaits this node's item_chosen signal directly to get the pick
+# ("" if the player closed the popup without choosing).
+func show_choice_popup(kind: String) -> bool:
+	var choices := _gather_choices(kind)
+	if choices.is_empty():
+		return false
+	var title: String = {
+		"seed": "Choose a Seed", "tool": "Choose a Tool", "farm": "Choose What to Place",
+	}.get(kind, "Choose")
+	_build_choice_popup(choices, title)
+	return true
+
+func _build_choice_popup(choices: Array, title: String) -> void:
+	var overlay := ColorRect.new()
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.color = Color(0, 0, 0, 0.6)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	_root.add_child(overlay)
+
+	var cols: int = min(4, choices.size())
+	var rows: int = int(ceil(choices.size() / float(cols)))
+	var cell := 90.0
+	var pw: float = cols * cell + 20.0
+	var ph: float = rows * cell + 70.0
+	var panel := Control.new()
+	panel.position = Vector2((1280.0 - pw) / 2.0, (720.0 - ph) / 2.0)
+	panel.size = Vector2(pw, ph)
+	overlay.add_child(panel)
+
+	var border := ColorRect.new()
+	border.set_anchors_preset(Control.PRESET_FULL_RECT)
+	border.color = Color(0.35, 0.70, 1.0, 0.9)
+	border.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(border)
+
+	var inner := ColorRect.new()
+	inner.position = Vector2(2, 2)
+	inner.size = Vector2(pw - 4, ph - 4)
+	inner.color = Color(0.07, 0.07, 0.09, 0.98)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(inner)
+
+	var title_lbl := Label.new()
+	title_lbl.position = Vector2(10, 8)
+	title_lbl.size = Vector2(pw - 44, 20)
+	title_lbl.text = title
+	title_lbl.add_theme_font_size_override("font_size", 13)
+	title_lbl.modulate = Color(0.55, 0.88, 1.0)
+	panel.add_child(title_lbl)
+
+	var close_btn := Button.new()
+	close_btn.position = Vector2(pw - 32, 4)
+	close_btn.size = Vector2(26, 24)
+	close_btn.text = "X"
+	close_btn.pressed.connect(func():
+		item_chosen.emit("")
+		overlay.queue_free()
+	)
+	panel.add_child(close_btn)
+
+	for i in choices.size():
+		var choice: Dictionary = choices[i]
+		var col: int = i % cols
+		var row: int = i / cols
+		var btn := Button.new()
+		btn.position = Vector2(10 + col * cell, 36 + row * cell)
+		btn.size = Vector2(cell - 8, cell - 8)
+		var cap_id: String = choice["id"]
+		btn.pressed.connect(func():
+			item_chosen.emit(cap_id)
+			overlay.queue_free()
+		)
+		panel.add_child(btn)
+
+		var vb := VBoxContainer.new()
+		vb.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		btn.add_child(vb)
+
+		var icon_path := _item_icon_path(choice["id"])
+		if icon_path != "":
+			var tex := TextureRect.new()
+			tex.texture = load(icon_path)
+			tex.custom_minimum_size = Vector2(36, 36)
+			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			vb.add_child(tex)
+
+		var lbl := Label.new()
+		lbl.text = "%s\nx%d" % [choice["name"], choice["count"]]
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.add_theme_font_size_override("font_size", 8)
+		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.add_child(lbl)
 
 func _show_return_popup(anchor_pos: Vector2i, item_id: String) -> void:
 	var dim := ColorRect.new(); dim.set_anchors_preset(Control.PRESET_FULL_RECT)

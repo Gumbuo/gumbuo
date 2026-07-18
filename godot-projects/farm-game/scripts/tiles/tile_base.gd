@@ -268,6 +268,61 @@ func _execute_current_task() -> void:
 				if is_instance_valid(_slot_grid):
 					_slot_grid.call("_refresh_picker")
 
+		"choose_seed":
+			var adat: Dictionary = slots.get(key, {})
+			if not (adat.get("is_anchor", false) and adat.get("item_id", "") == "soil_plot" and not adat.has("crop")):
+				_finish_task()
+				return
+			if not is_instance_valid(_slot_grid) or not _slot_grid.call("show_choice_popup", "seed"):
+				_finish_task()
+				return
+			var chosen_seed: String = await _slot_grid.item_chosen
+			if chosen_seed == "" or not ResourceManager.has_item(chosen_seed):
+				_finish_task()
+				return
+			_player.play_harvest()
+			await _player.sprite.animation_finished
+			if LandManager.plant_seed(tile_id, gp, chosen_seed):
+				ResourceManager.remove_item(chosen_seed)
+				if is_instance_valid(_slot_grid):
+					_slot_grid.call("_refresh_picker")
+
+		"choose_tool":
+			if slots.has(key):
+				_finish_task()
+				return
+			if not is_instance_valid(_slot_grid) or not _slot_grid.call("show_choice_popup", "tool"):
+				_finish_task()
+				return
+			var chosen_tool: String = await _slot_grid.item_chosen
+			if chosen_tool == "" or not ResourceManager.has_item(chosen_tool):
+				_finish_task()
+				return
+			_player.play_harvest()
+			await _player.sprite.animation_finished
+			if LandManager.place_tool_item(tile_id, LandManager.tool_slot_index(gp), chosen_tool):
+				ResourceManager.remove_item(chosen_tool)
+				if is_instance_valid(_slot_grid):
+					_slot_grid.call("_refresh_picker")
+
+		"choose_farm":
+			if slots.has(key):
+				_finish_task()
+				return
+			if not is_instance_valid(_slot_grid) or not _slot_grid.call("show_choice_popup", "farm"):
+				_finish_task()
+				return
+			var chosen_farm: String = await _slot_grid.item_chosen
+			if chosen_farm == "" or not ResourceManager.has_item(chosen_farm):
+				_finish_task()
+				return
+			_player.play_harvest()
+			await _player.sprite.animation_finished
+			if LandManager.place_slot_item(tile_id, gp, chosen_farm):
+				ResourceManager.remove_item(chosen_farm)
+				if is_instance_valid(_slot_grid):
+					_slot_grid.call("_refresh_picker")
+
 		"pickup":
 			if not slots.has(key):
 				_finish_task()
