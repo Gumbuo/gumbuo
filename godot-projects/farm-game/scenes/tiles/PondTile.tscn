@@ -48,22 +48,6 @@ position = Vector2(640, 590)
 
 [node name="Walls" type="StaticBody2D" parent="."]
 
-[node name="WallLeft" type="CollisionShape2D" parent="Walls"]
-position = Vector2(20, 360)
-shape = SubResource("1")
-
-[node name="WallRight" type="CollisionShape2D" parent="Walls"]
-position = Vector2(1260, 360)
-shape = SubResource("2")
-
-[node name="WallTop" type="CollisionShape2D" parent="Walls"]
-position = Vector2(640, 88)
-shape = SubResource("3")
-
-[node name="WallBottom" type="CollisionShape2D" parent="Walls"]
-position = Vector2(640, 632)
-shape = SubResource("4")
-
 [node name="WaterWallLeft" type="CollisionShape2D" parent="Walls"]
 position = Vector2(390, 399)
 shape = SubResource("5")
