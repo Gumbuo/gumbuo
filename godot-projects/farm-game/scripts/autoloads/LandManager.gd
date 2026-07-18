@@ -27,6 +27,29 @@ const MAX_GRID_SIZE := Vector2i(30, 25)
 const SLOT_COLS := 10
 const SLOT_ROWS := 7
 const GLOBAL_TILE_ID := "npc_global"
+
+# ── Outer tool slots ──────────────────────────────────────────
+# Crafting/utility stations live in a separate set of larger slots
+# outside the main grid. Represented as negative-coordinate grid
+# positions (never collide with the real 0..SLOT_COLS/SLOT_ROWS
+# range) so they transparently reuse place_slot_item/remove_slot_item
+# and the collab station lookups (fill_collab_slot/collect_collab),
+# which all key off Vector2i via slot_key() already.
+const TOOL_SLOT_COUNT := 8
+const CRAFTING_ITEM_IDS: Array = [
+	"workbench", "workshop", "furnace", "bonfire", "campfire", "burner_station",
+	"anvil", "alchemy_table", "bread_oven", "wheat_mill", "dyeing_vat",
+	"spinning_wheel", "stonecutter", "sawmill", "wine_press", "barrel",
+]
+
+static func tool_slot_pos(idx: int) -> Vector2i:
+	return Vector2i(-1 - idx, -1)
+
+static func is_tool_slot_pos(pos: Vector2i) -> bool:
+	return pos.x < 0 and pos.y < 0
+
+static func tool_slot_index(pos: Vector2i) -> int:
+	return -1 - pos.x
 # [halfway_secs, ready_secs]  — halfway = 50% of total grow time
 const GROW_TIMES := {
 	"wheat":        [43200, 86400],
@@ -318,6 +341,46 @@ func remove_slot_item(tile_id: String, slot_pos: Vector2i) -> String:
 	save_land_data()
 	slot_item_removed.emit(tile_id, anchor)
 	return item_id
+
+# ── Outer tool slots ──────────────────────────────────────────
+
+func get_free_tool_slot_index(tile_id: String) -> int:
+	if not tiles.has(tile_id): return -1
+	var slots: Dictionary = tiles[tile_id]["slots"]
+	for i in TOOL_SLOT_COUNT:
+		if not slots.has(slot_key(tool_slot_pos(i))):
+			return i
+	return -1
+
+func place_tool_item(tile_id: String, idx: int, item_id: String) -> bool:
+	if not CRAFTING_ITEM_IDS.has(item_id):
+		return false
+	return place_slot_item(tile_id, tool_slot_pos(idx), item_id)
+
+func remove_tool_item(tile_id: String, idx: int) -> String:
+	return remove_slot_item(tile_id, tool_slot_pos(idx))
+
+# Moves any crafting-station items still sitting in the old regular grid
+# slots (from before tool slots existed) out into free tool slots.
+func migrate_crafting_items_to_tool_slots(tile_id: String) -> void:
+	if not tiles.has(tile_id): return
+	var slots: Dictionary = tiles[tile_id]["slots"]
+	var to_migrate: Array = []  # Array[Vector2i]
+	for key in slots:
+		var parts: PackedStringArray = key.split(",")
+		if parts.size() != 2: continue
+		var grid_pos := Vector2i(int(parts[0]), int(parts[1]))
+		if is_tool_slot_pos(grid_pos): continue
+		var data: Dictionary = slots[key]
+		if data.get("is_anchor", false) and CRAFTING_ITEM_IDS.has(data.get("item_id", "")):
+			to_migrate.append(grid_pos)
+	for grid_pos in to_migrate:
+		var item_id: String = slots[slot_key(grid_pos)].get("item_id", "")
+		var free_idx := get_free_tool_slot_index(tile_id)
+		if free_idx < 0:
+			break  # no room left — leave remaining items where they are
+		remove_slot_item(tile_id, grid_pos)
+		place_tool_item(tile_id, free_idx, item_id)
 
 func plant_seed(tile_id: String, slot_pos: Vector2i, seed_id: String) -> bool:
 	if not tiles.has(tile_id): return false

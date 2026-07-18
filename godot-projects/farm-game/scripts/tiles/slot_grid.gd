@@ -7,6 +7,15 @@ const SLOT_PX  := 64.0
 const SLOT_GAP := 4.0
 const ROW_LAYOUT := [4, 6, 6, 6, 6, 4]
 
+# Outer tool slots — bigger slots (~4x the area of a regular slot) placed
+# outside the main grid for crafting/utility stations. Left/right columns,
+# 4 rows each, avoiding the nav-arrow buttons and back button.
+const TOOL_SLOT_PX := 120.0
+const TOOL_SLOT_POS: Array = [
+	Vector2(150,  16), Vector2(150, 152), Vector2(150, 392), Vector2(150, 528),
+	Vector2(1010, 16), Vector2(1010, 152), Vector2(1010, 392), Vector2(1010, 528),
+]
+
 var tile_id: String = ""
 var _held_item: String = ""
 var _held_seed: String = ""
@@ -44,6 +53,7 @@ var _seedling_imgs:   Dictionary = {}    # crop_id -> Image, loaded lazily at st
 var _medium_imgs:     Dictionary = {}    # crop_id -> Image, loaded lazily at stage 1
 var _ready_imgs:      Dictionary = {}    # crop_id -> Image, loaded lazily at stage 2
 var _active_crafting_ui: CanvasLayer = null
+var _tool_slot_nodes: Dictionary = {}  # idx -> Control
 
 const PLACEABLE_CATEGORIES: Array = [
 	["FARM",     ["soil_plot","boulder","beehive","silo","chicken_coop"]],
@@ -139,6 +149,9 @@ func setup(tid: String) -> void:
 		var player_tiles := LandManager.get_player_tiles()
 		if not player_tiles.is_empty():
 			tile_id = player_tiles[0]["id"]
+
+	if not _is_pond_tile():
+		LandManager.migrate_crafting_items_to_tool_slots(tile_id)
 
 	# Build UI now that tile_id is known — pond vs standard layout chosen here.
 	_build_ui()
@@ -260,6 +273,14 @@ func _input(event: InputEvent) -> void:
 	if not event is InputEventMouseButton or not event.pressed:
 		return
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
+
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		var tool_idx := _screen_to_tool_slot(mouse_pos)
+		if tool_idx >= 0:
+			get_viewport().set_input_as_handled()
+			_handle_tool_slot_click(tool_idx, event.double_click)
+			return
+
 	var slot_pos := _screen_to_slot(mouse_pos)
 	if slot_pos.x < 0:
 		return  # let non-slot clicks bubble to pond_tile._unhandled_input for fishing
@@ -328,7 +349,8 @@ func _input(event: InputEvent) -> void:
 
 		# ── place held item in empty slot (owner only) — queue character walk ──
 		if not occupied and not event.double_click and is_tile_owner:
-			if _held_item != "" and ResourceManager.has_item(_held_item):
+			if _held_item != "" and ResourceManager.has_item(_held_item) \
+					and not LandManager.CRAFTING_ITEM_IDS.has(_held_item):
 				slot_activated.emit(slot_pos, "place", _held_item)
 
 	elif event.button_index == MOUSE_BUTTON_RIGHT:
@@ -341,6 +363,33 @@ func _input(event: InputEvent) -> void:
 		var removed := LandManager.remove_slot_item(tile_id, slot_pos)
 		if removed != "":
 			ResourceManager.add_item(removed, 1)
+			_refresh_picker()
+
+# ─────────────────────────── TOOL SLOTS ──────────────────────
+
+func _handle_tool_slot_click(idx: int, is_double_click: bool) -> void:
+	var _td: Dictionary = LandManager.tiles.get(tile_id, {})
+	var is_tile_owner: bool = _td.get("owner_id", "") == PlayerData.player_id
+	var slots: Dictionary = _td.get("slots", {})
+	var pos: Vector2i = LandManager.tool_slot_pos(idx)
+	var key: String = LandManager.slot_key(pos)
+
+	if slots.has(key):
+		var item_id: String = slots[key].get("item_id", "")
+		if is_double_click and is_tile_owner:
+			_show_return_popup(pos, item_id)
+			return
+		if not is_double_click and CRAFTING_STATIONS.has(item_id):
+			_open_crafting_station(item_id, pos)
+		return
+
+	# Empty tool slot — place a held crafting item directly (no walk needed).
+	if not is_double_click and is_tile_owner and _held_item != "" \
+			and LandManager.CRAFTING_ITEM_IDS.has(_held_item) \
+			and ResourceManager.has_item(_held_item):
+		if LandManager.place_tool_item(tile_id, idx, _held_item):
+			ResourceManager.remove_item(_held_item)
+			_held_item = ""
 			_refresh_picker()
 
 # ─────────────────────────── CRAFTING STATIONS ──────────────
@@ -470,6 +519,14 @@ func _build_ui() -> void:
 			_slot_nodes[LandManager.slot_key(pos)] = slot
 
 	_picker_panel = _build_picker(_root, Vector2(1280.0 - 130.0, origin.y), grid_h)
+	_build_tool_slots()
+
+func _build_tool_slots() -> void:
+	_tool_slot_nodes.clear()
+	for i in TOOL_SLOT_POS.size():
+		var slot := _make_tool_slot(TOOL_SLOT_POS[i], i)
+		_root.add_child(slot)
+		_tool_slot_nodes[i] = slot
 
 func _build_pond_ring_ui() -> void:
 	for entry in _POND_SLOTS:
@@ -539,6 +596,7 @@ func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 				"from_tile": tile_id, "from_x": cap_pos.x, "from_y": cap_pos.y}
 	var can_drop_fn := func(_p: Vector2, data: Variant) -> bool:
 		if not data is Dictionary or not data.has("item_id"): return false
+		if LandManager.CRAFTING_ITEM_IDS.has(data.get("item_id", "")): return false
 		var s: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
 		var key: String = LandManager.slot_key(cap_pos)
 		if data.get("source", "") == "seed_picker":
@@ -589,6 +647,83 @@ func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 		_refresh_picker()
 	c.set_drag_forwarding(get_drag_fn, can_drop_fn, drop_fn)
 	return c
+
+func _make_tool_slot(screen_pos: Vector2, idx: int) -> Control:
+	var c := Control.new()
+	c.position = screen_pos
+	c.size = Vector2(TOOL_SLOT_PX, TOOL_SLOT_PX)
+	c.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var border := ColorRect.new()
+	border.set_anchors_preset(Control.PRESET_FULL_RECT)
+	border.color = Color(1.0, 0.85, 0.35, 0.35)
+	c.add_child(border)
+
+	var fill := ColorRect.new()
+	fill.position = Vector2(2, 2)
+	fill.size = Vector2(TOOL_SLOT_PX - 4, TOOL_SLOT_PX - 4)
+	fill.color = Color(0.08, 0.06, 0.03, 0.55)
+	fill.name = "Fill"
+	c.add_child(fill)
+
+	var lbl := Label.new()
+	lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 9)
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl.name = "Lbl"
+	c.add_child(lbl)
+
+	var cap_idx: int = idx
+	var cap_pos: Vector2i = LandManager.tool_slot_pos(idx)
+	var get_drag_fn := func(_p: Vector2) -> Variant:
+		var s: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+		var k: String = LandManager.slot_key(cap_pos)
+		if not s.has(k): return null
+		var iid: String = s[k].get("item_id", "")
+		if iid == "": return null
+		var preview := ColorRect.new()
+		preview.size = Vector2(TOOL_SLOT_PX, TOOL_SLOT_PX)
+		preview.color = _item_colors.get(iid, Color(0.4, 0.4, 0.4))
+		preview.modulate.a = 0.75
+		c.set_drag_preview(preview)
+		return {"item_id": iid, "source": "tool_slot",
+				"from_tile": tile_id, "from_idx": cap_idx}
+	var can_drop_fn := func(_p: Vector2, data: Variant) -> bool:
+		if not data is Dictionary or not data.has("item_id"): return false
+		if not LandManager.CRAFTING_ITEM_IDS.has(data.get("item_id", "")): return false
+		var s: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+		return not s.has(LandManager.slot_key(cap_pos))
+	var drop_fn := func(_p: Vector2, data: Variant) -> void:
+		var iid: String = data.get("item_id", "")
+		if iid == "": return
+		match data.get("source", ""):
+			"picker":
+				if ResourceManager.has_item(iid):
+					if LandManager.place_tool_item(tile_id, cap_idx, iid):
+						ResourceManager.remove_item(iid)
+						_held_item = ""
+			"tool_slot":
+				var from_tile: String = data.get("from_tile", "")
+				var from_idx: int = data.get("from_idx", -1)
+				if from_tile == "" or from_idx < 0: return
+				if from_tile == tile_id and from_idx == cap_idx: return
+				var removed := LandManager.remove_tool_item(from_tile, from_idx)
+				if removed == "": return
+				if not LandManager.place_tool_item(tile_id, cap_idx, removed):
+					LandManager.place_tool_item(from_tile, from_idx, removed)
+		_refresh_picker()
+	c.set_drag_forwarding(get_drag_fn, can_drop_fn, drop_fn)
+	return c
+
+func _screen_to_tool_slot(screen_pos: Vector2) -> int:
+	for i in TOOL_SLOT_POS.size():
+		var sp: Vector2 = TOOL_SLOT_POS[i]
+		if screen_pos.x >= sp.x and screen_pos.x < sp.x + TOOL_SLOT_PX \
+				and screen_pos.y >= sp.y and screen_pos.y < sp.y + TOOL_SLOT_PX:
+			return i
+	return -1
 
 func _build_picker(parent: Control, origin: Vector2, height: float) -> Control:
 	var panel := Control.new()
@@ -845,7 +980,23 @@ func _refresh() -> void:
 	_refresh_beehive_sprites()
 	_refresh_coop_labels()
 	_refresh_chicken_sprites()
+	_refresh_tool_slots()
 	_update_crop_timers()
+
+func _refresh_tool_slots() -> void:
+	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
+	for idx in _tool_slot_nodes:
+		var ctrl: Control = _tool_slot_nodes[idx]
+		var fill: ColorRect = ctrl.get_node("Fill")
+		var lbl: Label = ctrl.get_node("Lbl")
+		var key: String = LandManager.slot_key(LandManager.tool_slot_pos(idx))
+		if slots.has(key):
+			var item_id: String = slots[key].get("item_id", "")
+			fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
+			lbl.text = item_id.replace("_", "\n")
+		else:
+			fill.color = Color(0.08, 0.06, 0.03, 0.55)
+			lbl.text = ""
 
 func _update_crop_timers() -> void:
 	var now := int(Time.get_unix_time_from_system())
