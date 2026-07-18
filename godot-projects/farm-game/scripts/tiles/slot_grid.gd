@@ -391,7 +391,6 @@ func _handle_tool_slot_click(idx: int, is_double_click: bool) -> void:
 			and LandManager.CRAFTING_ITEM_IDS.has(_held_item) \
 			and ResourceManager.has_item(_held_item):
 		slot_activated.emit(pos, "place", _held_item)
-			_refresh_picker()
 
 # ─────────────────────────── CRAFTING STATIONS ──────────────
 
