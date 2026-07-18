@@ -33,6 +33,7 @@ var _beehive_sprites:    Dictionary = {}  # key -> TextureRect
 var _beehive_tweens:     Dictionary = {}  # key -> Tween (looping frame animation)
 var _beehive_ready_state: Dictionary = {} # key -> bool
 var _chicken_sprites: Array = []    # TextureRect nodes for chickens on tile
+var _chicken_wander:  Array = []    # parallel array: {target: Vector2, pause: float}
 var _masked_positions: Dictionary = {}  # key -> true for slots hidden on pond tile
 var _grow_timer:    float      = 0.0
 var _display_timer: float      = 0.0
@@ -171,6 +172,8 @@ func _process(delta: float) -> void:
 		_held_item = ""
 		_held_seed = ""
 		_update_picker_visuals()
+
+	_update_chicken_wander(delta)
 
 	_grow_timer += delta
 	if _grow_timer >= 10.0:
@@ -1277,11 +1280,23 @@ func _refresh_coop_labels() -> void:
 			lbl.text = ""
 			lbl.remove_theme_color_override("font_color")
 
+# Open area above the slot grid (grid starts around y=154) where chickens roam free.
+const _CHICKEN_WANDER_MIN := Vector2(330, 65)
+const _CHICKEN_WANDER_MAX := Vector2(950, 148)
+const _CHICKEN_WANDER_SPEED := 18.0  # px/sec
+
+func _random_chicken_target() -> Vector2:
+	return Vector2(
+		randf_range(_CHICKEN_WANDER_MIN.x, _CHICKEN_WANDER_MAX.x),
+		randf_range(_CHICKEN_WANDER_MIN.y, _CHICKEN_WANDER_MAX.y)
+	)
+
 func _refresh_chicken_sprites() -> void:
 	# Clear old sprites
 	for r in _chicken_sprites:
 		if is_instance_valid(r): r.queue_free()
 	_chicken_sprites.clear()
+	_chicken_wander.clear()
 
 	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
 	var chickens: Array = []
@@ -1292,11 +1307,7 @@ func _refresh_chicken_sprites() -> void:
 			break
 	if chickens.is_empty(): return
 
-	# Positions above slot grid (center area of tile, above y=154)
-	const CHICK_POSITIONS: Array = [
-		Vector2(540, 120), Vector2(640, 100), Vector2(740, 120),
-	]
-	for i in min(chickens.size(), CHICK_POSITIONS.size()):
+	for i in chickens.size():
 		var ch: Dictionary = chickens[i]
 		var ctype: String = ch.get("type", "white")
 		var path := "res://assets/sprites/items/chicken_%s.png" % ctype
@@ -1307,9 +1318,30 @@ func _refresh_chicken_sprites() -> void:
 		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		rect.position = CHICK_POSITIONS[i] - Vector2(20, 20)
+		var start_pos := _random_chicken_target()
+		rect.position = start_pos - Vector2(20, 20)
 		_root.add_child(rect)
 		_chicken_sprites.append(rect)
+		_chicken_wander.append({"target": _random_chicken_target(), "pause": randf_range(0.0, 2.0)})
+
+func _update_chicken_wander(delta: float) -> void:
+	for i in _chicken_sprites.size():
+		var rect: TextureRect = _chicken_sprites[i]
+		if not is_instance_valid(rect): continue
+		var w: Dictionary = _chicken_wander[i]
+		if w["pause"] > 0.0:
+			w["pause"] -= delta
+			continue
+		var center: Vector2 = rect.position + Vector2(20, 20)
+		var target: Vector2 = w["target"]
+		var dir: Vector2 = target - center
+		if dir.length() < 4.0:
+			w["target"] = _random_chicken_target()
+			w["pause"] = randf_range(1.0, 3.5)
+			continue
+		var step: Vector2 = dir.normalized() * _CHICKEN_WANDER_SPEED * delta
+		rect.position += step
+		rect.flip_h = step.x < 0.0
 
 # ─────────────────────────── PIXEL ART ──────────────────────
 
