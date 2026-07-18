@@ -76,7 +76,7 @@ func _ready() -> void:
 func _spawn_player() -> void:
 	_player = (load(PLAYER_SCENE_PATH) as PackedScene).instantiate()
 	_player.tile_id  = tile_id
-	_player.position = player_spawn.position if player_spawn else Vector2(640, 360)
+	_player.position = _entry_spawn_position()
 	add_child(_player)
 	# Hide the original sprite (still animates and fires signals; we draw a
 	# mirror in CanvasLayer 2 so it always appears above slot items at layer 1).
@@ -95,6 +95,14 @@ func _spawn_player() -> void:
 	_proxy_anim.scale         = _player.sprite.scale
 	_proxy_anim.offset        = _player.sprite.offset
 	_player_sprite_proxy.add_child(_proxy_anim)
+
+func _entry_spawn_position() -> Vector2:
+	var side: String = LandManager.pending_entry_side
+	LandManager.pending_entry_side = ""
+	if side != "" and _NAV_WALK_SCREEN.has(side):
+		var sp: Vector2 = _NAV_WALK_SCREEN[side]
+		return get_viewport().get_canvas_transform().affine_inverse() * sp
+	return player_spawn.position if player_spawn else Vector2(640, 360)
 
 func _process(_delta: float) -> void:
 	if not is_instance_valid(_player) or not is_instance_valid(_proxy_anim):
@@ -274,6 +282,8 @@ func _execute_current_task() -> void:
 			ResourceManager.save_inventory()
 			LandManager.save_land_data()
 			LandManager.current_tile_id = iid
+			var dir: String = _current_task.get("dir", "")
+			LandManager.pending_entry_side = _OPPOSITE_DIR.get(dir, "")
 			var scene_path: String = _tile_scene_path(LandManager.tiles.get(iid, {}).get("type", 0))
 			if scene_path != "":
 				get_tree().change_scene_to_file(scene_path)
@@ -327,6 +337,8 @@ func _spawn_nav_arrows() -> void:
 		btn.pressed.connect(func() -> void: _queue_travel(dest_id, d))
 		_nav_layer.add_child(btn)
 
+const _OPPOSITE_DIR := { "up": "down", "down": "up", "left": "right", "right": "left" }
+
 func _queue_travel(dest_tile_id: String, dir: String) -> void:
 	var sp: Vector2 = _NAV_WALK_SCREEN.get(dir, Vector2(640, 360))
 	var world_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * sp
@@ -335,6 +347,7 @@ func _queue_travel(dest_tile_id: String, dir: String) -> void:
 		"action":    "travel",
 		"item_id":   dest_tile_id,
 		"world_pos": world_pos,
+		"dir":       dir,
 	})
 	if _current_task.is_empty():
 		_start_next_task()

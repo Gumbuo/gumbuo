@@ -45,6 +45,11 @@ const GROW_TIMES := {
 
 var current_tile_id: String = ""
 var home_tile_id: String = ""
+# Set right before a tile-to-tile walk transition; tells the destination tile
+# which edge the player is entering from (opposite of the direction walked).
+# Cleared by the destination tile after use so fast-travel/initial load
+# still use the tile's normal PlayerSpawn marker.
+var pending_entry_side: String = ""
 
 # { tile_id -> TileData dict }
 var tiles: Dictionary = {}
