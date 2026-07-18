@@ -2,11 +2,10 @@ extends Node
 
 const MUSIC_TRACKS := [
 	{"name": "Chill Vibes",     "file": "res://assets/audio/music/playstarz_music-chill-music-background-480175.mp3"},
-	{"name": "Easy Breeze",     "file": "res://assets/audio/music/playstarz_music-chill-background-music-485206.mp3"},
 	{"name": "Mellow Fields",   "file": "res://assets/audio/music/aussomamama-chill-music-for-games-206325.mp3"},
 ]
 
-var track_index: int = 2  # Mellow Fields plays on first launch
+var track_index: int = 0  # Chill Vibes plays on first launch
 
 signal track_changed(index: int, track_name: String)
 
