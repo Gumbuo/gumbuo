@@ -19,6 +19,7 @@ var _chicken_rows_vb: VBoxContainer = null
 
 func _ready() -> void:
 	layer = 40
+	add_to_group("action_windows")  # prevents slot_grid._input() from firing through this UI
 
 func setup(t_id: String, g_pos: Vector2i) -> void:
 	tile_id   = t_id

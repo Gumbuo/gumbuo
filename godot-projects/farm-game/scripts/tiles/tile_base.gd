@@ -126,13 +126,20 @@ func _spawn_slot_grid() -> void:
 # ── World position for a slot cell ───────────────────────────
 
 func _slot_center_world(grid_pos: Vector2i) -> Vector2:
+	# Sprite offset is (0,-46) at scale 1.2 → visual center is ~55px above position.
+	# Shift target down so the sprite body centers on the slot instead of floating above it.
+	const SPRITE_VISUAL_OFFSET_Y := 46.0 * 1.2  # 55.2 px
+
+	if LandManager.is_tool_slot_pos(grid_pos) and is_instance_valid(_slot_grid):
+		var idx: int = LandManager.tool_slot_index(grid_pos)
+		var tool_screen_pos: Vector2 = _slot_grid.call("tool_slot_screen_center", idx)
+		tool_screen_pos.y += SPRITE_VISUAL_OFFSET_Y
+		return get_viewport().get_canvas_transform().affine_inverse() * tool_screen_pos
+
 	var step: float   = _SLOT_PX + _SLOT_GAP
 	var grid_w: float = _GRID_COLS * step - _SLOT_GAP
 	var grid_h: float = _GRID_ROWS * step - _SLOT_GAP
 	var origin := Vector2((1280.0 - grid_w) / 2.0, 558.0 - grid_h)
-	# Sprite offset is (0,-46) at scale 1.2 → visual center is ~55px above position.
-	# Shift target down so the sprite body centers on the slot instead of floating above it.
-	const SPRITE_VISUAL_OFFSET_Y := 46.0 * 1.2  # 55.2 px
 	var screen_pos := origin + Vector2(
 		grid_pos.x * step + _SLOT_PX * 0.5,
 		grid_pos.y * step + _SLOT_PX * 0.5 + SPRITE_VISUAL_OFFSET_Y

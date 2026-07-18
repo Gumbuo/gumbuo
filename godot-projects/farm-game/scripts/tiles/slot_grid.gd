@@ -54,6 +54,7 @@ var _medium_imgs:     Dictionary = {}    # crop_id -> Image, loaded lazily at st
 var _ready_imgs:      Dictionary = {}    # crop_id -> Image, loaded lazily at stage 2
 var _active_crafting_ui: CanvasLayer = null
 var _tool_slot_nodes: Dictionary = {}  # idx -> Control
+var _tool_slot_sprites: Dictionary = {}  # idx -> TextureRect (item icon)
 
 const PLACEABLE_CATEGORIES: Array = [
 	["FARM",     ["soil_plot","boulder","beehive","silo","chicken_coop"]],
@@ -383,13 +384,11 @@ func _handle_tool_slot_click(idx: int, is_double_click: bool) -> void:
 			_open_crafting_station(item_id, pos)
 		return
 
-	# Empty tool slot — place a held crafting item directly (no walk needed).
+	# Empty tool slot — queue a walk-over + pickup animation, same as regular slots.
 	if not is_double_click and is_tile_owner and _held_item != "" \
 			and LandManager.CRAFTING_ITEM_IDS.has(_held_item) \
 			and ResourceManager.has_item(_held_item):
-		if LandManager.place_tool_item(tile_id, idx, _held_item):
-			ResourceManager.remove_item(_held_item)
-			_held_item = ""
+		slot_activated.emit(pos, "place", _held_item)
 			_refresh_picker()
 
 # ─────────────────────────── CRAFTING STATIONS ──────────────
@@ -523,6 +522,7 @@ func _build_ui() -> void:
 
 func _build_tool_slots() -> void:
 	_tool_slot_nodes.clear()
+	_tool_slot_sprites.clear()
 	for i in TOOL_SLOT_POS.size():
 		var slot := _make_tool_slot(TOOL_SLOT_POS[i], i)
 		_root.add_child(slot)
@@ -716,6 +716,10 @@ func _make_tool_slot(screen_pos: Vector2, idx: int) -> Control:
 		_refresh_picker()
 	c.set_drag_forwarding(get_drag_fn, can_drop_fn, drop_fn)
 	return c
+
+func tool_slot_screen_center(idx: int) -> Vector2:
+	var sp: Vector2 = TOOL_SLOT_POS[idx]
+	return sp + Vector2(TOOL_SLOT_PX, TOOL_SLOT_PX) * 0.5
 
 func _screen_to_tool_slot(screen_pos: Vector2) -> int:
 	for i in TOOL_SLOT_POS.size():
@@ -983,6 +987,13 @@ func _refresh() -> void:
 	_refresh_tool_slots()
 	_update_crop_timers()
 
+func _tool_item_icon_path(item_id: String) -> String:
+	var path := "res://assets/sprites/items/%s.png" % item_id
+	if ResourceLoader.exists(path): return path
+	path = "res://assets/sprites/buildings/%s.png" % item_id
+	if ResourceLoader.exists(path): return path
+	return ""
+
 func _refresh_tool_slots() -> void:
 	var slots: Dictionary = LandManager.tiles.get(tile_id, {}).get("slots", {})
 	for idx in _tool_slot_nodes:
@@ -990,13 +1001,40 @@ func _refresh_tool_slots() -> void:
 		var fill: ColorRect = ctrl.get_node("Fill")
 		var lbl: Label = ctrl.get_node("Lbl")
 		var key: String = LandManager.slot_key(LandManager.tool_slot_pos(idx))
-		if slots.has(key):
-			var item_id: String = slots[key].get("item_id", "")
-			fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
-			lbl.text = item_id.replace("_", "\n")
-		else:
+
+		if not slots.has(key):
 			fill.color = Color(0.08, 0.06, 0.03, 0.55)
 			lbl.text = ""
+			if _tool_slot_sprites.has(idx):
+				var old: TextureRect = _tool_slot_sprites[idx]
+				if is_instance_valid(old): old.queue_free()
+				_tool_slot_sprites.erase(idx)
+			continue
+
+		var item_id: String = slots[key].get("item_id", "")
+		var icon_path := _tool_item_icon_path(item_id)
+
+		if icon_path == "":
+			fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
+			lbl.text = item_id.replace("_", "\n")
+			continue
+
+		fill.color = Color(0, 0, 0, 0)
+		lbl.text = ""
+		if _tool_slot_sprites.has(idx):
+			var rect: TextureRect = _tool_slot_sprites[idx]
+			if is_instance_valid(rect): rect.texture = load(icon_path)
+		else:
+			var rect := TextureRect.new()
+			rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+			rect.offset_left = 10; rect.offset_top = 10
+			rect.offset_right = -10; rect.offset_bottom = -10
+			rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			rect.texture = load(icon_path)
+			ctrl.add_child(rect)
+			_tool_slot_sprites[idx] = rect
 
 func _update_crop_timers() -> void:
 	var now := int(Time.get_unix_time_from_system())

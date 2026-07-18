@@ -25,6 +25,7 @@ var _owner_tile_id:  String = ""
 
 func _ready() -> void:
 	layer = 30
+	add_to_group("action_windows")  # prevents slot_grid._input() from firing through this UI
 	_is_visitor    = get_meta("is_visitor", false)
 	_owner_tile_id = get_meta("owner_tile_id", "")
 	_build_ui()

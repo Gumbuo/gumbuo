@@ -24,6 +24,7 @@ var _collect_btn: Button    = null
 
 func _ready() -> void:
 	layer = 30
+	add_to_group("action_windows")  # prevents slot_grid._input() from firing through this UI
 
 func setup_collab(t_id: String, a_pos: Vector2i) -> void:
 	_tile_id    = t_id

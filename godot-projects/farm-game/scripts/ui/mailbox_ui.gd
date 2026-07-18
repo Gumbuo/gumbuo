@@ -14,6 +14,7 @@ var _gold_lbl: Label
 
 func _ready() -> void:
 	layer = 40
+	add_to_group("action_windows")  # prevents slot_grid._input() from firing through this UI
 	_build_ui()
 
 # ─────────────────────────── BUILD ──────────────────────────
