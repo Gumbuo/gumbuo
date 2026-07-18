@@ -151,11 +151,13 @@ func setup(tid: String) -> void:
 		if not player_tiles.is_empty():
 			tile_id = player_tiles[0]["id"]
 
-	if not _is_pond_tile():
-		LandManager.migrate_crafting_items_to_tool_slots(tile_id)
-
 	# Build UI now that tile_id is known — pond vs standard layout chosen here.
 	_build_ui()
+
+	# Migrate any old-style crafting station placements after the UI exists,
+	# so a problem here can never prevent the grid/tool slots from rendering.
+	if not _is_pond_tile():
+		LandManager.migrate_crafting_items_to_tool_slots(tile_id)
 
 	var sheet_tex: Texture2D = load("res://assets/sprites/crops/crops.png")
 	if sheet_tex:

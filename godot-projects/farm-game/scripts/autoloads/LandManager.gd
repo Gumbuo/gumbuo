@@ -346,7 +346,7 @@ func remove_slot_item(tile_id: String, slot_pos: Vector2i) -> String:
 
 func get_free_tool_slot_index(tile_id: String) -> int:
 	if not tiles.has(tile_id): return -1
-	var slots: Dictionary = tiles[tile_id]["slots"]
+	var slots: Dictionary = tiles[tile_id].get("slots", {})
 	for i in TOOL_SLOT_COUNT:
 		if not slots.has(slot_key(tool_slot_pos(i))):
 			return i
@@ -364,18 +364,22 @@ func remove_tool_item(tile_id: String, idx: int) -> String:
 # slots (from before tool slots existed) out into free tool slots.
 func migrate_crafting_items_to_tool_slots(tile_id: String) -> void:
 	if not tiles.has(tile_id): return
-	var slots: Dictionary = tiles[tile_id]["slots"]
+	var slots: Dictionary = tiles[tile_id].get("slots", {})
+	if slots.is_empty(): return
 	var to_migrate: Array = []  # Array[Vector2i]
 	for key in slots:
+		if not (key is String): continue
 		var parts: PackedStringArray = key.split(",")
 		if parts.size() != 2: continue
+		if not parts[0].is_valid_int() or not parts[1].is_valid_int(): continue
 		var grid_pos := Vector2i(int(parts[0]), int(parts[1]))
 		if is_tool_slot_pos(grid_pos): continue
-		var data: Dictionary = slots[key]
+		var data: Dictionary = slots.get(key, {})
 		if data.get("is_anchor", false) and CRAFTING_ITEM_IDS.has(data.get("item_id", "")):
 			to_migrate.append(grid_pos)
 	for grid_pos in to_migrate:
-		var item_id: String = slots[slot_key(grid_pos)].get("item_id", "")
+		var item_id: String = slots.get(slot_key(grid_pos), {}).get("item_id", "")
+		if item_id == "": continue
 		var free_idx := get_free_tool_slot_index(tile_id)
 		if free_idx < 0:
 			break  # no room left — leave remaining items where they are
