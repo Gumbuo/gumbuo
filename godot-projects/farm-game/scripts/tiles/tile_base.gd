@@ -38,28 +38,39 @@ const _REPATH_OFFSETS: Array = [
 ]
 
 # ── Tile-to-tile navigation ───────────────────────────────────
-const _NAV_DIRS := {
-	"up":    Vector2i( 0, -1),
-	"down":  Vector2i( 0,  1),
-	"left":  Vector2i(-1,  0),
-	"right": Vector2i( 1,  0),
+# Pointy-top hex, 6 neighbor directions. Matches the "odd-r" offset layout
+# used by the world map (WorldMap.gd _hex_pixel_pos) — neighbor offsets
+# depend on whether the current row is even or odd.
+const _NAV_DIRS_EVEN_ROW := {
+	"NE": Vector2i( 0, -1), "E": Vector2i( 1,  0), "SE": Vector2i( 0,  1),
+	"SW": Vector2i(-1,  1), "W": Vector2i(-1,  0), "NW": Vector2i(-1, -1),
+}
+const _NAV_DIRS_ODD_ROW := {
+	"NE": Vector2i( 1, -1), "E": Vector2i( 1,  0), "SE": Vector2i( 1,  1),
+	"SW": Vector2i( 0,  1), "W": Vector2i(-1,  0), "NW": Vector2i( 0, -1),
 }
 # Screen px the character walks to before the scene transition fires
 const _NAV_WALK_SCREEN := {
-	"up":    Vector2(640, 110),
-	"down":  Vector2(640, 610),
-	"left":  Vector2(160, 360),
-	"right": Vector2(1120, 360),
+	"NW": Vector2(420, 110), "NE": Vector2(860, 110),
+	"W":  Vector2(160, 360), "E":  Vector2(1120, 360),
+	"SW": Vector2(420, 610), "SE": Vector2(860, 610),
 }
-const _NAV_ARROW := { "up": "▲", "down": "▼", "left": "◄", "right": "►" }
-# Top-left position of each button inside the CanvasLayer (1280×720)
+const _NAV_ARROW := {
+	"NW": "◤", "NE": "◥", "W": "◄", "E": "►", "SW": "◣", "SE": "◢",
+}
+# Top-left position of each button inside the CanvasLayer (1280×720).
+# NW/NE/SW/SE sit along the top/bottom edges and W/E at the far sides so
+# none of them overlap the outer tool slot columns (x:150-270, x:1010-1130).
 const _NAV_BTN_POS := {
-	"up":    Vector2(570,   4),
-	"down":  Vector2(570, 684),
-	"left":  Vector2(  4, 332),
-	"right": Vector2(1136, 332),
+	"NW": Vector2(280,   4), "NE": Vector2(860,   4),
+	"W":  Vector2(  4, 332), "E":  Vector2(1136, 332),
+	"SW": Vector2(280, 684), "SE": Vector2(860, 684),
 }
 var _nav_layer: CanvasLayer = null
+
+static func _hex_neighbor(pos: Vector2i, dir: String) -> Vector2i:
+	var offs: Dictionary = _NAV_DIRS_ODD_ROW if (pos.y % 2 == 1) else _NAV_DIRS_EVEN_ROW
+	return pos + offs.get(dir, Vector2i.ZERO)
 
 func _ready() -> void:
 	tile_id   = LandManager.current_tile_id
@@ -313,8 +324,8 @@ func _spawn_nav_arrows() -> void:
 	var my_pos: Vector2i = tile_data.get("position", Vector2i(-1, -1))
 	if my_pos.x < 0:
 		return
-	for dir in _NAV_DIRS:
-		var nbr_pos: Vector2i = my_pos + _NAV_DIRS[dir]
+	for dir in _NAV_ARROW:
+		var nbr_pos: Vector2i = _hex_neighbor(my_pos, dir)
 		var nbr_id: String = LandManager.grid.get(nbr_pos, "")
 		if nbr_id == "" or nbr_id == LandManager.GLOBAL_TILE_ID:
 			continue
@@ -344,7 +355,9 @@ func _spawn_nav_arrows() -> void:
 		btn.pressed.connect(func() -> void: _queue_travel(dest_id, d))
 		_nav_layer.add_child(btn)
 
-const _OPPOSITE_DIR := { "up": "down", "down": "up", "left": "right", "right": "left" }
+const _OPPOSITE_DIR := {
+	"NE": "SW", "SW": "NE", "E": "W", "W": "E", "SE": "NW", "NW": "SE",
+}
 
 func _queue_travel(dest_tile_id: String, dir: String) -> void:
 	var sp: Vector2 = _NAV_WALK_SCREEN.get(dir, Vector2(640, 360))

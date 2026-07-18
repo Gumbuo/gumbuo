@@ -11,6 +11,7 @@ const API_URL := "https://univershole.ink/api/farm-world"
 @onready var grid_container: Control = $UI/Scroll/GridContainer
 @onready var kingdom_label: Label = $UI/KingdomLabel
 @onready var _ui_layer: CanvasLayer = $UI
+@onready var _scroll: ScrollContainer = $UI/Scroll
 
 var _cards: Dictionary = {}
 var _dragging_tile_id: String = ""
@@ -36,6 +37,7 @@ func _ready() -> void:
 	_spawn_deed_banner()
 	_spawn_hud()
 	LandManager.deed_earned.connect(func(_t): _refresh_deed_banner())
+	call_deferred("_scroll_to_home_tile")
 	_world_req = HTTPRequest.new()
 	add_child(_world_req)
 	_world_req.request_completed.connect(_on_world_tiles_received)
@@ -77,13 +79,25 @@ func _refresh_deed_banner() -> void:
 		_deed_banner.visible = true
 
 
+# Pointy-top hex, "odd-r" offset layout: odd rows shift right by half a tile
+# width, rows pack vertically at 3/4 tile height. Grid positions themselves
+# stay plain Vector2i(col,row) — only the pixel placement changes, so no
+# migration is needed for existing saved tile positions.
+const HEX_ROW_H := 0.75  # row-to-row vertical packing, as a fraction of tile height
+
+func _hex_pixel_pos(pos: Vector2i) -> Vector2:
+	var offset_x: float = (TILE_CARD_SIZE.x * 0.5) if (pos.y % 2 == 1) else 0.0
+	return Vector2(pos.x * TILE_CARD_SIZE.x + offset_x, pos.y * TILE_CARD_SIZE.y * HEX_ROW_H)
+
 func _build_grid() -> void:
-	grid_container.custom_minimum_size = Vector2(GRID_COLS * TILE_CARD_SIZE.x, GRID_ROWS * TILE_CARD_SIZE.y)
+	var grid_w: float = GRID_COLS * TILE_CARD_SIZE.x + TILE_CARD_SIZE.x * 0.5
+	var grid_h: float = (GRID_ROWS - 1) * TILE_CARD_SIZE.y * HEX_ROW_H + TILE_CARD_SIZE.y
+	grid_container.custom_minimum_size = Vector2(grid_w, grid_h)
 	for y in GRID_ROWS:
 		for x in GRID_COLS:
 			var pos := Vector2i(x, y)
 			var card: Control = TILE_CARD_SCENE.instantiate()
-			card.position = Vector2(x * TILE_CARD_SIZE.x, y * TILE_CARD_SIZE.y)
+			card.position = _hex_pixel_pos(pos)
 			card.grid_position = pos
 			card.enter_requested.connect(_on_enter_tile)
 			card.npc_shop_requested.connect(_on_npc_shop_requested)
@@ -328,6 +342,8 @@ func _sync_all_local_tiles() -> void:
 			"owner_id":    td.get("owner_id", ""),
 			"name":        td.get("name", "Tile"),
 			"access_mode": td.get("access_mode", 0),
+			"yield_rate":  td.get("yield_rate", 70),
+			"slots":       td.get("slots", {}),
 		})
 		var req := HTTPRequest.new()
 		add_child(req)
@@ -350,6 +366,8 @@ func _sync_tile(tile_id: String) -> void:
 		"owner_id":    td.get("owner_id", ""),
 		"name":        td.get("name", "Tile"),
 		"access_mode": td.get("access_mode", 0),
+		"yield_rate":  td.get("yield_rate", 70),
+		"slots":       td.get("slots", {}),
 	})
 	_sync_req.request(API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 
@@ -374,11 +392,21 @@ func _refresh_deed_hints() -> void:
 		if card.is_empty_cell():
 			card.set_deed_hint(has_deeds)
 
-func _on_tile_removed(_tile_id: String, pos: Vector2i) -> void:
+func _on_tile_removed(tile_id: String, pos: Vector2i) -> void:
 	if _cards.has(pos):
 		_cards[pos].set_empty()
 	_update_kingdom_label()
 	_refresh_deed_hints()
+	_delete_tile_from_server(tile_id)
+
+func _delete_tile_from_server(tile_id: String) -> void:
+	if tile_id == "" or LandManager.is_remote_tile(tile_id):
+		return
+	var body := JSON.stringify({"action": "remove", "id": tile_id})
+	var req := HTTPRequest.new()
+	add_child(req)
+	req.request_completed.connect(func(_r, _c, _h, _b): req.queue_free())
+	req.request(API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 
 func _on_tile_moved(tile_id: String, _new_pos: Vector2i) -> void:
 	_update_kingdom_label()
@@ -391,8 +419,25 @@ func _on_tile_settings_changed(tile_id: String) -> void:
 	var pos: Vector2i = tile_data["position"]
 	if _cards.has(pos):
 		_cards[pos].set_tile(tile_data)
+	_sync_tile(tile_id)
 
 func _update_kingdom_label() -> void:
 	var tier := LandManager.get_kingdom_tier()
 	var tier_names := ["", "Homestead", "Village", "Town", "City", "Kingdom"]
 	kingdom_label.text = "%s (Tier %d)" % [tier_names[tier], tier]
+
+func _scroll_to_home_tile() -> void:
+	var home_id := LandManager.home_tile_id
+	if home_id == "":
+		for td in LandManager.tiles.values():
+			if td.get("owner_id", "") == PlayerData.player_id:
+				home_id = td.get("id", "")
+				break
+	if home_id == "" or not LandManager.tiles.has(home_id):
+		return
+	var pos: Vector2i = LandManager.tiles[home_id].get("position", Vector2i(-1, -1))
+	if pos.x < 0:
+		return
+	var px_py: Vector2 = _hex_pixel_pos(pos)
+	_scroll.scroll_horizontal = int(px_py.x - _scroll.size.x * 0.5 + TILE_CARD_SIZE.x * 0.5)
+	_scroll.scroll_vertical   = int(px_py.y - _scroll.size.y * 0.5 + TILE_CARD_SIZE.y * 0.5)
