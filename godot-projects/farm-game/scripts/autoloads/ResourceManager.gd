@@ -33,6 +33,27 @@ func remove_item(item_id: String, amount: int = 1) -> bool:
 func has_item(item_id: String, amount: int = 1) -> bool:
 	return inventory.get(item_id, 0) >= amount
 
+const STARTER_TOOLS: Array = ["tool_axe_iron", "tool_pickaxe_iron", "tool_rod_iron"]
+
+func has_claimed_starter_tools() -> bool:
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)
+	return cfg.get_value("meta", "starter_tools_claimed", false)
+
+# Returns true if the claim succeeded, false if already claimed.
+func claim_starter_tools() -> bool:
+	if has_claimed_starter_tools():
+		return false
+	for tool_id in STARTER_TOOLS:
+		add_item(tool_id, 1)
+	save_inventory()
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)
+	cfg.set_value("meta", "starter_tools_claimed", true)
+	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
+	return true
+
 func get_count(item_id: String) -> int:
 	return inventory.get(item_id, 0)
 
@@ -82,6 +103,7 @@ func save_inventory() -> void:
 	cfg.load(SAVE_PATH)  # preserve meta flags; error on missing file is harmless
 	cfg.set_value("inventory", "data", var_to_str(inventory))
 	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
 
 func load_inventory() -> void:
 	var cfg := ConfigFile.new()
@@ -131,9 +153,6 @@ func load_inventory() -> void:
 				"pumpkin_bread","carrot_cake","golden_potato_cake","upside_down_tomato_cake",
 				"pumpkin_spice_cake","grape_tart_cake","combat_health_potion","combat_stamina_potion",
 				"purple_potion","red_potion",
-				"tool_axe_iron","tool_axe_silver","tool_axe_gold",
-				"tool_pickaxe_iron","tool_pickaxe_silver","tool_pickaxe_gold",
-				"tool_rod_basic","tool_rod_iron","tool_rod_silver","tool_rod_gold",
 				"seed_wheat","seed_carrot","seed_pumpkin","seed_red_flower","seed_yellow_flower",
 				"seed_blue_flower","seed_cotton","seed_grapes","seed_tomato","seed_fern",
 				"seed_cucumber","seed_potato","seed_roses",
@@ -162,12 +181,14 @@ func load_inventory() -> void:
 			PlayerData.save_data()
 			cfg.set_value("inventory", "data", var_to_str(inventory))
 			cfg.save(SAVE_PATH)
+			WebPersistence.flush()
 		if not cfg.get_value("meta", "dev_v2", false):
 			cfg.set_value("meta", "dev_v2", true)
 			inventory["egg_white"] = max(inventory.get("egg_white", 0), 1000)
 			inventory["egg_gold"]  = max(inventory.get("egg_gold",  0), 1000)
 			cfg.set_value("inventory", "data", var_to_str(inventory))
 			cfg.save(SAVE_PATH)
+			WebPersistence.flush()
 		if not cfg.get_value("meta", "dev_v3", false):
 			cfg.set_value("meta", "dev_v3", true)
 			inventory["chicken_coop"] = max(inventory.get("chicken_coop", 0), 1000)
@@ -176,12 +197,14 @@ func load_inventory() -> void:
 			inventory.erase("egg")  # plain egg replaced by egg_white / egg_gold
 			cfg.set_value("inventory", "data", var_to_str(inventory))
 			cfg.save(SAVE_PATH)
+			WebPersistence.flush()
 		if not cfg.get_value("meta", "inventory_reset_v1", false):
 			cfg.set_value("meta", "inventory_reset_v1", true)
 			_apply_inventory_reset_v1()
 			dirty = false  # we save below; skip save_inventory() which would wipe meta
 			cfg.set_value("inventory", "data", var_to_str(inventory))
 			cfg.save(SAVE_PATH)
+			WebPersistence.flush()
 		if dirty:
 			save_inventory()
 
@@ -199,6 +222,7 @@ func _grant_starter_items() -> void:
 	cfg.set_value("meta", "inventory_reset_v1", true)
 	cfg.set_value("meta", "soil_floor_v1", true)
 	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
 
 func _apply_inventory_reset_v1() -> void:
 	inventory.clear()

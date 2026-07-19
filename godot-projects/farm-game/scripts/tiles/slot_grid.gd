@@ -106,6 +106,7 @@ const CRAFTING_STATIONS: Dictionary = {
 	"bread_oven":     "res://scripts/ui/bread_oven_ui.gd",
 	"barrel":         "res://scripts/ui/barrel_ui.gd",
 	"sawmill":        "res://scripts/ui/sawmill_ui.gd",
+	"npc_vendor":     "res://scripts/ui/npc_vendor_ui.gd",
 }
 
 const ACTION_ITEMS: Array = ["tree", "oak_tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree", "boulder", "mailbox", "chicken_coop", "beehive", "egg_white", "egg_gold"]

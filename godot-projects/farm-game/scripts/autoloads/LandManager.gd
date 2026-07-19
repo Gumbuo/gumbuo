@@ -293,6 +293,7 @@ func grant_starter_pack() -> void:
 		cfg.load(SAVE_PATH)
 		cfg.set_value("starter_granted", pid, true)
 		cfg.save(SAVE_PATH)
+		WebPersistence.flush()
 	save_land_data()
 
 func get_slot_item_size(_item_id: String) -> Vector2i:
@@ -713,6 +714,7 @@ func save_land_data() -> void:
 	else:
 		cfg.set_value("deeds", "inventory", var_to_str(deed_inventory))
 	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
 
 func load_land_data() -> void:
 	var cfg := ConfigFile.new()
@@ -784,6 +786,7 @@ func _run_deed_migrations() -> void:
 						already_granted = true
 						cfg.set_value("starter_granted", pid, true)
 						cfg.save(SAVE_PATH)
+						WebPersistence.flush()
 						break
 		if not already_granted:
 			deed_inventory["FARM"]     = deed_inventory.get("FARM",     0) + 1

@@ -228,6 +228,7 @@ func save_data() -> void:
 	cfg.set_value("economy", "grow_faster_until", grow_faster_until)
 	cfg.set_value("economy", "peach_boost_until", peach_boost_until)
 	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
 
 func set_wallet(address: String) -> void:
 	wallet_address = address.to_lower()

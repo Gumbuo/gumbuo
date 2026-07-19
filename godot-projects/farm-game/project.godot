@@ -18,6 +18,7 @@ config/icon="res://assets/sprites/ui/icon.png"
 
 [autoload]
 
+WebPersistence="*res://scripts/autoloads/WebPersistence.gd"
 PlayerData="*res://scripts/autoloads/PlayerData.gd"
 GameManager="*res://scripts/autoloads/GameManager.gd"
 LandManager="*res://scripts/autoloads/LandManager.gd"
@@ -26,6 +27,7 @@ HarvestManager="*res://scripts/autoloads/HarvestManager.gd"
 NPCManager="*res://scripts/autoloads/NPCManager.gd"
 MarketManager="*res://scripts/autoloads/MarketManager.gd"
 MailManager="*res://scripts/autoloads/MailManager.gd"
+MusicManager="*res://scripts/autoloads/MusicManager.gd"
 
 [display]
 
