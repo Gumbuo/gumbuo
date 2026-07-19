@@ -275,10 +275,18 @@ func _ensure_global_tile() -> void:
 			"owner_id": "global",
 			"placed_at": 0
 		}
-	# place npc_vendor at center (2,2) if not already there
+	# Place the three claim NPCs near the center if not already there —
+	# npc_vendor (Tom, tools), Lilly (seeds), Gus (chicken coop + beehive).
+	# item_id stays "npc_vendor" (not renamed to npc_tom) since this NPC
+	# predates today's changes — existing saves already have "npc_vendor"
+	# placed here and renaming the id would orphan it for those players.
 	var gslots: Dictionary = tiles[GLOBAL_TILE_ID]["slots"]
 	if not gslots.has(slot_key(Vector2i(2, 2))):
 		place_slot_item(GLOBAL_TILE_ID, Vector2i(2, 2), "npc_vendor")
+	if not gslots.has(slot_key(Vector2i(3, 2))):
+		place_slot_item(GLOBAL_TILE_ID, Vector2i(3, 2), "npc_lilly")
+	if not gslots.has(slot_key(Vector2i(4, 2))):
+		place_slot_item(GLOBAL_TILE_ID, Vector2i(4, 2), "npc_gus")
 	save_land_data()
 
 func grant_starter_pack() -> void:

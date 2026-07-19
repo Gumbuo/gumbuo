@@ -106,7 +106,9 @@ const CRAFTING_STATIONS: Dictionary = {
 	"bread_oven":     "res://scripts/ui/bread_oven_ui.gd",
 	"barrel":         "res://scripts/ui/barrel_ui.gd",
 	"sawmill":        "res://scripts/ui/sawmill_ui.gd",
-	"npc_vendor":     "res://scripts/ui/npc_vendor_ui.gd",
+	"npc_vendor":     "res://scripts/ui/npc_tom_ui.gd",
+	"npc_lilly":      "res://scripts/ui/npc_lilly_ui.gd",
+	"npc_gus":        "res://scripts/ui/npc_gus_ui.gd",
 }
 
 const ACTION_ITEMS: Array = ["tree", "oak_tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree", "boulder", "mailbox", "chicken_coop", "beehive", "egg_white", "egg_gold"]
@@ -167,6 +169,8 @@ func _ready() -> void:
 		"stonecutter":    Color(0.50, 0.48, 0.45),
 		"wine_press":     Color(0.55, 0.12, 0.35),
 		"npc_vendor":     Color(0.88, 0.72, 0.56),
+		"npc_lilly":      Color(0.55, 0.90, 0.45),
+		"npc_gus":        Color(0.90, 0.78, 0.35),
 	}
 	for _wc in ["mushroom", "carrot", "tomato", "potato", "cucumber",
 			"red_flower", "blue_flower", "yellow_flower", "cotton"]:
@@ -1000,9 +1004,9 @@ func _refresh() -> void:
 						elif item_id == "boulder":
 							fill.color = Color(0, 0, 0, 0)  # sprite handles all visual stages
 							lbl.text = ""
-						elif item_id == "npc_vendor":
+						elif item_id in ["npc_vendor", "npc_lilly", "npc_gus"]:
 							fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
-							lbl.text = "NPC"
+							lbl.text = {"npc_vendor": "TOM", "npc_lilly": "LILLY", "npc_gus": "GUS"}[item_id]
 							lbl.add_theme_font_size_override("font_size", 11)
 						else:
 							fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))

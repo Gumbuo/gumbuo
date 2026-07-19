@@ -54,6 +54,49 @@ func claim_starter_tools() -> bool:
 	WebPersistence.flush()
 	return true
 
+const STARTER_SEEDS: Array = [
+	"seed_wheat", "seed_carrot", "seed_pumpkin", "seed_red_flower", "seed_yellow_flower",
+	"seed_blue_flower", "seed_cotton", "seed_grapes", "seed_tomato", "seed_fern",
+	"seed_cucumber", "seed_potato", "seed_roses",
+]
+const STARTER_SEED_AMOUNT := 500
+
+func has_claimed_seeds() -> bool:
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)
+	return cfg.get_value("meta", "starter_seeds_claimed", false)
+
+func claim_seeds() -> bool:
+	if has_claimed_seeds():
+		return false
+	for seed_id in STARTER_SEEDS:
+		add_item(seed_id, STARTER_SEED_AMOUNT)
+	save_inventory()
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)
+	cfg.set_value("meta", "starter_seeds_claimed", true)
+	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
+	return true
+
+func has_claimed_coop_and_beehive() -> bool:
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)
+	return cfg.get_value("meta", "coop_beehive_claimed", false)
+
+func claim_coop_and_beehive() -> bool:
+	if has_claimed_coop_and_beehive():
+		return false
+	add_item("chicken_coop", 1)
+	add_item("beehive", 1)
+	save_inventory()
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)
+	cfg.set_value("meta", "coop_beehive_claimed", true)
+	cfg.save(SAVE_PATH)
+	WebPersistence.flush()
+	return true
+
 func get_count(item_id: String) -> int:
 	return inventory.get(item_id, 0)
 
@@ -153,11 +196,8 @@ func load_inventory() -> void:
 				"pumpkin_bread","carrot_cake","golden_potato_cake","upside_down_tomato_cake",
 				"pumpkin_spice_cake","grape_tart_cake","combat_health_potion","combat_stamina_potion",
 				"purple_potion","red_potion",
-				"seed_wheat","seed_carrot","seed_pumpkin","seed_red_flower","seed_yellow_flower",
-				"seed_blue_flower","seed_cotton","seed_grapes","seed_tomato","seed_fern",
-				"seed_cucumber","seed_potato","seed_roses",
 				"tree","apple_tree","pear_tree","peach_tree","lemon_tree","boulder",
-				"workbench","soil_plot","alchemy_table","anvil","barrel","beehive","bonfire",
+				"workbench","soil_plot","alchemy_table","anvil","barrel","bonfire",
 				"box","dyeing_vat","sawmill","spinning_wheel","stonecutter","wine_press",
 				"recipe_soil_plot","recipe_hoe","recipe_watering_can","recipe_axe","recipe_pickaxe",
 				"recipe_fishing_rod","recipe_peach_jam","recipe_wrapped_potato","recipe_french_fries",
@@ -191,7 +231,6 @@ func load_inventory() -> void:
 			WebPersistence.flush()
 		if not cfg.get_value("meta", "dev_v3", false):
 			cfg.set_value("meta", "dev_v3", true)
-			inventory["chicken_coop"] = max(inventory.get("chicken_coop", 0), 1000)
 			inventory["egg_white"]    = max(inventory.get("egg_white",    0), 1000)
 			inventory["egg_gold"]     = max(inventory.get("egg_gold",     0), 1000)
 			inventory.erase("egg")  # plain egg replaced by egg_white / egg_gold
@@ -226,13 +265,8 @@ func _grant_starter_items() -> void:
 
 func _apply_inventory_reset_v1() -> void:
 	inventory.clear()
-	# Seeds × 1000
-	for seed in [
-		"seed_wheat","seed_carrot","seed_pumpkin","seed_red_flower","seed_yellow_flower",
-		"seed_blue_flower","seed_cotton","seed_grapes","seed_tomato","seed_fern",
-		"seed_cucumber","seed_potato","seed_roses"
-	]:
-		inventory[seed] = 1000
+	# Seeds, tools, chicken coop, and beehive are no longer auto-granted —
+	# claimed once from Lilly, Tom, and Gus respectively.
 	# Food × 200
 	for food in [
 		"bread","wine","wrapped_potato","french_fries","veggie_salad","fruit_salad",
@@ -245,7 +279,7 @@ func _apply_inventory_reset_v1() -> void:
 	inventory["soil_plot"] = 30
 	for pl in [
 		"tree","apple_tree","pear_tree","peach_tree","lemon_tree","boulder","workbench",
-		"alchemy_table","anvil","barrel","beehive","bonfire","box","dyeing_vat",
+		"alchemy_table","anvil","barrel","bonfire","box","dyeing_vat",
 		"sawmill","spinning_wheel","stonecutter","wine_press","mailbox"
 	]:
 		inventory[pl] = 1
@@ -260,7 +294,3 @@ func _apply_inventory_reset_v1() -> void:
 		"recipe_chicken_feed"
 	]:
 		inventory[r] = 1
-	# Iron tools × 1
-	inventory["tool_axe_iron"]     = 1
-	inventory["tool_pickaxe_iron"] = 1
-	inventory["tool_rod_iron"]     = 1

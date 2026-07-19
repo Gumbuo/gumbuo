@@ -5,8 +5,8 @@ signal closed
 # this signal unconditionally for every registered CRAFTING_STATIONS entry.
 signal item_crafted(item_id: String, count: int)
 
-const BORDER_COLOR := Color(0.55, 0.42, 0.20)
-const TITLE_COLOR  := Color(0.90, 0.75, 0.45)
+const BORDER_COLOR := Color(0.30, 0.55, 0.25)
+const TITLE_COLOR  := Color(0.55, 0.90, 0.45)
 
 var _claim_btn: Button = null
 var _status_lbl: Label = null
@@ -65,7 +65,7 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.position = Vector2(16, 10)
 	title.size     = Vector2(pw - 80, 22)
-	title.text     = "TRAVELING VENDOR"
+	title.text     = "LILLY"
 	title.add_theme_font_size_override("font_size", 13)
 	title.modulate = TITLE_COLOR
 	panel.add_child(title)
@@ -80,7 +80,7 @@ func _build_ui() -> void:
 	var desc := Label.new()
 	desc.position = Vector2(16, 50)
 	desc.size     = Vector2(pw - 32, 40)
-	desc.text     = "New around here? Claim a free iron axe, pickaxe, and fishing rod to get started. One-time offer."
+	desc.text     = "Here — a starter batch of seeds for your farm. 500 of every kind. One-time offer."
 	desc.add_theme_font_size_override("font_size", 9)
 	desc.modulate = Color(0.7, 0.7, 0.7)
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -104,14 +104,14 @@ func _build_ui() -> void:
 	_refresh()
 
 func _on_claim_pressed() -> void:
-	if ResourceManager.claim_starter_tools():
+	if ResourceManager.claim_seeds():
 		_status_lbl.text = "Claimed! Check your backpack."
 	_refresh()
 
 func _refresh() -> void:
-	if ResourceManager.has_claimed_starter_tools():
+	if ResourceManager.has_claimed_seeds():
 		_claim_btn.text = "Already Claimed"
 		_claim_btn.disabled = true
 	else:
-		_claim_btn.text = "Claim Starter Tools"
+		_claim_btn.text = "Claim Starter Seeds"
 		_claim_btn.disabled = false
