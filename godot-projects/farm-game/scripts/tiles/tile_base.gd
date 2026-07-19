@@ -317,6 +317,13 @@ func _execute_current_task() -> void:
 				if is_instance_valid(_slot_grid):
 					_slot_grid.call("_refresh_picker")
 
+		"open_station":
+			if not slots.has(key):
+				_finish_task()
+				return
+			if is_instance_valid(_slot_grid):
+				_slot_grid.call("_open_crafting_station", iid, gp)
+
 		"choose_farm":
 			if slots.has(key):
 				_finish_task()

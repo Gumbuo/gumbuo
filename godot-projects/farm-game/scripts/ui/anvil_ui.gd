@@ -3,6 +3,8 @@ extends CanvasLayer
 signal closed
 signal item_crafted(item_id: String, count: int)
 
+const BORDER_COLOR := Color(0.28, 0.28, 0.35)
+
 # ─────────────────────────── RECIPE DATA ────────────────────
 # Ingredient quantities are estimated — update when confirmed.
 # x10 requires 1 purple_potion; x100 requires 1 red_potion.

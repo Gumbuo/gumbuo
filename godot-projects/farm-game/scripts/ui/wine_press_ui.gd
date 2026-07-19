@@ -26,8 +26,18 @@ var _owner_tile_id:  String = ""
 func _ready() -> void:
 	layer = 30
 	add_to_group("action_windows")  # prevents slot_grid._input() from firing through this UI
-	_is_visitor    = get_meta("is_visitor", false)
-	_owner_tile_id = get_meta("owner_tile_id", "")
+	# Legacy path: a caller that set meta directly before add_child instead
+	# of calling setup_context(). The tool-slot dispatch (_open_crafting_station
+	# in slot_grid.gd) uses setup_context() below, which is the primary path.
+	if has_meta("owner_tile_id"):
+		_owner_tile_id = get_meta("owner_tile_id", "")
+		_is_visitor    = get_meta("is_visitor", false)
+		_build_ui()
+
+func setup_context(t_id: String) -> void:
+	_owner_tile_id = t_id
+	var tile_owner: String = LandManager.tiles.get(t_id, {}).get("owner_id", "")
+	_is_visitor = not tile_owner.is_empty() and tile_owner != PlayerData.player_id
 	_build_ui()
 
 func _input(event: InputEvent) -> void:
@@ -244,7 +254,7 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 	sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(sep)
 
-	return {"craft": act_btn, "craft10": act10_btn, "craft100": act100_btn, "pills": pills}
+	return {"craft": act_btn, "craft10": act10_btn, "craft100": act100_btn, "pills": pills, "energy": data.get("energy", 1)}
 
 func _try_craft(recipe_id: String, data: Dictionary, count: int) -> void:
 	var ing: Dictionary = data.get("ing", {})
@@ -283,13 +293,23 @@ func _refresh_states() -> void:
 		var pills: Array = card_info["pills"]
 		var ing: Dictionary = {}
 		for p in pills: ing[p["res_id"]] = p["req"]
+		var energy_per: int = card_info.get("energy", 1)
+		var has_energy_1: bool = PlayerData.energy >= energy_per
 		var cb:  Button = card_info["craft"]
 		var c10: Button = card_info["craft10"]
-		if is_instance_valid(cb):  cb.disabled  = not _can_afford(ing, 1)
-		if is_instance_valid(c10): c10.disabled = not (_can_afford(ing, 10) and has_purple)
+		if is_instance_valid(cb):
+			cb.disabled  = not (_can_afford(ing, 1) and has_energy_1)
+			cb.tooltip_text = "" if has_energy_1 else "Not enough energy (%d/%d)" % [PlayerData.energy, energy_per]
+		if is_instance_valid(c10):
+			var has_energy_10: bool = PlayerData.energy >= energy_per * 10
+			c10.disabled = not (_can_afford(ing, 10) and has_purple and has_energy_10)
+			c10.tooltip_text = "" if has_energy_10 else "Not enough energy (%d/%d)" % [PlayerData.energy, energy_per * 10]
 		if card_info.has("craft100"):
 			var c100: Button = card_info["craft100"]
-			if is_instance_valid(c100): c100.disabled = not (_can_afford(ing, 100) and has_red)
+			if is_instance_valid(c100):
+				var has_energy_100: bool = PlayerData.energy >= energy_per * 100
+				c100.disabled = not (_can_afford(ing, 100) and has_red and has_energy_100)
+				c100.tooltip_text = "" if has_energy_100 else "Not enough energy (%d/%d)" % [PlayerData.energy, energy_per * 100]
 		for p in pills:
 			var lbl: Label = p["lbl"]
 			if not is_instance_valid(lbl): continue

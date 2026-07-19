@@ -427,7 +427,9 @@ func _handle_tool_slot_click(idx: int, is_double_click: bool) -> void:
 			_show_return_popup(pos, item_id)
 			return
 		if not is_double_click and CRAFTING_STATIONS.has(item_id):
-			_open_crafting_station(item_id, pos)
+			# Walk over first, then open the station — see "open_station" in
+			# tile_base.gd's _execute_current_task().
+			slot_activated.emit(pos, "open_station", item_id)
 		return
 
 	# Empty tool slot — walk over, then pop up a tool choice.
