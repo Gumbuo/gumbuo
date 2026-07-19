@@ -567,13 +567,13 @@ func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 
 	var border := ColorRect.new()
 	border.set_anchors_preset(Control.PRESET_FULL_RECT)
-	border.color = Color(1, 1, 1, 0.18)
+	border.color = Color(1, 1, 1, 0.4)
 	c.add_child(border)
 
 	var fill := ColorRect.new()
 	fill.position = Vector2(1, 1)
 	fill.size = Vector2(SLOT_PX - 2, SLOT_PX - 2)
-	fill.color = Color(0.05, 0.05, 0.05, 0.55)
+	fill.color = Color(0, 0, 0, 0)
 	fill.name = "Fill"
 	c.add_child(fill)
 
@@ -678,13 +678,13 @@ func _make_tool_slot(screen_pos: Vector2, idx: int) -> Control:
 
 	var border := ColorRect.new()
 	border.set_anchors_preset(Control.PRESET_FULL_RECT)
-	border.color = Color(1.0, 0.85, 0.35, 0.35)
+	border.color = Color(1.0, 0.85, 0.35, 0.5)
 	c.add_child(border)
 
 	var fill := ColorRect.new()
 	fill.position = Vector2(2, 2)
 	fill.size = Vector2(TOOL_SLOT_PX - 4, TOOL_SLOT_PX - 4)
-	fill.color = Color(0.08, 0.06, 0.03, 0.55)
+	fill.color = Color(0, 0, 0, 0)
 	fill.name = "Fill"
 	c.add_child(fill)
 
@@ -980,7 +980,7 @@ func _refresh() -> void:
 				fill.color = _item_colors.get(item_id, Color(0.4, 0.4, 0.4, 0.85))
 				lbl.text = ""
 		else:
-			fill.color = Color(0.05, 0.05, 0.05, 0.55)
+			fill.color = Color(0, 0, 0, 0)
 			lbl.text = ""
 	_refresh_item_sprites()
 	_refresh_crop_sprites()
@@ -1010,7 +1010,7 @@ func _refresh_tool_slots() -> void:
 		var key: String = LandManager.slot_key(LandManager.tool_slot_pos(idx))
 
 		if not slots.has(key):
-			fill.color = Color(0.08, 0.06, 0.03, 0.55)
+			fill.color = Color(0, 0, 0, 0)
 			lbl.text = ""
 			if _tool_slot_sprites.has(idx):
 				var old: TextureRect = _tool_slot_sprites[idx]
@@ -1698,7 +1698,7 @@ func _revert_slot_fill(c: Control, pos: Vector2i) -> void:
 			"ready":    f.color = Color(0.70, 0.60, 0.10, 0.85)
 			_:          f.color = _item_colors.get(d.get("item_id",""), Color(0.4, 0.4, 0.4, 0.85))
 	else:
-		f.color = Color(0.05, 0.05, 0.05, 0.55)
+		f.color = Color(0, 0, 0, 0)
 
 # ─────────────────────────── POPUPS ─────────────────────────
 
