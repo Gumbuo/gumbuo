@@ -127,12 +127,15 @@ func _ready() -> void:
 	_access_label.visible = false
 	add_child(_access_label)
 
-	# Red dot shows on the player's home tile in the world map
+	# Red dot shows on whichever tile the player is currently standing on
 	_location_dot = Label.new()
 	_location_dot.text = "●"
-	_location_dot.modulate = Color(1.0, 0.15, 0.15, 0.95)
-	_location_dot.add_theme_font_size_override("font_size", 14)
-	_location_dot.position = Vector2(3, 2)
+	_location_dot.modulate = Color(1.0, 0.15, 0.15, 0.85)
+	_location_dot.add_theme_font_size_override("font_size", 40)
+	_location_dot.position = Vector2(0, 0)
+	_location_dot.size = Vector2(90, 90)
+	_location_dot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_location_dot.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_location_dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_location_dot.visible = false
 	add_child(_location_dot)
@@ -227,7 +230,7 @@ func set_tile(tile_data: Dictionary) -> void:
 		_move_btn.visible = _is_owner
 		_move_btn.position = Vector2(size.x - 38, 38)
 	if _location_dot:
-		_location_dot.visible = _is_owner and _tile_id == LandManager.home_tile_id
+		_location_dot.visible = _tile_id != "" and _tile_id == LandManager.last_tile_id
 	if _drop_btn: _drop_btn.visible = false  # not clickable on filled tiles
 
 func set_npc_tile(npc_data: Dictionary) -> void:

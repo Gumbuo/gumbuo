@@ -136,6 +136,10 @@ func _make_recipe_row(act: Dictionary) -> Control:
 
 	return wrap
 
+func _is_owner() -> bool:
+	var tile_owner: String = LandManager.tiles.get(_tile_id, {}).get("owner_id", "")
+	return tile_owner.is_empty() or tile_owner == PlayerData.player_id
+
 func _get_actions() -> Array:
 	var tile_slots: Dictionary = LandManager.tiles.get(_tile_id, {}).get("slots", {})
 	var slot_data: Dictionary = tile_slots.get(LandManager.slot_key(_grid_pos), {})
@@ -166,6 +170,8 @@ func _get_actions() -> Array:
 		"silo":
 			return [{"label": "Collect from Silo", "action": "silo_check"}]
 		"chicken_coop":
+			if not _is_owner():
+				return [{"label": "Open Coop", "disabled": true, "reason": "Only the tile owner can collect from this"}]
 			return [{"label": "Open Coop", "action": "open_coop"}]
 		"burner_station":
 			return [{"label": "Burn Resources for Land Deed", "action": "burn_deed"}]
@@ -178,6 +184,8 @@ func _get_actions() -> Array:
 		"barrel":
 			return [{"label": "Ferment Wine  (collab x3)", "action": "open_barrel"}]
 		"beehive":
+			if not _is_owner():
+				return [{"label": "Open Beehive", "disabled": true, "reason": "Only the tile owner can collect from this"}]
 			return [{"label": "Open Beehive", "action": "open_beehive"}]
 		"box":
 			return [{"label": "Open Storage (coming soon)", "disabled": true}]
@@ -390,10 +398,6 @@ func _do_harvest() -> void:
 		return
 	PlayerData.add_xp(1)
 	var crop: String = tile_slots[key].get("crop", "")
-	var harvester_amt: int = 0
-	if crop != "":
-		harvester_amt = randi_range(2, 5)
-		ResourceManager.add_item(crop, harvester_amt, true)
 	tile_slots[key].erase("state")
 	tile_slots[key].erase("crop")
 	tile_slots[key].erase("planted_at")
@@ -401,10 +405,29 @@ func _do_harvest() -> void:
 	LandManager.slot_item_placed.emit(_tile_id, key, "soil_plot")
 	var _p: Node = get_tree().get_first_node_in_group("player")
 	if _p and _p.has_method("play_harvest"): _p.call("play_harvest")
-	if crop != "":
-		_show_drops_popup([
-			{"label": "Harvester", "color": Color(0.4, 1.0, 0.5), "items": [{"id": crop, "count": harvester_amt}]}
-		])
+	if crop == "":
+		return
+	var tile: Dictionary = LandManager.tiles.get(_tile_id, {})
+	var tile_owner: String = tile.get("owner_id", "")
+	var is_owner: bool = tile_owner.is_empty() or tile_owner == PlayerData.player_id
+	var total_amt: int = randi_range(2, 5)
+	var you_amt: int
+	var owner_amt: int = 0
+	if is_owner:
+		you_amt = total_amt
+	else:
+		var yield_rate: int = tile.get("yield_rate", 70)
+		you_amt   = int(total_amt * yield_rate / 100.0)
+		owner_amt = total_amt - you_amt
+	ResourceManager.add_item(crop, you_amt, true)
+	if owner_amt > 0:
+		LandManager.add_to_passive_vault(_tile_id, crop, owner_amt, PlayerData.player_id)
+	var drops: Array = [
+		{"label": "You", "color": Color(0.4, 1.0, 0.5), "items": [{"id": crop, "count": you_amt}]}
+	]
+	if owner_amt > 0:
+		drops.append({"label": "Owner gets", "color": Color(1.0, 0.85, 0.3), "items": [{"id": crop, "count": owner_amt}]})
+	_show_drops_popup(drops)
 
 func _do_chop() -> void:
 	if not PlayerData.spend_energy(1):
@@ -569,11 +592,15 @@ func _show_drops_popup(drops: Array) -> void:
 	popup.show_drops(drops)
 
 func _do_open_coop() -> void:
+	if not _is_owner():
+		return  # menu already disables this for non-owners; defensive no-op
 	var ui: CanvasLayer = (load("res://scripts/ui/chicken_coop_ui.gd") as GDScript).new()
 	get_tree().root.add_child(ui)
 	ui.setup(_tile_id, _grid_pos)
 
 func _do_open_beehive() -> void:
+	if not _is_owner():
+		return  # menu already disables this for non-owners; defensive no-op
 	var ui: CanvasLayer = (load("res://scripts/ui/beehive_ui.gd") as GDScript).new()
 	get_tree().root.add_child(ui)
 	ui.setup(_tile_id, _grid_pos)

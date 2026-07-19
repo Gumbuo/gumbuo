@@ -24,6 +24,8 @@ var _sync_req: HTTPRequest = null
 var _deed_banner: Label = null
 
 func _ready() -> void:
+	if LandManager.current_tile_id != "":
+		LandManager.last_tile_id = LandManager.current_tile_id
 	LandManager.current_tile_id = ""
 	LandManager.tile_placed.connect(_on_tile_placed)
 	LandManager.tile_moved.connect(_on_tile_moved)

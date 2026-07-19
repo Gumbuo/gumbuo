@@ -329,9 +329,10 @@ func _input(event: InputEvent) -> void:
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		var occupied: bool = slots.has(key)
 
-		# ── seed planting (owner only) — queue character walk ──
+		# ── seed planting (any player — visitors can plant on public land
+		# too; harvest already splits the yield with the owner) ──
 		if _held_seed != "":
-			if occupied and is_tile_owner:
+			if occupied:
 				var d: Dictionary = slots[key]
 				if d.get("is_anchor", false) and d.get("item_id","") == "soil_plot" and not d.has("crop"):
 					if ResourceManager.has_item(_held_seed):
@@ -355,8 +356,9 @@ func _input(event: InputEvent) -> void:
 				return  # still growing — do nothing
 			elif adat.get("item_id","") == "soil_plot" and not event.double_click:
 				# Empty, plantable soil — walk over, then pop up a seed choice.
-				if is_tile_owner:
-					slot_activated.emit(anchor_pos, "choose_seed", "")
+				# Visitors can plant on public land too; harvest already
+				# splits the yield with the owner.
+				slot_activated.emit(anchor_pos, "choose_seed", "")
 				return
 			elif CRAFTING_STATIONS.has(adat.get("item_id","")) and not event.double_click:
 				_open_crafting_station(adat.get("item_id",""), anchor_pos)

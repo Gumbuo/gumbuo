@@ -67,6 +67,10 @@ const GROW_TIMES := {
 }
 
 var current_tile_id: String = ""
+# Mirrors current_tile_id but survives world_map.gd clearing current_tile_id
+# on _ready() — lets the world map show a "you are here" marker on whatever
+# tile the player last stood on, not just their home tile.
+var last_tile_id: String = ""
 var home_tile_id: String = ""
 # Set right before a tile-to-tile walk transition; tells the destination tile
 # which edge the player is entering from (opposite of the direction walked).
