@@ -4,7 +4,7 @@ signal arrived(at_pos: Vector2)
 signal path_cancelled
 
 const SPEED    := 130.0
-const BASE_PATH := "res://assets/sprites/characters/farmer_tom/"
+const BASE_PATH := "res://assets/sprites/characters/evil_fox/"
 const DIRS := ["south", "north", "east", "west", "south-east", "south-west", "north-east", "north-west"]
 
 const ACTION_CONFIGS: Array = [

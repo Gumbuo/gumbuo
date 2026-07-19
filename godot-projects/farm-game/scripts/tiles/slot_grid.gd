@@ -568,6 +568,8 @@ func _make_slot(screen_pos: Vector2, grid_pos: Vector2i) -> Control:
 	var border := ColorRect.new()
 	border.set_anchors_preset(Control.PRESET_FULL_RECT)
 	border.color = Color(1, 1, 1, 0.4)
+	border.name = "Border"
+	border.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.add_child(border)
 
 	var fill := ColorRect.new()
@@ -679,6 +681,8 @@ func _make_tool_slot(screen_pos: Vector2, idx: int) -> Control:
 	var border := ColorRect.new()
 	border.set_anchors_preset(Control.PRESET_FULL_RECT)
 	border.color = Color(1.0, 0.85, 0.35, 0.5)
+	border.name = "Border"
+	border.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.add_child(border)
 
 	var fill := ColorRect.new()
@@ -944,6 +948,8 @@ func _refresh() -> void:
 		var ctrl: Control = _slot_nodes[key]
 		var fill: ColorRect = ctrl.get_node("Fill")
 		var lbl: Label = ctrl.get_node("Lbl")
+		var border: ColorRect = ctrl.get_node_or_null("Border")
+		if border: border.visible = not slots.has(key)
 		if slots.has(key):
 			var data: Dictionary = slots[key]
 			var item_id: String = data.get("item_id", "")
@@ -1007,7 +1013,9 @@ func _refresh_tool_slots() -> void:
 		var ctrl: Control = _tool_slot_nodes[idx]
 		var fill: ColorRect = ctrl.get_node("Fill")
 		var lbl: Label = ctrl.get_node("Lbl")
+		var border: ColorRect = ctrl.get_node_or_null("Border")
 		var key: String = LandManager.slot_key(LandManager.tool_slot_pos(idx))
+		if border: border.visible = not slots.has(key)
 
 		if not slots.has(key):
 			fill.color = Color(0, 0, 0, 0)
