@@ -99,9 +99,13 @@ func load_inventory() -> void:
 		inventory.erase("_dev_starter")
 		inventory.erase("egg")   # plain egg obsolete — only egg_white / egg_gold exist now
 		var dirty := false
-		if inventory.get("soil_plot", 0) < 100:
-			inventory["soil_plot"] = 100
-			dirty = true
+		# One-time floor, not an every-load floor — otherwise placing soil
+		# down below 100 just gets refilled back to 100 on the next refresh.
+		if not cfg.get_value("meta", "soil_floor_v1", false):
+			cfg.set_value("meta", "soil_floor_v1", true)
+			if inventory.get("soil_plot", 0) < 100:
+				inventory["soil_plot"] = 100
+				dirty = true
 		if not inventory.has("mailbox"):
 			inventory["mailbox"] = 1
 			dirty = true
@@ -193,6 +197,7 @@ func _grant_starter_items() -> void:
 	cfg.set_value("meta", "dev_v2", true)
 	cfg.set_value("meta", "dev_v3", true)
 	cfg.set_value("meta", "inventory_reset_v1", true)
+	cfg.set_value("meta", "soil_floor_v1", true)
 	cfg.save(SAVE_PATH)
 
 func _apply_inventory_reset_v1() -> void:
