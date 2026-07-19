@@ -235,8 +235,20 @@ func _execute_current_task() -> void:
 					amt += 1
 				if PlayerData.has_peach_boost():
 					amt = max(6, amt)
-				ResourceManager.add_item(crop, amt, true)  # silent — drops_popup handles notification
-				_show_drops_popup("Harvested", crop, amt)
+				# Visitors on someone else's tile split the harvest with the
+				# owner (same yield_rate mechanic used for chopping/mining).
+				var owner_id: String = LandManager.tiles.get(tile_id, {}).get("owner_id", "")
+				var is_owner: bool = owner_id.is_empty() or owner_id == PlayerData.player_id
+				var you_amt: int = amt
+				var owner_amt: int = 0
+				if not is_owner:
+					var yield_rate: int = LandManager.tiles.get(tile_id, {}).get("yield_rate", 70)
+					you_amt = int(amt * yield_rate / 100.0)
+					owner_amt = amt - you_amt
+				ResourceManager.add_item(crop, you_amt, true)  # silent — drops_popup handles notification
+				if owner_amt > 0:
+					LandManager.add_to_passive_vault(tile_id, crop, owner_amt, PlayerData.player_id)
+				_show_harvest_drops_popup(crop, you_amt, owner_amt)
 				if is_instance_valid(_slot_grid):
 					_slot_grid.call("_refresh_picker")
 
@@ -462,6 +474,18 @@ func _show_drops_popup(label: String, item_id: String, count: int) -> void:
 	var ui: CanvasLayer = (load("res://scripts/ui/drops_popup.gd") as GDScript).new()
 	get_tree().root.add_child(ui)
 	ui.show_drops([{"label": label, "items": [{"id": item_id, "count": count}]}])
+
+# Same as _show_drops_popup but breaks the amount into "You" / "Owner gets"
+# groups, matching the popup action_window.gd already uses for chop/mine.
+func _show_harvest_drops_popup(item_id: String, you_amt: int, owner_amt: int) -> void:
+	var drops: Array = [
+		{"label": "You", "color": Color(0.4, 1.0, 0.5), "items": [{"id": item_id, "count": you_amt}]}
+	]
+	if owner_amt > 0:
+		drops.append({"label": "Owner gets", "color": Color(1.0, 0.85, 0.3), "items": [{"id": item_id, "count": owner_amt}]})
+	var ui: CanvasLayer = (load("res://scripts/ui/drops_popup.gd") as GDScript).new()
+	get_tree().root.add_child(ui)
+	ui.show_drops(drops)
 
 # ── Slot queue dot indicators ─────────────────────────────────
 
