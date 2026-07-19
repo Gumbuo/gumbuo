@@ -280,6 +280,17 @@ func _execute_current_task() -> void:
 				if is_instance_valid(_slot_grid):
 					_slot_grid.call("_refresh_picker")
 
+		"place_tool":
+			if slots.has(key) or not ResourceManager.has_item(iid):
+				_finish_task()
+				return
+			_player.play_harvest()
+			await _player.sprite.animation_finished
+			if LandManager.place_tool_item(tile_id, LandManager.tool_slot_index(gp), iid):
+				ResourceManager.remove_item(iid)
+				if is_instance_valid(_slot_grid):
+					_slot_grid.call("_refresh_picker")
+
 		"choose_seed":
 			var adat: Dictionary = slots.get(key, {})
 			if not (adat.get("is_anchor", false) and adat.get("item_id", "") == "soil_plot" and not adat.has("crop")):

@@ -35,6 +35,11 @@ const TOOL_SLOT_POS: Array = [
 const SEED_BAR_POS  := Vector2(792, 612)
 const SEED_BAR_SIZE := Vector2(212, 44)
 
+# Mirrors the seed bar on the other side — sits in the gap between the left
+# tool slot column (ends x:270) and the SW nav button (starts x:490).
+const TOOL_BAR_POS  := Vector2(276, 612)
+const TOOL_BAR_SIZE := Vector2(208, 44)
+
 var tile_id: String = ""
 var _held_item: String = ""
 var _held_seed: String = ""
@@ -83,6 +88,10 @@ var _choice_popup_open: bool = false
 # Persistent horizontal seed bar (replaces the one-shot modal for seeds only)
 var _seed_bar:       Control        = null
 var _seed_bar_box:   HBoxContainer  = null
+
+# Mirrors the seed bar for tools/crafting stations, placed via empty tool slots
+var _tool_bar:       Control        = null
+var _tool_bar_box:   HBoxContainer  = null
 
 # soil_plot/boulder (empty-land popup), all TREES (empty-land popup), and
 # CRAFTING (tool slot popup) are no longer offered here — clicking the
@@ -208,6 +217,13 @@ func setup(tid: String) -> void:
 	_refresh()
 	_refresh_picker()
 	_apply_pond_mask()
+	# Seed/tool bars stay on screen permanently now instead of popping open
+	# only when triggered — picking an item never blocks other clicks (see
+	# the "_held_seed != "" and occupied" guard in _input()), so having them
+	# always visible doesn't interfere with harvesting/pathing/etc.
+	if not _is_pond_tile():
+		show_seed_bar()
+		show_tool_bar()
 
 func set_held_item(item_id: String) -> void:
 	_held_item = item_id
@@ -336,13 +352,16 @@ func _input(event: InputEvent) -> void:
 
 		# ── seed planting (any player — visitors can plant on public land
 		# too; harvest already splits the yield with the owner) ──
-		if _held_seed != "":
-			if occupied:
-				var d: Dictionary = slots[key]
-				if d.get("is_anchor", false) and d.get("item_id","") == "soil_plot" and not d.has("crop"):
-					if ResourceManager.has_item(_held_seed):
-						slot_activated.emit(slot_pos, "plant", _held_seed)
-			return
+		# Only intercepts the click when the target is actually plantable
+		# (empty, un-cropped soil) — anything else (a ready crop elsewhere,
+		# a tree, a station) falls through to the normal handling below so
+		# holding a seed never blocks harvesting/other interactions.
+		if _held_seed != "" and occupied:
+			var d: Dictionary = slots[key]
+			if d.get("is_anchor", false) and d.get("item_id","") == "soil_plot" and not d.has("crop"):
+				if ResourceManager.has_item(_held_seed):
+					slot_activated.emit(slot_pos, "plant", _held_seed)
+				return
 
 		# ── single click on planted soil → harvest if ready ──
 		if occupied:
@@ -437,9 +456,13 @@ func _handle_tool_slot_click(idx: int, is_double_click: bool) -> void:
 			slot_activated.emit(pos, "open_station", item_id)
 		return
 
-	# Empty tool slot — walk over, then pop up a tool choice.
+	# Empty tool slot — if a tool is already held (picked from the tool
+	# bar), place it directly; otherwise walk over and pop up a choice.
 	if not is_double_click and is_tile_owner:
-		slot_activated.emit(pos, "choose_tool", "")
+		if _held_item != "" and LandManager.CRAFTING_ITEM_IDS.has(_held_item) and ResourceManager.has_item(_held_item):
+			slot_activated.emit(pos, "place_tool", _held_item)
+		else:
+			slot_activated.emit(pos, "choose_tool", "")
 
 # ─────────────────────────── CRAFTING STATIONS ──────────────
 
@@ -875,6 +898,7 @@ func _refresh_picker() -> void:
 
 	_update_picker_visuals()
 	_refresh_seed_bar_if_open()
+	_refresh_tool_bar_if_open()
 
 func _make_picker_btn(item_id: String, count: int, is_seed: bool) -> Button:
 	var cap_id := item_id
@@ -1793,11 +1817,13 @@ func _gather_choices(kind: String) -> Array:
 func show_choice_popup(kind: String) -> bool:
 	if kind == "seed":
 		return show_seed_bar()
+	if kind == "tool":
+		return show_tool_bar()
 	var choices := _gather_choices(kind)
 	if choices.is_empty():
 		return false
 	var title: String = {
-		"tool": "Choose a Tool", "farm": "Choose What to Place",
+		"farm": "Choose What to Place",
 	}.get(kind, "Choose")
 	_build_choice_popup(choices, title)
 	return true
@@ -1810,12 +1836,13 @@ func show_choice_popup(kind: String) -> bool:
 # subsequent clicks without going through "choose_seed"/this bar at all.
 func show_seed_bar() -> bool:
 	var seeds := _get_player_seeds()
-	if seeds.is_empty():
-		return false
 	_ensure_seed_bar()
 	_rebuild_seed_bar(seeds)
 	_seed_bar.visible = true
-	return true
+	# False when there's nothing to plant, so the "choose_seed" task bails
+	# out cleanly instead of leaving the player stuck awaiting a pick that
+	# can never happen — the bar itself still stays visible either way.
+	return not seeds.is_empty()
 
 func _ensure_seed_bar() -> void:
 	if _seed_bar and is_instance_valid(_seed_bar):
@@ -1867,11 +1894,13 @@ func _ensure_seed_bar() -> void:
 	_seed_bar = panel
 	_seed_bar_box = box
 
+# The bar is permanent now — X just deselects the currently held seed
+# rather than hiding it, and still resolves a pending choose_seed await
+# (from clicking empty soil with nothing held) so the walk doesn't hang.
 func _close_seed_bar() -> void:
-	if _seed_bar and is_instance_valid(_seed_bar):
-		_seed_bar.visible = false
 	_held_seed = ""
-	item_chosen.emit("")  # resolves choose_seed's await if the bar was just opened
+	_refresh_seed_bar_highlight()
+	item_chosen.emit("")
 
 func _rebuild_seed_bar(seeds: Array) -> void:
 	for c in _seed_bar_box.get_children():
@@ -1929,15 +1958,146 @@ func _refresh_seed_bar_highlight() -> void:
 # Called from _refresh_picker() so the bar's counts/contents stay live
 # while it's open (e.g. after planting, or gaining/losing seeds elsewhere).
 func _refresh_seed_bar_if_open() -> void:
-	if not (_seed_bar and is_instance_valid(_seed_bar) and _seed_bar.visible):
+	if not (_seed_bar and is_instance_valid(_seed_bar)):
 		return
 	if _held_seed != "" and not ResourceManager.has_item(_held_seed):
 		_held_seed = ""
-	var seeds := _get_player_seeds()
-	if seeds.is_empty():
-		_close_seed_bar()
+	_rebuild_seed_bar(_get_player_seeds())
+
+# ─────────────────────────── TOOL SLIDE BAR ──────────────────
+# Mirrors the seed bar exactly, for tool/crafting-station items placed via
+# empty tool slots. Picking one sets _held_item, which _handle_tool_slot_click
+# uses to place directly on an empty tool slot without the "choose_tool"
+# modal — see the fast-path check there.
+func _get_player_tools() -> Array:
+	var result: Array = []
+	for iid in LandManager.CRAFTING_ITEM_IDS:
+		if ResourceManager.get_count(iid) > 0:
+			result.append(iid)
+	return result
+
+func show_tool_bar() -> bool:
+	var tools := _get_player_tools()
+	_ensure_tool_bar()
+	_rebuild_tool_bar(tools)
+	_tool_bar.visible = true
+	return not tools.is_empty()
+
+func _ensure_tool_bar() -> void:
+	if _tool_bar and is_instance_valid(_tool_bar):
 		return
-	_rebuild_seed_bar(seeds)
+
+	var panel := Control.new()
+	panel.name = "ToolBar"
+	panel.position = TOOL_BAR_POS
+	panel.size = TOOL_BAR_SIZE
+	_root.add_child(panel)
+
+	var bg := ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.0, 0.05, 0.15, 0.85)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(bg)
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)
+	sb.border_color = Color(0.35, 0.70, 1.0, 0.90)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(6)
+	var style_holder := Panel.new()
+	style_holder.set_anchors_preset(Control.PRESET_FULL_RECT)
+	style_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	style_holder.add_theme_stylebox_override("panel", sb)
+	panel.add_child(style_holder)
+
+	var close_btn := Button.new()
+	close_btn.text = "X"
+	close_btn.position = Vector2(TOOL_BAR_SIZE.x - 22, 3)
+	close_btn.size = Vector2(19, 19)
+	close_btn.add_theme_font_size_override("font_size", 9)
+	close_btn.focus_mode = Control.FOCUS_NONE
+	close_btn.pressed.connect(_close_tool_bar)
+	panel.add_child(close_btn)
+
+	var scroll := ScrollContainer.new()
+	scroll.position = Vector2(4, 3)
+	scroll.size = Vector2(TOOL_BAR_SIZE.x - 30, TOOL_BAR_SIZE.y - 6)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
+
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	scroll.add_child(box)
+
+	_tool_bar = panel
+	_tool_bar_box = box
+
+# X deselects the currently held tool rather than hiding the bar (permanent,
+# like the seed bar) — resolves a pending choose_tool await too.
+func _close_tool_bar() -> void:
+	_held_item = ""
+	_refresh_tool_bar_highlight()
+	item_chosen.emit("")
+
+func _rebuild_tool_bar(tools: Array) -> void:
+	for c in _tool_bar_box.get_children():
+		c.queue_free()
+	for iid in tools:
+		var count: int = ResourceManager.get_count(iid)
+		var btn := Button.new()
+		btn.custom_minimum_size = Vector2(36, 36)
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.set_meta("tool_id", iid)
+		btn.modulate = Color(0.4, 1.0, 0.6) if iid == _held_item else Color(1, 1, 1, 1)
+
+		var vb := VBoxContainer.new()
+		vb.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		btn.add_child(vb)
+
+		var icon_path := _item_icon_path(iid)
+		if icon_path != "":
+			var tex := TextureRect.new()
+			tex.texture = load(icon_path)
+			tex.custom_minimum_size = Vector2(18, 18)
+			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			vb.add_child(tex)
+
+		var lbl := Label.new()
+		lbl.text = "x%d" % count
+		lbl.add_theme_font_size_override("font_size", 7)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.add_child(lbl)
+
+		var cap_id: String = iid
+		btn.pressed.connect(func():
+			_held_item = cap_id
+			_held_seed = ""
+			_refresh_tool_bar_highlight()
+			item_chosen.emit(cap_id)
+		)
+		_tool_bar_box.add_child(btn)
+
+func _refresh_tool_bar_highlight() -> void:
+	if not (_tool_bar_box and is_instance_valid(_tool_bar_box)):
+		return
+	for c in _tool_bar_box.get_children():
+		var btn := c as Button
+		if btn:
+			btn.modulate = Color(0.4, 1.0, 0.6) if btn.get_meta("tool_id", "") == _held_item else Color(1, 1, 1, 1)
+
+func _refresh_tool_bar_if_open() -> void:
+	if not (_tool_bar and is_instance_valid(_tool_bar)):
+		return
+	if _held_item != "" and not ResourceManager.has_item(_held_item):
+		_held_item = ""
+	_rebuild_tool_bar(_get_player_tools())
 
 func _build_choice_popup(choices: Array, title: String) -> void:
 	_choice_popup_open = true
