@@ -28,6 +28,13 @@ const TOOL_SLOT_POS: Array = [
 	Vector2(1010, 16), Vector2(1010, 144), Vector2(1010, 272), Vector2(1010, 400), Vector2(1010, 528),
 ]
 
+# Persistent seed slide bar — sits in the gap between the SE nav button
+# (ends x:786) and the right tool slot column (starts x:1010, and its
+# bottom slot runs to y:648), clear of the HUD's bottom bar (y:664-712).
+# Narrow on purpose — it's a horizontally-scrolling strip, not a full panel.
+const SEED_BAR_POS  := Vector2(792, 612)
+const SEED_BAR_SIZE := Vector2(212, 44)
+
 var tile_id: String = ""
 var _held_item: String = ""
 var _held_seed: String = ""
@@ -72,6 +79,10 @@ var _tool_slot_sprites: Dictionary = {}  # idx -> TextureRect (item icon)
 # _ready(), so it can't join the "action_windows" group the other popups
 # use to block slot_grid's raw _input() — this flag does the same job.
 var _choice_popup_open: bool = false
+
+# Persistent horizontal seed bar (replaces the one-shot modal for seeds only)
+var _seed_bar:       Control        = null
+var _seed_bar_box:   HBoxContainer  = null
 
 # soil_plot/boulder (empty-land popup), all TREES (empty-land popup), and
 # CRAFTING (tool slot popup) are no longer offered here — clicking the
@@ -205,6 +216,8 @@ func _process(delta: float) -> void:
 		_held_item = ""
 		_held_seed = ""
 		_update_picker_visuals()
+		if _seed_bar and is_instance_valid(_seed_bar):
+			_seed_bar.visible = false
 
 	_update_chicken_wander(delta)
 
@@ -852,6 +865,7 @@ func _refresh_picker() -> void:
 	if _picker_panel: _picker_panel.visible = not _picker_btns.is_empty()
 
 	_update_picker_visuals()
+	_refresh_seed_bar_if_open()
 
 func _make_picker_btn(item_id: String, count: int, is_seed: bool) -> Button:
 	var cap_id := item_id
@@ -1768,14 +1782,153 @@ func _gather_choices(kind: String) -> Array:
 # The caller awaits this node's item_chosen signal directly to get the pick
 # ("" if the player closed the popup without choosing).
 func show_choice_popup(kind: String) -> bool:
+	if kind == "seed":
+		return show_seed_bar()
 	var choices := _gather_choices(kind)
 	if choices.is_empty():
 		return false
 	var title: String = {
-		"seed": "Choose a Seed", "tool": "Choose a Tool", "farm": "Choose What to Place",
+		"tool": "Choose a Tool", "farm": "Choose What to Place",
 	}.get(kind, "Choose")
 	_build_choice_popup(choices, title)
 	return true
+
+# ─────────────────────────── SEED SLIDE BAR ──────────────────
+# Persistent alternative to the modal popup, used for seeds only. Stays open
+# across multiple plantings so the player doesn't have to re-pick for every
+# soil slot — picking a seed here sets _held_seed, which the raw _input()
+# handler (see the "_held_seed != """ branch) uses to plant directly on
+# subsequent clicks without going through "choose_seed"/this bar at all.
+func show_seed_bar() -> bool:
+	var seeds := _get_player_seeds()
+	if seeds.is_empty():
+		return false
+	_ensure_seed_bar()
+	_rebuild_seed_bar(seeds)
+	_seed_bar.visible = true
+	return true
+
+func _ensure_seed_bar() -> void:
+	if _seed_bar and is_instance_valid(_seed_bar):
+		return
+
+	var panel := Control.new()
+	panel.name = "SeedBar"
+	panel.position = SEED_BAR_POS
+	panel.size = SEED_BAR_SIZE
+	_root.add_child(panel)
+
+	var bg := ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.0, 0.05, 0.15, 0.85)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(bg)
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)
+	sb.border_color = Color(0.35, 0.70, 1.0, 0.90)
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(6)
+	var style_holder := Panel.new()
+	style_holder.set_anchors_preset(Control.PRESET_FULL_RECT)
+	style_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	style_holder.add_theme_stylebox_override("panel", sb)
+	panel.add_child(style_holder)
+
+	var close_btn := Button.new()
+	close_btn.text = "X"
+	close_btn.position = Vector2(SEED_BAR_SIZE.x - 22, 3)
+	close_btn.size = Vector2(19, 19)
+	close_btn.add_theme_font_size_override("font_size", 9)
+	close_btn.focus_mode = Control.FOCUS_NONE
+	close_btn.pressed.connect(_close_seed_bar)
+	panel.add_child(close_btn)
+
+	var scroll := ScrollContainer.new()
+	scroll.position = Vector2(4, 3)
+	scroll.size = Vector2(SEED_BAR_SIZE.x - 30, SEED_BAR_SIZE.y - 6)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
+
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	scroll.add_child(box)
+
+	_seed_bar = panel
+	_seed_bar_box = box
+
+func _close_seed_bar() -> void:
+	if _seed_bar and is_instance_valid(_seed_bar):
+		_seed_bar.visible = false
+	_held_seed = ""
+	item_chosen.emit("")  # resolves choose_seed's await if the bar was just opened
+
+func _rebuild_seed_bar(seeds: Array) -> void:
+	for c in _seed_bar_box.get_children():
+		c.queue_free()
+	for iid in seeds:
+		var info := ResourceManager.get_item_info(iid)
+		var count: int = ResourceManager.get_count(iid)
+		var btn := Button.new()
+		btn.custom_minimum_size = Vector2(36, 36)
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.set_meta("seed_id", iid)
+		btn.modulate = Color(0.4, 1.0, 0.6) if iid == _held_seed else Color(1, 1, 1, 1)
+
+		var vb := VBoxContainer.new()
+		vb.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		btn.add_child(vb)
+
+		var icon_path := _item_icon_path(iid)
+		if icon_path != "":
+			var tex := TextureRect.new()
+			tex.texture = load(icon_path)
+			tex.custom_minimum_size = Vector2(18, 18)
+			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			vb.add_child(tex)
+
+		var lbl := Label.new()
+		lbl.text = "x%d" % count
+		lbl.add_theme_font_size_override("font_size", 7)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.add_child(lbl)
+
+		var cap_id: String = iid
+		btn.pressed.connect(func():
+			_held_seed = cap_id
+			_held_item = ""
+			_refresh_seed_bar_highlight()
+			item_chosen.emit(cap_id)
+		)
+		_seed_bar_box.add_child(btn)
+
+func _refresh_seed_bar_highlight() -> void:
+	if not (_seed_bar_box and is_instance_valid(_seed_bar_box)):
+		return
+	for c in _seed_bar_box.get_children():
+		var btn := c as Button
+		if btn:
+			btn.modulate = Color(0.4, 1.0, 0.6) if btn.get_meta("seed_id", "") == _held_seed else Color(1, 1, 1, 1)
+
+# Called from _refresh_picker() so the bar's counts/contents stay live
+# while it's open (e.g. after planting, or gaining/losing seeds elsewhere).
+func _refresh_seed_bar_if_open() -> void:
+	if not (_seed_bar and is_instance_valid(_seed_bar) and _seed_bar.visible):
+		return
+	if _held_seed != "" and not ResourceManager.has_item(_held_seed):
+		_held_seed = ""
+	var seeds := _get_player_seeds()
+	if seeds.is_empty():
+		_close_seed_bar()
+		return
+	_rebuild_seed_bar(seeds)
 
 func _build_choice_popup(choices: Array, title: String) -> void:
 	_choice_popup_open = true

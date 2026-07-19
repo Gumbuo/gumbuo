@@ -89,7 +89,11 @@ func load_inventory() -> void:
 		_grant_starter_items()
 		return
 	inventory = str_to_var(cfg.get_value("inventory", "data", "{}"))
-	if inventory.is_empty():
+	# inventory.is_empty() alone isn't a safe "new player" check — a returning
+	# player can legitimately spend/use everything and hit empty on refresh.
+	# Gate on the persisted flag too so a returning empty-handed player isn't
+	# mistaken for new and re-granted the starter kit every time.
+	if inventory.is_empty() and not cfg.get_value("meta", "starter_granted", false):
 		_grant_starter_items()
 	else:
 		inventory.erase("_dev_starter")
@@ -180,6 +184,16 @@ func load_inventory() -> void:
 func _grant_starter_items() -> void:
 	_apply_inventory_reset_v1()
 	save_inventory()
+	var cfg := ConfigFile.new()
+	cfg.load(SAVE_PATH)  # preserve whatever meta already exists
+	cfg.set_value("meta", "starter_granted", true)
+	# A genuinely new player only gets the clean starter kit above, not the
+	# old one-off dev/testing grants layered on top of it.
+	cfg.set_value("meta", "dev_starter", true)
+	cfg.set_value("meta", "dev_v2", true)
+	cfg.set_value("meta", "dev_v3", true)
+	cfg.set_value("meta", "inventory_reset_v1", true)
+	cfg.save(SAVE_PATH)
 
 func _apply_inventory_reset_v1() -> void:
 	inventory.clear()
