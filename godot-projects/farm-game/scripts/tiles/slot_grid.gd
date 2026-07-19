@@ -7,19 +7,25 @@ signal item_chosen(item_id: String)
 # Items offered by the "choose_farm" popup for empty land slots.
 const FARM_POPUP_ITEMS: Array = [
 	"soil_plot", "boulder", "tree", "apple_tree", "pear_tree", "peach_tree", "lemon_tree",
+	"chicken_coop", "beehive", "mailbox",
 ]
 
 const SLOT_PX  := 64.0
 const SLOT_GAP := 4.0
-const ROW_LAYOUT := [4, 6, 6, 6, 6, 4]
+# 8 columns wide; the outer 2 columns are 4 slots tall, the inner 6 are
+# full height (6 slots tall) — same rounded shape as before, just extended.
+const FULL_COLS := 8
+const ROW_LAYOUT := [6, 8, 8, 8, 8, 6]
 
 # Outer tool slots — bigger slots (~4x the area of a regular slot) placed
 # outside the main grid for crafting/utility stations. Left/right columns,
-# 4 rows each, avoiding the nav-arrow buttons and back button.
+# 5 rows each. The nav W/E buttons (x:4-144 / x:1136-1276) and SW/SE/NW/NE
+# buttons (centered x:490-786) never overlap these columns (x:150-270 /
+# x:1010-1130) so no vertical gap is needed to dodge them.
 const TOOL_SLOT_PX := 120.0
 const TOOL_SLOT_POS: Array = [
-	Vector2(150,  16), Vector2(150, 152), Vector2(150, 392), Vector2(150, 528),
-	Vector2(1010, 16), Vector2(1010, 152), Vector2(1010, 392), Vector2(1010, 528),
+	Vector2(150,  16), Vector2(150, 144), Vector2(150, 272), Vector2(150, 400), Vector2(150, 528),
+	Vector2(1010, 16), Vector2(1010, 144), Vector2(1010, 272), Vector2(1010, 400), Vector2(1010, 528),
 ]
 
 var tile_id: String = ""
@@ -71,10 +77,10 @@ var _choice_popup_open: bool = false
 # CRAFTING (tool slot popup) are no longer offered here — clicking the
 # relevant empty slot now pops up a choice instead. Seeds are also gone;
 # see the "choose_seed" popup triggered by clicking empty soil.
-const PLACEABLE_CATEGORIES: Array = [
-	["FARM",     ["beehive","silo","chicken_coop"]],
-	["STORAGE",  ["box","dropbox","mailbox"]],
-]
+# Nothing left here — soil/trees/rocks/coop/beehive/mailbox are chosen via
+# the "choose_farm" popup now, seeds via "choose_seed", crafting stations
+# via the tool slots. silo/box/dropbox were unused placeholder content.
+const PLACEABLE_CATEGORIES: Array = []
 
 const CRAFTING_STATIONS: Dictionary = {
 	"workbench":      "res://scripts/ui/workbench_ui.gd",
@@ -457,7 +463,7 @@ const _POND_SLOTS: Array = [
 func _screen_to_slot(screen_pos: Vector2) -> Vector2i:
 	if _is_pond_tile():
 		return _pond_screen_to_slot(screen_pos)
-	var full_cols := 6
+	var full_cols := FULL_COLS
 	var step := SLOT_PX + SLOT_GAP
 	var grid_w: float = full_cols * step - SLOT_GAP
 	var grid_h: float = ROW_LAYOUT.size() * step - SLOT_GAP
@@ -523,7 +529,7 @@ func _build_ui() -> void:
 		_build_pond_ring_ui()
 		return
 
-	var full_cols := 6
+	var full_cols := FULL_COLS
 	var step := SLOT_PX + SLOT_GAP
 	var grid_w: float = full_cols * step - SLOT_GAP
 	var grid_h: float = ROW_LAYOUT.size() * step - SLOT_GAP
@@ -841,6 +847,9 @@ func _refresh_picker() -> void:
 			container.add_child(btn)
 			_picker_btns.append(btn)
 			_picker_bgs[item_id] = btn
+
+	# Nothing to show — hide the panel entirely instead of an empty box.
+	if _picker_panel: _picker_panel.visible = not _picker_btns.is_empty()
 
 	_update_picker_visuals()
 
@@ -1739,8 +1748,9 @@ func _gather_choices(kind: String) -> Array:
 	var result: Array = []
 	match kind:
 		"seed":
-			for s in _get_player_seeds():
-				result.append({"id": s["id"], "name": s["name"], "count": s["count"]})
+			for iid in _get_player_seeds():
+				var info := ResourceManager.get_item_info(iid)
+				result.append({"id": iid, "name": info.get("name", iid.capitalize()), "count": ResourceManager.get_count(iid)})
 		"tool":
 			for id in LandManager.CRAFTING_ITEM_IDS:
 				var c: int = ResourceManager.get_count(id)

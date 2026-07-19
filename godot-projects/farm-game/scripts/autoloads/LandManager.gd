@@ -35,7 +35,7 @@ const GLOBAL_TILE_ID := "npc_global"
 # range) so they transparently reuse place_slot_item/remove_slot_item
 # and the collab station lookups (fill_collab_slot/collect_collab),
 # which all key off Vector2i via slot_key() already.
-const TOOL_SLOT_COUNT := 8
+const TOOL_SLOT_COUNT := 10
 const CRAFTING_ITEM_IDS: Array = [
 	"workbench", "workshop", "furnace", "bonfire", "campfire", "burner_station",
 	"anvil", "alchemy_table", "bread_oven", "wheat_mill", "dyeing_vat",

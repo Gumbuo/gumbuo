@@ -27,8 +27,8 @@ var _queue_dots: Dictionary   = {}
 
 const _SLOT_PX  := 64.0
 const _SLOT_GAP := 4.0
-# Standard non-pond grid dimensions (matches slot_grid.gd ROW_LAYOUT which has 6 entries)
-const _GRID_COLS := 6
+# Standard non-pond grid dimensions (matches slot_grid.gd FULL_COLS/ROW_LAYOUT)
+const _GRID_COLS := 8
 const _GRID_ROWS := 6
 # Approach offsets tried when direct path is blocked (world units = screen px at 1:1 zoom)
 const _REPATH_OFFSETS: Array = [
