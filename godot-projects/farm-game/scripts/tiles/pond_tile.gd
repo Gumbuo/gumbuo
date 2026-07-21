@@ -158,6 +158,12 @@ func _begin_cast(click_pos: Vector2) -> void:
 	_pond_waypoints.clear()
 	_current_task = {}
 	if not PlayerData.spend_energy(1):
+		# Same feedback chop/mine/harvest already show on insufficient
+		# energy — previously this failed completely silently here, which
+		# looked exactly like "clicking the pond does nothing." Uses the
+		# inherited tile_base._show_drops_popup(label, item_id, count), not
+		# action_window.gd's array-based one (different signature).
+		_show_drops_popup("No energy!", "bread", 0)
 		return
 	_shore_pos  = _calc_shore(click_pos)
 	_bobber_pos = Vector2(POND_CX, POND_CY)  # bobber always lands at pond center

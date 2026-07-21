@@ -18,9 +18,15 @@ func show_drops(drops: Array) -> void:
 				continue
 			var info: Dictionary = ResourceManager.get_item_info(str(it.get("id", "")))
 			parts.append("%s x%d" % [info.get("name", it.get("id", "?")), it.get("count", 0)])
+		var label: String = group.get("label", "")
 		if parts.is_empty():
+			# Bare-label messages like "No energy!" pass a 0-count item on
+			# purpose (there's nothing to show a real amount for) — show the
+			# label alone instead of silently dropping the whole popup.
+			if label != "":
+				lines.append(label)
 			continue
-		lines.append("%s: %s" % [group.get("label", ""), "  ".join(parts)])
+		lines.append("%s: %s" % [label, "  ".join(parts)])
 
 	if lines.is_empty():
 		queue_free()
