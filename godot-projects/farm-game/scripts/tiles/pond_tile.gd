@@ -49,9 +49,16 @@ var _phase: Phase = Phase.IDLE
 const POLE_CAST_PATH  := "res://assets/sprites/fishing_pole/cast_state.png"
 const POLE_BITE_FRAMES := 9  # bite_000.png .. bite_008.png
 
+# Bobber sprite paths — sits out at _bobber_pos (in the water), not the
+# shore, so the player has a clear visual cue of where to click.
+const BOBBER_IDLE_PATH := "res://assets/sprites/fishing_pole/bobber_idle.png"
+const BOBBER_BOB_FRAMES := 9  # bobber_bob_000.png .. bobber_bob_008.png
+
 # ── Runtime nodes ─────────────────────────────────────────────
 var _pole_sprite: Sprite2D      = null   # static cast-out visual
 var _pole_anim:   AnimatedSprite2D = null # bite bobbing animation
+var _bobber_sprite: Sprite2D      = null   # idle bobber, floating in the water
+var _bobber_anim:   AnimatedSprite2D = null # bobber dipping when a fish bites
 var _fish_layer:  Node2D  = null
 var _line:        Line2D  = null
 var _bite_label:  Label   = null
@@ -64,6 +71,7 @@ var _attract_timer: float   = 0.0
 var _bite_timer:    float   = 0.0
 var _attractor_idx: int     = -1
 var _bob_time:      float   = 0.0
+var _pond_waypoints: Array  = []
 
 func _ready() -> void:
 	super._ready()
@@ -99,6 +107,25 @@ func _slot_center_world(grid_pos: Vector2i) -> Vector2:
 		return get_viewport().get_canvas_transform().affine_inverse() * Vector2(sx, sy)
 	return super._slot_center_world(grid_pos)
 
+func _slot_screen_pos(grid_pos: Vector2i) -> Vector2:
+	var sx := -1.0
+	var sy := -1.0
+	match grid_pos.y:
+		0:
+			sx = 302.0 + grid_pos.x * 68.0 + 32.0
+			sy = 112.0 + 32.0
+		6:
+			sx = 302.0 + grid_pos.x * 68.0 + 32.0
+			sy = 548.0 + 32.0
+		1, 2, 3, 4, 5:
+			sy = 180.0 + (grid_pos.y - 1) * 68.0 + 32.0
+			match grid_pos.x:
+				0: sx = 302.0 + 32.0
+				9: sx = 914.0 + 32.0
+	if sx > 0.0:
+		return Vector2(sx, sy)
+	return super._slot_screen_pos(grid_pos)
+
 func _build_fish_layer() -> void:
 	_fish_layer = Node2D.new()
 	_fish_layer.z_index = 2
@@ -128,6 +155,7 @@ func _in_water(screen_pos: Vector2) -> bool:
 
 func _begin_cast(click_pos: Vector2) -> void:
 	_action_queue.clear()  # cancel any queued farm tasks so fishing walk isn't hijacked
+	_pond_waypoints.clear()
 	_current_task = {}
 	if not PlayerData.spend_energy(1):
 		return
@@ -157,13 +185,29 @@ func _on_player_arrived(at_pos: Vector2) -> void:
 		else:
 			_reset()
 		return
+	# Step through corner waypoints one at a time
+	if not _pond_waypoints.is_empty():
+		_player.move_to(_pond_waypoints.pop_front())
+		return
+	# After the last waypoint the player may be at a corner, not yet at the slot.
+	# Move to the actual target if still far; super handles arrival at the slot.
+	if not _current_task.is_empty():
+		var target: Vector2 = _current_task.get("world_pos", at_pos)
+		if at_pos.distance_to(target) > 80.0:
+			_player.move_to(target)
+			return
 	super._on_player_arrived(at_pos)
 
 func _do_cast() -> void:
 	_phase = Phase.CASTING
 	var dir: Vector2 = Vector2(POND_CX, POND_CY) - _player.global_position
 	_player.facing = _dir_name(dir)
-	_player.start_fish_loop()
+	# One-shot cast-out motion, not a loop — it plays once and the player's
+	# own _on_action_finished() returns to idle automatically, same as
+	# chop/mine/harvest. The old start_fish_loop() looped this animation
+	# for the whole wait, which doesn't fit a single "throw the line out"
+	# motion like this one.
+	_player.play_fish()
 	PlayerData.add_xp(1)
 
 	_spawn_pole_sprites()
@@ -223,15 +267,48 @@ func _spawn_pole_sprites() -> void:
 	_pole_anim.sprite_frames = frames
 	add_child(_pole_anim)
 
+	# Idle bobber — floating in the water at _bobber_pos, shown during WAITING_BITE
+	_bobber_sprite = Sprite2D.new()
+	_bobber_sprite.z_index = 4
+	if ResourceLoader.exists(BOBBER_IDLE_PATH):
+		_bobber_sprite.texture = load(BOBBER_IDLE_PATH) as Texture2D
+	_bobber_sprite.scale = Vector2(1.5, 1.5)
+	_bobber_sprite.global_position = _bobber_pos
+	add_child(_bobber_sprite)
+
+	# Bobbing dip animation — shown only during BITE_WINDOW, same spot
+	_bobber_anim = AnimatedSprite2D.new()
+	_bobber_anim.z_index = 4
+	_bobber_anim.scale = Vector2(1.5, 1.5)
+	_bobber_anim.global_position = _bobber_pos
+	_bobber_anim.visible = false
+	var bobber_frames := SpriteFrames.new()
+	bobber_frames.remove_animation("default")
+	bobber_frames.add_animation("bob")
+	bobber_frames.set_animation_loop("bob", true)
+	bobber_frames.set_animation_speed("bob", 8.0)
+	for i in BOBBER_BOB_FRAMES:
+		var bpath := "res://assets/sprites/fishing_pole/bobber_bob_%03d.png" % i
+		if ResourceLoader.exists(bpath):
+			bobber_frames.add_frame("bob", load(bpath) as Texture2D)
+	_bobber_anim.sprite_frames = bobber_frames
+	add_child(_bobber_anim)
+
 func _show_bite_animation() -> void:
 	if is_instance_valid(_pole_sprite): _pole_sprite.visible = false
 	if is_instance_valid(_pole_anim):
 		_pole_anim.visible = true
 		_pole_anim.play("bite")
+	if is_instance_valid(_bobber_sprite): _bobber_sprite.visible = false
+	if is_instance_valid(_bobber_anim):
+		_bobber_anim.visible = true
+		_bobber_anim.play("bob")
 
 func _show_cast_animation() -> void:
 	if is_instance_valid(_pole_anim):  _pole_anim.visible = false
 	if is_instance_valid(_pole_sprite): _pole_sprite.visible = true
+	if is_instance_valid(_bobber_anim):   _bobber_anim.visible = false
+	if is_instance_valid(_bobber_sprite): _bobber_sprite.visible = true
 
 # ── Fishing line ──────────────────────────────────────────────
 
@@ -362,6 +439,12 @@ func _cleanup_fishing() -> void:
 	if is_instance_valid(_pole_anim):
 		_pole_anim.queue_free()
 		_pole_anim = null
+	if is_instance_valid(_bobber_sprite):
+		_bobber_sprite.queue_free()
+		_bobber_sprite = null
+	if is_instance_valid(_bobber_anim):
+		_bobber_anim.queue_free()
+		_bobber_anim = null
 	if is_instance_valid(_line):
 		_line.queue_free()
 		_line = null
@@ -401,3 +484,97 @@ func _show_catch(fish_id: String, player_count: int, split: bool) -> void:
 	if split:
 		drops.append({"label": "Owner receives", "color": Color(1.0, 0.88, 0.3), "items": [{"id": fish_id, "count": 2}]})
 	ui.show_drops(drops)
+
+# ── Pond perimeter routing ─────────────────────────────────────
+# Collision wall positions (from PondTile.tscn, center ± half-size):
+#   WaterWallLeft:   center(390,399), size 20×308 → blocks x=380-400, y=245-553
+#   WaterWallRight:  center(890,399), size 20×308 → blocks x=880-900, y=245-553
+#   WaterWallTop:    center(640,245), size 520×20  → blocks x=380-900, y=235-255
+#   WaterWallBottom: center(640,552), size 520×20  → blocks x=380-900, y=542-562
+const _WALL_L := 380.0
+const _WALL_R := 900.0
+const _WALL_T := 235.0
+const _WALL_B := 562.0
+
+# Safe corner waypoints on the grass shore, outside all water walls
+const _COR_TL := Vector2(300.0, 175.0)   # top of left grass strip
+const _COR_TR := Vector2(980.0, 175.0)   # top of right grass strip
+const _COR_BL := Vector2(300.0, 600.0)   # bottom of left grass strip
+const _COR_BR := Vector2(980.0, 600.0)   # bottom of right grass strip
+
+# Override base _start_next_task to insert corner waypoints before moving
+func _start_next_task() -> void:
+	if _action_queue.is_empty():
+		return
+	_repath_attempt = 0
+	_current_task = _action_queue.pop_front()
+	_pond_waypoints.clear()
+	var target: Vector2 = _current_task.get("world_pos", Vector2.ZERO)
+	_pond_waypoints = _pond_route(_player.global_position, target)
+	if _pond_waypoints.is_empty():
+		_player.move_to(target)
+	else:
+		_player.move_to(_pond_waypoints.pop_front())
+
+# Override base _on_path_cancelled: if a waypoint is blocked, abort the task
+func _on_path_cancelled() -> void:
+	if not _pond_waypoints.is_empty():
+		_pond_waypoints.clear()
+		_repath_attempt = 0
+		_current_task = {}
+		_start_next_task()
+		return
+	super._on_path_cancelled()
+
+func _pond_route(from: Vector2, to: Vector2) -> Array:
+	if not _crosses_walls(from, to):
+		return []
+	var fz := _pond_zone(from)
+	var tz := _pond_zone(to)
+	if fz == tz:
+		return []
+	match [fz, tz]:
+		["top",    "left"]:   return [_COR_TL]
+		["top",    "right"]:  return [_COR_TR]
+		["top",    "bottom"]: return _pick_lr(_COR_TL, _COR_BL, _COR_TR, _COR_BR, from, to)
+		["bottom", "top"]:    return _pick_lr(_COR_BL, _COR_TL, _COR_BR, _COR_TR, from, to)
+		["bottom", "left"]:   return [_COR_BL]
+		["bottom", "right"]:  return [_COR_BR]
+		["left",   "top"]:    return [_COR_TL]
+		["left",   "bottom"]: return [_COR_BL]
+		["left",   "right"]:  return _pick_tb(_COR_TL, _COR_TR, _COR_BL, _COR_BR, from, to)
+		["right",  "top"]:    return [_COR_TR]
+		["right",  "bottom"]: return [_COR_BR]
+		["right",  "left"]:   return _pick_tb(_COR_TR, _COR_TL, _COR_BR, _COR_BL, from, to)
+	return []
+
+# Pick between left-side (c1a→c1b) or right-side (c2a→c2b) corner pair
+# based on which has shorter total horizontal travel
+func _pick_lr(c1a: Vector2, c1b: Vector2, c2a: Vector2, c2b: Vector2,
+              from: Vector2, to: Vector2) -> Array:
+	var d1 := absf(from.x - c1a.x) + absf(to.x - c1b.x)
+	var d2 := absf(from.x - c2a.x) + absf(to.x - c2b.x)
+	return [c1a, c1b] if d1 <= d2 else [c2a, c2b]
+
+# Pick between top-side (c1a→c1b) or bottom-side (c2a→c2b) corner pair
+# based on which has shorter total vertical travel
+func _pick_tb(c1a: Vector2, c1b: Vector2, c2a: Vector2, c2b: Vector2,
+              from: Vector2, to: Vector2) -> Array:
+	var d1 := absf(from.y - c1a.y) + absf(to.y - c1b.y)
+	var d2 := absf(from.y - c2a.y) + absf(to.y - c2b.y)
+	return [c1a, c1b] if d1 <= d2 else [c2a, c2b]
+
+# Sample 9 interior points along from→to; return true if any land inside the wall rectangle
+func _crosses_walls(from: Vector2, to: Vector2) -> bool:
+	for i in 9:
+		var p := from.lerp(to, float(i + 1) / 10.0)
+		if p.x > _WALL_L and p.x < _WALL_R and p.y > _WALL_T and p.y < _WALL_B:
+			return true
+	return false
+
+# Classify a screen position by which side of the water walls it's on
+func _pond_zone(pos: Vector2) -> String:
+	if pos.y <= _WALL_T: return "top"
+	if pos.y >= _WALL_B: return "bottom"
+	if pos.x <= _WALL_L: return "left"
+	return "right"
