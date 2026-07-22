@@ -32,13 +32,20 @@ const TOOL_SLOT_POS: Array = [
 # (ends x:786) and the right tool slot column (starts x:1010, and its
 # bottom slot runs to y:648), clear of the HUD's bottom bar (y:664-712).
 # Narrow on purpose — it's a horizontally-scrolling strip, not a full panel.
-const SEED_BAR_POS  := Vector2(792, 612)
-const SEED_BAR_SIZE := Vector2(212, 44)
+const SEED_BAR_POS  := Vector2(792, 600)
+const SEED_BAR_SIZE := Vector2(212, 56)
+const BAR_ITEM_SIZE := Vector2(42, 48)
+const BAR_ICON_SIZE := Vector2(22, 22)
 
 # Mirrors the seed bar on the other side — sits in the gap between the left
 # tool slot column (ends x:270) and the SW nav button (starts x:490).
-const TOOL_BAR_POS  := Vector2(276, 612)
-const TOOL_BAR_SIZE := Vector2(208, 44)
+const TOOL_BAR_POS  := Vector2(276, 600)
+const TOOL_BAR_SIZE := Vector2(208, 56)
+
+# Floating "blow-up" preview shown on hover — a separate top-level panel
+# (not inside the bar's ScrollContainer) so the enlarged icon isn't clipped
+# by the strip's narrow height.
+const HOVER_PREVIEW_SIZE := Vector2(110, 130)
 
 var tile_id: String = ""
 var _held_item: String = ""
@@ -92,6 +99,13 @@ var _seed_bar_box:   HBoxContainer  = null
 # Mirrors the seed bar for tools/crafting stations, placed via empty tool slots
 var _tool_bar:       Control        = null
 var _tool_bar_box:   HBoxContainer  = null
+
+# Shared floating hover preview, reused by both bars (only one item can be
+# hovered at a time)
+var _hover_preview:       Control     = null
+var _hover_preview_icon:  TextureRect = null
+var _hover_preview_name:  Label       = null
+var _hover_preview_count: Label       = null
 
 # soil_plot/boulder (empty-land popup), all TREES (empty-land popup), and
 # CRAFTING (tool slot popup) are no longer offered here — clicking the
@@ -1908,8 +1922,9 @@ func _rebuild_seed_bar(seeds: Array) -> void:
 	for iid in seeds:
 		var info := ResourceManager.get_item_info(iid)
 		var count: int = ResourceManager.get_count(iid)
+		var display_name: String = info.get("name", iid.trim_prefix("seed_").capitalize())
 		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(36, 36)
+		btn.custom_minimum_size = BAR_ITEM_SIZE
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.set_meta("seed_id", iid)
 		btn.modulate = Color(0.4, 1.0, 0.6) if iid == _held_seed else Color(1, 1, 1, 1)
@@ -1924,7 +1939,7 @@ func _rebuild_seed_bar(seeds: Array) -> void:
 		if icon_path != "":
 			var tex := TextureRect.new()
 			tex.texture = load(icon_path)
-			tex.custom_minimum_size = Vector2(18, 18)
+			tex.custom_minimum_size = BAR_ICON_SIZE
 			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1932,19 +1947,24 @@ func _rebuild_seed_bar(seeds: Array) -> void:
 			vb.add_child(tex)
 
 		var lbl := Label.new()
-		lbl.text = "x%d" % count
-		lbl.add_theme_font_size_override("font_size", 7)
+		lbl.text = "%s\nx%d" % [display_name, count]
+		lbl.add_theme_font_size_override("font_size", 6)
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+		lbl.clip_text = true
 		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.add_child(lbl)
 
 		var cap_id: String = iid
+		var cap_count: int = count
 		btn.pressed.connect(func():
 			_held_seed = cap_id
 			_held_item = ""
 			_refresh_seed_bar_highlight()
 			item_chosen.emit(cap_id)
 		)
+		btn.mouse_entered.connect(func(): _show_hover_preview(btn, cap_id, cap_count))
+		btn.mouse_exited.connect(_hide_hover_preview)
 		_seed_bar_box.add_child(btn)
 
 func _refresh_seed_bar_highlight() -> void:
@@ -2045,8 +2065,10 @@ func _rebuild_tool_bar(tools: Array) -> void:
 		c.queue_free()
 	for iid in tools:
 		var count: int = ResourceManager.get_count(iid)
+		var info := ResourceManager.get_item_info(iid)
+		var display_name: String = info.get("name", iid.replace("_", " ").capitalize())
 		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(36, 36)
+		btn.custom_minimum_size = BAR_ITEM_SIZE
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.set_meta("tool_id", iid)
 		btn.modulate = Color(0.4, 1.0, 0.6) if iid == _held_item else Color(1, 1, 1, 1)
@@ -2061,7 +2083,7 @@ func _rebuild_tool_bar(tools: Array) -> void:
 		if icon_path != "":
 			var tex := TextureRect.new()
 			tex.texture = load(icon_path)
-			tex.custom_minimum_size = Vector2(18, 18)
+			tex.custom_minimum_size = BAR_ICON_SIZE
 			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2069,19 +2091,24 @@ func _rebuild_tool_bar(tools: Array) -> void:
 			vb.add_child(tex)
 
 		var lbl := Label.new()
-		lbl.text = "x%d" % count
-		lbl.add_theme_font_size_override("font_size", 7)
+		lbl.text = "%s\nx%d" % [display_name, count]
+		lbl.add_theme_font_size_override("font_size", 6)
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+		lbl.clip_text = true
 		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.add_child(lbl)
 
 		var cap_id: String = iid
+		var cap_count: int = count
 		btn.pressed.connect(func():
 			_held_item = cap_id
 			_held_seed = ""
 			_refresh_tool_bar_highlight()
 			item_chosen.emit(cap_id)
 		)
+		btn.mouse_entered.connect(func(): _show_hover_preview(btn, cap_id, cap_count))
+		btn.mouse_exited.connect(_hide_hover_preview)
 		_tool_bar_box.add_child(btn)
 
 func _refresh_tool_bar_highlight() -> void:
@@ -2098,6 +2125,95 @@ func _refresh_tool_bar_if_open() -> void:
 	if _held_item != "" and not ResourceManager.has_item(_held_item):
 		_held_item = ""
 	_rebuild_tool_bar(_get_player_tools())
+
+# ─────────────────────────── HOVER PREVIEW ───────────────────
+# A single floating "blow-up" panel shared by both bars, positioned above
+# whichever item is hovered. Built as a top-level sibling of the bars (not
+# inside their ScrollContainer) so the bigger icon isn't clipped by the
+# strip's narrow height.
+func _ensure_hover_preview() -> void:
+	if _hover_preview and is_instance_valid(_hover_preview):
+		return
+
+	var panel := Control.new()
+	panel.name = "HoverPreview"
+	panel.size = HOVER_PREVIEW_SIZE
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.visible = false
+	panel.z_index = 50
+	_root.add_child(panel)
+
+	var bg := ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.03, 0.04, 0.07, 0.95)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(bg)
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)
+	sb.border_color = Color(0.55, 0.85, 1.0, 0.95)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(8)
+	var style_holder := Panel.new()
+	style_holder.set_anchors_preset(Control.PRESET_FULL_RECT)
+	style_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	style_holder.add_theme_stylebox_override("panel", sb)
+	panel.add_child(style_holder)
+
+	_hover_preview_icon = TextureRect.new()
+	_hover_preview_icon.position = Vector2(9, 10)
+	_hover_preview_icon.size = Vector2(HOVER_PREVIEW_SIZE.x - 18, 64)
+	_hover_preview_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_hover_preview_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_hover_preview_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(_hover_preview_icon)
+
+	_hover_preview_name = Label.new()
+	_hover_preview_name.position = Vector2(4, 78)
+	_hover_preview_name.size = Vector2(HOVER_PREVIEW_SIZE.x - 8, 32)
+	_hover_preview_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hover_preview_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hover_preview_name.add_theme_font_size_override("font_size", 10)
+	_hover_preview_name.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0))
+	_hover_preview_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(_hover_preview_name)
+
+	_hover_preview_count = Label.new()
+	_hover_preview_count.position = Vector2(4, HOVER_PREVIEW_SIZE.y - 20)
+	_hover_preview_count.size = Vector2(HOVER_PREVIEW_SIZE.x - 8, 16)
+	_hover_preview_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hover_preview_count.add_theme_font_size_override("font_size", 9)
+	_hover_preview_count.add_theme_color_override("font_color", Color(0.55, 1.0, 0.70))
+	_hover_preview_count.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(_hover_preview_count)
+
+	_hover_preview = panel
+
+func _show_hover_preview(anchor: Control, item_id: String, count: int) -> void:
+	_ensure_hover_preview()
+	var info := ResourceManager.get_item_info(item_id)
+	var icon_path := _item_icon_path(item_id)
+	if icon_path != "":
+		_hover_preview_icon.texture = load(icon_path)
+		_hover_preview_icon.visible = true
+	else:
+		_hover_preview_icon.visible = false
+	_hover_preview_name.text = info.get("name", item_id.replace("_", " ").capitalize())
+	_hover_preview_count.text = "x%d" % count
+
+	var rect: Rect2 = anchor.get_global_rect()
+	var pos := Vector2(
+		rect.position.x + rect.size.x / 2.0 - HOVER_PREVIEW_SIZE.x / 2.0,
+		rect.position.y - HOVER_PREVIEW_SIZE.y - 8.0
+	)
+	pos.x = clamp(pos.x, 4.0, 1280.0 - HOVER_PREVIEW_SIZE.x - 4.0)
+	pos.y = max(4.0, pos.y)
+	_hover_preview.position = pos
+	_hover_preview.visible = true
+
+func _hide_hover_preview() -> void:
+	if _hover_preview and is_instance_valid(_hover_preview):
+		_hover_preview.visible = false
 
 func _build_choice_popup(choices: Array, title: String) -> void:
 	_choice_popup_open = true
