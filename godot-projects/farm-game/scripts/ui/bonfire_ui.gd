@@ -330,11 +330,19 @@ func _refresh_states() -> void:
 
 		var cb:  Button = card_info["craft"]
 		var c10: Button = card_info["craft10"]
-		if is_instance_valid(cb):  cb.disabled  = not (_can_afford(ing, 1) and has_energy)
-		if is_instance_valid(c10): c10.disabled = not (_can_afford(ing, 10) and has_purple and PlayerData.energy >= energy_per * 10)
+		if is_instance_valid(cb):
+			cb.disabled = not (_can_afford(ing, 1) and has_energy)
+			cb.tooltip_text = "" if has_energy else "Not enough energy (%d/%d)" % [PlayerData.energy, energy_per]
+		if is_instance_valid(c10):
+			var has_energy_10: bool = PlayerData.energy >= energy_per * 10
+			c10.disabled = not (_can_afford(ing, 10) and has_purple and has_energy_10)
+			c10.tooltip_text = "" if has_energy_10 else "Not enough energy (%d/%d)" % [PlayerData.energy, energy_per * 10]
 		if card_info.has("craft100"):
 			var c100: Button = card_info["craft100"]
-			if is_instance_valid(c100): c100.disabled = not (_can_afford(ing, 100) and has_red and PlayerData.energy >= energy_per * 100)
+			if is_instance_valid(c100):
+				var has_energy_100: bool = PlayerData.energy >= energy_per * 100
+				c100.disabled = not (_can_afford(ing, 100) and has_red and has_energy_100)
+				c100.tooltip_text = "" if has_energy_100 else "Not enough energy (%d/%d)" % [PlayerData.energy, energy_per * 100]
 
 		for p in pills:
 			var lbl: Label = p["lbl"]

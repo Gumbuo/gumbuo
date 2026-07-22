@@ -204,6 +204,7 @@ func set_tile(tile_data: Dictionary) -> void:
 	var tex_path: String = TILE_TEXTURES.get(type_str, "")
 	if tex_path != "" and ResourceLoader.exists(tex_path):
 		bg_image.texture = load(tex_path) as Texture2D
+		bg_image.stretch_mode = TextureRect.STRETCH_SCALE
 		bg_image.visible = true
 		bg_rect.color = Color(0, 0, 0, 0)
 	else:
@@ -237,10 +238,20 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 	_npc_id = npc_data.get("id", "")
 	_tile_id = ""
 	_is_empty = false
-	bg_image.visible = false
-	bg_image.texture = null
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
-	bg_rect.color = Color(col[0], col[1], col[2])
+	var sprite_path: String = npc_data.get("sprite", "")
+	if sprite_path != "" and ResourceLoader.exists(sprite_path):
+		# NPC portraits are wider than tall (unlike the square hex tile art),
+		# so keep aspect instead of the tile default STRETCH_SCALE or the
+		# character would look squashed.
+		bg_image.texture = load(sprite_path) as Texture2D
+		bg_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		bg_image.visible = true
+		bg_rect.color = Color(col[0], col[1], col[2])
+	else:
+		bg_image.visible = false
+		bg_image.texture = null
+		bg_rect.color = Color(col[0], col[1], col[2])
 	tile_type_label.text = "NPC"
 	tile_name_label.text = npc_data.get("name", "")
 	tile_name_label.add_theme_color_override("font_color", Color(0.25, 0.55, 1.0))

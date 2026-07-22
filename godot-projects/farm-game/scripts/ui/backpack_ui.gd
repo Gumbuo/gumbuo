@@ -194,10 +194,14 @@ func _make_item_cell(item_id: String, info: Dictionary, count: int) -> Control:
 	var cell := Control.new()
 	cell.custom_minimum_size = Vector2(CELL_SIZE, CELL_SIZE)
 
-	# Dark background
+	# Dark background — MOUSE_FILTER_IGNORE is required here: a full-rect
+	# child defaults to MOUSE_FILTER_STOP, which would silently swallow
+	# every click on the cell before it reaches cell.gui_input below
+	# (this is why selecting food / dragging placeables did nothing).
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.color = C_ITEM_BG
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cell.add_child(bg)
 
 	# Thin outer border
@@ -209,6 +213,7 @@ func _make_item_cell(item_id: String, info: Dictionary, count: int) -> Control:
 	strip.position = Vector2(0, 0)
 	strip.size     = Vector2(3, CELL_SIZE)
 	strip.color    = _cat_color(info.get("category", ""))
+	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cell.add_child(strip)
 
 	# Icon
