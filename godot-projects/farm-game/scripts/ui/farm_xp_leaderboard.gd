@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const API_URL   := "https://gamehole.ink/api/farm-xp"
+const API_URL   := "https://univershole.ink/api/farm-xp"
 const MAX_ROWS  := 20
 
 var _req:     HTTPRequest    = null

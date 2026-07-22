@@ -169,7 +169,7 @@ func _sync_xp_to_server() -> void:
 		"xp":     PlayerData.xp,
 	})
 	_xp_sync_req.request(
-		"https://gamehole.ink/api/farm-xp",
+		"https://univershole.ink/api/farm-xp",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
 		body
