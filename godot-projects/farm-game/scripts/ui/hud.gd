@@ -18,10 +18,11 @@ extends CanvasLayer
 
 const HOTBAR_SLOTS := 8
 
-const PRESENCE_URL := "https://gamehole.ink/api/presence"
+const PRESENCE_URL := "https://univershole.ink/api/presence"
 
 var _hotbar_items: Array = []
 var _presence_req: HTTPRequest = null
+var _online_count_req: HTTPRequest = null
 var _xp_sync_req:  HTTPRequest = null
 var _compact_applied: bool = false
 var _rotate_overlay: CanvasLayer = null
@@ -67,6 +68,11 @@ func _ready() -> void:
 	_presence_req = HTTPRequest.new()
 	add_child(_presence_req)
 	_presence_req.request_completed.connect(_on_presence_response)
+
+	_online_count_req = HTTPRequest.new()
+	add_child(_online_count_req)
+	_online_count_req.request_completed.connect(_on_online_count_response)
+
 	_send_presence_heartbeat()
 
 	var dau_timer := Timer.new()
@@ -197,11 +203,23 @@ func _update_time() -> void:
 func _send_presence_heartbeat() -> void:
 	if _presence_req == null or _presence_req.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:
 		return
-	var body := JSON.stringify({"id": PlayerData.player_id})
+	var body := JSON.stringify({"wallet": PlayerData.player_id})
 	_presence_req.request(PRESENCE_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 	_sync_xp_to_server()
+	_request_online_count()
 
-func _on_presence_response(_result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+# The heartbeat POST above only acknowledges {ok:true} — the online count
+# itself is a separate GET, since /api/presence also serves per-tile
+# position queries (see presence.js) and needed a distinct query shape.
+func _request_online_count() -> void:
+	if _online_count_req == null or _online_count_req.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:
+		return
+	_online_count_req.request(PRESENCE_URL + "?online=1", ["Accept: application/json"])
+
+func _on_presence_response(_result: int, _code: int, _headers: PackedStringArray, _body: PackedByteArray) -> void:
+	pass  # heartbeat POST response carries no data we need; see _on_online_count_response
+
+func _on_online_count_response(_result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	var json := JSON.new()
 	if json.parse(body.get_string_from_utf8()) == OK:
 		var data = json.get_data()
