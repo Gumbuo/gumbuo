@@ -37,30 +37,40 @@ func show_drops(drops: Array) -> void:
 	if is_instance_valid(log_node):
 		log_node.record_drops(drops)
 
-	# Plain ColorRect background — no PanelContainer padding so height stays tight
+	# Plain ColorRect background, sized to hug the text instead of spanning
+	# the whole screen — width comes from measuring the widest line.
 	var vp_size := get_viewport().get_visible_rect().size
-	const CARD_H   := 38.0   # fits in the ~48 px gap between bottom slots (y≈612) and HUD (y≈660)
-	const HUD_H    := 64.0   # approximate HUD bar height from the bottom
-	const TOP_PAD  :=  4.0
+	const CARD_H     := 38.0   # fits in the ~48 px gap between bottom slots (y≈612) and HUD (y≈660)
+	const HUD_H      := 64.0   # approximate HUD bar height from the bottom
+	const TOP_PAD    :=  4.0
+	const FONT_SIZE  := 10
+	const SIDE_PAD   := 16.0   # horizontal padding between text and card edge
+	const MIN_CARD_W := 80.0
+
+	var font: Font = ThemeDB.fallback_font
+	var max_line_w := 0.0
+	for line in lines:
+		max_line_w = max(max_line_w, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE).x)
+	var card_w: float = clamp(max_line_w + SIDE_PAD * 2.0, MIN_CARD_W, vp_size.x - 20.0)
 
 	var bg := ColorRect.new()
 	bg.color = Color(0.04, 0.04, 0.08, 0.92)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bg.size = Vector2(vp_size.x, CARD_H)
-	bg.position = Vector2(0.0, vp_size.y - HUD_H - CARD_H)
+	bg.size = Vector2(card_w, CARD_H)
+	bg.position = Vector2((vp_size.x - card_w) / 2.0, vp_size.y - HUD_H - CARD_H)
 	add_child(bg)
 
 	# Stack lines inside the card
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 1)
 	vbox.position = Vector2(0.0, TOP_PAD)
-	vbox.size = Vector2(vp_size.x, CARD_H - TOP_PAD * 2.0)
+	vbox.size = Vector2(card_w, CARD_H - TOP_PAD * 2.0)
 	bg.add_child(vbox)
 
 	for i in lines.size():
 		var lbl := Label.new()
 		lbl.text = lines[i]
-		lbl.add_theme_font_size_override("font_size", 10)
+		lbl.add_theme_font_size_override("font_size", FONT_SIZE)
 		lbl.add_theme_constant_override("outline_size", 1)
 		lbl.add_theme_color_override("font_outline_color", Color(0.95, 0.97, 1.0))
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

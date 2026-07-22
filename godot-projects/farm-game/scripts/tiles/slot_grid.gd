@@ -1922,7 +1922,9 @@ func _rebuild_seed_bar(seeds: Array) -> void:
 	for iid in seeds:
 		var info := ResourceManager.get_item_info(iid)
 		var count: int = ResourceManager.get_count(iid)
-		var display_name: String = info.get("name", iid.trim_prefix("seed_").capitalize())
+		# items.json names seeds "Wheat Seed" etc — drop the redundant
+		# " Seed" suffix here since every item in this bar is already a seed.
+		var display_name: String = info.get("name", iid.trim_prefix("seed_").capitalize()).trim_suffix(" Seed")
 		var btn := Button.new()
 		btn.custom_minimum_size = BAR_ITEM_SIZE
 		btn.focus_mode = Control.FOCUS_NONE
@@ -2198,7 +2200,10 @@ func _show_hover_preview(anchor: Control, item_id: String, count: int) -> void:
 		_hover_preview_icon.visible = true
 	else:
 		_hover_preview_icon.visible = false
-	_hover_preview_name.text = info.get("name", item_id.replace("_", " ").capitalize())
+	var hover_name: String = info.get("name", item_id.replace("_", " ").capitalize())
+	if item_id.begins_with("seed_"):
+		hover_name = hover_name.trim_suffix(" Seed")
+	_hover_preview_name.text = hover_name
 	_hover_preview_count.text = "x%d" % count
 
 	var rect: Rect2 = anchor.get_global_rect()
