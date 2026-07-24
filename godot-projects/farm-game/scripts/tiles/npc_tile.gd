@@ -4,15 +4,18 @@ const PLAYER_SCENE := preload("res://scenes/player/Player.tscn")
 const HUD_SCENE := preload("res://scenes/ui/HUD.tscn")
 const SLOT_GRID_SCENE := preload("res://scenes/tiles/SlotGrid.tscn")
 
-@onready var body_rect: ColorRect = $Body
+const NPC_POSITION := Vector2(640, 320)
+const ARRIVE_RADIUS := 60.0
+const CLICK_RADIUS := 50.0
+
 @onready var name_lbl: Label = $NameLabel
 @onready var shop_lbl: Label = $ShopLabel
 @onready var desc_lbl: Label = $DescLabel
 @onready var silver_lbl: Label = $UI/SilverLabel
-@onready var talk_btn: Button = $UI/TalkBtn
 @onready var player_spawn: Marker2D = $PlayerSpawn
 
 var _npc_id: String = ""
+var _npc_sprite: Sprite2D = null
 var _shop: CanvasLayer = null
 var _player: CharacterBody2D = null
 var _hud: CanvasLayer = null
@@ -23,13 +26,10 @@ func _ready() -> void:
 	var npc_data := NPCManager.get_npc(_npc_id)
 	if not npc_data.is_empty():
 		NPCManager.discover_npc(_npc_id)
-		var c: Array = npc_data.get("color", [0.5, 0.5, 0.5])
-		body_rect.color = Color(c[0], c[1], c[2])
 		name_lbl.text = npc_data.get("name", "???")
 		shop_lbl.text = npc_data.get("shop_name", "Shop")
 		desc_lbl.text = npc_data.get("description", "")
-		talk_btn.text = "Talk to " + npc_data.get("name", "NPC")
-		_load_portrait(npc_data)
+		_spawn_npc_sprite(npc_data)
 		_refresh_silver()
 	var head := get_node_or_null("Head")
 	var body := get_node_or_null("Body")
@@ -39,11 +39,22 @@ func _ready() -> void:
 	_spawn_hud()
 	_spawn_slot_grid()
 
+func _spawn_npc_sprite(npc_data: Dictionary) -> void:
+	var standing_path: String = npc_data.get("standing", "")
+	if standing_path == "" or not ResourceLoader.exists(standing_path):
+		return
+	_npc_sprite = Sprite2D.new()
+	_npc_sprite.texture = load(standing_path)
+	_npc_sprite.position = NPC_POSITION
+	_npc_sprite.scale = Vector2(2.0, 2.0)
+	add_child(_npc_sprite)
+
 func _spawn_player() -> void:
 	_player = PLAYER_SCENE.instantiate()
 	_player.tile_id = LandManager.GLOBAL_TILE_ID
 	_player.position = player_spawn.position if player_spawn else Vector2(350, 500)
 	add_child(_player)
+	_player.arrived.connect(_on_player_arrived)
 
 func _spawn_hud() -> void:
 	_hud = HUD_SCENE.instantiate()
@@ -54,30 +65,25 @@ func _spawn_slot_grid() -> void:
 	add_child(_slot_grid)
 	_slot_grid.setup(LandManager.GLOBAL_TILE_ID)
 
-func _load_portrait(npc_data: Dictionary) -> void:
-	var portrait_path: String = npc_data.get("portrait", "")
-	if portrait_path == "" or not ResourceLoader.exists(portrait_path):
-		return
-	var tex: Texture2D = load(portrait_path)
-	if tex == null:
-		return
-	var head := get_node_or_null("Head")
-	var body := get_node_or_null("Body")
-	if head: head.visible = false
-	if body: body.visible = false
-	var tr := TextureRect.new()
-	tr.texture = tex
-	tr.expand_mode = TextureRect.EXPAND_KEEP_SIZE
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tr.position = Vector2(576, 200)
-	tr.size = Vector2(128, 160)
-	tr.z_index = -1
-	add_child(tr)
+# ── Click NPC to walk over, then talk automatically on arrival ───────────
 
-func _refresh_silver() -> void:
-	silver_lbl.text = "Silver: %d" % PlayerData.silver
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+		return
+	if _shop != null and is_instance_valid(_shop):
+		return
+	var click_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * get_viewport().get_mouse_position()
+	get_viewport().set_input_as_handled()
+	if click_pos.distance_to(NPC_POSITION) <= CLICK_RADIUS:
+		_player.move_to(NPC_POSITION)
+	else:
+		_player.move_to(click_pos)
 
-func _on_talk_pressed() -> void:
+func _on_player_arrived(at_pos: Vector2) -> void:
+	if at_pos.distance_to(NPC_POSITION) <= ARRIVE_RADIUS:
+		_open_shop()
+
+func _open_shop() -> void:
 	if _shop != null and is_instance_valid(_shop):
 		return
 	var npc_data := NPCManager.get_npc(_npc_id)
@@ -94,6 +100,9 @@ func _on_talk_pressed() -> void:
 		_shop = null
 		_refresh_silver()
 	)
+
+func _refresh_silver() -> void:
+	silver_lbl.text = "Silver: %d" % PlayerData.silver
 
 func _on_back_pressed() -> void:
 	PlayerData.save_data()

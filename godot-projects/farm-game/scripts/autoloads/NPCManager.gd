@@ -12,7 +12,9 @@ var npcs: Dictionary = {
 		"description": "A cheerful frog farmer who grows rice and trades seeds from across the land.",
 		"map_position": Vector2i(3, 4),
 		"color": [0.22, 0.68, 0.28],
+		"terrain":  "POND",
 		"sprite":   "res://assets/sprites/npcs/frog_ricefarmer.png",
+		"standing": "res://assets/sprites/npcs/frog_ricefarmer_standing.png",
 		"portrait": "res://assets/sprites/npcs/frog_ricefarmer_portrait.png",
 		"inventory": [
 			{"item_id": "seed_wheat",        "price_silver": 1},
@@ -37,7 +39,9 @@ var npcs: Dictionary = {
 		"description": "A seasoned cat fisherman who knows every fish in the pond — and has supplies to prove it.",
 		"map_position": Vector2i(4, 4),
 		"color": [0.88, 0.58, 0.22],
+		"terrain":  "FARM",
 		"sprite":   "res://assets/sprites/npcs/cat_fisherman.png",
+		"standing": "res://assets/sprites/npcs/cat_fisherman_standing.png",
 		"portrait": "res://assets/sprites/npcs/cat_fisherman_portrait.png",
 		"inventory": [
 			{"item_id": "apple_tree",      "price_silver": 8},
@@ -54,7 +58,9 @@ var npcs: Dictionary = {
 		"description": "A sharp-eyed Kenku physician. Sells remedies, recipes, and rare knowledge.",
 		"map_position": Vector2i(5, 4),
 		"color": [0.28, 0.32, 0.52],
+		"terrain":  "MOUNTAIN",
 		"sprite":   "res://assets/sprites/npcs/doctor_kenku.png",
+		"standing": "res://assets/sprites/npcs/doctor_kenku_standing.png",
 		"portrait": "res://assets/sprites/npcs/doctor_kenku_portrait.png",
 		"inventory": [
 			{"item_id": "recipe_axe",          "price_silver": 5},
@@ -84,7 +90,9 @@ var npcs: Dictionary = {
 		"description": "A jolly fungal merchant deep in the forest. Pays gold for fresh fish brought from the pond.",
 		"map_position": Vector2i(6, 4),
 		"color": [0.52, 0.28, 0.62],
+		"terrain":  "FOREST",
 		"sprite":   "res://assets/sprites/npcs/miconid_fungus.png",
+		"standing": "res://assets/sprites/npcs/miconid_fungus_standing.png",
 		"portrait": "res://assets/sprites/npcs/miconid_fungus_portrait.png",
 		"inventory": [],
 		"buys": [

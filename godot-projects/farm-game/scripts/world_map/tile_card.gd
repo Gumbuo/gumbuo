@@ -36,6 +36,7 @@ var _edit_btn: Button = null
 var _move_btn: Button = null
 var _drop_btn: Button = null
 var _location_dot: Label = null
+var _npc_standing_icon: TextureRect = null
 var _access_label: Label = null
 var _name_edit: LineEdit = null
 var _name_confirm: Button = null
@@ -127,6 +128,17 @@ func _ready() -> void:
 	_access_label.visible = false
 	add_child(_access_label)
 
+	# NPC "standing on the tile" overlay — a small character icon layered on
+	# top of the hex terrain art, only shown for NPC cards (see set_npc_tile).
+	_npc_standing_icon = TextureRect.new()
+	_npc_standing_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_npc_standing_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_npc_standing_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_npc_standing_icon.size = Vector2(44, 50)
+	_npc_standing_icon.position = Vector2((90 - 44) / 2.0, 30)
+	_npc_standing_icon.visible = false
+	add_child(_npc_standing_icon)
+
 	# Red dot shows on whichever tile the player is currently standing on
 	_location_dot = Label.new()
 	_location_dot.text = "●"
@@ -192,6 +204,7 @@ func set_empty() -> void:
 	if _move_btn: _move_btn.visible = false
 	if _location_dot: _location_dot.visible = false
 	if _access_label: _access_label.visible = false
+	if _npc_standing_icon: _npc_standing_icon.visible = false
 	if _drop_btn: _drop_btn.visible = true   # always clickable on empty cells
 
 func set_tile(tile_data: Dictionary) -> void:
@@ -200,6 +213,7 @@ func set_tile(tile_data: Dictionary) -> void:
 	_is_empty = false
 	_is_owner = tile_data.get("owner_id", "") == PlayerData.player_id
 	_hide_rename_edit()
+	if _npc_standing_icon: _npc_standing_icon.visible = false
 	var type_str: String = tile_data.get("type_str", "FARM")
 	var tex_path: String = TILE_TEXTURES.get(type_str, "")
 	if tex_path != "" and ResourceLoader.exists(tex_path):
@@ -239,19 +253,31 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 	_tile_id = ""
 	_is_empty = false
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
-	var sprite_path: String = npc_data.get("sprite", "")
-	if sprite_path != "" and ResourceLoader.exists(sprite_path):
-		# NPC portraits are wider than tall (unlike the square hex tile art),
-		# so keep aspect instead of the tile default STRETCH_SCALE or the
-		# character would look squashed.
-		bg_image.texture = load(sprite_path) as Texture2D
-		bg_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
+	# Background: the same hex terrain art regular tiles use, matching the
+	# NPC's theme (e.g. Frog Lilly's pond stall sits on a pond hex) — not
+	# a colored box or the NPC's own portrait/spritesheet.
+	var terrain: String = npc_data.get("terrain", "")
+	var tex_path: String = TILE_TEXTURES.get(terrain, "")
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		bg_image.texture = load(tex_path) as Texture2D
+		bg_image.stretch_mode = TextureRect.STRETCH_SCALE
 		bg_image.visible = true
-		bg_rect.color = Color(col[0], col[1], col[2])
+		bg_rect.color = Color(0, 0, 0, 0)
 	else:
 		bg_image.visible = false
 		bg_image.texture = null
 		bg_rect.color = Color(col[0], col[1], col[2])
+
+	# NPC "standing" icon layered on top of the terrain, like a character
+	# actually occupying the tile instead of a flat portrait filling it.
+	var standing_path: String = npc_data.get("standing", "")
+	if standing_path != "" and ResourceLoader.exists(standing_path):
+		_npc_standing_icon.texture = load(standing_path) as Texture2D
+		_npc_standing_icon.visible = true
+	else:
+		_npc_standing_icon.visible = false
+
 	tile_type_label.text = "NPC"
 	tile_name_label.text = npc_data.get("name", "")
 	tile_name_label.add_theme_color_override("font_color", Color(0.25, 0.55, 1.0))

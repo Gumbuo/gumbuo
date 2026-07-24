@@ -148,17 +148,3 @@ offset_right = 200.0
 offset_bottom = 30.0
 text = "Silver: 0"
 theme_override_font_sizes/font_size = 13
-
-[node name="TalkBtn" type="Button" parent="UI"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -90.0
-offset_top = -60.0
-offset_right = 90.0
-offset_bottom = -14.0
-text = "Talk"
-theme_override_font_sizes/font_size = 14
-[connection signal="pressed" from="UI/TalkBtn" to="." method="_on_talk_pressed"]
