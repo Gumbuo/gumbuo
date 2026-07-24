@@ -394,12 +394,3 @@ func _confirm_rename() -> void:
 		LandManager.set_tile_name(_tile_id, new_name)
 	_hide_rename_edit()
 
-func _gui_input(event: InputEvent) -> void:
-	if not event is InputEventMouseButton or not event.pressed:
-		return
-	if event.button_index != MOUSE_BUTTON_LEFT:
-		return
-	# Empty cells: _drop_btn (Button) handles drop_requested — more reliable in HTML5
-	if not _is_empty and _tile_id != "":
-		drag_started.emit(_tile_id, grid_position)
-	# NPC tiles (_npc_id set, _tile_id empty): no drag emitted — fixed in place
