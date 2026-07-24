@@ -1,17 +1,25 @@
-extends Node2D
+extends Node3D
 
-const TILE_CARD_SCENE := preload("res://scenes/world_map/TileCard.tscn")
+const GLOBE_TILE_SCENE := preload("res://scenes/world_map/GlobeTile.tscn")
 const HUD_SCENE        := preload("res://scenes/ui/HUD.tscn")
-const TILE_CARD_SIZE := Vector2(90, 90)
-const TILE_CARD_GAP := Vector2(0, 0)
 const GRID_COLS := 30
 const GRID_ROWS := 25
 const API_URL := "https://univershole.ink/api/farm-world"
 
-@onready var grid_container: Control = $UI/Scroll/GridContainer
+const PLANET_RADIUS := 14.0
+const MAX_LAT_DEG := 68.0
+const TILE_WORLD_SIZE := 2.0
+const TILE_LIFT := 0.05
+const CAM_START_Z := 30.0
+const CAM_MIN_Z := 17.0
+const CAM_MAX_Z := 50.0
+const ZOOM_STEP := 2.0
+const DRAG_ROTATE_SPEED := 0.006
+const CLICK_MOVE_THRESHOLD := 6.0
+const PITCH_LIMIT := 1.35
+
 @onready var kingdom_label: Label = $UI/KingdomLabel
 @onready var _ui_layer: CanvasLayer = $UI
-@onready var _scroll: ScrollContainer = $UI/Scroll
 
 var _cards: Dictionary = {}
 var _dragging_tile_id: String = ""
@@ -19,15 +27,20 @@ var _drag_origin: Vector2i = Vector2i(-1, -1)
 var _shop_ui: CanvasLayer = null
 var _npc_positions: Array = []
 var _deed_picker: CanvasLayer = null
+var _tile_menu: CanvasLayer = null
 var _world_req: HTTPRequest = null
 var _sync_req: HTTPRequest = null
 var _deed_banner: Label = null
 
-# Click-and-drag panning — separate from _dragging_tile_id above, which is
-# an unrelated click-click "select tile, then click destination" move
-# mode, not a continuous drag gesture, so there's no conflict here.
-var _panning: bool = false
-var _pan_last_mouse: Vector2 = Vector2.ZERO
+var _globe: Node3D = null
+var _tiles_root: Node3D = null
+var _camera: Camera3D = null
+var _yaw: float = 0.0
+var _pitch: float = -0.25
+var _drag_active: bool = false
+var _drag_moved: bool = false
+var _press_mouse: Vector2 = Vector2.ZERO
+var _last_mouse: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	if LandManager.current_tile_id != "":
@@ -37,11 +50,8 @@ func _ready() -> void:
 	LandManager.tile_moved.connect(_on_tile_moved)
 	LandManager.tile_removed.connect(_on_tile_removed)
 	LandManager.tile_settings_changed.connect(_on_tile_settings_changed)
-	# Default Control mouse_filter is STOP, which would let these swallow every
-	# click before it can bubble up to _unhandled_input for drag-to-pan.
-	grid_container.mouse_filter = Control.MOUSE_FILTER_PASS
-	_scroll.mouse_filter = Control.MOUSE_FILTER_PASS
-	_build_grid()
+	_setup_3d_scene()
+	_build_globe_grid()
 	_refresh_all_tiles()
 	_place_npc_tiles()
 	_update_kingdom_label()
@@ -49,7 +59,7 @@ func _ready() -> void:
 	_spawn_deed_banner()
 	_spawn_hud()
 	LandManager.deed_earned.connect(func(_t): _refresh_deed_banner())
-	call_deferred("_scroll_to_home_tile")
+	call_deferred("_face_home_tile")
 	_world_req = HTTPRequest.new()
 	add_child(_world_req)
 	_world_req.request_completed.connect(_on_world_tiles_received)
@@ -86,38 +96,129 @@ func _refresh_deed_banner() -> void:
 		_deed_banner.text = ""
 		_deed_banner.visible = false
 	else:
-		_deed_banner.text = "Deeds in wallet: %s  —  tap any empty cell to place" % "  |  ".join(parts)
+		_deed_banner.text = "Deeds in wallet: %s  —  tap any empty hex to place" % "  |  ".join(parts)
 		_deed_banner.modulate = Color(0.55, 1.0, 0.40)
 		_deed_banner.visible = true
 
 
-# Pointy-top hex, "odd-r" offset layout: odd rows shift right by half a tile
-# width, rows pack vertically at 3/4 tile height. Grid positions themselves
-# stay plain Vector2i(col,row) — only the pixel placement changes, so no
-# migration is needed for existing saved tile positions.
-const HEX_ROW_H := 0.75  # row-to-row vertical packing, as a fraction of tile height
+# ── 3D globe scaffolding: camera, lighting, starfield, planet body ───────
 
-func _hex_pixel_pos(pos: Vector2i) -> Vector2:
-	var offset_x: float = (TILE_CARD_SIZE.x * 0.5) if (pos.y % 2 == 1) else 0.0
-	return Vector2(pos.x * TILE_CARD_SIZE.x + offset_x, pos.y * TILE_CARD_SIZE.y * HEX_ROW_H)
+func _setup_3d_scene() -> void:
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.01, 0.01, 0.03)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(0.35, 0.38, 0.42)
+	env.ambient_light_energy = 0.6
+	var world_env := WorldEnvironment.new()
+	world_env.environment = env
+	add_child(world_env)
 
-func _build_grid() -> void:
-	var grid_w: float = GRID_COLS * TILE_CARD_SIZE.x + TILE_CARD_SIZE.x * 0.5
-	var grid_h: float = (GRID_ROWS - 1) * TILE_CARD_SIZE.y * HEX_ROW_H + TILE_CARD_SIZE.y
-	grid_container.custom_minimum_size = Vector2(grid_w, grid_h)
+	var sun := DirectionalLight3D.new()
+	sun.rotation_degrees = Vector3(-35, -35, 0)
+	sun.light_energy = 1.1
+	add_child(sun)
+
+	_camera = Camera3D.new()
+	_camera.position = Vector3(0, 0, CAM_START_Z)
+	_camera.fov = 45.0
+	add_child(_camera)
+
+	_build_starfield()
+
+	_globe = Node3D.new()
+	add_child(_globe)
+	_apply_globe_rotation()
+
+	_build_planet()
+
+	_tiles_root = Node3D.new()
+	_globe.add_child(_tiles_root)
+
+func _build_planet() -> void:
+	var sphere := SphereMesh.new()
+	sphere.radius = PLANET_RADIUS
+	sphere.height = PLANET_RADIUS * 2.0
+	sphere.radial_segments = 48
+	sphere.rings = 32
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.14, 0.20, 0.15)
+	mat.roughness = 0.95
+	var mesh_inst := MeshInstance3D.new()
+	mesh_inst.mesh = sphere
+	mesh_inst.material_override = mat
+	_globe.add_child(mesh_inst)
+
+func _build_starfield() -> void:
+	var star_mesh := QuadMesh.new()
+	star_mesh.size = Vector2(0.5, 0.5)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(1, 1, 1, 0.95)
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	star_mesh.material = mat
+
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = star_mesh
+	var count := 500
+	mm.instance_count = count
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1337
+	for i in count:
+		var dir := Vector3(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0))
+		if dir.length() < 0.001:
+			dir = Vector3.UP
+		dir = dir.normalized()
+		var dist: float = rng.randf_range(70.0, 120.0)
+		var s: float = rng.randf_range(0.3, 1.3)
+		var t := Transform3D(Basis().scaled(Vector3.ONE * s), dir * dist)
+		mm.set_instance_transform(i, t)
+
+	var mmi := MultiMeshInstance3D.new()
+	mmi.multimesh = mm
+	add_child(mmi)
+
+
+# ── Hex-on-sphere placement ───────────────────────────────────────────────
+# Reuses the existing flat Vector2i(col,row) grid from LandManager/NPCManager
+# unchanged (no data migration) — columns wrap 360° around the equator, rows
+# span a clamped latitude band so tiles never crush together at true poles.
+# The rectangular grid's column/row spacing don't perfectly match a sphere's
+# geometry, so tiles have mild gaps near the equator and mild overlap near
+# the latitude limits — a known cosmetic tradeoff for keeping tile positions
+# compatible with what's already saved locally and on the server.
+
+func _sphere_point(pos: Vector2i) -> Dictionary:
+	var lon: float = (float(pos.x) / float(GRID_COLS)) * TAU
+	var t: float = float(pos.y) / float(max(GRID_ROWS - 1, 1))
+	var lat: float = deg_to_rad(lerp(MAX_LAT_DEG, -MAX_LAT_DEG, t))
+	var cos_lat: float = cos(lat)
+	var dir := Vector3(cos_lat * cos(lon), sin(lat), cos_lat * sin(lon))
+	return {"dir": dir, "lat": lat, "lon": lon, "cos_lat": cos_lat}
+
+func _sphere_transform(pos: Vector2i) -> Transform3D:
+	var sp: Dictionary = _sphere_point(pos)
+	var normal: Vector3 = sp["dir"]
+	var ref_up: Vector3 = Vector3.UP if abs(normal.dot(Vector3.UP)) < 0.999 else Vector3.RIGHT
+	var tangent_x: Vector3 = ref_up.cross(normal).normalized()
+	var tangent_z: Vector3 = normal.cross(tangent_x).normalized()
+	var shrink: float = clamp(float(sp["cos_lat"]), 0.35, 1.0)
+	var s: float = TILE_WORLD_SIZE * shrink
+	var basis := Basis(tangent_x * s, normal, tangent_z * s)
+	var origin: Vector3 = normal * (PLANET_RADIUS + TILE_LIFT)
+	return Transform3D(basis, origin)
+
+func _build_globe_grid() -> void:
 	for y in GRID_ROWS:
 		for x in GRID_COLS:
 			var pos := Vector2i(x, y)
-			var card: Control = TILE_CARD_SCENE.instantiate()
-			card.position = _hex_pixel_pos(pos)
-			card.grid_position = pos
-			card.enter_requested.connect(_on_enter_tile)
-			card.npc_shop_requested.connect(_on_npc_shop_requested)
-			card.drag_started.connect(_on_drag_started)
-			card.drop_requested.connect(_on_drop_requested)
-			card.edit_requested.connect(_on_edit_tile)
-			grid_container.add_child(card)
-			_cards[pos] = card
+			var tile: GlobeTile = GLOBE_TILE_SCENE.instantiate()
+			_tiles_root.add_child(tile)
+			tile.transform = _sphere_transform(pos)
+			tile.grid_position = pos
+			_cards[pos] = tile
 
 func _npc_position_set() -> Dictionary:
 	var result: Dictionary = {}
@@ -197,33 +298,164 @@ func _get_tile_scene_path(tile_type: int) -> String:
 		LandManager.TileType.POND:     return "res://scenes/tiles/PondTile.tscn"
 	return ""
 
-func _input(event: InputEvent) -> void:
+
+# ── Input: drag to orbit the globe, click (no drag) to pick a tile ───────
+
+func _unhandled_input(event: InputEvent) -> void:
 	if _dragging_tile_id != "" and event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		_dragging_tile_id = ""
 		_drag_origin = Vector2i(-1, -1)
 		_update_card_move_states()
 		get_viewport().set_input_as_handled()
+		return
 
-# Click-and-drag to pan the map, instead of only the scrollbar sliders.
-# Tile cards and their buttons use MOUSE_FILTER_PASS (see tile_card.gd and
-# _ready() above) so their own clicks still work but the raw event also
-# bubbles up here — that's what lets panning start from anywhere on the
-# grid, not just the (rare) truly empty background.
-func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			_panning = true
-			_pan_last_mouse = event.position
+			_drag_active = true
+			_drag_moved = false
+			_press_mouse = event.position
+			_last_mouse = event.position
 			get_viewport().set_input_as_handled()
-		elif _panning:
-			_panning = false
+		elif _drag_active:
+			_drag_active = false
+			if not _drag_moved:
+				_try_pick(event.position)
 			get_viewport().set_input_as_handled()
-	elif event is InputEventMouseMotion and _panning:
-		var delta: Vector2 = event.position - _pan_last_mouse
-		_pan_last_mouse = event.position
-		_scroll.scroll_horizontal -= int(delta.x)
-		_scroll.scroll_vertical -= int(delta.y)
+	elif event is InputEventMouseMotion and _drag_active:
+		var delta: Vector2 = event.position - _last_mouse
+		_last_mouse = event.position
+		if event.position.distance_to(_press_mouse) > CLICK_MOVE_THRESHOLD:
+			_drag_moved = true
+		_yaw -= delta.x * DRAG_ROTATE_SPEED
+		_pitch = clamp(_pitch - delta.y * DRAG_ROTATE_SPEED, -PITCH_LIMIT, PITCH_LIMIT)
+		_apply_globe_rotation()
 		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		_zoom(-1)
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		_zoom(1)
+		get_viewport().set_input_as_handled()
+
+func _apply_globe_rotation() -> void:
+	if _globe:
+		_globe.transform.basis = Basis(Vector3.UP, _yaw) * Basis(Vector3.RIGHT, _pitch)
+
+func _zoom(dir: int) -> void:
+	if not _camera:
+		return
+	_camera.position.z = clamp(_camera.position.z + dir * ZOOM_STEP, CAM_MIN_Z, CAM_MAX_Z)
+
+func _try_pick(screen_pos: Vector2) -> void:
+	if not _camera:
+		return
+	var from: Vector3 = _camera.project_ray_origin(screen_pos)
+	var dir: Vector3 = _camera.project_ray_normal(screen_pos)
+	var space_state := get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(from, from + dir * (PLANET_RADIUS + CAM_MAX_Z))
+	var result: Dictionary = space_state.intersect_ray(query)
+	if result.is_empty():
+		_close_tile_menu()
+		_close_deed_picker()
+		return
+	var tile: GlobeTile = result.get("collider") as GlobeTile
+	if tile == null:
+		return
+	_on_tile_clicked(tile)
+
+func _on_tile_clicked(tile: GlobeTile) -> void:
+	_close_deed_picker()
+	if tile.is_npc_tile():
+		_close_tile_menu()
+		_on_npc_shop_requested(tile.get_npc_id())
+		return
+	if tile.is_empty_cell():
+		_close_tile_menu()
+		_on_drop_requested(tile.grid_position)
+		return
+	_show_tile_menu(tile)
+
+
+# ── Filled-tile action menu (Enter / Edit / Move) ─────────────────────────
+# Replaces the old always-on corner buttons from the flat map — with tiles
+# now picked via raycast on a rotating globe, a single click opens a small
+# menu instead of relying on tiny always-visible per-tile hitboxes.
+
+func _show_tile_menu(tile: GlobeTile) -> void:
+	_close_tile_menu()
+	var tile_id: String = tile.get_tile_id()
+	var tile_data: Dictionary = LandManager.tiles.get(tile_id, {})
+	if tile_data.is_empty():
+		return
+	var is_owner: bool = tile.get_is_owner()
+	var can_enter: bool = LandManager.can_enter_tile(tile_id, PlayerData.player_id, "")
+
+	_tile_menu = CanvasLayer.new()
+	_tile_menu.layer = 28
+	add_child(_tile_menu)
+
+	var panel := PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.10, 0.12, 0.10, 0.96)
+	sb.border_color = Color(0.30, 0.70, 0.30)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(8)
+	panel.add_theme_stylebox_override("panel", sb)
+	panel.custom_minimum_size = Vector2(180, 0)
+	_tile_menu.add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	panel.add_child(vbox)
+
+	var title := Label.new()
+	var display_name: String = tile_data.get("name", "")
+	if display_name == "":
+		display_name = String(tile_data.get("type_str", "Tile")).capitalize()
+	title.text = display_name
+	title.add_theme_font_size_override("font_size", 13)
+	title.modulate = Color(0.55, 0.90, 0.40)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	if can_enter:
+		var enter_btn := Button.new()
+		enter_btn.text = "Enter"
+		enter_btn.pressed.connect(func() -> void:
+			_close_tile_menu()
+			_load_tile_scene(tile_data)
+		)
+		vbox.add_child(enter_btn)
+
+	if is_owner:
+		var edit_btn := Button.new()
+		edit_btn.text = "Edit / Rename"
+		edit_btn.pressed.connect(func() -> void:
+			_close_tile_menu()
+			_on_edit_tile(tile_id)
+		)
+		vbox.add_child(edit_btn)
+
+		var move_btn := Button.new()
+		move_btn.text = "Cancel Move" if _dragging_tile_id == tile_id else "Move"
+		move_btn.pressed.connect(func() -> void:
+			_close_tile_menu()
+			_on_drag_started(tile_id, tile.grid_position)
+		)
+		vbox.add_child(move_btn)
+
+	var close_btn := Button.new()
+	close_btn.text = "Cancel"
+	close_btn.modulate = Color(0.6, 0.6, 0.6)
+	close_btn.pressed.connect(_close_tile_menu)
+	vbox.add_child(close_btn)
+
+	panel.position = Vector2(560, 220)
+
+func _close_tile_menu() -> void:
+	if is_instance_valid(_tile_menu):
+		_tile_menu.queue_free()
+	_tile_menu = null
 
 func _on_drag_started(tile_id: String, from_pos: Vector2i) -> void:
 	if _dragging_tile_id == tile_id:
@@ -473,7 +705,7 @@ func _update_kingdom_label() -> void:
 	var tier_names := ["", "Homestead", "Village", "Town", "City", "Kingdom"]
 	kingdom_label.text = "%s (Tier %d)" % [tier_names[tier], tier]
 
-func _scroll_to_home_tile() -> void:
+func _face_home_tile() -> void:
 	var home_id := LandManager.home_tile_id
 	if home_id == "":
 		for td in LandManager.tiles.values():
@@ -485,6 +717,7 @@ func _scroll_to_home_tile() -> void:
 	var pos: Vector2i = LandManager.tiles[home_id].get("position", Vector2i(-1, -1))
 	if pos.x < 0:
 		return
-	var px_py: Vector2 = _hex_pixel_pos(pos)
-	_scroll.scroll_horizontal = int(px_py.x - _scroll.size.x * 0.5 + TILE_CARD_SIZE.x * 0.5)
-	_scroll.scroll_vertical   = int(px_py.y - _scroll.size.y * 0.5 + TILE_CARD_SIZE.y * 0.5)
+	var sp: Dictionary = _sphere_point(pos)
+	_yaw = -float(sp["lon"])
+	_pitch = clamp(-float(sp["lat"]), -PITCH_LIMIT, PITCH_LIMIT)
+	_apply_globe_rotation()
