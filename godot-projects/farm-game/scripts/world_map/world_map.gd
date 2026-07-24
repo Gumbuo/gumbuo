@@ -356,6 +356,8 @@ func _sync_all_local_tiles() -> void:
 			"access_mode": td.get("access_mode", 0),
 			"yield_rate":  td.get("yield_rate", 70),
 			"slots":       td.get("slots", {}),
+			"combat_rights_holder": td.get("combat_rights_holder", ""),
+			"combat_rights_since":  td.get("combat_rights_since", 0),
 		})
 		var req := HTTPRequest.new()
 		add_child(req)
@@ -380,6 +382,8 @@ func _sync_tile(tile_id: String) -> void:
 		"access_mode": td.get("access_mode", 0),
 		"yield_rate":  td.get("yield_rate", 70),
 		"slots":       td.get("slots", {}),
+		"combat_rights_holder": td.get("combat_rights_holder", ""),
+		"combat_rights_since":  td.get("combat_rights_since", 0),
 	})
 	_sync_req.request(API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 

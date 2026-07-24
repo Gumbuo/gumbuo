@@ -138,7 +138,7 @@ func _make_recipe_row(act: Dictionary) -> Control:
 
 func _is_owner() -> bool:
 	var tile_owner: String = LandManager.tiles.get(_tile_id, {}).get("owner_id", "")
-	return tile_owner.is_empty() or tile_owner == PlayerData.player_id
+	return tile_owner.is_empty() or LandManager.is_effective_owner(_tile_id, PlayerData.player_id)
 
 func _get_actions() -> Array:
 	var tile_slots: Dictionary = LandManager.tiles.get(_tile_id, {}).get("slots", {})
@@ -409,7 +409,7 @@ func _do_harvest() -> void:
 		return
 	var tile: Dictionary = LandManager.tiles.get(_tile_id, {})
 	var tile_owner: String = tile.get("owner_id", "")
-	var is_owner: bool = tile_owner.is_empty() or tile_owner == PlayerData.player_id
+	var is_owner: bool = tile_owner.is_empty() or LandManager.is_effective_owner(_tile_id, PlayerData.player_id)
 	var total_amt: int = randi_range(2, 5)
 	var you_amt: int
 	var owner_amt: int = 0
@@ -436,7 +436,7 @@ func _do_chop() -> void:
 	PlayerData.add_xp(1)
 
 	var tile_owner: String = LandManager.tiles.get(_tile_id, {}).get("owner_id", "")
-	var is_owner: bool = tile_owner.is_empty() or tile_owner == PlayerData.player_id
+	var is_owner: bool = tile_owner.is_empty() or LandManager.is_effective_owner(_tile_id, PlayerData.player_id)
 
 	# Wood ranges per axe tier [own_min, own_max, chop_min, chop_max, passive_min, passive_max]
 	var w: Array

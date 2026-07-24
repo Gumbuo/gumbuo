@@ -11,6 +11,16 @@ const DIRS := ["south", "north", "east", "west", "south-east", "south-west", "no
 const LERP_SPEED := 6.0
 const ARRIVED_EPSILON := 2.0
 
+# Same MVP combat move set as player.gd — kept in sync manually since this
+# is a much lighter sprite setup (no action-animation loop to piggyback on).
+const COMBAT_CONFIGS: Array = [
+	{"name": "fight_idle", "folder": "fight_idle", "frame_count": 8, "fps": 6.0,  "loop": true},
+	{"name": "punch",      "folder": "punch",      "frame_count": 6, "fps": 12.0, "loop": false},
+	{"name": "kick",       "folder": "kick",       "frame_count": 7, "fps": 10.0, "loop": false},
+	{"name": "hit_react",  "folder": "hit_react",  "frame_count": 6, "fps": 12.0, "loop": false},
+	{"name": "death",      "folder": "death",      "frame_count": 7, "fps": 8.0,  "loop": false},
+]
+
 var wallet: String = ""
 
 var _sprite: AnimatedSprite2D = null
@@ -19,6 +29,7 @@ var _target_pos: Vector2 = Vector2.ZERO
 var _facing: String = "south"
 var _has_target: bool = false
 var _snapped: bool = false
+var _in_combat: bool = false
 
 func _ready() -> void:
 	_sprite = AnimatedSprite2D.new()
@@ -59,6 +70,16 @@ func _setup_frames() -> void:
 				frames.add_frame(walk_anim, load(path))
 			elif ResourceLoader.exists(rot_path):
 				frames.add_frame(walk_anim, load(rot_path))
+
+		for cfg in COMBAT_CONFIGS:
+			var anim: String = cfg["name"] + "_" + dir
+			frames.add_animation(anim)
+			frames.set_animation_loop(anim, cfg["loop"])
+			frames.set_animation_speed(anim, cfg["fps"])
+			for i in cfg["frame_count"]:
+				var cpath: String = BASE_PATH + "%s/%s/frame_%03d.png" % [cfg["folder"], dir, i]
+				if ResourceLoader.exists(cpath):
+					frames.add_frame(anim, load(cpath))
 	_sprite.sprite_frames = frames
 	_sprite.scale = Vector2(1.2, 1.2)
 	_sprite.offset = Vector2(0, -46)
@@ -67,6 +88,9 @@ func _setup_frames() -> void:
 func set_player_name(n: String) -> void:
 	if _name_label:
 		_name_label.text = n
+
+func get_display_name() -> String:
+	return _name_label.text if _name_label else "Player"
 
 func update_target(world_pos: Vector2, facing: String) -> void:
 	_target_pos = world_pos
@@ -78,7 +102,24 @@ func update_target(world_pos: Vector2, facing: String) -> void:
 		_snapped = true
 		global_position = world_pos
 
+# ─────────────────────────── COMBAT ─────────────────────────
+# Driven externally by the combat controller — same contract as
+# player.gd's enter_combat()/exit_combat()/play_combat_anim().
+
+func enter_combat() -> void:
+	_in_combat = true
+
+func exit_combat() -> void:
+	_in_combat = false
+
+func play_combat_anim(anim_name: String) -> void:
+	var anim: String = anim_name + "_" + _facing
+	if _sprite.sprite_frames.has_animation(anim):
+		_sprite.play(anim)
+
 func _process(delta: float) -> void:
+	if _in_combat:
+		return  # combat controller owns animation state while a fight is active
 	if not _has_target:
 		return
 	var moving: bool = global_position.distance_to(_target_pos) > ARRIVED_EPSILON

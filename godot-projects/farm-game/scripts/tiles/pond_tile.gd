@@ -137,6 +137,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
 		return
 	var mp: Vector2 = get_viewport().get_mouse_position()
+	# A click on a live player standing near the water starts a fight
+	# instead of casting a line — check that before the water-click logic.
+	if _try_challenge_click(mp):
+		return
 	if not _in_water(mp):
 		return
 	get_viewport().set_input_as_handled()

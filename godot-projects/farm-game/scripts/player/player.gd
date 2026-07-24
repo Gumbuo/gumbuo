@@ -15,6 +15,16 @@ const ACTION_CONFIGS: Array = [
 	{"name": "mine",    "folder": "mining",     "frame_count": 9, "fps": 8.0},
 ]
 
+# Combat move set — MVP subset of the 30-animation pack (punch/kick/hit/
+# death only for now; more variety can be layered in later).
+const COMBAT_CONFIGS: Array = [
+	{"name": "fight_idle", "folder": "fight_idle", "frame_count": 8, "fps": 6.0,  "loop": true},
+	{"name": "punch",      "folder": "punch",      "frame_count": 6, "fps": 12.0, "loop": false},
+	{"name": "kick",       "folder": "kick",       "frame_count": 7, "fps": 10.0, "loop": false},
+	{"name": "hit_react",  "folder": "hit_react",  "frame_count": 6, "fps": 12.0, "loop": false},
+	{"name": "death",      "folder": "death",      "frame_count": 7, "fps": 8.0,  "loop": false},
+]
+
 @onready var sprite:      AnimatedSprite2D = $AnimatedSprite2D
 @onready var name_label:  Label            = $NameLabel
 @onready var placeholder: ColorRect        = $PlaceholderRect
@@ -26,6 +36,7 @@ var facing:      String = "south"
 var _target_pos:  Vector2 = Vector2.ZERO
 var _has_target:  bool    = false
 var _is_acting:   bool    = false
+var _in_combat:   bool    = false
 
 func _ready() -> void:
 	add_to_group("player")
@@ -82,6 +93,18 @@ func _setup_sprite() -> void:
 				var path: String = BASE_PATH + "%s/%s/frame_%03d.png" % [cfg["folder"], dir, i]
 				frames.add_frame(anim, load(path))
 
+	# Combat animations — same per-direction individual-frame pattern
+	for cfg in COMBAT_CONFIGS:
+		for dir in DIRS:
+			var anim: String = cfg["name"] + "_" + dir
+			frames.add_animation(anim)
+			frames.set_animation_loop(anim, cfg["loop"])
+			frames.set_animation_speed(anim, cfg["fps"])
+			for i in cfg["frame_count"]:
+				var path: String = BASE_PATH + "%s/%s/frame_%03d.png" % [cfg["folder"], dir, i]
+				if ResourceLoader.exists(path):
+					frames.add_frame(anim, load(path))
+
 	sprite.sprite_frames = frames
 	sprite.scale  = Vector2(1.2, 1.2)
 	sprite.offset = Vector2(0, -46)
@@ -89,6 +112,8 @@ func _setup_sprite() -> void:
 	sprite.play("idle_south")
 
 func _on_action_finished() -> void:
+	if _in_combat:
+		return  # combat controller drives transitions explicitly, see play_combat_anim()
 	_is_acting = false
 	_play_idle()
 
@@ -195,3 +220,22 @@ func _play_action(action_name: String) -> void:
 		return
 	_is_acting = true
 	sprite.play(anim)
+
+# ─────────────────────────── COMBAT ─────────────────────────
+# Driven externally by the combat controller (see scripts/combat/), which
+# sequences fight_idle/punch/kick/hit_react/death calls itself — this node
+# doesn't run its own combat logic, just plays whatever it's told.
+
+func enter_combat() -> void:
+	_in_combat = true
+	_is_acting = true  # locks movement for the whole encounter
+
+func exit_combat() -> void:
+	_in_combat = false
+	_is_acting = false
+	_play_idle()
+
+func play_combat_anim(anim_name: String) -> void:
+	var anim: String = anim_name + "_" + facing
+	if sprite.sprite_frames.has_animation(anim):
+		sprite.play(anim)

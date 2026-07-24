@@ -28,6 +28,10 @@ var _ws: WebSocketPeer = null
 var _presence_send_accum: float = 0.0
 var _remote_players: Dictionary = {}  # wallet -> RemotePlayer node
 
+# ── Combat (click a live player on the same tile to challenge them) ──────
+const CHALLENGE_CLICK_RADIUS := 40.0
+var _active_combat: bool = false
+
 # ── Action queue ─────────────────────────────────────────────
 # Each entry: { grid_pos, action, item_id, world_pos }
 # action values: "harvest" | "plant" | "place" | "pickup" | "action"
@@ -251,8 +255,9 @@ func _execute_current_task() -> void:
 					amt = max(6, amt)
 				# Visitors on someone else's tile split the harvest with the
 				# owner (same yield_rate mechanic used for chopping/mining).
+				# A won combat-rights holder counts as the effective owner too.
 				var owner_id: String = LandManager.tiles.get(tile_id, {}).get("owner_id", "")
-				var is_owner: bool = owner_id.is_empty() or owner_id == PlayerData.player_id
+				var is_owner: bool = owner_id.is_empty() or LandManager.is_effective_owner(tile_id, PlayerData.player_id)
 				var you_amt: int = amt
 				var owner_amt: int = 0
 				if not is_owner:
@@ -539,6 +544,10 @@ func _spawn_presence_system() -> void:
 		return
 	_ws = WebSocketPeer.new()
 	_ws.connect_to_url(REALTIME_URL + tile_id.uri_encode())
+	# Give presence a moment to populate _remote_players before checking
+	# whether the current combat-rights holder is actually still here.
+	var t := get_tree().create_timer(1.5)
+	t.timeout.connect(_maybe_claim_uncontested_rights)
 
 # Called every _process() tick — see the existing _process() override below.
 func _poll_presence(delta: float) -> void:
@@ -589,6 +598,18 @@ func _handle_realtime_message(text: String) -> void:
 		node.update_target(Vector2(data.get("x", 0.0), data.get("y", 0.0)), str(data.get("facing", "south")))
 		return
 
+	if data["type"] == "challenge":
+		var att: String = str(data.get("attacker", ""))
+		var dfn: String = str(data.get("defender", ""))
+		var ts: int = int(data.get("ts", 0))
+		# Only the defender reacts here — the attacker already started their
+		# own local sim the moment they confirmed the challenge, and the room
+		# never echoes a message back to whoever sent it, so there's no
+		# double-trigger risk on the attacker's own client.
+		if dfn == PlayerData.player_id and att != PlayerData.player_id:
+			_run_combat(att, dfn, ts)
+		return
+
 	if data["type"] == "leave":
 		var lw: String = str(data.get("wallet", ""))
 		var node = _remote_players.get(lw)
@@ -601,6 +622,197 @@ func _handle_realtime_message(text: String) -> void:
 func _send_leave_presence() -> void:
 	if _ws != null:
 		_ws.close()
+
+# ── Combat ────────────────────────────────────────────────────
+# Click a live player sharing this tile to challenge them. Fight rights on
+# public tiles: winner becomes the tile's combat_rights_holder (treated as
+# full owner for yield-split purposes — see LandManager.is_effective_owner),
+# loser gets sent to their home tile.
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_try_challenge_click(get_viewport().get_mouse_position())
+
+# Returns true if the click landed on a live remote player and was handled
+# (used by pond_tile.gd, which overrides _unhandled_input itself for water
+# clicks — it checks this first so clicking a player standing near the
+# water starts a fight instead of casting a line).
+func _try_challenge_click(screen_pos: Vector2) -> bool:
+	if _active_combat or not is_instance_valid(_player):
+		return false
+	var world_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * screen_pos
+	for w in _remote_players.keys():
+		var node = _remote_players[w]
+		if not is_instance_valid(node):
+			continue
+		if node.global_position.distance_to(world_pos) <= CHALLENGE_CLICK_RADIUS:
+			get_viewport().set_input_as_handled()
+			_show_challenge_confirm(w, node.get_display_name())
+			return true
+	return false
+
+func _show_challenge_confirm(defender_wallet: String, defender_name: String) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 45
+	add_child(layer)
+
+	var dim := ColorRect.new()
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0, 0, 0, 0.55)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	layer.add_child(dim)
+
+	var pw := 320.0; var ph := 140.0
+	var panel := Control.new()
+	panel.position = Vector2((1280.0 - pw) / 2.0, (720.0 - ph) / 2.0)
+	panel.size = Vector2(pw, ph)
+	dim.add_child(panel)
+
+	var border := ColorRect.new()
+	border.set_anchors_preset(Control.PRESET_FULL_RECT)
+	border.color = Color(0.65, 0.15, 0.15, 0.95)
+	border.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(border)
+
+	var inner := ColorRect.new()
+	inner.position = Vector2(2, 2)
+	inner.size = Vector2(pw - 4, ph - 4)
+	inner.color = Color(0.07, 0.07, 0.09, 0.98)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(inner)
+
+	var lbl := Label.new()
+	lbl.text = "Fight %s?" % defender_name
+	lbl.position = Vector2(10, 16)
+	lbl.size = Vector2(pw - 20, 30)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 14)
+	lbl.add_theme_color_override("font_color", Color(1.0, 0.75, 0.55))
+	panel.add_child(lbl)
+
+	var sub := Label.new()
+	sub.text = "Winner takes farming rights on this tile."
+	sub.position = Vector2(10, 48)
+	sub.size = Vector2(pw - 20, 20)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 9)
+	sub.add_theme_color_override("font_color", Color(0.65, 0.65, 0.65))
+	panel.add_child(sub)
+
+	var yes_btn := Button.new()
+	yes_btn.text = "Fight"
+	yes_btn.position = Vector2(30, 92)
+	yes_btn.size = Vector2(110, 32)
+	yes_btn.pressed.connect(func():
+		layer.queue_free()
+		_start_combat(defender_wallet)
+	)
+	panel.add_child(yes_btn)
+
+	var no_btn := Button.new()
+	no_btn.text = "Not now"
+	no_btn.position = Vector2(pw - 140, 92)
+	no_btn.size = Vector2(110, 32)
+	no_btn.pressed.connect(func(): layer.queue_free())
+	panel.add_child(no_btn)
+
+func _start_combat(defender_wallet: String) -> void:
+	var attacker_wallet: String = PlayerData.player_id
+	var ts := int(Time.get_unix_time_from_system())
+	if _ws != null and _ws.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		_ws.send_text(JSON.stringify({
+			"type": "challenge", "attacker": attacker_wallet, "defender": defender_wallet, "ts": ts,
+		}))
+	_run_combat(attacker_wallet, defender_wallet, ts)
+
+func _get_combat_actor(wallet: String):
+	if wallet == PlayerData.player_id:
+		return _player
+	return _remote_players.get(wallet)
+
+func _run_combat(attacker_wallet: String, defender_wallet: String, ts: int) -> void:
+	if _active_combat:
+		return
+	var attacker_node = _get_combat_actor(attacker_wallet)
+	var defender_node = _get_combat_actor(defender_wallet)
+	if attacker_node == null or defender_node == null or not is_instance_valid(attacker_node) or not is_instance_valid(defender_node):
+		return
+
+	var sim: Dictionary = CombatSim.simulate(attacker_wallet, defender_wallet, ts)
+	_active_combat = true
+	attacker_node.enter_combat()
+	defender_node.enter_combat()
+	attacker_node.play_combat_anim("fight_idle")
+	defender_node.play_combat_anim("fight_idle")
+	await get_tree().create_timer(0.6).timeout
+
+	for round_data in sim["rounds"]:
+		if not (is_instance_valid(attacker_node) and is_instance_valid(defender_node)):
+			break
+		var is_attacker_turn: bool = round_data["attacker"] == attacker_wallet
+		var atk_node = attacker_node if is_attacker_turn else defender_node
+		var def_node = defender_node if is_attacker_turn else attacker_node
+		atk_node.play_combat_anim(round_data["move"])
+		if round_data["hit"]:
+			await get_tree().create_timer(0.35).timeout
+			if is_instance_valid(def_node):
+				def_node.play_combat_anim("hit_react")
+		await get_tree().create_timer(0.55).timeout
+
+	var winner: String = sim["winner"]
+	var loser: String = defender_wallet if winner == attacker_wallet else attacker_wallet
+	var loser_node = attacker_node if loser == attacker_wallet else defender_node
+	var winner_node = defender_node if loser == attacker_wallet else attacker_node
+	if is_instance_valid(loser_node):
+		loser_node.play_combat_anim("death")
+	if is_instance_valid(winner_node):
+		winner_node.play_combat_anim("fight_idle")
+	await get_tree().create_timer(1.2).timeout
+
+	if is_instance_valid(attacker_node):
+		attacker_node.exit_combat()
+	if is_instance_valid(defender_node):
+		defender_node.exit_combat()
+	_active_combat = false
+
+	var my_wallet: String = PlayerData.player_id
+	if winner == my_wallet:
+		LandManager.set_combat_rights_holder(tile_id, my_wallet)
+	if loser == my_wallet:
+		_go_home_after_loss()
+
+# Only meaningful on a tile you don't own: if the current combat-rights
+# holder isn't physically here (checked via live presence), the next
+# different visitor takes over uncontested — no fight needed against
+# someone who isn't around to defend it. See the rule design notes; this
+# is what stops an absent holder from permanently squatting a tile.
+func _maybe_claim_uncontested_rights() -> void:
+	var my_wallet: String = PlayerData.player_id
+	if my_wallet == "" or tile_id == "":
+		return
+	var td: Dictionary = LandManager.tiles.get(tile_id, {})
+	if td.get("owner_id", "") == my_wallet:
+		return  # you already have full rights as the actual owner
+	var holder: String = td.get("combat_rights_holder", "")
+	if holder == "" or holder == my_wallet:
+		return
+	if _remote_players.has(holder):
+		return  # holder is still here — must be challenged, not auto-claimed
+	LandManager.set_combat_rights_holder(tile_id, my_wallet)
+
+func _go_home_after_loss() -> void:
+	var home: String = LandManager.home_tile_id
+	if home == "" or home == tile_id:
+		return
+	_close_stray_popups()
+	_send_leave_presence()
+	PlayerData.save_data()
+	ResourceManager.save_inventory()
+	LandManager.save_land_data()
+	LandManager.current_tile_id = home
+	var scene_path: String = _tile_scene_path(LandManager.tiles.get(home, {}).get("type", 0))
+	if scene_path != "":
+		get_tree().change_scene_to_file(scene_path)
 
 func _slot_screen_pos(grid_pos: Vector2i) -> Vector2:
 	var step := _SLOT_PX + _SLOT_GAP

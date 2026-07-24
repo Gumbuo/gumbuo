@@ -672,7 +672,14 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 	var my_id: String = PlayerData.player_id
 	for td in remote_tiles:
 		var tid: String = td.get("id", "")
-		if tid == "" or tiles.has(tid):
+		if tid == "":
+			continue
+		# Never touch a tile we have authoritative local data for. A tile
+		# already known as remote-cached (_remote_tile_ids) is fine to
+		# refresh — otherwise server-side changes on someone else's tile
+		# (e.g. combat rights changing hands) would get stuck forever on
+		# whatever we happened to cache the very first time we saw it.
+		if tiles.has(tid) and not _remote_tile_ids.has(tid):
 			continue
 		# Never re-add own tiles from server — local save is authoritative.
 		# Prevents a GET response in-flight before a delete from resurrecting it.
@@ -680,12 +687,21 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 			continue
 		var pos_dict: Dictionary = td.get("position", {})
 		var pos := Vector2i(int(pos_dict.get("x", -1)), int(pos_dict.get("y", -1)))
-		if pos.x < 0 or grid.has(pos):
+		if pos.x < 0:
+			continue
+		# Block genuine conflicts (a different tile claiming an occupied
+		# spot) but allow this same tile to re-claim the position it
+		# already holds — that's just a refresh, not a collision.
+		if grid.has(pos) and grid[pos] != tid:
 			continue
 		var remote_slots: Dictionary = {}
 		var raw_slots = td.get("slots", {})
 		if raw_slots is Dictionary:
 			remote_slots = raw_slots
+		# passive_vault isn't part of the sync payload in either direction —
+		# preserve whatever we'd already accumulated locally for this remote
+		# tile instead of wiping it back to {} on every refresh.
+		var existing_vault: Dictionary = tiles.get(tid, {}).get("passive_vault", {})
 		tiles[tid] = {
 			"id":           tid,
 			"type":         int(td.get("type", 0)),
@@ -696,11 +712,66 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 			"access_mode":  int(td.get("access_mode", AccessMode.PUBLIC)),
 			"yield_rate":   int(td.get("yield_rate", 70)),
 			"placed_at":    0,
-			"passive_vault": {},
+			"passive_vault": existing_vault,
 			"slots":        remote_slots,
+			"combat_rights_holder": str(td.get("combat_rights_holder", "")),
+			"combat_rights_since":  int(td.get("combat_rights_since", 0)),
 		}
 		grid[pos] = tid
 		_remote_tile_ids[tid] = true
+
+# ── Combat farming rights (public-tile PvP) ───────────────────
+# A rights holder is treated as full "owner" for yield-split purposes on
+# a tile they don't actually own — won by beating the current holder (or
+# claimed uncontested if the tile has no live holder present; that check
+# lives in the combat controller, which has access to the presence system).
+const FARM_WORLD_API_URL := "https://univershole.ink/api/farm-world"
+
+func get_combat_rights_holder(tile_id: String) -> String:
+	return tiles.get(tile_id, {}).get("combat_rights_holder", "")
+
+func is_effective_owner(tile_id: String, player_id: String) -> bool:
+	var td: Dictionary = tiles.get(tile_id, {})
+	if td.get("owner_id", "") == player_id:
+		return true
+	var rights: String = td.get("combat_rights_holder", "")
+	return rights != "" and rights == player_id
+
+func set_combat_rights_holder(tile_id: String, wallet: String) -> void:
+	if not tiles.has(tile_id):
+		return
+	tiles[tile_id]["combat_rights_holder"] = wallet
+	tiles[tile_id]["combat_rights_since"] = int(Time.get_unix_time_from_system())
+	save_land_data()
+	_sync_tile_to_server(tile_id)
+
+# Pushes this tile's current data to the shared world API — same payload
+# shape world_map.gd's own _sync_tile() sends, but callable directly from
+# a tile scene (world_map.gd isn't loaded while inside a tile).
+func _sync_tile_to_server(tile_id: String) -> void:
+	if is_remote_tile(tile_id):
+		return
+	var td: Dictionary = tiles.get(tile_id, {})
+	if td.is_empty():
+		return
+	var pos: Vector2i = td.get("position", Vector2i(-1, -1))
+	var body := JSON.stringify({
+		"id":                   tile_id,
+		"type":                 td.get("type", 0),
+		"type_str":             td.get("type_str", "FARM"),
+		"position":             {"x": pos.x, "y": pos.y},
+		"owner_id":             td.get("owner_id", ""),
+		"name":                 td.get("name", "Tile"),
+		"access_mode":          td.get("access_mode", 0),
+		"yield_rate":           td.get("yield_rate", 70),
+		"slots":                td.get("slots", {}),
+		"combat_rights_holder": td.get("combat_rights_holder", ""),
+		"combat_rights_since":  td.get("combat_rights_since", 0),
+	})
+	var req := HTTPRequest.new()
+	Engine.get_main_loop().root.add_child(req)
+	req.request_completed.connect(func(_r, _c, _h, _b): req.queue_free())
+	req.request(FARM_WORLD_API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 
 func save_land_data() -> void:
 	var cfg := ConfigFile.new()
