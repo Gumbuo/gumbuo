@@ -23,6 +23,12 @@ var _world_req: HTTPRequest = null
 var _sync_req: HTTPRequest = null
 var _deed_banner: Label = null
 
+# Click-and-drag panning — separate from _dragging_tile_id above, which is
+# an unrelated click-click "select tile, then click destination" move
+# mode, not a continuous drag gesture, so there's no conflict here.
+var _panning: bool = false
+var _pan_last_mouse: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
 	if LandManager.current_tile_id != "":
 		LandManager.last_tile_id = LandManager.current_tile_id
@@ -192,6 +198,27 @@ func _input(event: InputEvent) -> void:
 		_dragging_tile_id = ""
 		_drag_origin = Vector2i(-1, -1)
 		_update_card_move_states()
+		get_viewport().set_input_as_handled()
+
+# Click-and-drag to pan the map, instead of only the scrollbar sliders.
+# _unhandled_input only receives events no Control already consumed, so a
+# press that lands on a button/tile-card interactive element never reaches
+# here — panning only ever starts from genuinely empty background space
+# (the gaps between hex tiles), nothing else is affected.
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			_panning = true
+			_pan_last_mouse = event.position
+			get_viewport().set_input_as_handled()
+		elif _panning:
+			_panning = false
+			get_viewport().set_input_as_handled()
+	elif event is InputEventMouseMotion and _panning:
+		var delta: Vector2 = event.position - _pan_last_mouse
+		_pan_last_mouse = event.position
+		_scroll.scroll_horizontal -= int(delta.x)
+		_scroll.scroll_vertical -= int(delta.y)
 		get_viewport().set_input_as_handled()
 
 func _on_drag_started(tile_id: String, from_pos: Vector2i) -> void:
