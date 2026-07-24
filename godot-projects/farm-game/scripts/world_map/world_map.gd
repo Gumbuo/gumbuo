@@ -37,6 +37,10 @@ func _ready() -> void:
 	LandManager.tile_moved.connect(_on_tile_moved)
 	LandManager.tile_removed.connect(_on_tile_removed)
 	LandManager.tile_settings_changed.connect(_on_tile_settings_changed)
+	# Default Control mouse_filter is STOP, which would let these swallow every
+	# click before it can bubble up to _unhandled_input for drag-to-pan.
+	grid_container.mouse_filter = Control.MOUSE_FILTER_PASS
+	_scroll.mouse_filter = Control.MOUSE_FILTER_PASS
 	_build_grid()
 	_refresh_all_tiles()
 	_place_npc_tiles()
@@ -201,10 +205,10 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 # Click-and-drag to pan the map, instead of only the scrollbar sliders.
-# _unhandled_input only receives events no Control already consumed, so a
-# press that lands on a button/tile-card interactive element never reaches
-# here — panning only ever starts from genuinely empty background space
-# (the gaps between hex tiles), nothing else is affected.
+# Tile cards and their buttons use MOUSE_FILTER_PASS (see tile_card.gd and
+# _ready() above) so their own clicks still work but the raw event also
+# bubbles up here — that's what lets panning start from anywhere on the
+# grid, not just the (rare) truly empty background.
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:

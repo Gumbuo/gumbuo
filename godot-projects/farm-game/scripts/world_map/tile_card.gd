@@ -42,6 +42,12 @@ var _name_edit: LineEdit = null
 var _name_confirm: Button = null
 
 func _ready() -> void:
+	# PASS (not the Control default STOP) so a click here still fires this
+	# card's own buttons/logic but also keeps bubbling up to WorldMap's
+	# _unhandled_input — otherwise these full-rect buttons blanket the
+	# entire grid and no click-drag-to-pan gesture could ever reach it.
+	mouse_filter = Control.MOUSE_FILTER_PASS
+	enter_button.mouse_filter = Control.MOUSE_FILTER_PASS
 	TYPE_COLORS = {
 		"FARM":     Color(0.40, 0.70, 0.30),
 		"FOREST":   Color(0.20, 0.50, 0.20),
@@ -68,7 +74,7 @@ func _ready() -> void:
 	_drop_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_drop_btn.flat = true
 	_drop_btn.modulate = Color(1, 1, 1, 0)
-	_drop_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	_drop_btn.mouse_filter = Control.MOUSE_FILTER_PASS
 	_drop_btn.visible = false
 	_drop_btn.pressed.connect(func() -> void: drop_requested.emit(grid_position))
 	add_child(_drop_btn)
@@ -88,7 +94,7 @@ func _ready() -> void:
 	_edit_btn.custom_minimum_size = Vector2(34, 34)
 	_edit_btn.position = Vector2(size.x - 38, 2)
 	_edit_btn.visible = false
-	_edit_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	_edit_btn.mouse_filter = Control.MOUSE_FILTER_PASS
 	_edit_btn.add_theme_stylebox_override("normal",  _circle_sb.call())
 	_edit_btn.add_theme_stylebox_override("hover",   _circle_sb.call())
 	_edit_btn.add_theme_stylebox_override("pressed", _circle_sb.call())
@@ -105,7 +111,7 @@ func _ready() -> void:
 	_move_btn.custom_minimum_size = Vector2(34, 34)
 	_move_btn.position = Vector2(size.x - 38, 38)
 	_move_btn.visible = false
-	_move_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	_move_btn.mouse_filter = Control.MOUSE_FILTER_PASS
 	_move_btn.add_theme_stylebox_override("normal",  _circle_sb.call())
 	_move_btn.add_theme_stylebox_override("hover",   _circle_sb.call())
 	_move_btn.add_theme_stylebox_override("pressed", _circle_sb.call())
