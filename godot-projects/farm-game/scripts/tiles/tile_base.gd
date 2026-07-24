@@ -18,13 +18,15 @@ var _player_sprite_proxy: Node2D        = null
 var _proxy_anim:          AnimatedSprite2D = null
 
 # ── Live tile presence (see other players sharing this tile) ─────────────
-const PRESENCE_URL  := "https://univershole.ink/api/presence"
-const PRESENCE_POLL_SEC := 1.2
+# Real WebSocket connection (Cloudflare Worker + Durable Object, one room
+# per tile_id — see godot-projects/farm-game/realtime/). Position updates
+# push instantly instead of the old ~1.2s HTTP-poll model.
+const REALTIME_URL := "wss://foxstead-realtime.gumbuogw3.workers.dev/room/"
+const PRESENCE_SEND_SEC := 0.2
 
-var _presence_post_req: HTTPRequest = null
-var _presence_get_req:  HTTPRequest = null
-var _presence_timer:    Timer       = null
-var _remote_players:    Dictionary  = {}  # wallet -> RemotePlayer node
+var _ws: WebSocketPeer = null
+var _presence_send_accum: float = 0.0
+var _remote_players: Dictionary = {}  # wallet -> RemotePlayer node
 
 # ── Action queue ─────────────────────────────────────────────
 # Each entry: { grid_pos, action, item_id, world_pos }
@@ -128,7 +130,8 @@ func _entry_spawn_position() -> Vector2:
 		return get_viewport().get_canvas_transform().affine_inverse() * sp
 	return player_spawn.position if player_spawn else Vector2(640, 360)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_poll_presence(delta)
 	if not is_instance_valid(_player) or not is_instance_valid(_proxy_anim):
 		return
 	# Sync proxy position and visual state from the hidden original sprite.
@@ -526,62 +529,55 @@ func _spawn_dot_layer() -> void:
 	add_child(_dot_layer)
 
 # ── Live tile presence ─────────────────────────────────────────
-# Short-poll model (no WebSocket infra exists for this game): every
-# PRESENCE_POLL_SEC we POST our own position to the shared endpoint and GET
-# everyone else currently reporting the same tile_id. Visual-only for
-# now — no combat, just seeing other live players when paths cross.
+# Real WebSocket connection to a Cloudflare Durable Object room (one room
+# per tile_id — see godot-projects/farm-game/realtime/). Position updates
+# push both ways instantly instead of the old ~1.2s HTTP-poll model;
+# closing the socket on scene exit is itself the "I left" signal, the room
+# broadcasts the leave to everyone else automatically.
 func _spawn_presence_system() -> void:
-	_presence_post_req = HTTPRequest.new()
-	add_child(_presence_post_req)
-	_presence_get_req = HTTPRequest.new()
-	add_child(_presence_get_req)
-	_presence_get_req.request_completed.connect(_on_presence_get_response)
-
-	_presence_timer = Timer.new()
-	_presence_timer.wait_time = PRESENCE_POLL_SEC
-	_presence_timer.autostart = true
-	_presence_timer.timeout.connect(_poll_presence)
-	add_child(_presence_timer)
-	_poll_presence()
-
-func _poll_presence() -> void:
-	if not is_instance_valid(_player):
+	if PlayerData.player_id == "":
 		return
-	var wallet: String = PlayerData.player_id
-	if wallet == "":
+	_ws = WebSocketPeer.new()
+	_ws.connect_to_url(REALTIME_URL + tile_id.uri_encode())
+
+# Called every _process() tick — see the existing _process() override below.
+func _poll_presence(delta: float) -> void:
+	if _ws == null or not is_instance_valid(_player):
+		return
+	_ws.poll()
+	var state: WebSocketPeer.State = _ws.get_ready_state()
+	if state != WebSocketPeer.STATE_OPEN:
 		return
 
-	if _presence_post_req.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
+	while _ws.get_available_packet_count() > 0:
+		var packet: PackedByteArray = _ws.get_packet()
+		_handle_realtime_message(packet.get_string_from_utf8())
+
+	_presence_send_accum += delta
+	if _presence_send_accum >= PRESENCE_SEND_SEC:
+		_presence_send_accum = 0.0
 		var body := JSON.stringify({
-			"tile_id": tile_id,
-			"wallet":  wallet,
-			"name":    PlayerData.player_name,
-			"x":       _player.global_position.x,
-			"y":       _player.global_position.y,
-			"facing":  _player.facing,
+			"type":   "presence",
+			"wallet": PlayerData.player_id,
+			"name":   PlayerData.player_name,
+			"x":      _player.global_position.x,
+			"y":      _player.global_position.y,
+			"facing": _player.facing,
 		})
-		_presence_post_req.request(PRESENCE_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
+		_ws.send_text(body)
 
-	if _presence_get_req.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
-		var url := "%s?tile_id=%s&wallet=%s" % [PRESENCE_URL, tile_id.uri_encode(), wallet.uri_encode()]
-		_presence_get_req.request(url, ["Accept: application/json"])
-
-func _on_presence_get_response(_result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+func _handle_realtime_message(text: String) -> void:
 	var json := JSON.new()
-	if json.parse(body.get_string_from_utf8()) != OK:
+	if json.parse(text) != OK:
 		return
 	var data = json.get_data()
-	if not (data is Dictionary and data.get("players") is Array):
+	if not (data is Dictionary and data.has("type")):
 		return
 
-	var seen: Dictionary = {}
-	for entry in data["players"]:
-		if not (entry is Dictionary):
-			continue
-		var w: String = str(entry.get("wallet", ""))
-		if w == "":
-			continue
-		seen[w] = true
+	if data["type"] == "presence":
+		var w: String = str(data.get("wallet", ""))
+		if w == "" or w == PlayerData.player_id:
+			return
 		var node = _remote_players.get(w)
 		if node == null or not is_instance_valid(node):
 			node = Node2D.new()
@@ -589,28 +585,22 @@ func _on_presence_get_response(_result: int, _code: int, _headers: PackedStringA
 			node.wallet = w
 			add_child(node)
 			_remote_players[w] = node
-		node.set_player_name(str(entry.get("name", "Player")))
-		node.update_target(Vector2(entry.get("x", 0.0), entry.get("y", 0.0)), str(entry.get("facing", "south")))
-
-	# Anyone no longer in the response has left or gone stale server-side.
-	for w in _remote_players.keys():
-		if not seen.has(w):
-			var node = _remote_players[w]
-			if is_instance_valid(node):
-				node.queue_free()
-			_remote_players.erase(w)
-
-# Called right before any scene change so we don't linger in other players'
-# view for the full server-side staleness window after actually leaving.
-func _send_leave_presence() -> void:
-	var wallet: String = PlayerData.player_id
-	if wallet == "" or tile_id == "":
+		node.set_player_name(str(data.get("name", "Player")))
+		node.update_target(Vector2(data.get("x", 0.0), data.get("y", 0.0)), str(data.get("facing", "south")))
 		return
-	var req := HTTPRequest.new()
-	add_child(req)
-	req.request_completed.connect(func(_r, _c, _h, _b): req.queue_free())
-	var body := JSON.stringify({"action": "leave", "tile_id": tile_id, "wallet": wallet})
-	req.request(PRESENCE_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
+
+	if data["type"] == "leave":
+		var lw: String = str(data.get("wallet", ""))
+		var node = _remote_players.get(lw)
+		if node != null and is_instance_valid(node):
+			node.queue_free()
+		_remote_players.erase(lw)
+
+# Called right before any scene change — closing the socket is the leave
+# signal, the room's onClose broadcasts it to everyone else on the tile.
+func _send_leave_presence() -> void:
+	if _ws != null:
+		_ws.close()
 
 func _slot_screen_pos(grid_pos: Vector2i) -> Vector2:
 	var step := _SLOT_PX + _SLOT_GAP

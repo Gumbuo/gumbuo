@@ -1,0 +1,13 @@
+{
+  "name": "foxstead-realtime",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.80.0",
+    "@cloudflare/workers-types": "latest"
+  }
+}

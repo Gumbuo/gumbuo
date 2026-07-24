@@ -1,0 +1,11 @@
+name = "foxstead-realtime"
+main = "src/worker.ts"
+compatibility_date = "2026-07-23"
+
+[[durable_objects.bindings]]
+name = "TILE_ROOM"
+class_name = "TileRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["TileRoom"]
