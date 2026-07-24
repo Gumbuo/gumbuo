@@ -185,19 +185,20 @@ func _build_starfield() -> void:
 # unchanged (no data migration) — columns wrap 360° around the equator, rows
 # span a near-pole-to-pole latitude band. For pointy-top hexes to interlock,
 # alternating ROWS shift half a column-step in longitude (the transpose of
-# the column-offset a flat-top grid would use), row spacing is 3/4 of a hex's
-# point-to-point height, and each tile is stretched independently along its
-# tangent-width vs tangent-height so it exactly meets its neighbors — no
-# gaps, no overlap — even though the true spacing shrinks toward the poles.
-# The tradeoff: since a 30x25 rectangular grid can't match a sphere's
-# geometry, tiles get visibly thinner (stretched) near the latitude extremes
-# instead of gapping/overlapping. A true seamless result needs a geodesic
-# hex-sphere instead of this equirectangular-style wrap, which means
-# abandoning col/row grid positions entirely — a much bigger, separate change.
+# the column-offset a flat-top grid would use).
+#
+# Every tile is the same real-world size (TILE_WORLD_SIZE), sized to match
+# row spacing so adjacent rows meet cleanly. Since a 30x25 rectangular grid
+# doesn't match a sphere's geometry, a fixed size can't also match the
+# longitude spacing at every latitude: near the equator that leaves mild
+# gaps between same-row neighbors, and near the poles — where 30 columns
+# wrap a much smaller circle — same-size tiles increasingly overlap instead
+# of shrinking. That's the direct, expected tradeoff of keeping every hex
+# the same size. A seamless fit everywhere would need a geodesic hex-sphere
+# instead of this equirectangular-style wrap, which means abandoning
+# col/row grid positions entirely — a much bigger, separate change.
 
-const HEX_LOCAL_WIDTH := 0.8660254   # flat-to-flat width of GlobeTile's hex mesh (circumradius 0.5)
-const HEX_ROW_SPACING_FACTOR := 0.75  # pointy-top row-to-row spacing as a fraction of full height
-const MIN_COS_LAT := 0.10  # floor so polar tiles stay visible slivers, not zero-width
+const TILE_WORLD_SIZE := 2.36  # derived from row spacing at MAX_LAT_DEG/GRID_ROWS below
 
 func _sphere_point(pos: Vector2i) -> Dictionary:
 	# Alternating rows shift by half a column-step in longitude.
@@ -215,15 +216,7 @@ func _sphere_transform(pos: Vector2i) -> Transform3D:
 	var ref_up: Vector3 = Vector3.UP if abs(normal.dot(Vector3.UP)) < 0.999 else Vector3.RIGHT
 	var tangent_x: Vector3 = ref_up.cross(normal).normalized()
 	var tangent_z: Vector3 = normal.cross(tangent_x).normalized()
-
-	var cos_lat: float = max(float(sp["cos_lat"]), MIN_COS_LAT)
-	var lon_step_world: float = PLANET_RADIUS * cos_lat * (TAU / float(GRID_COLS))
-	var lat_step_world: float = PLANET_RADIUS * deg_to_rad(2.0 * MAX_LAT_DEG / float(max(GRID_ROWS - 1, 1)))
-
-	var s_x: float = lon_step_world / HEX_LOCAL_WIDTH
-	var s_z: float = lat_step_world / HEX_ROW_SPACING_FACTOR
-
-	var basis := Basis(tangent_x * s_x, normal, tangent_z * s_z)
+	var basis := Basis(tangent_x * TILE_WORLD_SIZE, normal, tangent_z * TILE_WORLD_SIZE)
 	var origin: Vector3 = normal * (PLANET_RADIUS + TILE_LIFT)
 	return Transform3D(basis, origin)
 

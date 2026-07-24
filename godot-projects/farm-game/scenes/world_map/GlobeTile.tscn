@@ -25,7 +25,10 @@ script = ExtResource("1")
 shape = SubResource("BoxShape3D_1")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.006, 0)
 mesh = SubResource("PlaneMesh_mesh")
+
+[node name="Border" type="MeshInstance3D" parent="."]
 
 [node name="Overlay" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)

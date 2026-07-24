@@ -23,6 +23,7 @@ var TYPE_COLORS: Dictionary = {
 }
 
 @onready var _mesh: MeshInstance3D = $Mesh
+@onready var _border: MeshInstance3D = $Border
 @onready var _npc_icon: MeshInstance3D = $NpcIcon
 @onready var _overlay: MeshInstance3D = $Overlay
 @onready var _dot: MeshInstance3D = $LocationDot
@@ -68,6 +69,40 @@ static func _build_hex_mesh(circumradius: float, uv_radius: float) -> ArrayMesh:
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return mesh
 
+# Thin hex-shaped border ring (a hollow annulus, not a filled hex) sitting
+# just under the terrain mesh — it only ever occupies the rim strip between
+# inner_r and outer_r, so it reads as a border regardless of draw order.
+static func _build_hex_ring_mesh(inner_r: float, outer_r: float) -> ArrayMesh:
+	var verts := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array()
+
+	for i in range(6):
+		var angle: float = deg_to_rad(60 * i - 90)
+		verts.append(Vector3(cos(angle) * inner_r, 0.0, sin(angle) * inner_r))
+		normals.append(Vector3.UP)
+	for i in range(6):
+		var angle: float = deg_to_rad(60 * i - 90)
+		verts.append(Vector3(cos(angle) * outer_r, 0.0, sin(angle) * outer_r))
+		normals.append(Vector3.UP)
+	for i in range(6):
+		var i0 := i
+		var i1 := (i + 1) % 6
+		var o0 := i + 6
+		var o1 := ((i + 1) % 6) + 6
+		indices.append(i0); indices.append(o0); indices.append(o1)
+		indices.append(i0); indices.append(o1); indices.append(i1)
+
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
 func _ready() -> void:
 	_mesh.mesh = _build_hex_mesh(0.5, 0.5)
 	_mat = StandardMaterial3D.new()
@@ -75,6 +110,13 @@ func _ready() -> void:
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_mesh.material_override = _mat
+
+	_border.mesh = _build_hex_ring_mesh(0.46, 0.58)
+	var border_mat := StandardMaterial3D.new()
+	border_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	border_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	border_mat.albedo_color = Color(0.05, 0.06, 0.05, 1.0)
+	_border.material_override = border_mat
 
 	_overlay.mesh = _build_hex_mesh(0.56, 0.5)
 	_overlay_mat = StandardMaterial3D.new()
