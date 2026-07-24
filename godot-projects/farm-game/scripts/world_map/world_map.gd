@@ -7,8 +7,7 @@ const GRID_ROWS := 25
 const API_URL := "https://univershole.ink/api/farm-world"
 
 const PLANET_RADIUS := 14.0
-const MAX_LAT_DEG := 68.0
-const TILE_WORLD_SIZE := 2.6
+const MAX_LAT_DEG := 87.0
 const TILE_LIFT := 0.05
 const CAM_START_Z := 30.0
 const CAM_MIN_Z := 17.0
@@ -184,19 +183,27 @@ func _build_starfield() -> void:
 # ── Hex-on-sphere placement ───────────────────────────────────────────────
 # Reuses the existing flat Vector2i(col,row) grid from LandManager/NPCManager
 # unchanged (no data migration) — columns wrap 360° around the equator, rows
-# span a clamped latitude band so tiles never crush together at true poles.
-# The rectangular grid's column/row spacing don't perfectly match a sphere's
-# geometry, so tiles have mild gaps near the equator and mild overlap near
-# the latitude limits — a known cosmetic tradeoff for keeping tile positions
-# compatible with what's already saved locally and on the server.
+# span a near-pole-to-pole latitude band. For pointy-top hexes to interlock,
+# alternating ROWS shift half a column-step in longitude (the transpose of
+# the column-offset a flat-top grid would use), row spacing is 3/4 of a hex's
+# point-to-point height, and each tile is stretched independently along its
+# tangent-width vs tangent-height so it exactly meets its neighbors — no
+# gaps, no overlap — even though the true spacing shrinks toward the poles.
+# The tradeoff: since a 30x25 rectangular grid can't match a sphere's
+# geometry, tiles get visibly thinner (stretched) near the latitude extremes
+# instead of gapping/overlapping. A true seamless result needs a geodesic
+# hex-sphere instead of this equirectangular-style wrap, which means
+# abandoning col/row grid positions entirely — a much bigger, separate change.
+
+const HEX_LOCAL_WIDTH := 0.8660254   # flat-to-flat width of GlobeTile's hex mesh (circumradius 0.5)
+const HEX_ROW_SPACING_FACTOR := 0.75  # pointy-top row-to-row spacing as a fraction of full height
+const MIN_COS_LAT := 0.10  # floor so polar tiles stay visible slivers, not zero-width
 
 func _sphere_point(pos: Vector2i) -> Dictionary:
-	var lon: float = (float(pos.x) / float(GRID_COLS)) * TAU
-	# Pointy-top hexes interlock via a per-COLUMN offset (odd columns shifted
-	# half a row toward one pole), the transpose of the row-offset the old
-	# flat-top flat-map grid used.
-	var row_offset: float = 0.5 if (pos.x % 2 == 1) else 0.0
-	var t: float = (float(pos.y) + row_offset) / float(max(GRID_ROWS - 1, 1))
+	# Alternating rows shift by half a column-step in longitude.
+	var col_offset: float = 0.5 if (pos.y % 2 == 1) else 0.0
+	var lon: float = ((float(pos.x) + col_offset) / float(GRID_COLS)) * TAU
+	var t: float = float(pos.y) / float(max(GRID_ROWS - 1, 1))
 	var lat: float = deg_to_rad(lerp(MAX_LAT_DEG, -MAX_LAT_DEG, t))
 	var cos_lat: float = cos(lat)
 	var dir := Vector3(cos_lat * cos(lon), sin(lat), cos_lat * sin(lon))
@@ -208,9 +215,15 @@ func _sphere_transform(pos: Vector2i) -> Transform3D:
 	var ref_up: Vector3 = Vector3.UP if abs(normal.dot(Vector3.UP)) < 0.999 else Vector3.RIGHT
 	var tangent_x: Vector3 = ref_up.cross(normal).normalized()
 	var tangent_z: Vector3 = normal.cross(tangent_x).normalized()
-	var shrink: float = clamp(float(sp["cos_lat"]), 0.35, 1.0)
-	var s: float = TILE_WORLD_SIZE * shrink
-	var basis := Basis(tangent_x * s, normal, tangent_z * s)
+
+	var cos_lat: float = max(float(sp["cos_lat"]), MIN_COS_LAT)
+	var lon_step_world: float = PLANET_RADIUS * cos_lat * (TAU / float(GRID_COLS))
+	var lat_step_world: float = PLANET_RADIUS * deg_to_rad(2.0 * MAX_LAT_DEG / float(max(GRID_ROWS - 1, 1)))
+
+	var s_x: float = lon_step_world / HEX_LOCAL_WIDTH
+	var s_z: float = lat_step_world / HEX_ROW_SPACING_FACTOR
+
+	var basis := Basis(tangent_x * s_x, normal, tangent_z * s_z)
 	var origin: Vector3 = normal * (PLANET_RADIUS + TILE_LIFT)
 	return Transform3D(basis, origin)
 
