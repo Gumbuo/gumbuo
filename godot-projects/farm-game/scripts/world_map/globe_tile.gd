@@ -8,10 +8,10 @@ class_name GlobeTile
 # and calls straight into LandManager, same as the old click handlers did.
 
 const TILE_TEXTURES: Dictionary = {
-	"FARM":     "res://assets/sprites/tiles/world_tile_farm.png",
-	"FOREST":   "res://assets/sprites/tiles/world_tile_forest.png",
-	"MOUNTAIN": "res://assets/sprites/tiles/world_tile_mountain.png",
-	"POND":     "res://assets/sprites/tiles/world_tile_pond.png",
+	"FARM":     "res://assets/sprites/tiles/world_tile_farm_pointy.png",
+	"FOREST":   "res://assets/sprites/tiles/world_tile_forest_pointy.png",
+	"MOUNTAIN": "res://assets/sprites/tiles/world_tile_mountain_pointy.png",
+	"POND":     "res://assets/sprites/tiles/world_tile_pond_pointy.png",
 }
 
 var TYPE_COLORS: Dictionary = {
@@ -35,13 +35,48 @@ var _is_owner: bool = false
 var _mat: StandardMaterial3D
 var _overlay_mat: StandardMaterial3D
 
+# Pointy-top hex silhouette (vertex at +/-Z, flat sides at +/-X) built as a
+# real 6-triangle fan instead of a square quad + alpha — guarantees a crisp
+# hex outline regardless of PNG alpha/transparency-sorting behavior in 3D.
+static func _build_hex_mesh(circumradius: float, uv_radius: float) -> ArrayMesh:
+	var verts := PackedVector3Array()
+	var uvs := PackedVector2Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array()
+
+	verts.append(Vector3.ZERO)
+	uvs.append(Vector2(0.5, 0.5))
+	normals.append(Vector3.UP)
+	for i in range(6):
+		var angle: float = deg_to_rad(60 * i - 90)
+		verts.append(Vector3(cos(angle) * circumradius, 0.0, sin(angle) * circumradius))
+		uvs.append(Vector2(0.5, 0.5) + Vector2(cos(angle), sin(angle)) * uv_radius)
+		normals.append(Vector3.UP)
+	for i in range(6):
+		indices.append(0)
+		indices.append(1 + i)
+		indices.append(1 + ((i + 1) % 6))
+
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
 func _ready() -> void:
+	_mesh.mesh = _build_hex_mesh(0.5, 0.5)
 	_mat = StandardMaterial3D.new()
 	_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_mesh.material_override = _mat
 
+	_overlay.mesh = _build_hex_mesh(0.56, 0.5)
 	_overlay_mat = StandardMaterial3D.new()
 	_overlay_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_overlay_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

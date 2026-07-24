@@ -8,7 +8,7 @@ const API_URL := "https://univershole.ink/api/farm-world"
 
 const PLANET_RADIUS := 14.0
 const MAX_LAT_DEG := 68.0
-const TILE_WORLD_SIZE := 2.0
+const TILE_WORLD_SIZE := 2.6
 const TILE_LIFT := 0.05
 const CAM_START_Z := 30.0
 const CAM_MIN_Z := 17.0
@@ -192,7 +192,11 @@ func _build_starfield() -> void:
 
 func _sphere_point(pos: Vector2i) -> Dictionary:
 	var lon: float = (float(pos.x) / float(GRID_COLS)) * TAU
-	var t: float = float(pos.y) / float(max(GRID_ROWS - 1, 1))
+	# Pointy-top hexes interlock via a per-COLUMN offset (odd columns shifted
+	# half a row toward one pole), the transpose of the row-offset the old
+	# flat-top flat-map grid used.
+	var row_offset: float = 0.5 if (pos.x % 2 == 1) else 0.0
+	var t: float = (float(pos.y) + row_offset) / float(max(GRID_ROWS - 1, 1))
 	var lat: float = deg_to_rad(lerp(MAX_LAT_DEG, -MAX_LAT_DEG, t))
 	var cos_lat: float = cos(lat)
 	var dir := Vector3(cos_lat * cos(lon), sin(lat), cos_lat * sin(lon))
