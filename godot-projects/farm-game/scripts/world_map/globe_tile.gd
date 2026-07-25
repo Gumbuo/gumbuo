@@ -46,7 +46,19 @@ var _local_corners: PackedVector2Array = PackedVector2Array()
 
 const WATER_BORDER_COLOR := Color(0.05, 0.06, 0.05, 1.0)
 const OWNED_BORDER_COLOR := Color(0.90, 0.12, 0.12, 0.95)
-const TERRAIN_UV_MARGIN := 1.35
+
+# Per-type UV zoom applied via the material (not baked into the mesh, which
+# always maps its true corners to the full 0..1 UV range) — each terrain
+# art asset has a different amount of native margin around its actual
+# hex-top content (e.g. pond's grass rim is much thinner than the others'),
+# so a single shared zoom factor can't fit all of them without either
+# leaving gaps or over-cropping the thinner ones.
+const TERRAIN_UV_MARGIN: Dictionary = {
+	"FARM":     1.1,
+	"FOREST":   1.1,
+	"MOUNTAIN": 1.1,
+	"POND":     1.0,
+}
 
 static func _scale_corners(corners: PackedVector2Array, s: float) -> PackedVector2Array:
 	var out := PackedVector2Array()
@@ -167,13 +179,11 @@ func set_polygon(local_corners: PackedVector2Array) -> void:
 	for c in local_corners:
 		max_r = max(max_r, c.length())
 
-	# The terrain art has a "low top-down block" perspective — the actual
-	# hex-top face occupies less than the full canvas (there's a beveled
-	# side below/around it), unlike the old flat icons which filled their
-	# canvas edge-to-edge. TERRAIN_UV_MARGIN zooms the UV sampling into
-	# just that inner hex-top region so the art fills the polygon instead
-	# of leaving gaps at the corners.
-	_mesh.mesh = _build_polygon_mesh(local_corners, max_r * TERRAIN_UV_MARGIN)
+	# Mesh UV always maps the polygon's true corners to the full 0..1 range —
+	# per-type zoom (TERRAIN_UV_MARGIN) is applied via material uv1_scale/
+	# offset in _apply_texture() instead, since different terrain art needs
+	# different amounts of it.
+	_mesh.mesh = _build_polygon_mesh(local_corners, max_r)
 	_border.mesh = _build_ring_mesh(local_corners, 0.97, 1.05)
 	_overlay.mesh = _build_polygon_mesh(_scale_corners(local_corners, 1.08), max_r * 1.08)
 
@@ -207,7 +217,7 @@ func set_tile(tile_data: Dictionary) -> void:
 	_is_empty = false
 	_is_owner = tile_data.get("owner_id", "") == PlayerData.player_id
 	var type_str: String = tile_data.get("type_str", "FARM")
-	_apply_texture(TILE_TEXTURES.get(type_str, ""), TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3)))
+	_apply_texture(TILE_TEXTURES.get(type_str, ""), TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3)), TERRAIN_UV_MARGIN.get(type_str, 1.1))
 	_npc_icon.visible = false
 	_dot.visible = _tile_id != "" and _tile_id == LandManager.last_tile_id
 	# Owned tiles keep a bold gold outline as an at-a-glance "this is yours"
@@ -232,7 +242,7 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 	_is_owner = false
 	var terrain: String = npc_data.get("terrain", "")
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
-	_apply_texture(TILE_TEXTURES.get(terrain, ""), Color(col[0], col[1], col[2]))
+	_apply_texture(TILE_TEXTURES.get(terrain, ""), Color(col[0], col[1], col[2]), TERRAIN_UV_MARGIN.get(terrain, 1.1))
 	_border.visible = false
 
 	var standing_path: String = npc_data.get("standing", "")
@@ -250,13 +260,16 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 		_npc_icon.visible = false
 	_dot.visible = false
 
-func _apply_texture(tex_path: String, fallback_color: Color) -> void:
+func _apply_texture(tex_path: String, fallback_color: Color, margin: float = 1.0) -> void:
 	if tex_path != "" and ResourceLoader.exists(tex_path):
 		_mat.albedo_texture = load(tex_path)
 		_mat.albedo_color = Color(1, 1, 1, 1)
 	else:
 		_mat.albedo_texture = null
 		_mat.albedo_color = fallback_color
+	var inv: float = 1.0 / max(margin, 0.001)
+	_mat.uv1_scale = Vector3(inv, inv, 1.0)
+	_mat.uv1_offset = Vector3(0.5 * (1.0 - inv), 0.5 * (1.0 - inv), 0.0)
 
 func is_empty_cell() -> bool:
 	return _is_empty
