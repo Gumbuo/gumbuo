@@ -45,7 +45,7 @@ var _border_mat: StandardMaterial3D
 var _local_corners: PackedVector2Array = PackedVector2Array()
 
 const WATER_BORDER_COLOR := Color(0.05, 0.06, 0.05, 1.0)
-const OWNED_BORDER_COLOR := Color(1.0, 0.85, 0.0, 0.95)
+const OWNED_BORDER_COLOR := Color(0.90, 0.12, 0.12, 0.95)
 
 static func _scale_corners(corners: PackedVector2Array, s: float) -> PackedVector2Array:
 	var out := PackedVector2Array()
