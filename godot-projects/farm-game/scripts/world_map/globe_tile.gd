@@ -124,6 +124,11 @@ func _ready() -> void:
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_mat.render_priority = 0
+	# Godot's 3D default (linear + mipmaps) softens pixel art badly once a
+	# tile fills a big chunk of the screen up close — nearest keeps hard
+	# pixel edges, mipmaps still kick in only when the tile is small/distant
+	# so it doesn't shimmer from far away.
+	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 	_mesh.material_override = _mat
 
 	var border_mat := StandardMaterial3D.new()
@@ -207,6 +212,7 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 		npc_mat.albedo_texture = load(standing_path)
 		npc_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		npc_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		npc_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 		npc_mat.render_priority = 1
 		_npc_icon.material_override = npc_mat
 		_npc_icon.visible = true
