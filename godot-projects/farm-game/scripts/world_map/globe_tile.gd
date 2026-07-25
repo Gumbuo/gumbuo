@@ -41,6 +41,11 @@ var _is_empty: bool = true
 var _is_owner: bool = false
 var _mat: StandardMaterial3D
 var _overlay_mat: StandardMaterial3D
+var _border_mat: StandardMaterial3D
+var _local_corners: PackedVector2Array = PackedVector2Array()
+
+const WATER_BORDER_COLOR := Color(0.05, 0.06, 0.05, 1.0)
+const OWNED_BORDER_COLOR := Color(1.0, 0.85, 0.0, 0.95)
 
 static func _scale_corners(corners: PackedVector2Array, s: float) -> PackedVector2Array:
 	var out := PackedVector2Array()
@@ -131,11 +136,11 @@ func _ready() -> void:
 	_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 	_mesh.material_override = _mat
 
-	var border_mat := StandardMaterial3D.new()
-	border_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	border_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	border_mat.albedo_color = Color(0.05, 0.06, 0.05, 1.0)
-	_border.material_override = border_mat
+	_border_mat = StandardMaterial3D.new()
+	_border_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_border_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_border_mat.albedo_color = WATER_BORDER_COLOR
+	_border.material_override = _border_mat
 
 	_overlay_mat = StandardMaterial3D.new()
 	_overlay_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -156,6 +161,7 @@ func _ready() -> void:
 # local tangent-plane (x,z) coordinates, in real world units — called once
 # by WorldMap right after instancing, before set_tile()/set_empty().
 func set_polygon(local_corners: PackedVector2Array) -> void:
+	_local_corners = local_corners
 	var max_r: float = 0.001
 	for c in local_corners:
 		max_r = max(max_r, c.length())
@@ -182,6 +188,10 @@ func set_empty() -> void:
 	_npc_icon.visible = false
 	_overlay.visible = false
 	_dot.visible = false
+	if _border_mat:
+		_border_mat.albedo_color = WATER_BORDER_COLOR
+	if not _local_corners.is_empty():
+		_border.mesh = _build_ring_mesh(_local_corners, 0.97, 1.05)
 	_border.visible = true
 
 func set_tile(tile_data: Dictionary) -> void:
@@ -193,7 +203,20 @@ func set_tile(tile_data: Dictionary) -> void:
 	_apply_texture(TILE_TEXTURES.get(type_str, ""), TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3)))
 	_npc_icon.visible = false
 	_dot.visible = _tile_id != "" and _tile_id == LandManager.last_tile_id
-	_border.visible = false
+	# Owned tiles keep a bold gold outline as an at-a-glance "this is yours"
+	# marker — everything else stays borderless so placed land blends
+	# seamlessly. This is the only always-visible cue for ownership now that
+	# Edit/Move live in the click-triggered tile menu instead of always-on
+	# corner buttons (not practical to keep glued to a tile on a rotating
+	# globe with ~1000 of them).
+	if _is_owner:
+		if _border_mat:
+			_border_mat.albedo_color = OWNED_BORDER_COLOR
+		if not _local_corners.is_empty():
+			_border.mesh = _build_ring_mesh(_local_corners, 0.90, 1.08)
+		_border.visible = true
+	else:
+		_border.visible = false
 
 func set_npc_tile(npc_data: Dictionary) -> void:
 	_npc_id = npc_data.get("id", "")
