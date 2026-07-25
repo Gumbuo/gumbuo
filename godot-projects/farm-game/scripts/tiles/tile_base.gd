@@ -54,17 +54,12 @@ const _REPATH_OFFSETS: Array = [
 ]
 
 # ── Tile-to-tile navigation ───────────────────────────────────
-# Pointy-top hex, 6 neighbor directions. Matches the "odd-r" offset layout
-# used by the world map (WorldMap.gd _hex_pixel_pos) — neighbor offsets
-# depend on whether the current row is even or odd.
-const _NAV_DIRS_EVEN_ROW := {
-	"NE": Vector2i( 0, -1), "E": Vector2i( 1,  0), "SE": Vector2i( 0,  1),
-	"SW": Vector2i(-1,  1), "W": Vector2i(-1,  0), "NW": Vector2i(-1, -1),
-}
-const _NAV_DIRS_ODD_ROW := {
-	"NE": Vector2i( 1, -1), "E": Vector2i( 1,  0), "SE": Vector2i( 1,  1),
-	"SW": Vector2i( 0,  1), "W": Vector2i(-1,  0), "NW": Vector2i( 0, -1),
-}
+# World map tiles are faces of a geodesic hex-sphere now (see WorldGrid) —
+# each face has 5 or 6 neighbors in sphere-adjacency order, not a fixed
+# compass direction. These six slot keys just label fixed screen
+# positions/icons; WorldGrid.get_neighbors() fills them in whatever order
+# the sphere gives us (pentagon tiles leave one slot empty).
+const _NAV_SLOT_KEYS: Array = ["NW", "NE", "E", "SE", "SW", "W"]
 # Screen px the character walks to before the scene transition fires
 const _NAV_WALK_SCREEN := {
 	"NW": Vector2(420, 110), "NE": Vector2(860, 110),
@@ -85,10 +80,6 @@ const _NAV_BTN_POS := {
 	"SW": Vector2(490, 616), "SE": Vector2(646, 616),
 }
 var _nav_layer: CanvasLayer = null
-
-static func _hex_neighbor(pos: Vector2i, dir: String) -> Vector2i:
-	var offs: Dictionary = _NAV_DIRS_ODD_ROW if (pos.y % 2 == 1) else _NAV_DIRS_EVEN_ROW
-	return pos + offs.get(dir, Vector2i.ZERO)
 
 func _ready() -> void:
 	tile_id   = LandManager.current_tile_id
@@ -444,10 +435,15 @@ func _spawn_nav_arrows() -> void:
 	_nav_layer.layer = 8
 	add_child(_nav_layer)
 	var my_pos: Vector2i = tile_data.get("position", Vector2i(-1, -1))
-	if my_pos.x < 0:
+	if WorldGrid.is_unplaced(my_pos) or WorldGrid.is_legacy(my_pos):
 		return
-	for dir in _NAV_ARROW:
-		var nbr_pos: Vector2i = _hex_neighbor(my_pos, dir)
+	var neighbor_faces: Array = WorldGrid.get_neighbors(WorldGrid.decode(my_pos))
+	for slot_i in range(min(neighbor_faces.size(), _NAV_SLOT_KEYS.size())):
+		var dir: String = _NAV_SLOT_KEYS[slot_i]
+		var nbr_face: int = neighbor_faces[slot_i]
+		if nbr_face < 0:
+			continue
+		var nbr_pos: Vector2i = WorldGrid.encode(nbr_face)
 		var nbr_id: String = LandManager.grid.get(nbr_pos, "")
 		if nbr_id == "" or nbr_id == LandManager.GLOBAL_TILE_ID:
 			continue

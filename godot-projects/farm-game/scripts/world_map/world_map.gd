@@ -2,8 +2,6 @@ extends Node3D
 
 const GLOBE_TILE_SCENE := preload("res://scenes/world_map/GlobeTile.tscn")
 const HUD_SCENE        := preload("res://scenes/ui/HUD.tscn")
-const GRID_COLS := 30
-const GRID_ROWS := 25
 const API_URL := "https://univershole.ink/api/farm-world"
 
 const PLANET_RADIUS := 14.0
@@ -181,54 +179,43 @@ func _build_starfield() -> void:
 
 
 # ── Hex-on-sphere placement ───────────────────────────────────────────────
-# Reuses the existing flat Vector2i(col,row) grid from LandManager/NPCManager
-# unchanged (no data migration) — columns wrap 360° around the equator, rows
-# span a near-pole-to-pole latitude band. For pointy-top hexes to interlock,
-# alternating ROWS shift half a column-step in longitude (the transpose of
-# the column-offset a flat-top grid would use).
-#
-# Every tile is the same real-world size (TILE_WORLD_SIZE), sized to match
-# row spacing so adjacent rows meet cleanly. Since a 30x25 rectangular grid
-# doesn't match a sphere's geometry, a fixed size can't also match the
-# longitude spacing at every latitude: near the equator that leaves mild
-# gaps between same-row neighbors, and near the poles — where 30 columns
-# wrap a much smaller circle — same-size tiles increasingly overlap instead
-# of shrinking. That's the direct, expected tradeoff of keeping every hex
-# the same size. A seamless fit everywhere would need a geodesic hex-sphere
-# instead of this equirectangular-style wrap, which means abandoning
-# col/row grid positions entirely — a much bigger, separate change.
+# Tiles are the actual faces of a geodesic hex-sphere (WorldGrid — the dual
+# of a subdivided icosahedron, same construction real geodesic domes and
+# soccer balls use): ~990 hexagons plus exactly 12 pentagons at the original
+# icosahedron vertices, every face a genuine neighbor-sharing polygon on the
+# sphere's real surface. Unlike wrapping a rectangular col/row grid onto a
+# sphere, there's no equator/pole size distortion to fight — every tile is
+# naturally close to the same size everywhere, poles included, with no
+# per-latitude tuning. Position is a WorldGrid-encoded face index (see
+# WorldGrid for why it's still carried in a plain Vector2i).
 
-const TILE_WORLD_SIZE := 2.36  # derived from row spacing at MAX_LAT_DEG/GRID_ROWS below
-
-func _sphere_point(pos: Vector2i) -> Dictionary:
-	# Alternating rows shift by half a column-step in longitude.
-	var col_offset: float = 0.5 if (pos.y % 2 == 1) else 0.0
-	var lon: float = ((float(pos.x) + col_offset) / float(GRID_COLS)) * TAU
-	var t: float = float(pos.y) / float(max(GRID_ROWS - 1, 1))
-	var lat: float = deg_to_rad(lerp(MAX_LAT_DEG, -MAX_LAT_DEG, t))
-	var cos_lat: float = cos(lat)
-	var dir := Vector3(cos_lat * cos(lon), sin(lat), cos_lat * sin(lon))
-	return {"dir": dir, "lat": lat, "lon": lon, "cos_lat": cos_lat}
-
-func _sphere_transform(pos: Vector2i) -> Transform3D:
-	var sp: Dictionary = _sphere_point(pos)
-	var normal: Vector3 = sp["dir"]
-	var ref_up: Vector3 = Vector3.UP if abs(normal.dot(Vector3.UP)) < 0.999 else Vector3.RIGHT
-	var tangent_x: Vector3 = ref_up.cross(normal).normalized()
-	var tangent_z: Vector3 = normal.cross(tangent_x).normalized()
-	var basis := Basis(tangent_x * TILE_WORLD_SIZE, normal, tangent_z * TILE_WORLD_SIZE)
-	var origin: Vector3 = normal * (PLANET_RADIUS + TILE_LIFT)
-	return Transform3D(basis, origin)
+func _tangent_frame(center: Vector3) -> Dictionary:
+	var ref_up: Vector3 = Vector3.UP if abs(center.dot(Vector3.UP)) < 0.999 else Vector3.RIGHT
+	var tangent_x: Vector3 = ref_up.cross(center).normalized()
+	var tangent_z: Vector3 = center.cross(tangent_x).normalized()
+	return {"x": tangent_x, "z": tangent_z}
 
 func _build_globe_grid() -> void:
-	for y in GRID_ROWS:
-		for x in GRID_COLS:
-			var pos := Vector2i(x, y)
-			var tile: GlobeTile = GLOBE_TILE_SCENE.instantiate()
-			_tiles_root.add_child(tile)
-			tile.transform = _sphere_transform(pos)
-			tile.grid_position = pos
-			_cards[pos] = tile
+	var count: int = WorldGrid.face_count()
+	for i in range(count):
+		var center: Vector3 = WorldGrid.get_center(i)
+		var corners_world: Array = WorldGrid.get_corners(i)
+		var frame: Dictionary = _tangent_frame(center)
+		var tangent_x: Vector3 = frame["x"]
+		var tangent_z: Vector3 = frame["z"]
+
+		var local_corners := PackedVector2Array()
+		for cw in corners_world:
+			var offset: Vector3 = (cw - center) * PLANET_RADIUS
+			local_corners.append(Vector2(offset.dot(tangent_x), offset.dot(tangent_z)))
+
+		var tile: GlobeTile = GLOBE_TILE_SCENE.instantiate()
+		_tiles_root.add_child(tile)
+		tile.transform = Transform3D(Basis(tangent_x, center, tangent_z), center * (PLANET_RADIUS + TILE_LIFT))
+		tile.set_polygon(local_corners)
+		var pos: Vector2i = WorldGrid.encode(i)
+		tile.grid_position = pos
+		_cards[pos] = tile
 
 func _npc_position_set() -> Dictionary:
 	var result: Dictionary = {}
@@ -725,9 +712,11 @@ func _face_home_tile() -> void:
 	if home_id == "" or not LandManager.tiles.has(home_id):
 		return
 	var pos: Vector2i = LandManager.tiles[home_id].get("position", Vector2i(-1, -1))
-	if pos.x < 0:
+	if WorldGrid.is_unplaced(pos) or WorldGrid.is_legacy(pos):
 		return
-	var sp: Dictionary = _sphere_point(pos)
-	_yaw = -float(sp["lon"])
-	_pitch = clamp(-float(sp["lat"]), -PITCH_LIMIT, PITCH_LIMIT)
+	var center: Vector3 = WorldGrid.get_center(WorldGrid.decode(pos))
+	var lat: float = asin(clamp(center.y, -1.0, 1.0))
+	var lon: float = atan2(center.z, center.x)
+	_yaw = -lon
+	_pitch = clamp(-lat, -PITCH_LIMIT, PITCH_LIMIT)
 	_apply_globe_rotation()

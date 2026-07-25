@@ -645,6 +645,27 @@ func _remove_legacy_starter_tile() -> void:
 		if home_tile_id == tid:
 			home_tile_id = ""
 
+# The world map moved from a flat 30x25 (col,row) grid to a geodesic
+# hex-sphere (see WorldGrid) — positions are now an encoded face index
+# instead of a rectangular coordinate. Remaps any pre-globe position
+# deterministically via WorldGrid so every client lands on the same face
+# without server coordination. Idempotent — already-migrated positions
+# pass through unchanged, so this is safe to run on every load.
+func _migrate_world_positions() -> void:
+	var occupied: Dictionary = {}
+	var new_tiles: Dictionary = {}
+	var new_grid: Dictionary = {}
+	for tid in tiles:
+		var td: Dictionary = tiles[tid]
+		var old_pos: Vector2i = td.get("position", Vector2i(-1, -1))
+		var new_pos: Vector2i = WorldGrid.normalize_position(old_pos, occupied)
+		td["position"] = new_pos
+		new_tiles[tid] = td
+		if not WorldGrid.is_unplaced(new_pos):
+			new_grid[new_pos] = tid
+	tiles = new_tiles
+	grid = new_grid
+
 func _reclaim_local_tiles() -> void:
 	var pid: String = PlayerData.player_id
 	if pid == "":
@@ -686,7 +707,10 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 		if my_id != "" and str(td.get("owner_id", "")) == my_id:
 			continue
 		var pos_dict: Dictionary = td.get("position", {})
-		var pos := Vector2i(int(pos_dict.get("x", -1)), int(pos_dict.get("y", -1)))
+		var raw_pos := Vector2i(int(pos_dict.get("x", -1)), int(pos_dict.get("y", -1)))
+		if raw_pos.x < 0:
+			continue
+		var pos: Vector2i = WorldGrid.normalize_position(raw_pos)
 		if pos.x < 0:
 			continue
 		# Block genuine conflicts (a different tile claiming an occupied
@@ -818,6 +842,7 @@ func load_land_data() -> void:
 	_purge_unclaimed_tiles()
 	_reclaim_local_tiles()
 	_remove_legacy_starter_tile()
+	_migrate_world_positions()
 	_run_deed_migrations()
 	_ensure_global_tile()
 	save_land_data()

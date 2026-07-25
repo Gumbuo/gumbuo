@@ -1,11 +1,16 @@
 extends StaticBody3D
 class_name GlobeTile
 
-# 3D equivalent of the old flat TileCard: a hex-terrain-textured quad sitting
-# tangent to the planet's surface, with a StaticBody3D + CollisionShape3D
-# (added in code by WorldMap._build_globe_grid) so raycasts from the camera
-# can pick it. No signals here — WorldMap resolves picks itself via raycast
-# and calls straight into LandManager, same as the old click handlers did.
+# 3D equivalent of the old flat TileCard: a terrain-textured polygon sitting
+# flush on the geodesic sphere's surface (see WorldGrid), with a
+# StaticBody3D + ConvexPolygonShape3D so raycasts from the camera can pick
+# it. Shape comes straight from the sphere geometry — WorldMap calls
+# set_polygon() once after placing this tile, passing the face's actual
+# corners (already projected into this tile's local tangent plane, already
+# in real world units) so the mesh is exactly the true geodesic face: 6
+# corners almost everywhere, 5 corners at the 12 pentagon faces. No signals
+# here — WorldMap resolves picks itself via raycast and calls straight into
+# LandManager, same as the old click handlers did.
 
 const TILE_TEXTURES: Dictionary = {
 	"FARM":     "res://assets/sprites/tiles/world_tile_farm_pointy.png",
@@ -22,6 +27,7 @@ var TYPE_COLORS: Dictionary = {
 	"GUILD":    Color(0.60, 0.40, 0.80),
 }
 
+@onready var _collision: CollisionShape3D = $CollisionShape3D
 @onready var _mesh: MeshInstance3D = $Mesh
 @onready var _border: MeshInstance3D = $Border
 @onready var _npc_icon: MeshInstance3D = $NpcIcon
@@ -36,10 +42,17 @@ var _is_owner: bool = false
 var _mat: StandardMaterial3D
 var _overlay_mat: StandardMaterial3D
 
-# Pointy-top hex silhouette (vertex at +/-Z, flat sides at +/-X) built as a
-# real 6-triangle fan instead of a square quad + alpha — guarantees a crisp
-# hex outline regardless of PNG alpha/transparency-sorting behavior in 3D.
-static func _build_hex_mesh(circumradius: float, uv_radius: float) -> ArrayMesh:
+static func _scale_corners(corners: PackedVector2Array, s: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for c in corners:
+		out.append(c * s)
+	return out
+
+# Fan-triangulated polygon (5 or 6 sides, whatever the sphere face gives us)
+# instead of an assumed-regular hexagon — built as real geometry, not a
+# square quad + alpha, so the silhouette is crisp regardless of how the
+# engine handles alpha/transparency sorting in 3D.
+static func _build_polygon_mesh(corners: PackedVector2Array, uv_radius: float) -> ArrayMesh:
 	var verts := PackedVector3Array()
 	var uvs := PackedVector2Array()
 	var normals := PackedVector3Array()
@@ -48,15 +61,16 @@ static func _build_hex_mesh(circumradius: float, uv_radius: float) -> ArrayMesh:
 	verts.append(Vector3.ZERO)
 	uvs.append(Vector2(0.5, 0.5))
 	normals.append(Vector3.UP)
-	for i in range(6):
-		var angle: float = deg_to_rad(60 * i - 90)
-		verts.append(Vector3(cos(angle) * circumradius, 0.0, sin(angle) * circumradius))
-		uvs.append(Vector2(0.5, 0.5) + Vector2(cos(angle), sin(angle)) * uv_radius)
+	var n: int = corners.size()
+	var r: float = max(uv_radius, 0.001)
+	for c in corners:
+		verts.append(Vector3(c.x, 0.0, c.y))
+		uvs.append(Vector2(0.5, 0.5) + (c / r) * 0.5)
 		normals.append(Vector3.UP)
-	for i in range(6):
+	for i in range(n):
 		indices.append(0)
 		indices.append(1 + i)
-		indices.append(1 + ((i + 1) % 6))
+		indices.append(1 + ((i + 1) % n))
 
 	var arrays: Array = []
 	arrays.resize(Mesh.ARRAY_MAX)
@@ -69,27 +83,28 @@ static func _build_hex_mesh(circumradius: float, uv_radius: float) -> ArrayMesh:
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return mesh
 
-# Thin hex-shaped border ring (a hollow annulus, not a filled hex) sitting
-# just under the terrain mesh — it only ever occupies the rim strip between
-# inner_r and outer_r, so it reads as a border regardless of draw order.
-static func _build_hex_ring_mesh(inner_r: float, outer_r: float) -> ArrayMesh:
+# Thin border ring (a hollow annulus, not a filled polygon) sitting just
+# under the terrain mesh — only ever occupies the rim strip between
+# inner_scale and outer_scale of the true corners, so it reads as a border
+# regardless of draw order.
+static func _build_ring_mesh(corners: PackedVector2Array, inner_scale: float, outer_scale: float) -> ArrayMesh:
+	var n: int = corners.size()
 	var verts := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var indices := PackedInt32Array()
-
-	for i in range(6):
-		var angle: float = deg_to_rad(60 * i - 90)
-		verts.append(Vector3(cos(angle) * inner_r, 0.0, sin(angle) * inner_r))
+	for c in corners:
+		var p: Vector2 = c * inner_scale
+		verts.append(Vector3(p.x, 0.0, p.y))
 		normals.append(Vector3.UP)
-	for i in range(6):
-		var angle: float = deg_to_rad(60 * i - 90)
-		verts.append(Vector3(cos(angle) * outer_r, 0.0, sin(angle) * outer_r))
+	for c in corners:
+		var p: Vector2 = c * outer_scale
+		verts.append(Vector3(p.x, 0.0, p.y))
 		normals.append(Vector3.UP)
-	for i in range(6):
+	for i in range(n):
 		var i0 := i
-		var i1 := (i + 1) % 6
-		var o0 := i + 6
-		var o1 := ((i + 1) % 6) + 6
+		var i1 := (i + 1) % n
+		var o0 := i + n
+		var o1 := ((i + 1) % n) + n
 		indices.append(i0); indices.append(o0); indices.append(o1)
 		indices.append(i0); indices.append(o1); indices.append(i1)
 
@@ -104,21 +119,19 @@ static func _build_hex_ring_mesh(inner_r: float, outer_r: float) -> ArrayMesh:
 	return mesh
 
 func _ready() -> void:
-	_mesh.mesh = _build_hex_mesh(0.5, 0.5)
 	_mat = StandardMaterial3D.new()
 	_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_mat.render_priority = 0
 	_mesh.material_override = _mat
 
-	_border.mesh = _build_hex_ring_mesh(0.46, 0.58)
 	var border_mat := StandardMaterial3D.new()
 	border_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	border_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	border_mat.albedo_color = Color(0.05, 0.06, 0.05, 1.0)
 	_border.material_override = border_mat
 
-	_overlay.mesh = _build_hex_mesh(0.56, 0.5)
 	_overlay_mat = StandardMaterial3D.new()
 	_overlay_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_overlay_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -132,9 +145,27 @@ func _ready() -> void:
 	dot_mat.render_priority = 2
 	_dot.material_override = dot_mat
 
-	_mat.render_priority = 0
-
 	set_empty()
+
+# local_corners: this face's corners already projected into the tile's own
+# local tangent-plane (x,z) coordinates, in real world units — called once
+# by WorldMap right after instancing, before set_tile()/set_empty().
+func set_polygon(local_corners: PackedVector2Array) -> void:
+	var max_r: float = 0.001
+	for c in local_corners:
+		max_r = max(max_r, c.length())
+
+	_mesh.mesh = _build_polygon_mesh(local_corners, max_r)
+	_border.mesh = _build_ring_mesh(local_corners, 0.90, 1.12)
+	_overlay.mesh = _build_polygon_mesh(_scale_corners(local_corners, 1.08), max_r * 1.08)
+
+	var hull_points := PackedVector3Array()
+	for c in local_corners:
+		hull_points.append(Vector3(c.x, -0.05, c.y))
+		hull_points.append(Vector3(c.x, 0.05, c.y))
+	var shape := ConvexPolygonShape3D.new()
+	shape.points = hull_points
+	_collision.shape = shape
 
 func set_empty() -> void:
 	_tile_id = ""
