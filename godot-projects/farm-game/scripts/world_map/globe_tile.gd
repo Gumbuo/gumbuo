@@ -156,7 +156,7 @@ func set_polygon(local_corners: PackedVector2Array) -> void:
 		max_r = max(max_r, c.length())
 
 	_mesh.mesh = _build_polygon_mesh(local_corners, max_r)
-	_border.mesh = _build_ring_mesh(local_corners, 0.90, 1.12)
+	_border.mesh = _build_ring_mesh(local_corners, 0.97, 1.05)
 	_overlay.mesh = _build_polygon_mesh(_scale_corners(local_corners, 1.08), max_r * 1.08)
 
 	var hull_points := PackedVector3Array()
@@ -177,6 +177,7 @@ func set_empty() -> void:
 	_npc_icon.visible = false
 	_overlay.visible = false
 	_dot.visible = false
+	_border.visible = true
 
 func set_tile(tile_data: Dictionary) -> void:
 	_tile_id = tile_data.get("id", "")
@@ -187,6 +188,7 @@ func set_tile(tile_data: Dictionary) -> void:
 	_apply_texture(TILE_TEXTURES.get(type_str, ""), TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3)))
 	_npc_icon.visible = false
 	_dot.visible = _tile_id != "" and _tile_id == LandManager.last_tile_id
+	_border.visible = false
 
 func set_npc_tile(npc_data: Dictionary) -> void:
 	_npc_id = npc_data.get("id", "")
@@ -196,6 +198,7 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 	var terrain: String = npc_data.get("terrain", "")
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
 	_apply_texture(TILE_TEXTURES.get(terrain, ""), Color(col[0], col[1], col[2]))
+	_border.visible = false
 
 	var standing_path: String = npc_data.get("standing", "")
 	if standing_path != "" and ResourceLoader.exists(standing_path):
@@ -242,10 +245,11 @@ func set_drop_target(is_target: bool) -> void:
 		return
 	_set_overlay(is_target, Color(0.0, 0.9, 0.45, 0.55))
 
-func set_deed_hint(show: bool) -> void:
-	if not _is_empty:
-		return
-	_set_overlay(show, Color(0.55, 0.85, 0.40, 0.35))
+func set_deed_hint(_show: bool) -> void:
+	# No-op: an ambient green fill across every empty ocean tile (there are
+	# ~1000 of them now) was overwhelming — clicking an empty tile already
+	# opens the deed picker regardless of whether a hint was shown.
+	pass
 
 func _set_overlay(show: bool, color: Color) -> void:
 	if not _overlay:
