@@ -139,7 +139,7 @@ func _build_planet() -> void:
 	sphere.radial_segments = 48
 	sphere.rings = 32
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.14, 0.20, 0.15)
+	mat.albedo_color = Color(0.05, 0.18, 0.42)
 	mat.roughness = 0.95
 	var mesh_inst := MeshInstance3D.new()
 	mesh_inst.mesh = sphere

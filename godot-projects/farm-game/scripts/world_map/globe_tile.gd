@@ -173,7 +173,7 @@ func set_empty() -> void:
 	_is_empty = true
 	_is_owner = false
 	_mat.albedo_texture = null
-	_mat.albedo_color = Color(0.15, 0.20, 0.15, 0.35)
+	_mat.albedo_color = Color(0.05, 0.18, 0.42, 0.12)
 	_npc_icon.visible = false
 	_overlay.visible = false
 	_dot.visible = false
