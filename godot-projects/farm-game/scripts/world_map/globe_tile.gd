@@ -46,6 +46,7 @@ var _local_corners: PackedVector2Array = PackedVector2Array()
 
 const WATER_BORDER_COLOR := Color(0.05, 0.06, 0.05, 1.0)
 const OWNED_BORDER_COLOR := Color(0.90, 0.12, 0.12, 0.95)
+const TERRAIN_UV_MARGIN := 1.35
 
 static func _scale_corners(corners: PackedVector2Array, s: float) -> PackedVector2Array:
 	var out := PackedVector2Array()
@@ -166,7 +167,13 @@ func set_polygon(local_corners: PackedVector2Array) -> void:
 	for c in local_corners:
 		max_r = max(max_r, c.length())
 
-	_mesh.mesh = _build_polygon_mesh(local_corners, max_r)
+	# The terrain art has a "low top-down block" perspective — the actual
+	# hex-top face occupies less than the full canvas (there's a beveled
+	# side below/around it), unlike the old flat icons which filled their
+	# canvas edge-to-edge. TERRAIN_UV_MARGIN zooms the UV sampling into
+	# just that inner hex-top region so the art fills the polygon instead
+	# of leaving gaps at the corners.
+	_mesh.mesh = _build_polygon_mesh(local_corners, max_r * TERRAIN_UV_MARGIN)
 	_border.mesh = _build_ring_mesh(local_corners, 0.97, 1.05)
 	_overlay.mesh = _build_polygon_mesh(_scale_corners(local_corners, 1.08), max_r * 1.08)
 
