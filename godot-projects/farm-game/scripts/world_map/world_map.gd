@@ -5,7 +5,6 @@ const HUD_SCENE        := preload("res://scenes/ui/HUD.tscn")
 const API_URL := "https://univershole.ink/api/farm-world"
 
 const PLANET_RADIUS := 14.0
-const MAX_LAT_DEG := 87.0
 const TILE_LIFT := 0.05
 const CAM_START_Z := 30.0
 const CAM_MIN_Z := 17.0
@@ -13,7 +12,6 @@ const CAM_MAX_Z := 50.0
 const ZOOM_STEP := 2.0
 const DRAG_ROTATE_SPEED := 0.006
 const CLICK_MOVE_THRESHOLD := 6.0
-const PITCH_LIMIT := 1.35
 
 @onready var kingdom_label: Label = $UI/KingdomLabel
 @onready var _ui_layer: CanvasLayer = $UI
@@ -32,8 +30,6 @@ var _deed_banner: Label = null
 var _globe: Node3D = null
 var _tiles_root: Node3D = null
 var _camera: Camera3D = null
-var _yaw: float = 0.0
-var _pitch: float = -0.25
 var _drag_active: bool = false
 var _drag_moved: bool = false
 var _press_mouse: Vector2 = Vector2.ZERO
@@ -125,7 +121,7 @@ func _setup_3d_scene() -> void:
 
 	_globe = Node3D.new()
 	add_child(_globe)
-	_apply_globe_rotation()
+	_globe.transform.basis = Basis(Vector3.RIGHT, -0.25)
 
 	_build_planet()
 
@@ -323,9 +319,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_last_mouse = event.position
 		if event.position.distance_to(_press_mouse) > CLICK_MOVE_THRESHOLD:
 			_drag_moved = true
-		_yaw -= delta.x * DRAG_ROTATE_SPEED
-		_pitch = clamp(_pitch - delta.y * DRAG_ROTATE_SPEED, -PITCH_LIMIT, PITCH_LIMIT)
-		_apply_globe_rotation()
+		_rotate_globe(delta)
 		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_WHEEL_UP:
 		_zoom(-1)
@@ -334,9 +328,28 @@ func _unhandled_input(event: InputEvent) -> void:
 		_zoom(1)
 		get_viewport().set_input_as_handled()
 
-func _apply_globe_rotation() -> void:
-	if _globe:
-		_globe.transform.basis = Basis(Vector3.UP, _yaw) * Basis(Vector3.RIGHT, _pitch)
+# Trackball-style drag: each increment rotates around fixed screen-space
+# axes and is composed onto the EXISTING orientation (left-multiplied, in
+# world space) rather than reconstructed from accumulated yaw/pitch scalars.
+# That reconstruction was the bug — Basis(UP,yaw)*Basis(RIGHT,pitch) bakes
+# in a specific rotation order, which introduces an uncorrected twist for
+# any tile away from the original center (worse the further you rotate),
+# so tiles rendered increasingly tilted with no way to drag it back out.
+# Composing deltas directly avoids that entirely.
+func _rotate_globe(delta: Vector2) -> void:
+	if not _globe:
+		return
+	var yaw_step := Basis(Vector3.UP, -delta.x * DRAG_ROTATE_SPEED)
+	var pitch_step := Basis(Vector3.RIGHT, -delta.y * DRAG_ROTATE_SPEED)
+	_globe.transform.basis = yaw_step * pitch_step * _globe.transform.basis
+
+# Twist-free shortest-arc rotation so `dir` faces the camera (+Z) without
+# introducing the kind of extra roll _rotate_globe's incremental composition
+# is careful to avoid — same reasoning, direct form for a one-shot aim.
+func _aim_globe_at(dir: Vector3) -> void:
+	if not _globe:
+		return
+	_globe.transform.basis = Basis(Quaternion(dir.normalized(), Vector3.BACK))
 
 func _zoom(dir: int) -> void:
 	if not _camera:
@@ -715,8 +728,4 @@ func _face_home_tile() -> void:
 	if WorldGrid.is_unplaced(pos) or WorldGrid.is_legacy(pos):
 		return
 	var center: Vector3 = WorldGrid.get_center(WorldGrid.decode(pos))
-	var lat: float = asin(clamp(center.y, -1.0, 1.0))
-	var lon: float = atan2(center.z, center.x)
-	_yaw = -lon
-	_pitch = clamp(-lat, -PITCH_LIMIT, PITCH_LIMIT)
-	_apply_globe_rotation()
+	_aim_globe_at(center)
