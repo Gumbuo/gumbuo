@@ -12,6 +12,8 @@ var _gold_lbl:   Label = null
 var _list:       VBoxContainer = null
 var _tab_buy:    Button = null
 var _tab_sell:   Button = null
+var _tab_quests: Button = null
+var _reward_flash: Label = null
 
 func setup(npc_data: Dictionary) -> void:
 	_npc_data = npc_data
@@ -31,11 +33,14 @@ func _build_ui() -> void:
 
 	var inventory: Array = _npc_data.get("inventory", [])
 	var buys: Array      = _npc_data.get("buys", [])
-	var has_buy:  bool   = inventory.size() > 0
-	var has_sell: bool   = buys.size() > 0
-	var list_count: int  = max(inventory.size(), buys.size())
+	var quests: Array    = QuestManager.get_quests(_npc_data.get("id", ""))
+	var has_buy:    bool = inventory.size() > 0
+	var has_sell:   bool = buys.size() > 0
+	var has_quests: bool = quests.size() > 0
+	var tab_count: int   = int(has_buy) + int(has_sell) + int(has_quests)
+	var list_count: int  = max(inventory.size(), buys.size(), quests.size())
 	var list_h: float    = minf(list_count * ITEM_H, MAX_LIST_H)
-	var tab_h: float     = 34.0 if (has_buy and has_sell) else 0.0
+	var tab_h: float     = 34.0 if tab_count > 1 else 0.0
 	var panel_h: float   = 148.0 + tab_h + list_h
 
 	var panel := PanelContainer.new()
@@ -117,27 +122,39 @@ func _build_ui() -> void:
 
 	vbox.add_child(HSeparator.new())
 
-	# --- buy / sell tabs (only when NPC does both) ---
-	if has_buy and has_sell:
+	# --- buy / sell / quests tabs (only shown when the NPC has 2+ of them) ---
+	var default_mode := "buy" if has_buy else ("sell" if has_sell else "quests")
+	if tab_count > 1:
 		var tab_row := HBoxContainer.new()
 		tab_row.add_theme_constant_override("separation", 4)
 		vbox.add_child(tab_row)
 
-		_tab_buy = Button.new()
-		_tab_buy.text = "Buy"
-		_tab_buy.toggle_mode = true
-		_tab_buy.button_pressed = true
-		_tab_buy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_tab_buy.pressed.connect(func(): _switch_tab("buy"))
-		tab_row.add_child(_tab_buy)
+		if has_buy:
+			_tab_buy = Button.new()
+			_tab_buy.text = "Buy"
+			_tab_buy.toggle_mode = true
+			_tab_buy.button_pressed = default_mode == "buy"
+			_tab_buy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_tab_buy.pressed.connect(func(): _switch_tab("buy"))
+			tab_row.add_child(_tab_buy)
 
-		_tab_sell = Button.new()
-		_tab_sell.text = "Sell Fish"
-		_tab_sell.toggle_mode = true
-		_tab_sell.button_pressed = false
-		_tab_sell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_tab_sell.pressed.connect(func(): _switch_tab("sell"))
-		tab_row.add_child(_tab_sell)
+		if has_sell:
+			_tab_sell = Button.new()
+			_tab_sell.text = "Sell Fish"
+			_tab_sell.toggle_mode = true
+			_tab_sell.button_pressed = default_mode == "sell"
+			_tab_sell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_tab_sell.pressed.connect(func(): _switch_tab("sell"))
+			tab_row.add_child(_tab_sell)
+
+		if has_quests:
+			_tab_quests = Button.new()
+			_tab_quests.text = "Quests"
+			_tab_quests.toggle_mode = true
+			_tab_quests.button_pressed = default_mode == "quests"
+			_tab_quests.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_tab_quests.pressed.connect(func(): _switch_tab("quests"))
+			tab_row.add_child(_tab_quests)
 
 	# --- scrollable list ---
 	var scroll := ScrollContainer.new()
@@ -150,20 +167,21 @@ func _build_ui() -> void:
 	_list.add_theme_constant_override("separation", 4)
 	scroll.add_child(_list)
 
-	if has_buy:
-		_fill_buy_list()
-	elif has_sell:
-		_fill_sell_list()
+	match default_mode:
+		"buy":    _fill_buy_list()
+		"sell":   _fill_sell_list()
+		"quests": _fill_quest_list()
 
 func _switch_tab(mode: String) -> void:
-	if _tab_buy:  _tab_buy.button_pressed  = mode == "buy"
-	if _tab_sell: _tab_sell.button_pressed = mode == "sell"
+	if _tab_buy:    _tab_buy.button_pressed    = mode == "buy"
+	if _tab_sell:   _tab_sell.button_pressed   = mode == "sell"
+	if _tab_quests: _tab_quests.button_pressed = mode == "quests"
 	for child in _list.get_children():
 		child.queue_free()
-	if mode == "buy":
-		_fill_buy_list()
-	else:
-		_fill_sell_list()
+	match mode:
+		"buy":    _fill_buy_list()
+		"sell":   _fill_sell_list()
+		"quests": _fill_quest_list()
 
 func _fill_buy_list() -> void:
 	for entry in _npc_data.get("inventory", []):
@@ -181,6 +199,85 @@ func _fill_sell_list() -> void:
 		var price_g: float   = float(entry.get("price_gold", 0))
 		var info: Dictionary = ResourceManager.get_item_info(item_id)
 		_list.add_child(_make_sell_row(item_id, info.get("name", item_id), price_g))
+
+func _fill_quest_list() -> void:
+	var npc_id: String = _npc_data.get("id", "")
+	var quests: Array = QuestManager.get_quests(npc_id)
+	for i in quests.size():
+		_list.add_child(_make_quest_row(npc_id, i, quests[i]))
+
+func _make_quest_row(npc_id: String, idx: int, quest: Dictionary) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size = Vector2(0, ITEM_H - 8)
+	row.add_theme_constant_override("separation", 8)
+
+	var item_id: String = quest["item_id"]
+	var amount: int = quest["amount"]
+	var done: bool = quest.get("done", false)
+	var info: Dictionary = ResourceManager.get_item_info(item_id)
+	_add_icon_or_swatch(row, item_id)
+
+	var name_lbl := Label.new()
+	name_lbl.text = "Turn in %d %s" % [amount, info.get("name", item_id)]
+	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_lbl.add_theme_font_size_override("font_size", 12)
+	if done:
+		name_lbl.modulate = Color(0.55, 0.55, 0.55)
+	row.add_child(name_lbl)
+
+	var reward_lbl := Label.new()
+	if quest["gold_reward"] > 0.0:
+		reward_lbl.text = "+%d XP  +%s Gold" % [quest["xp_reward"], PlayerData.format_gold(quest["gold_reward"])]
+		reward_lbl.modulate = Color(1.0, 0.75, 0.1)
+	else:
+		reward_lbl.text = "+%d XP  +%d Silver" % [quest["xp_reward"], quest["silver_reward"]]
+		reward_lbl.modulate = Color(1.0, 0.92, 0.4)
+	reward_lbl.add_theme_font_size_override("font_size", 10)
+	row.add_child(reward_lbl)
+
+	var turn_in_btn := Button.new()
+	turn_in_btn.custom_minimum_size = Vector2(72, 30)
+	if done:
+		turn_in_btn.text = "Done"
+		turn_in_btn.disabled = true
+	else:
+		turn_in_btn.text = "Turn In"
+		turn_in_btn.disabled = ResourceManager.get_count(item_id) < amount
+		turn_in_btn.pressed.connect(func(): _on_turn_in(npc_id, idx))
+	row.add_child(turn_in_btn)
+
+	return row
+
+func _on_turn_in(npc_id: String, idx: int) -> void:
+	var reward: Dictionary = QuestManager.turn_in(npc_id, idx)
+	if reward.is_empty():
+		return
+	_silver_lbl.text = "Silver: %d" % PlayerData.silver
+	_gold_lbl.text = "Gold: %s" % PlayerData.format_gold(PlayerData.gold)
+	_switch_tab("quests")
+	_show_reward_flash(reward)
+
+func _show_reward_flash(reward: Dictionary) -> void:
+	if is_instance_valid(_reward_flash):
+		_reward_flash.queue_free()
+	_reward_flash = Label.new()
+	if reward["gold_reward"] > 0.0:
+		_reward_flash.text = "+%d XP   +%s Gold!" % [reward["xp_reward"], PlayerData.format_gold(reward["gold_reward"])]
+	else:
+		_reward_flash.text = "+%d XP   +%d Silver!" % [reward["xp_reward"], reward["silver_reward"]]
+	_reward_flash.add_theme_font_size_override("font_size", 16)
+	_reward_flash.modulate = Color(0.5, 1.0, 0.6)
+	_reward_flash.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_reward_flash.offset_top = 60.0
+	_reward_flash.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(_reward_flash)
+	var tw := create_tween()
+	tw.tween_interval(1.2)
+	tw.tween_property(_reward_flash, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(func():
+		if is_instance_valid(_reward_flash): _reward_flash.queue_free()
+		_reward_flash = null
+	)
 
 func _make_buy_row(item_id: String, item_name: String, price_s: int, price_g: float, use_gold: bool, qty: int = 1) -> HBoxContainer:
 	var row := HBoxContainer.new()

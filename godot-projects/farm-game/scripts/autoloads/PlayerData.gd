@@ -114,14 +114,17 @@ func get_eastern_time_string() -> String:
 		h -= 12
 	return "%d:%02d %s %s" % [h, local["minute"], ap, "EDT" if is_edt else "EST"]
 
-func can_claim_daily() -> bool:
-	if last_claim_unix == 0:
+func is_new_calendar_day(prev_unix: int) -> bool:
+	if prev_unix == 0:
 		return true
 	var offset_sec := -14400 if _is_edt() else -18000
 	var now_unix := int(Time.get_unix_time_from_system())
-	var last_d := Time.get_datetime_dict_from_unix_time(last_claim_unix + offset_sec)
+	var last_d := Time.get_datetime_dict_from_unix_time(prev_unix + offset_sec)
 	var now_d := Time.get_datetime_dict_from_unix_time(now_unix + offset_sec)
 	return now_d["day"] != last_d["day"] or now_d["month"] != last_d["month"]
+
+func can_claim_daily() -> bool:
+	return is_new_calendar_day(last_claim_unix)
 
 func claim_daily() -> int:
 	var amount := 50 + level * 10
