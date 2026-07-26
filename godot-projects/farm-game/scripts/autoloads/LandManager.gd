@@ -177,6 +177,14 @@ func set_tile_name(tile_id: String, new_name: String) -> void:
 	tile_settings_changed.emit(tile_id)
 	save_land_data()
 
+# Lets a player designate which of their own tiles the world map centers on
+# by default — previously fixed forever to whichever tile they placed first.
+func set_home_tile(tile_id: String) -> void:
+	if not tiles.has(tile_id): return
+	if tiles[tile_id].get("owner_id", "") != PlayerData.player_id: return
+	home_tile_id = tile_id
+	save_land_data()
+
 func _init_forest_trees(tile_id: String) -> void:
 	var slots: Dictionary = tiles[tile_id]["slots"]
 	for key in slots:

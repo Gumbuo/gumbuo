@@ -9,7 +9,6 @@ var tile_id:   String     = ""
 var tile_data: Dictionary = {}
 
 @onready var player_spawn: Marker2D = $PlayerSpawn
-@onready var back_button:  Button   = $UI/BackButton
 
 var _player = null
 var _hud        = null

@@ -66,14 +66,3 @@ shape = SubResource("8")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="BackButton" type="Button" parent="UI"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -110.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 36.0
-text = "World Map"
-
-[connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]

@@ -695,7 +695,7 @@ func _add_settings_btn() -> void:
 	buttons_row.add_child(btn)
 
 	var home_menu_btn := Button.new()
-	home_menu_btn.text = "Home"
+	home_menu_btn.text = "Logout"
 	home_menu_btn.custom_minimum_size = Vector2(56, 32)
 	home_menu_btn.add_theme_font_size_override("font_size", 10)
 	var sb := StyleBoxFlat.new()
@@ -716,6 +716,19 @@ func _on_home_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/StartScreen.tscn")
 
 func _on_map_btn_pressed() -> void:
+	# Tile scenes (farm/forest/mountain/pond/NPC) need real cleanup before
+	# leaving — closing stray popups, dropping the realtime presence
+	# connection, saving data — which their own (now-removed) top-right
+	# "World Map" button used to handle. Forward to whichever cleanup
+	# method the parent scene defines instead of duplicating that logic
+	# here; the world map itself defines neither, so this is a no-op there.
+	var parent := get_parent()
+	if parent and parent.has_method("_on_back_button_pressed"):
+		parent._on_back_button_pressed()
+		return
+	if parent and parent.has_method("_on_back_pressed"):
+		parent._on_back_pressed()
+		return
 	get_tree().change_scene_to_file("res://scenes/world_map/WorldMap.tscn")
 
 func _on_nft_btn_pressed() -> void:
@@ -724,6 +737,11 @@ func _on_nft_btn_pressed() -> void:
 func _on_settings_btn_pressed() -> void:
 	var tid: String = LandManager.current_tile_id
 	if tid == "":
+		# Not standing inside a tile — we're on the world map itself, where
+		# this button doubles as a "jump to my home tile" shortcut instead.
+		var parent := get_parent()
+		if parent and parent.has_method("_face_home_tile"):
+			parent._face_home_tile()
 		return
 	if _tile_settings != null and is_instance_valid(_tile_settings):
 		_tile_settings.queue_free()

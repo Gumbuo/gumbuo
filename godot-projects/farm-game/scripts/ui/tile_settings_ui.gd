@@ -4,6 +4,7 @@ var _tile_id: String = ""
 var _name_input: LineEdit = null
 var _access_btns: Array = []
 var _selected_access_mode: int = 0
+var _home_btn: Button = null
 
 func open(tile_id: String) -> void:
 	_tile_id = tile_id
@@ -13,6 +14,7 @@ func open(tile_id: String) -> void:
 		return
 	_name_input.text = tile.get("name", "")
 	_set_active_access(tile.get("access_mode", LandManager.AccessMode.PUBLIC))
+	_refresh_home_btn()
 
 func _ready() -> void:
 	add_to_group("action_windows")
@@ -101,6 +103,12 @@ func _build_ui() -> void:
 		access_row.add_child(btn)
 		_access_btns.append(btn)
 
+	_home_btn = Button.new()
+	_home_btn.add_theme_font_size_override("font_size", 10)
+	_home_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	_home_btn.pressed.connect(_on_set_home)
+	inner.add_child(_home_btn)
+
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_END
 	btn_row.add_theme_constant_override("separation", 8)
@@ -163,6 +171,20 @@ func _set_active_access(mode: int) -> void:
 			btn.add_theme_color_override("font_color", Color.WHITE)
 		else:
 			btn.add_theme_color_override("font_color", Color(0.12, 0.12, 0.14))
+
+func _refresh_home_btn() -> void:
+	if not _home_btn:
+		return
+	if _tile_id == LandManager.home_tile_id:
+		_home_btn.text = "★ This Is Your Home Tile"
+		_home_btn.disabled = true
+	else:
+		_home_btn.text = "Set as Home Tile"
+		_home_btn.disabled = false
+
+func _on_set_home() -> void:
+	LandManager.set_home_tile(_tile_id)
+	_refresh_home_btn()
 
 func _on_save() -> void:
 	var new_name: String = _name_input.text.strip_edges()
