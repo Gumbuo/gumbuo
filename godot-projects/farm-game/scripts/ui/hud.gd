@@ -156,6 +156,7 @@ func _on_lb_btn_pressed() -> void:
 	var scr: GDScript = load("res://scripts/ui/farm_xp_leaderboard.gd")
 	_lb_panel = CanvasLayer.new()
 	_lb_panel.set_script(scr)
+	_lb_panel.add_to_group("action_windows")
 	get_tree().current_scene.add_child(_lb_panel)
 	_lb_panel.tree_exiting.connect(func(): _lb_panel = null)
 
@@ -315,6 +316,7 @@ func _ensure_rotate_overlay() -> void:
 		return
 	_rotate_overlay = CanvasLayer.new()
 	_rotate_overlay.layer = 50
+	_rotate_overlay.add_to_group("action_windows")
 	get_tree().current_scene.add_child(_rotate_overlay)
 	var bg := ColorRect.new()
 	bg.color = Color(0.0, 0.0, 0.0, 0.95)
@@ -379,6 +381,7 @@ func _toggle_panel(field_name: String, script_path: String) -> void:
 	var panel: CanvasLayer = CanvasLayer.new()
 	panel.set_script(scr)
 	panel.layer = 25
+	panel.add_to_group("action_windows")
 	get_tree().current_scene.add_child(panel)
 	set(field_name, panel)
 
@@ -426,6 +429,7 @@ func _on_home_btn_pressed() -> void:
 func _open_tile_chooser() -> void:
 	_tile_chooser = CanvasLayer.new()
 	_tile_chooser.layer = 30
+	_tile_chooser.add_to_group("action_windows")
 	get_tree().current_scene.add_child(_tile_chooser)
 
 	var overlay := ColorRect.new()
@@ -559,6 +563,7 @@ func _on_shops_btn_pressed() -> void:
 func _open_shop_list() -> void:
 	_shop_list = CanvasLayer.new()
 	_shop_list.layer = 30
+	_shop_list.add_to_group("action_windows")
 	get_tree().current_scene.add_child(_shop_list)
 
 	var overlay := ColorRect.new()
@@ -741,6 +746,7 @@ func _refresh_name_btn() -> void:
 func _open_rename_dialog() -> void:
 	var dialog := CanvasLayer.new()
 	dialog.layer = 50
+	dialog.add_to_group("action_windows")
 	get_tree().current_scene.add_child(dialog)
 
 	var dim := ColorRect.new()
@@ -901,6 +907,7 @@ func _on_settings_btn_pressed() -> void:
 	_tile_settings = CanvasLayer.new()
 	_tile_settings.set_script(scr)
 	_tile_settings.layer = 25
+	_tile_settings.add_to_group("action_windows")
 	get_tree().current_scene.add_child(_tile_settings)
 	_tile_settings.open(tid)
 	_tile_settings.tree_exiting.connect(func(): _tile_settings = null)

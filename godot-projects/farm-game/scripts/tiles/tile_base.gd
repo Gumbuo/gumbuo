@@ -694,6 +694,7 @@ func _try_challenge_click(screen_pos: Vector2) -> bool:
 func _show_challenge_confirm(defender_wallet: String, defender_name: String) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 45
+	layer.add_to_group("action_windows")
 	add_child(layer)
 
 	var dim := ColorRect.new()
