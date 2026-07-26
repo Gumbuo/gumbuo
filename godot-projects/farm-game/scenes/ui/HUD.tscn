@@ -208,7 +208,7 @@ text = "Map"
 
 [node name="ShopsBtn" type="Button" parent="Bottom/Buttons"]
 custom_minimum_size = Vector2(56, 48)
-text = "Shops"
+text = "NPC"
 [connection signal="pressed" from="Bottom/Buttons/ShopsBtn" to="." method="_on_shops_btn_pressed"]
 
 [node name="HomeBtn" type="Button" parent="Bottom/Buttons"]

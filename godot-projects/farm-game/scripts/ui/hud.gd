@@ -594,7 +594,7 @@ func _open_shop_list() -> void:
 	var hdr := HBoxContainer.new()
 	vbox.add_child(hdr)
 	var title := Label.new()
-	title.text = "SHOPS"
+	title.text = "NPCS"
 	title.add_theme_font_size_override("font_size", 15)
 	title.modulate = Color(0.55, 1.0, 0.40)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -735,7 +735,7 @@ func _refresh_name_btn() -> void:
 	# Truncate long wallet addresses for display
 	if name_str.length() > 20:
 		name_str = name_str.substr(0, 8) + "..." + name_str.substr(name_str.length() - 4)
-	_name_btn.text = "👤 %s  ✏" % name_str
+	_name_btn.text = name_str
 
 func _open_rename_dialog() -> void:
 	var dialog := CanvasLayer.new()

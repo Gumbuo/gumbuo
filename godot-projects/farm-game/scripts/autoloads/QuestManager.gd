@@ -8,14 +8,16 @@ extends Node
 const SAVE_PATH := "user://quests.cfg"
 
 const NPC_ITEM_POOLS: Dictionary = {
-	# Tom (Tomcat) — mountain materials: ores, ingots, stone/clay bricks
+	# Tom (Tomcat) — mountain materials: ores, gems, ingots, stone/clay bricks.
+	# This is the full set of mountain-themed materials in the game.
 	"cat_fisherman": [
 		"stone", "clay", "iron_ore", "silver_ore", "gold_ore",
 		"amethyst", "ruby", "emerald", "sapphire",
 		"iron_ingot", "silver_ingot", "gold_ingot",
 		"stone_brick", "clay_brick",
 	],
-	# Gus (Mushroom Gus) — food/cooked dishes (his existing fish "buys" list is separate)
+	# Gus (Mushroom Gus) — food/cooked dishes (his existing fish "buys" list is
+	# separate, untouched). Essentially every cooked dish in the game.
 	"miconid_fungus": [
 		"apple", "pear", "peach", "lemon",
 		"bread", "wine", "wrapped_potato", "french_fries",
@@ -24,19 +26,24 @@ const NPC_ITEM_POOLS: Dictionary = {
 		"carrot_cake", "golden_potato_cake", "upside_down_tomato_cake",
 		"pumpkin_spice_cake", "grape_tart_cake",
 	],
-	# Sarabird — forest items: wood, wood plank, plus the smallest pool so the
-	# odds-and-ends (eggs, honey) land here to balance it against the others.
+	# Sarabird — forest items (wood, plank, mushroom) plus the bee/coop
+	# byproducts (eggs, honey, beeswax, chicken feed) — the smallest theme in
+	# the game's item set, so the odds-and-ends land here to balance it out.
 	"doctor_kenku": [
 		"wood", "wood_plank", "mushroom",
-		"egg_white", "egg_gold", "honey",
+		"egg_white", "egg_gold", "honey", "beeswax", "chicken_feed",
 	],
-	# Frog Lilly — grassland/crops
+	# Frog Lilly — grassland/crops, plus what's crafted directly from them
+	# (cotton thread and its dyed variants, wheat flour, grape must).
 	"frog_ricefarmer": [
 		"wheat", "carrot", "pumpkin",
 		"red_flower", "yellow_flower", "blue_flower",
 		"cotton", "grapes", "tomato", "fern", "cucumber", "potato",
 		"red_rose", "pink_rose", "dark_red_rose",
 		"yellow_rose", "white_rose", "beige_rose",
+		"cotton_thread", "cotton_thread_blue", "cotton_thread_brown",
+		"cotton_thread_green", "cotton_thread_orange", "cotton_thread_red",
+		"cotton_thread_yellow", "wheat_flour", "grape_must",
 	],
 }
 
@@ -78,12 +85,9 @@ func turn_in(npc_id: String, idx: int) -> Dictionary:
 func _generate_all() -> void:
 	_quests.clear()
 	for npc_id in NPC_ITEM_POOLS:
-		var pool: Array = NPC_ITEM_POOLS[npc_id].duplicate()
-		pool.shuffle()
-		var count: int = min(randi_range(1, 4), pool.size())
 		var list: Array = []
-		for i in count:
-			list.append(_make_quest(pool[i]))
+		for item_id in NPC_ITEM_POOLS[npc_id]:
+			list.append(_make_quest(item_id))
 		_quests[npc_id] = list
 
 func _make_quest(item_id: String) -> Dictionary:

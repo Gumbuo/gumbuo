@@ -333,7 +333,7 @@ func _process(delta: float) -> void:
 
 # ─────────────────────────── INPUT ──────────────────────────
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if _choice_popup_open:
 		return
 	if _active_crafting_ui != null and is_instance_valid(_active_crafting_ui):
