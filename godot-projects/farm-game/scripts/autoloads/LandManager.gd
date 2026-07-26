@@ -86,6 +86,13 @@ var grid: Dictionary = {}
 var deed_inventory: Dictionary = {}
 # tile IDs fetched from the world server (not saved locally)
 var _remote_tile_ids: Dictionary = {}
+# In-memory only, cleared each session — guards against a world-tile GET that
+# was already in flight before a delete resurrecting the tile once its
+# response lands. Deliberately NOT a blanket "skip all my own tiles" guard
+# (see merge_remote_tiles): the same wallet visiting from a different origin
+# (browser storage is per-domain) starts with empty local data and needs its
+# owned tiles restored from the server, not silently withheld forever.
+var _recently_deleted_ids: Dictionary = {}
 
 func _ready() -> void:
 	load_land_data()
@@ -160,6 +167,7 @@ func remove_tile(tile_id: String) -> void:
 	if pos.x >= 0:
 		grid.erase(pos)
 	tiles.erase(tile_id)
+	_recently_deleted_ids[tile_id] = true
 	deed_inventory[type_str] = deed_inventory.get(type_str, 0) + 1
 	save_land_data()
 	tile_removed.emit(tile_id, pos)
@@ -698,7 +706,7 @@ func is_remote_tile(tile_id: String) -> bool:
 	return _remote_tile_ids.has(tile_id)
 
 func merge_remote_tiles(remote_tiles: Array) -> void:
-	var my_id: String = PlayerData.player_id
+	var restored_own := false
 	for td in remote_tiles:
 		var tid: String = td.get("id", "")
 		if tid == "":
@@ -710,9 +718,13 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 		# whatever we happened to cache the very first time we saw it.
 		if tiles.has(tid) and not _remote_tile_ids.has(tid):
 			continue
-		# Never re-add own tiles from server — local save is authoritative.
-		# Prevents a GET response in-flight before a delete from resurrecting it.
-		if my_id != "" and str(td.get("owner_id", "")) == my_id:
+		# Guards the specific race of a GET already in flight before a
+		# delete resurrecting the tile once its response lands — NOT a
+		# blanket skip on all owned tiles, since that would also block
+		# legitimately restoring them on a fresh origin with empty local
+		# data (same wallet, different domain — browser storage is
+		# per-origin, see the field comment on _recently_deleted_ids).
+		if _recently_deleted_ids.has(tid):
 			continue
 		var pos_dict: Dictionary = td.get("position", {})
 		var raw_pos := Vector2i(int(pos_dict.get("x", -1)), int(pos_dict.get("y", -1)))
@@ -750,7 +762,17 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 			"combat_rights_since":  int(td.get("combat_rights_since", 0)),
 		}
 		grid[pos] = tid
-		_remote_tile_ids[tid] = true
+		# A tile restored here that's actually owned by the current player
+		# (e.g. same wallet, fresh origin with empty local data) needs to
+		# stay editable/syncable going forward — only mark it remote-cached
+		# (skip re-syncing our own edits back to the server) if it's
+		# genuinely someone else's.
+		if str(td.get("owner_id", "")) != PlayerData.player_id:
+			_remote_tile_ids[tid] = true
+		else:
+			restored_own = true
+	if restored_own:
+		save_land_data()
 
 # ── Combat farming rights (public-tile PvP) ───────────────────
 # A rights holder is treated as full "owner" for yield-split purposes on
