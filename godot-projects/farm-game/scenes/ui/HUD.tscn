@@ -206,6 +206,11 @@ custom_minimum_size = Vector2(48, 48)
 text = "Map"
 [connection signal="pressed" from="Bottom/Buttons/MapBtn" to="." method="_on_map_btn_pressed"]
 
+[node name="ShopsBtn" type="Button" parent="Bottom/Buttons"]
+custom_minimum_size = Vector2(56, 48)
+text = "Shops"
+[connection signal="pressed" from="Bottom/Buttons/ShopsBtn" to="." method="_on_shops_btn_pressed"]
+
 [node name="HomeBtn" type="Button" parent="Bottom/Buttons"]
 custom_minimum_size = Vector2(48, 48)
 text = "Home"

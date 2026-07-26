@@ -30,13 +30,11 @@ var TYPE_COLORS: Dictionary = {
 @onready var _collision: CollisionShape3D = $CollisionShape3D
 @onready var _mesh: MeshInstance3D = $Mesh
 @onready var _border: MeshInstance3D = $Border
-@onready var _npc_icon: MeshInstance3D = $NpcIcon
 @onready var _overlay: MeshInstance3D = $Overlay
 @onready var _dot: MeshInstance3D = $LocationDot
 
 var grid_position: Vector2i = Vector2i(0, 0)
 var _tile_id: String = ""
-var _npc_id: String = ""
 var _is_empty: bool = true
 var _is_owner: bool = false
 var _mat: StandardMaterial3D
@@ -270,12 +268,10 @@ func set_polygon(local_corners: PackedVector2Array) -> void:
 
 func set_empty() -> void:
 	_tile_id = ""
-	_npc_id = ""
 	_is_empty = true
 	_is_owner = false
 	_mat.albedo_texture = null
 	_mat.albedo_color = Color(0.05, 0.18, 0.42, 0.12)
-	_npc_icon.visible = false
 	_overlay.visible = false
 	_dot.visible = false
 	if _border_mat:
@@ -290,12 +286,10 @@ func set_empty() -> void:
 
 func set_tile(tile_data: Dictionary) -> void:
 	_tile_id = tile_data.get("id", "")
-	_npc_id = ""
 	_is_empty = false
 	_is_owner = tile_data.get("owner_id", "") == PlayerData.player_id
 	var type_str: String = tile_data.get("type_str", "FARM")
 	_apply_texture(TILE_TEXTURES.get(type_str, ""), TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3)), TERRAIN_UV_MARGIN.get(type_str, 1.1))
-	_npc_icon.visible = false
 	_dot.visible = _tile_id != "" and _tile_id == LandManager.last_tile_id
 	# Owned tiles keep a bold red outline as an at-a-glance "this is yours"
 	# marker — everything else stays borderless so placed land blends
@@ -311,33 +305,6 @@ func set_tile(tile_data: Dictionary) -> void:
 		for r in _owned_ring_segments:
 			r.visible = false
 
-func set_npc_tile(npc_data: Dictionary) -> void:
-	_npc_id = npc_data.get("id", "")
-	_tile_id = ""
-	_is_empty = false
-	_is_owner = false
-	var terrain: String = npc_data.get("terrain", "")
-	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
-	_apply_texture(TILE_TEXTURES.get(terrain, ""), Color(col[0], col[1], col[2]), TERRAIN_UV_MARGIN.get(terrain, 1.1))
-	_border.visible = false
-	for r in _owned_ring_segments:
-		r.visible = false
-
-	var standing_path: String = npc_data.get("standing", "")
-	if standing_path != "" and ResourceLoader.exists(standing_path):
-		var npc_mat := StandardMaterial3D.new()
-		npc_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		npc_mat.albedo_texture = load(standing_path)
-		npc_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		npc_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-		npc_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
-		npc_mat.render_priority = 1
-		_npc_icon.material_override = npc_mat
-		_npc_icon.visible = true
-	else:
-		_npc_icon.visible = false
-	_dot.visible = false
-
 func _apply_texture(tex_path: String, fallback_color: Color, margin: float = 1.0) -> void:
 	if tex_path != "" and ResourceLoader.exists(tex_path):
 		_mat.albedo_texture = load(tex_path)
@@ -352,14 +319,8 @@ func _apply_texture(tex_path: String, fallback_color: Color, margin: float = 1.0
 func is_empty_cell() -> bool:
 	return _is_empty
 
-func is_npc_tile() -> bool:
-	return _npc_id != ""
-
 func get_tile_id() -> String:
 	return _tile_id
-
-func get_npc_id() -> String:
-	return _npc_id
 
 func get_is_owner() -> bool:
 	return _is_owner

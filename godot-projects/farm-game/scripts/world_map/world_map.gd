@@ -19,8 +19,6 @@ const CLICK_MOVE_THRESHOLD := 6.0
 var _cards: Dictionary = {}
 var _dragging_tile_id: String = ""
 var _drag_origin: Vector2i = Vector2i(-1, -1)
-var _shop_ui: CanvasLayer = null
-var _npc_positions: Array = []
 var _deed_picker: CanvasLayer = null
 var _tile_menu: CanvasLayer = null
 var _world_req: HTTPRequest = null
@@ -46,7 +44,6 @@ func _ready() -> void:
 	_setup_3d_scene()
 	_build_globe_grid()
 	_refresh_all_tiles()
-	_place_npc_tiles()
 	_refresh_all_edge_masks()
 	_update_kingdom_label()
 	_refresh_deed_hints()
@@ -214,34 +211,12 @@ func _build_globe_grid() -> void:
 		tile.grid_position = pos
 		_cards[pos] = tile
 
-func _npc_position_set() -> Dictionary:
-	var result: Dictionary = {}
-	for npc_data in NPCManager.get_all_map_npcs():
-		var pos: Vector2i = npc_data.get("map_position", Vector2i(-1, -1))
-		if pos.x >= 0:
-			result[pos] = true
-	return result
-
 func _refresh_all_tiles() -> void:
-	var npc_positions := _npc_position_set()
 	for tid in LandManager.tiles:
 		var tile_data: Dictionary = LandManager.tiles[tid]
 		var pos: Vector2i = tile_data.get("position", Vector2i(-1, -1))
 		if pos.x < 0 or not _cards.has(pos): continue
-		if npc_positions.has(pos): continue  # NPC spots always render via _place_npc_tiles()
 		_cards[pos].set_tile(tile_data)
-
-func _place_npc_tiles() -> void:
-	for pos in _npc_positions:
-		if _cards.has(pos) and _cards[pos].is_npc_tile():
-			_cards[pos].set_empty()
-	_npc_positions.clear()
-	for npc_data in NPCManager.get_all_map_npcs():
-		var pos: Vector2i = npc_data.get("map_position", Vector2i(-1, -1))
-		if pos.x < 0 or not _cards.has(pos):
-			continue
-		_cards[pos].set_npc_tile(npc_data)
-		_npc_positions.append(pos)
 
 # The terrain art's "3D block" look paints a beveled wall around every tile's
 # edge, which reads as a hard seam between two tiles placed side by side.
@@ -293,27 +268,6 @@ func _close_deed_picker() -> void:
 	if is_instance_valid(_deed_picker):
 		_deed_picker.queue_free()
 	_deed_picker = null
-
-func _on_npc_shop_requested(npc_id: String) -> void:
-	_close_deed_picker()
-	NPCManager.discover_npc(npc_id)
-	var npc_data: Dictionary = NPCManager.get_npc(npc_id)
-	if npc_data.is_empty():
-		return
-	if _shop_ui != null:
-		_shop_ui.queue_free()
-	var shop_script: GDScript = load("res://scripts/ui/shop_ui.gd")
-	_shop_ui = CanvasLayer.new()
-	_shop_ui.set_script(shop_script)
-	_shop_ui.layer = 20
-	add_child(_shop_ui)
-	_shop_ui.setup(npc_data)
-	_shop_ui.closed.connect(_on_shop_closed)
-
-func _on_shop_closed() -> void:
-	if _shop_ui != null:
-		_shop_ui.queue_free()
-		_shop_ui = null
 
 func _load_tile_scene(tile_data_in: Dictionary) -> void:
 	var scene_path: String = _get_tile_scene_path(int(tile_data_in["type"]))
@@ -414,10 +368,6 @@ func _try_pick(screen_pos: Vector2) -> void:
 
 func _on_tile_clicked(tile: GlobeTile) -> void:
 	_close_deed_picker()
-	if tile.is_npc_tile():
-		_close_tile_menu()
-		_on_npc_shop_requested(tile.get_npc_id())
-		return
 	if tile.is_empty_cell():
 		_close_tile_menu()
 		_on_drop_requested(tile.grid_position)
@@ -536,7 +486,6 @@ func _on_drop_requested(to_pos: Vector2i) -> void:
 			_cards[_drag_origin].set_empty()
 		if _cards.has(to_pos):
 			_cards[to_pos].set_tile(LandManager.tiles[_dragging_tile_id])
-		_place_npc_tiles()
 		_refresh_all_edge_masks()
 	_dragging_tile_id = ""
 	_drag_origin = Vector2i(-1, -1)
@@ -649,7 +598,6 @@ func _on_world_tiles_received(_result: int, code: int, _headers: PackedStringArr
 		return
 	LandManager.merge_remote_tiles(remote)
 	_refresh_all_tiles()
-	_place_npc_tiles()
 	_refresh_all_edge_masks()
 
 func _sync_all_local_tiles() -> void:
@@ -705,7 +653,6 @@ func _on_tile_placed(tile_data: Dictionary) -> void:
 	var pos: Vector2i = tile_data["position"]
 	if _cards.has(pos):
 		_cards[pos].set_tile(tile_data)
-	_place_npc_tiles()
 	_refresh_all_edge_masks()
 	_update_kingdom_label()
 	_refresh_deed_hints()
@@ -749,7 +696,7 @@ func _on_tile_settings_changed(tile_id: String) -> void:
 	if tile_data.is_empty():
 		return
 	var pos: Vector2i = tile_data["position"]
-	if _cards.has(pos) and not _npc_position_set().has(pos):
+	if _cards.has(pos):
 		_cards[pos].set_tile(tile_data)
 	_sync_tile(tile_id)
 

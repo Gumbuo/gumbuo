@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/world_map/globe_tile.gd" id="1"]
 
@@ -10,9 +10,6 @@ size = Vector2(1.0, 1.0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_overlay"]
 size = Vector2(1.08, 1.08)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_npc"]
-size = Vector2(0.55, 0.55)
 
 [sub_resource type="SphereMesh" id="SphereMesh_dot"]
 radius = 1.0
@@ -33,11 +30,6 @@ mesh = SubResource("PlaneMesh_mesh")
 [node name="Overlay" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
 mesh = SubResource("PlaneMesh_overlay")
-visible = false
-
-[node name="NpcIcon" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
-mesh = SubResource("PlaneMesh_npc")
 visible = false
 
 [node name="LocationDot" type="MeshInstance3D" parent="."]

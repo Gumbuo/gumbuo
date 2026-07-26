@@ -10,6 +10,7 @@ extends CanvasLayer
 @onready var hotbar: HBoxContainer = $Bottom/Hotbar
 @onready var backpack_btn: Button = $Bottom/Buttons/BackpackBtn
 @onready var map_btn: Button = $Bottom/Buttons/MapBtn
+@onready var shops_btn: Button = $Bottom/Buttons/ShopsBtn
 @onready var nft_btn: Button = $Bottom/Buttons/NFTBtn
 @onready var claim_btn: Button = $Bottom/Buttons/ClaimBtn
 @onready var home_btn: Button = $Bottom/Buttons/HomeBtn
@@ -364,6 +365,8 @@ var _market: CanvasLayer = null
 var _credits: Control = null
 var _tile_settings: CanvasLayer = null
 var _tile_chooser: CanvasLayer = null
+var _shop_list: CanvasLayer = null
+var _active_shop: CanvasLayer = null
 
 func _toggle_panel(field_name: String, script_path: String) -> void:
 	var current: CanvasLayer = get(field_name)
@@ -538,6 +541,152 @@ func _open_tile_chooser() -> void:
 	hint.modulate = Color(0.50, 0.50, 0.50)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(hint)
+
+# ── NPC shops ──────────────────────────────────────────────────
+# NPCs used to live as clickable markers on the world map globe, but they
+# were hard to find/click on a rotating sphere. Reachable from the HUD
+# instead — present on every tile and the world map alike — so any NPC's
+# shop is one click away no matter where the player is standing.
+
+func _on_shops_btn_pressed() -> void:
+	if _shop_list != null and is_instance_valid(_shop_list):
+		_shop_list.queue_free()
+		_shop_list = null
+		return
+	_open_shop_list()
+
+func _open_shop_list() -> void:
+	_shop_list = CanvasLayer.new()
+	_shop_list.layer = 30
+	get_tree().current_scene.add_child(_shop_list)
+
+	var overlay := ColorRect.new()
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.color = Color(0, 0, 0, 0.50)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed:
+			if is_instance_valid(_shop_list): _shop_list.queue_free()
+			_shop_list = null
+	)
+	_shop_list.add_child(overlay)
+
+	var panel := PanelContainer.new()
+	var psb := StyleBoxFlat.new()
+	psb.bg_color = Color(0.06, 0.09, 0.06, 0.97)
+	psb.border_color = Color(0.35, 0.70, 0.25)
+	psb.set_border_width_all(2)
+	psb.set_corner_radius_all(8)
+	panel.add_theme_stylebox_override("panel", psb)
+	panel.custom_minimum_size = Vector2(360, 300)
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.offset_left   = -180.0
+	panel.offset_right  =  180.0
+	panel.offset_top    = -150.0
+	panel.offset_bottom =  150.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_shop_list.add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	panel.add_child(vbox)
+
+	var hdr := HBoxContainer.new()
+	vbox.add_child(hdr)
+	var title := Label.new()
+	title.text = "SHOPS"
+	title.add_theme_font_size_override("font_size", 15)
+	title.modulate = Color(0.55, 1.0, 0.40)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hdr.add_child(title)
+	var close_btn := Button.new()
+	close_btn.text = "X"
+	close_btn.custom_minimum_size = Vector2(28, 28)
+	close_btn.pressed.connect(func():
+		if is_instance_valid(_shop_list): _shop_list.queue_free()
+		_shop_list = null
+	)
+	hdr.add_child(close_btn)
+	vbox.add_child(HSeparator.new())
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
+
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 4)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+
+	for npc_data in NPCManager.get_all_map_npcs():
+		var row := Button.new()
+		row.custom_minimum_size = Vector2(0, 52)
+		row.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var rsb := StyleBoxFlat.new()
+		rsb.bg_color = Color(0.16, 0.16, 0.16, 0.6)
+		rsb.set_corner_radius_all(4)
+		rsb.content_margin_left   = 8.0
+		rsb.content_margin_right  = 8.0
+		rsb.content_margin_top    = 4.0
+		rsb.content_margin_bottom = 4.0
+		row.add_theme_stylebox_override("normal", rsb)
+
+		var hb := HBoxContainer.new()
+		hb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hb.add_theme_constant_override("separation", 10)
+		hb.set_anchors_preset(Control.PRESET_FULL_RECT)
+		hb.offset_left = 8.0
+		row.add_child(hb)
+
+		var portrait_path: String = npc_data.get("portrait", "")
+		if portrait_path != "" and ResourceLoader.exists(portrait_path):
+			var tex := TextureRect.new()
+			tex.texture = load(portrait_path)
+			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.custom_minimum_size = Vector2(40, 44)
+			tex.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			hb.add_child(tex)
+
+		var label_col := VBoxContainer.new()
+		label_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label_col.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var name_lbl := Label.new()
+		name_lbl.text = npc_data.get("name", "???")
+		name_lbl.add_theme_font_size_override("font_size", 13)
+		name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label_col.add_child(name_lbl)
+		var shop_lbl := Label.new()
+		shop_lbl.text = npc_data.get("shop_name", "Shop")
+		shop_lbl.add_theme_font_size_override("font_size", 9)
+		shop_lbl.modulate = Color(0.65, 0.65, 0.65)
+		shop_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label_col.add_child(shop_lbl)
+		hb.add_child(label_col)
+
+		var cap_npc: Dictionary = npc_data
+		row.pressed.connect(func(): _open_npc_shop(cap_npc))
+		list.add_child(row)
+
+func _open_npc_shop(npc_data: Dictionary) -> void:
+	if is_instance_valid(_shop_list):
+		_shop_list.queue_free()
+	_shop_list = null
+	NPCManager.discover_npc(npc_data.get("id", ""))
+	if _active_shop != null and is_instance_valid(_active_shop):
+		_active_shop.queue_free()
+	var shop_script: GDScript = load("res://scripts/ui/shop_ui.gd")
+	_active_shop = CanvasLayer.new()
+	_active_shop.set_script(shop_script)
+	_active_shop.layer = 32
+	get_tree().current_scene.add_child(_active_shop)
+	_active_shop.setup(npc_data)
+	_active_shop.closed.connect(func():
+		if is_instance_valid(_active_shop): _active_shop.queue_free()
+		_active_shop = null
+	)
 
 func _travel_to_tile(tile_id: String, tile_type: int) -> void:
 	if is_instance_valid(_tile_chooser):
