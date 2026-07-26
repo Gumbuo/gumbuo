@@ -92,6 +92,29 @@ func _ready() -> void:
 	_spawn_presence_system()
 	_player.arrived.connect(_on_player_arrived)
 	_player.path_cancelled.connect(_on_path_cancelled)
+	_fit_background_to_viewport()
+	get_viewport().size_changed.connect(_fit_background_to_viewport)
+
+# The game's world elements are laid out on a fixed 1280x720 canvas, but
+# window/stretch/aspect="expand" reveals extra canvas area beyond that on
+# wider windows (e.g. the right edge) instead of letterboxing. The bare
+# Background sprite doesn't grow to cover that revealed area, leaving the
+# default clear color showing through. Scale it up (uniformly, so art
+# never distorts) to always cover the real visible viewport, cropping
+# a bit of the top/bottom instead of leaving any gap.
+func _fit_background_to_viewport() -> void:
+	if not has_node("Background"):
+		return
+	var bg: Sprite2D = $Background
+	if not (bg is Sprite2D) or bg.texture == null:
+		return
+	var vp_size: Vector2 = get_viewport_rect().size
+	var tex_size: Vector2 = bg.texture.get_size()
+	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
+		return
+	var cover_scale: float = max(vp_size.x / tex_size.x, vp_size.y / tex_size.y)
+	bg.scale = Vector2(cover_scale, cover_scale)
+	bg.position = vp_size / 2.0
 
 func _spawn_player() -> void:
 	_player = (load(PLAYER_SCENE_PATH) as PackedScene).instantiate()
