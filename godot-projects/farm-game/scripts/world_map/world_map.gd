@@ -2,7 +2,7 @@ extends Node3D
 
 const GLOBE_TILE_SCENE := preload("res://scenes/world_map/GlobeTile.tscn")
 const HUD_SCENE        := preload("res://scenes/ui/HUD.tscn")
-const API_URL := "https://univershole.ink/api/farm-world"
+const API_URL := "https://foxstead.xyz/api/farm-world"
 
 const PLANET_RADIUS := 14.0
 const TILE_LIFT := 0.05

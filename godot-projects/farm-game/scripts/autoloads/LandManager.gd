@@ -779,7 +779,7 @@ func merge_remote_tiles(remote_tiles: Array) -> void:
 # a tile they don't actually own — won by beating the current holder (or
 # claimed uncontested if the tile has no live holder present; that check
 # lives in the combat controller, which has access to the presence system).
-const FARM_WORLD_API_URL := "https://univershole.ink/api/farm-world"
+const FARM_WORLD_API_URL := "https://foxstead.xyz/api/farm-world"
 
 func get_combat_rights_holder(tile_id: String) -> String:
 	return tiles.get(tile_id, {}).get("combat_rights_holder", "")

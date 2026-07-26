@@ -18,7 +18,7 @@ extends CanvasLayer
 
 const HOTBAR_SLOTS := 8
 
-const PRESENCE_URL := "https://univershole.ink/api/presence"
+const PRESENCE_URL := "https://foxstead.xyz/api/presence"
 
 var _hotbar_items: Array = []
 var _presence_req: HTTPRequest = null
@@ -169,7 +169,7 @@ func _sync_xp_to_server() -> void:
 		"xp":     PlayerData.xp,
 	})
 	_xp_sync_req.request(
-		"https://univershole.ink/api/farm-xp",
+		"https://foxstead.xyz/api/farm-xp",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
 		body
