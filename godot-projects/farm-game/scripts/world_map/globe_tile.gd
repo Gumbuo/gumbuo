@@ -42,10 +42,21 @@ var _is_owner: bool = false
 var _mat: StandardMaterial3D
 var _overlay_mat: StandardMaterial3D
 var _border_mat: StandardMaterial3D
+var _edge_mask_mat: StandardMaterial3D
+var _edge_masks: Array = []  # MeshInstance3D, one per possible edge (up to 6)
 var _local_corners: PackedVector2Array = PackedVector2Array()
 
 const WATER_BORDER_COLOR := Color(0.05, 0.06, 0.05, 1.0)
 const OWNED_BORDER_COLOR := Color(0.90, 0.12, 0.12, 0.95)
+
+# The terrain art has a "low/high top-down" 3D-block look — a beveled wall
+# painted around the edge below the flat top. That reads fine against open
+# ocean but looks like a hard seam between two placed tiles sitting side by
+# side. WorldMap tells us (via set_edge_occupied) which of our edges face a
+# filled neighbor; for those, we paint a grass-colored strip over the outer
+# band of that edge to visually erase the wall so the two tiles blend.
+const EDGE_MASK_COLOR := Color(0.34, 0.50, 0.24, 1.0)
+const EDGE_MASK_INNER_SCALE := 0.75
 
 # Per-type UV zoom applied via the material (not baked into the mesh, which
 # always maps its true corners to the full 0..1 UV range) — each terrain
@@ -136,6 +147,32 @@ static func _build_ring_mesh(corners: PackedVector2Array, inner_scale: float, ou
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return mesh
 
+# A single trapezoid strip covering the outer band of one edge (from
+# inner_scale*corner out to the true corner), for masking that edge's wall.
+static func _build_edge_mask_mesh(corners: PackedVector2Array, edge_index: int, inner_scale: float) -> ArrayMesh:
+	var n: int = corners.size()
+	var a: Vector2 = corners[edge_index]
+	var b: Vector2 = corners[(edge_index + 1) % n]
+	var ai: Vector2 = a * inner_scale
+	var bi: Vector2 = b * inner_scale
+
+	var verts := PackedVector3Array([
+		Vector3(ai.x, 0.0, ai.y), Vector3(a.x, 0.0, a.y),
+		Vector3(b.x, 0.0, b.y), Vector3(bi.x, 0.0, bi.y),
+	])
+	var normals := PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP])
+	var indices := PackedInt32Array([0, 1, 2, 0, 2, 3])
+
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
 func _ready() -> void:
 	_mat = StandardMaterial3D.new()
 	_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -167,6 +204,19 @@ func _ready() -> void:
 	dot_mat.albedo_color = Color(1.0, 0.15, 0.15, 0.9)
 	dot_mat.render_priority = 2
 	_dot.material_override = dot_mat
+
+	_edge_mask_mat = StandardMaterial3D.new()
+	_edge_mask_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_edge_mask_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_edge_mask_mat.albedo_color = EDGE_MASK_COLOR
+	_edge_mask_mat.render_priority = 1
+	for i in range(6):
+		var mi := MeshInstance3D.new()
+		mi.material_override = _edge_mask_mat
+		mi.position = Vector3(0, 0.008, 0)
+		mi.visible = false
+		add_child(mi)
+		_edge_masks.append(mi)
 
 	set_empty()
 
@@ -210,6 +260,8 @@ func set_empty() -> void:
 	if not _local_corners.is_empty():
 		_border.mesh = _build_ring_mesh(_local_corners, 0.97, 1.05)
 	_border.visible = true
+	for m in _edge_masks:
+		m.visible = false
 
 func set_tile(tile_data: Dictionary) -> void:
 	_tile_id = tile_data.get("id", "")
@@ -299,6 +351,23 @@ func set_deed_hint(_show: bool) -> void:
 	# ~1000 of them now) was overwhelming — clicking an empty tile already
 	# opens the deed picker regardless of whether a hint was shown.
 	pass
+
+# occupied[i] = true if the neighbor across the edge between corner i and
+# corner i+1 is itself a filled (non-empty) tile — WorldMap computes this
+# from the sphere's neighbor graph and calls in whenever occupancy nearby
+# changes. Only meaningful for filled tiles; empty ocean has no wall to mask.
+func set_edge_occupied(occupied: Array) -> void:
+	if _is_empty:
+		for m in _edge_masks:
+			m.visible = false
+		return
+	var n: int = _local_corners.size()
+	for i in range(_edge_masks.size()):
+		if i >= n or i >= occupied.size() or not occupied[i]:
+			_edge_masks[i].visible = false
+			continue
+		_edge_masks[i].mesh = _build_edge_mask_mesh(_local_corners, i, EDGE_MASK_INNER_SCALE)
+		_edge_masks[i].visible = true
 
 func _set_overlay(show: bool, color: Color) -> void:
 	if not _overlay:

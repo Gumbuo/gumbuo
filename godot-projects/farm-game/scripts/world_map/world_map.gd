@@ -47,6 +47,7 @@ func _ready() -> void:
 	_build_globe_grid()
 	_refresh_all_tiles()
 	_place_npc_tiles()
+	_refresh_all_edge_masks()
 	_update_kingdom_label()
 	_refresh_deed_hints()
 	_spawn_deed_banner()
@@ -241,6 +242,32 @@ func _place_npc_tiles() -> void:
 			continue
 		_cards[pos].set_npc_tile(npc_data)
 		_npc_positions.append(pos)
+
+# The terrain art's "3D block" look paints a beveled wall around every tile's
+# edge, which reads as a hard seam between two tiles placed side by side.
+# Tells each tile which of its edges face a filled neighbor (via the sphere's
+# real neighbor graph) so it can mask the wall there and blend with that
+# neighbor instead. Cheap enough (a few thousand dict lookups) to just redo
+# in full on every occupancy change rather than track deltas.
+func _refresh_tile_edges(idx: int) -> void:
+	var pos: Vector2i = WorldGrid.encode(idx)
+	if not _cards.has(pos):
+		return
+	var neighbors: Array = WorldGrid.get_neighbors(idx)
+	var occupied: Array = []
+	for n in neighbors:
+		var is_occupied := false
+		if n >= 0:
+			var npos: Vector2i = WorldGrid.encode(n)
+			if _cards.has(npos):
+				is_occupied = not _cards[npos].is_empty_cell()
+		occupied.append(is_occupied)
+	_cards[pos].set_edge_occupied(occupied)
+
+func _refresh_all_edge_masks() -> void:
+	var count: int = WorldGrid.face_count()
+	for i in range(count):
+		_refresh_tile_edges(i)
 
 func _on_enter_tile(tile_id: String) -> void:
 	var tile_data: Dictionary = LandManager.tiles.get(tile_id, {})
@@ -498,6 +525,7 @@ func _on_drop_requested(to_pos: Vector2i) -> void:
 		if _cards.has(to_pos):
 			_cards[to_pos].set_tile(LandManager.tiles[_dragging_tile_id])
 		_place_npc_tiles()
+		_refresh_all_edge_masks()
 	_dragging_tile_id = ""
 	_drag_origin = Vector2i(-1, -1)
 	_update_card_move_states()
@@ -610,6 +638,7 @@ func _on_world_tiles_received(_result: int, code: int, _headers: PackedStringArr
 	LandManager.merge_remote_tiles(remote)
 	_refresh_all_tiles()
 	_place_npc_tiles()
+	_refresh_all_edge_masks()
 
 func _sync_all_local_tiles() -> void:
 	for tile_id in LandManager.tiles:
@@ -665,6 +694,7 @@ func _on_tile_placed(tile_data: Dictionary) -> void:
 	if _cards.has(pos):
 		_cards[pos].set_tile(tile_data)
 	_place_npc_tiles()
+	_refresh_all_edge_masks()
 	_update_kingdom_label()
 	_refresh_deed_hints()
 	_refresh_deed_banner()
@@ -684,6 +714,7 @@ func _refresh_deed_hints() -> void:
 func _on_tile_removed(tile_id: String, pos: Vector2i) -> void:
 	if _cards.has(pos):
 		_cards[pos].set_empty()
+	_refresh_all_edge_masks()
 	_update_kingdom_label()
 	_refresh_deed_hints()
 	_delete_tile_from_server(tile_id)
