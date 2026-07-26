@@ -232,9 +232,11 @@ func _ready() -> void:
 	_owned_ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_owned_ring_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_owned_ring_mat.albedo_color = OWNED_BORDER_COLOR
+	_owned_ring_mat.render_priority = 1
 	for i in range(6):
 		var ri := MeshInstance3D.new()
 		ri.material_override = _owned_ring_mat
+		ri.position = Vector3(0, 0.009, 0)
 		ri.visible = false
 		add_child(ri)
 		_owned_ring_segments.append(ri)
