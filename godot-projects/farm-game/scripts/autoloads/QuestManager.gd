@@ -56,7 +56,14 @@ func _ready() -> void:
 	if PlayerData.is_new_calendar_day(_last_reset_unix):
 		_generate_all()
 		_last_reset_unix = int(Time.get_unix_time_from_system())
-		_save()
+		# Local save only — no WebPersistence.flush() here. Flushing forces an
+		# immediate IndexedDB write-sync; doing that unconditionally from an
+		# autoload's _ready() runs at the same early point in boot where other
+		# autoloads (ResourceManager, PlayerData) are still loading their own
+		# data, and forcing a sync mid-load risks writing back a half-loaded
+		# state and stomping the player's real save. Only turn_in() (an actual
+		# user action worth persisting immediately) flushes.
+		_save_local()
 
 func get_quests(npc_id: String) -> Array:
 	return _quests.get(npc_id, [])
@@ -122,11 +129,14 @@ func _make_quest(item_id: String) -> Dictionary:
 		"done": false,
 	}
 
-func _save() -> void:
+func _save_local() -> void:
 	var cfg := ConfigFile.new()
 	cfg.set_value("quests", "last_reset_unix", _last_reset_unix)
 	cfg.set_value("quests", "data", var_to_str(_quests))
 	cfg.save(SAVE_PATH)
+
+func _save() -> void:
+	_save_local()
 	WebPersistence.flush()
 
 func _load() -> void:

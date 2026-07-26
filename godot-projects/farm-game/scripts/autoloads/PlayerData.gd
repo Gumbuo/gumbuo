@@ -3,6 +3,7 @@ extends Node
 signal xp_changed(new_xp: int, level: int)
 signal energy_changed(new_energy: int, max_energy: int)
 signal level_up(new_level: int)
+signal currency_changed
 
 const IDENTITY_PATH := "user://identity.cfg"
 const SAVE_PATH     := "user://player_data.cfg"
@@ -153,20 +154,24 @@ func restore_energy(amount: int) -> void:
 
 func add_silver(amount: int) -> void:
 	silver += amount
+	currency_changed.emit()
 
 func spend_silver(amount: int) -> bool:
 	if silver < amount:
 		return false
 	silver -= amount
+	currency_changed.emit()
 	return true
 
 func add_gold(amount: float) -> void:
 	gold = snappedf(gold + amount, 0.01)
+	currency_changed.emit()
 
 func spend_gold(amount: float) -> bool:
 	if gold + 0.00001 < amount:
 		return false
 	gold = snappedf(gold - amount, 0.01)
+	currency_changed.emit()
 	return true
 
 # GDScript's String "%" operator has no %g (shortest float repr) — gold

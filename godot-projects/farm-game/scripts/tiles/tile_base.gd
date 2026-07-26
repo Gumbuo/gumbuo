@@ -100,32 +100,43 @@ func _ready() -> void:
 # window/stretch/aspect="expand" reveals extra canvas area beyond that on
 # wider windows (e.g. the right edge) instead of letterboxing. The bare
 # Background sprite doesn't grow to cover that revealed area, leaving the
-# default clear color showing through. Scale it up (uniformly, so art
-# never distorts) to always cover the real visible viewport.
+# default clear color showing through.
 #
-# Expand-mode growth is anchored at the canvas's top-left (0,0) — it only
-# ever reveals extra space to the right/bottom, it never recenters. So this
-# must scale around the sprite's ORIGINAL authored position, not move it:
-# every fixed-position element tied to that same art (pond walls, the slot
-# grid) assumes the background's center never shifts, so repositioning it
-# to the new viewport center (as an earlier version of this did) dragged
-# the art out from under them — e.g. the pond visibly sliding away from its
-# own water-collision walls and soil slots on any wider-than-16:9 window.
+# This must NOT scale the original sprite — even a slight scale-up enlarges
+# everything drawn in it (e.g. the pond) relative to the fixed-pixel walls
+# and slot grid tied to that same art, dragging them out of alignment
+# (confirmed: the pond visibly outgrew its own water-collision walls and
+# soil slots after an earlier version of this scaled it). Instead, tile
+# extra unscaled copies of the exact same texture into the newly revealed
+# strip — expand-mode growth is anchored at the canvas's top-left and only
+# ever extends right/bottom, so the original copy's position never changes.
 func _fit_background_to_viewport() -> void:
 	if not has_node("Background"):
 		return
 	var bg: Sprite2D = $Background
 	if not (bg is Sprite2D) or bg.texture == null:
 		return
+	for child in get_children():
+		if child.name.begins_with("_BgFiller"):
+			child.queue_free()
 	var vp_size: Vector2 = get_viewport_rect().size
 	var tex_size: Vector2 = bg.texture.get_size()
 	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
 		return
-	var anchor: Vector2 = bg.position
-	var right_needed: float = vp_size.x - anchor.x
-	var bottom_needed: float = vp_size.y - anchor.y
-	var cover_scale: float = max(1.0, right_needed / (tex_size.x * 0.5), bottom_needed / (tex_size.y * 0.5))
-	bg.scale = Vector2(cover_scale, cover_scale)
+	var right_edge: float = bg.position.x + tex_size.x * 0.5
+	var bottom_edge: float = bg.position.y + tex_size.y * 0.5
+	var extra_x: int = max(0, ceili((vp_size.x - right_edge) / tex_size.x))
+	var extra_y: int = max(0, ceili((vp_size.y - bottom_edge) / tex_size.y))
+	for ix in range(extra_x + 1):
+		for iy in range(extra_y + 1):
+			if ix == 0 and iy == 0:
+				continue
+			var filler := Sprite2D.new()
+			filler.name = "_BgFiller_%d_%d" % [ix, iy]
+			filler.texture = bg.texture
+			filler.z_index = bg.z_index
+			filler.position = bg.position + Vector2(ix * tex_size.x, iy * tex_size.y)
+			add_child(filler)
 
 func _spawn_player() -> void:
 	_player = (load(PLAYER_SCENE_PATH) as PackedScene).instantiate()

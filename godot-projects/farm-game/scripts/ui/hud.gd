@@ -39,6 +39,7 @@ func _ready() -> void:
 	PlayerData.xp_changed.connect(_on_xp_changed)
 	PlayerData.energy_changed.connect(_on_energy_changed)
 	PlayerData.level_up.connect(_on_level_up)
+	PlayerData.currency_changed.connect(update_currency)
 	ResourceManager.item_added.connect(_on_item_added)
 	LandManager.passive_vault_updated.connect(_on_passive_vault_updated)
 
