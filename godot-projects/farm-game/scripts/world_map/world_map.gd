@@ -253,16 +253,28 @@ func _refresh_tile_edges(idx: int) -> void:
 	var pos: Vector2i = WorldGrid.encode(idx)
 	if not _cards.has(pos):
 		return
+	var card = _cards[pos]
+	var am_owner: bool = card.get_is_owner()
 	var neighbors: Array = WorldGrid.get_neighbors(idx)
 	var occupied: Array = []
+	var ring_visible: Array = []
 	for n in neighbors:
 		var is_occupied := false
+		var neighbor_is_owner := false
 		if n >= 0:
 			var npos: Vector2i = WorldGrid.encode(n)
 			if _cards.has(npos):
-				is_occupied = not _cards[npos].is_empty_cell()
+				var ncard = _cards[npos]
+				is_occupied = not ncard.is_empty_cell()
+				# Both true here means the SAME player, since get_is_owner()
+				# already means "owned by the current player" — no need to
+				# compare owner_id strings directly.
+				neighbor_is_owner = ncard.get_is_owner()
 		occupied.append(is_occupied)
-	_cards[pos].set_edge_occupied(occupied)
+		ring_visible.append(not (am_owner and neighbor_is_owner))
+	card.set_edge_occupied(occupied)
+	if am_owner:
+		card.set_owned_edges(ring_visible)
 
 func _refresh_all_edge_masks() -> void:
 	var count: int = WorldGrid.face_count()

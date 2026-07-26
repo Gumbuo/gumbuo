@@ -44,6 +44,8 @@ var _overlay_mat: StandardMaterial3D
 var _border_mat: StandardMaterial3D
 var _edge_mask_mat: StandardMaterial3D
 var _edge_masks: Array = []  # MeshInstance3D, one per possible edge (up to 6)
+var _owned_ring_mat: StandardMaterial3D
+var _owned_ring_segments: Array = []  # MeshInstance3D, one per possible edge (up to 6)
 var _local_corners: PackedVector2Array = PackedVector2Array()
 
 const WATER_BORDER_COLOR := Color(0.05, 0.06, 0.05, 1.0)
@@ -57,6 +59,13 @@ const OWNED_BORDER_COLOR := Color(0.90, 0.12, 0.12, 0.95)
 # band of that edge to visually erase the wall so the two tiles blend.
 const EDGE_MASK_COLOR := Color(0.34, 0.50, 0.24, 1.0)
 const EDGE_MASK_INNER_SCALE := 0.75
+
+# When two+ owned tiles sit adjacent, WorldMap tells us (via set_owned_edges)
+# which edges border another tile owned by the SAME player — those edges
+# skip their ring segment so the outline reads as one shape around the
+# whole group instead of a ring around every individual tile.
+const OWNED_RING_INNER_SCALE := 0.90
+const OWNED_RING_OUTER_SCALE := 1.08
 
 # Per-type UV zoom applied via the material (not baked into the mesh, which
 # always maps its true corners to the full 0..1 UV range) — each terrain
@@ -147,14 +156,15 @@ static func _build_ring_mesh(corners: PackedVector2Array, inner_scale: float, ou
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return mesh
 
-# A single trapezoid strip covering the outer band of one edge (from
-# inner_scale*corner out to the true corner), for masking that edge's wall.
-static func _build_edge_mask_mesh(corners: PackedVector2Array, edge_index: int, inner_scale: float) -> ArrayMesh:
+# A single trapezoid strip along one edge, from inner_scale*corner to
+# outer_scale*corner — used both for masking that edge's wall (inner<1,
+# outer=1) and for a per-edge ownership ring segment (inner<1<outer).
+static func _build_edge_mask_mesh(corners: PackedVector2Array, edge_index: int, inner_scale: float, outer_scale: float = 1.0) -> ArrayMesh:
 	var n: int = corners.size()
-	var a: Vector2 = corners[edge_index]
-	var b: Vector2 = corners[(edge_index + 1) % n]
-	var ai: Vector2 = a * inner_scale
-	var bi: Vector2 = b * inner_scale
+	var a: Vector2 = corners[edge_index] * outer_scale
+	var b: Vector2 = corners[(edge_index + 1) % n] * outer_scale
+	var ai: Vector2 = corners[edge_index] * inner_scale
+	var bi: Vector2 = corners[(edge_index + 1) % n] * inner_scale
 
 	var verts := PackedVector3Array([
 		Vector3(ai.x, 0.0, ai.y), Vector3(a.x, 0.0, a.y),
@@ -218,6 +228,17 @@ func _ready() -> void:
 		add_child(mi)
 		_edge_masks.append(mi)
 
+	_owned_ring_mat = StandardMaterial3D.new()
+	_owned_ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_owned_ring_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_owned_ring_mat.albedo_color = OWNED_BORDER_COLOR
+	for i in range(6):
+		var ri := MeshInstance3D.new()
+		ri.material_override = _owned_ring_mat
+		ri.visible = false
+		add_child(ri)
+		_owned_ring_segments.append(ri)
+
 	set_empty()
 
 # local_corners: this face's corners already projected into the tile's own
@@ -262,6 +283,8 @@ func set_empty() -> void:
 	_border.visible = true
 	for m in _edge_masks:
 		m.visible = false
+	for r in _owned_ring_segments:
+		r.visible = false
 
 func set_tile(tile_data: Dictionary) -> void:
 	_tile_id = tile_data.get("id", "")
@@ -272,20 +295,19 @@ func set_tile(tile_data: Dictionary) -> void:
 	_apply_texture(TILE_TEXTURES.get(type_str, ""), TYPE_COLORS.get(type_str, Color(0.3, 0.3, 0.3)), TERRAIN_UV_MARGIN.get(type_str, 1.1))
 	_npc_icon.visible = false
 	_dot.visible = _tile_id != "" and _tile_id == LandManager.last_tile_id
-	# Owned tiles keep a bold gold outline as an at-a-glance "this is yours"
+	# Owned tiles keep a bold red outline as an at-a-glance "this is yours"
 	# marker — everything else stays borderless so placed land blends
 	# seamlessly. This is the only always-visible cue for ownership now that
 	# Edit/Move live in the click-triggered tile menu instead of always-on
 	# corner buttons (not practical to keep glued to a tile on a rotating
-	# globe with ~1000 of them).
-	if _is_owner:
-		if _border_mat:
-			_border_mat.albedo_color = OWNED_BORDER_COLOR
-		if not _local_corners.is_empty():
-			_border.mesh = _build_ring_mesh(_local_corners, 0.90, 1.08)
-		_border.visible = true
-	else:
-		_border.visible = false
+	# globe with ~1000 of them). Drawn as per-edge segments (set_owned_edges,
+	# called separately by WorldMap once it knows same-owner neighbors) so
+	# adjacent owned tiles merge into one outline instead of ringing each
+	# tile individually — _border itself stays hidden for owned tiles.
+	_border.visible = false
+	if not _is_owner:
+		for r in _owned_ring_segments:
+			r.visible = false
 
 func set_npc_tile(npc_data: Dictionary) -> void:
 	_npc_id = npc_data.get("id", "")
@@ -296,6 +318,8 @@ func set_npc_tile(npc_data: Dictionary) -> void:
 	var col: Array = npc_data.get("color", [0.8, 0.7, 0.2])
 	_apply_texture(TILE_TEXTURES.get(terrain, ""), Color(col[0], col[1], col[2]), TERRAIN_UV_MARGIN.get(terrain, 1.1))
 	_border.visible = false
+	for r in _owned_ring_segments:
+		r.visible = false
 
 	var standing_path: String = npc_data.get("standing", "")
 	if standing_path != "" and ResourceLoader.exists(standing_path):
@@ -368,6 +392,23 @@ func set_edge_occupied(occupied: Array) -> void:
 			continue
 		_edge_masks[i].mesh = _build_edge_mask_mesh(_local_corners, i, EDGE_MASK_INNER_SCALE)
 		_edge_masks[i].visible = true
+
+# show[i] = true if edge i should draw its ring segment — false where the
+# neighbor across that edge is owned by the same player, so the outline
+# merges into one shape around the whole connected group instead of
+# ringing every individual tile. Only meaningful for owned tiles.
+func set_owned_edges(show: Array) -> void:
+	if not _is_owner:
+		for r in _owned_ring_segments:
+			r.visible = false
+		return
+	var n: int = _local_corners.size()
+	for i in range(_owned_ring_segments.size()):
+		if i >= n or i >= show.size() or not show[i]:
+			_owned_ring_segments[i].visible = false
+			continue
+		_owned_ring_segments[i].mesh = _build_edge_mask_mesh(_local_corners, i, OWNED_RING_INNER_SCALE, OWNED_RING_OUTER_SCALE)
+		_owned_ring_segments[i].visible = true
 
 func _set_overlay(show: bool, color: Color) -> void:
 	if not _overlay:
