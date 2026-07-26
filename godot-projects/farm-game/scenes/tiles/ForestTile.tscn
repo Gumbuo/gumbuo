@@ -25,9 +25,9 @@ texture = ExtResource("2")
 
 [node name="TileLabel" type="Label" parent="."]
 offset_left = 8.0
-offset_top = 8.0
+offset_top = 34.0
 offset_right = 200.0
-offset_bottom = 26.0
+offset_bottom = 52.0
 text = "Forest Tile"
 theme_override_font_sizes/font_size = 11
 

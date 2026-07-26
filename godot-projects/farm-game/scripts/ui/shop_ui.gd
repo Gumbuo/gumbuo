@@ -16,6 +16,10 @@ var _tab_quests: Button = null
 var _reward_flash: Label = null
 
 func setup(npc_data: Dictionary) -> void:
+	# Blocks slot_grid.gd's raw _input() from also processing clicks landing
+	# on this popup (e.g. Buy/Sell/Turn In) as a farm-grid click underneath —
+	# the same guard action_window.gd's crafting-station popups already use.
+	add_to_group("action_windows")
 	_npc_data = npc_data
 	_build_ui()
 
