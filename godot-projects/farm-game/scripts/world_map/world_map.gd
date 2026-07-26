@@ -255,26 +255,26 @@ func _refresh_tile_edges(idx: int) -> void:
 		return
 	var card = _cards[pos]
 	var am_owner: bool = card.get_is_owner()
+	if not am_owner:
+		return
+	# Wall-masking (set_edge_occupied) is intentionally NOT called here — it
+	# was built to hide the "3D block" art's beveled edge, which flat
+	# top-down tiles don't have. Applying it anyway painted a fixed-color
+	# strip over art that already blended fine on its own, showing up as a
+	# mismatched seam. Ownership-ring merging is unrelated and still wanted.
 	var neighbors: Array = WorldGrid.get_neighbors(idx)
-	var occupied: Array = []
 	var ring_visible: Array = []
 	for n in neighbors:
-		var is_occupied := false
 		var neighbor_is_owner := false
 		if n >= 0:
 			var npos: Vector2i = WorldGrid.encode(n)
 			if _cards.has(npos):
-				var ncard = _cards[npos]
-				is_occupied = not ncard.is_empty_cell()
-				# Both true here means the SAME player, since get_is_owner()
+				# True here means the SAME player, since get_is_owner()
 				# already means "owned by the current player" — no need to
 				# compare owner_id strings directly.
-				neighbor_is_owner = ncard.get_is_owner()
-		occupied.append(is_occupied)
-		ring_visible.append(not (am_owner and neighbor_is_owner))
-	card.set_edge_occupied(occupied)
-	if am_owner:
-		card.set_owned_edges(ring_visible)
+				neighbor_is_owner = _cards[npos].get_is_owner()
+		ring_visible.append(not neighbor_is_owner)
+	card.set_owned_edges(ring_visible)
 
 func _refresh_all_edge_masks() -> void:
 	var count: int = WorldGrid.face_count()
