@@ -1919,6 +1919,9 @@ func _close_seed_bar() -> void:
 func _rebuild_seed_bar(seeds: Array) -> void:
 	for c in _seed_bar_box.get_children():
 		c.queue_free()
+	if seeds.is_empty():
+		_add_empty_seed_state()
+		return
 	for iid in seeds:
 		var info := ResourceManager.get_item_info(iid)
 		var count: int = ResourceManager.get_count(iid)
@@ -1968,6 +1971,40 @@ func _rebuild_seed_bar(seeds: Array) -> void:
 		btn.mouse_entered.connect(func(): _show_hover_preview(btn, cap_id, cap_count))
 		btn.mouse_exited.connect(_hide_hover_preview)
 		_seed_bar_box.add_child(btn)
+
+# Seeds aren't auto-granted (see ResourceManager._apply_inventory_reset_v1) —
+# they're a one-time claim from Frog Lilly. An empty bar with nothing in it
+# reads as broken, so explain why and let the player claim right here if
+# they haven't yet, instead of sending them hunting for her tile.
+func _add_empty_seed_state() -> void:
+	var vb := VBoxContainer.new()
+	vb.custom_minimum_size = Vector2(178, 48)
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 2)
+
+	var lbl := Label.new()
+	lbl.add_theme_font_size_override("font_size", 8)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+	lbl.custom_minimum_size = Vector2(178, 0)
+
+	if ResourceManager.has_claimed_seeds():
+		lbl.text = "Out of seeds — find more or craft them."
+		vb.add_child(lbl)
+	else:
+		lbl.text = "No seeds yet — claim your starter kit:"
+		vb.add_child(lbl)
+		var claim_btn := Button.new()
+		claim_btn.text = "Claim Starter Seeds"
+		claim_btn.add_theme_font_size_override("font_size", 8)
+		claim_btn.focus_mode = Control.FOCUS_NONE
+		claim_btn.pressed.connect(func():
+			ResourceManager.claim_seeds()
+			_rebuild_seed_bar(_get_player_seeds())
+		)
+		vb.add_child(claim_btn)
+
+	_seed_bar_box.add_child(vb)
 
 func _refresh_seed_bar_highlight() -> void:
 	if not (_seed_bar_box and is_instance_valid(_seed_bar_box)):

@@ -192,7 +192,7 @@ func _make_card(parent: Control, recipe_id: String, data: Dictionary) -> Diction
 		price_lbl.position = Vector2(14, 54)
 		price_lbl.size     = Vector2(400, 16)
 		price_lbl.add_theme_font_size_override("font_size", 9)
-		price_lbl.text     = "Price: %g Gold" % data["price_gold"]
+		price_lbl.text     = "Price: %s Gold" % PlayerData.format_gold(data["price_gold"])
 		price_lbl.modulate = Color(1.0, 0.85, 0.20)
 		card.add_child(price_lbl)
 	else:

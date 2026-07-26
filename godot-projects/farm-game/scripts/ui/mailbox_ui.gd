@@ -229,7 +229,7 @@ func _build_compose(parent: VBoxContainer) -> void:
 
 	# Tax label
 	_gold_lbl = Label.new()
-	_gold_lbl.text = "Tax: 0.00 gold (0 items)  |  Your gold: %g" % PlayerData.gold
+	_gold_lbl.text = "Tax: 0.00 gold (0 items)  |  Your gold: %s" % PlayerData.format_gold(PlayerData.gold)
 	_gold_lbl.add_theme_font_size_override("font_size", 9)
 	_gold_lbl.modulate = Color(1.0, 0.85, 0.3)
 	parent.add_child(_gold_lbl)
@@ -375,8 +375,8 @@ func _adjust_item(idx: int, delta: int) -> void:
 
 func _update_gold_label() -> void:
 	var n: int = _compose_items.size()
-	_gold_lbl.text = "Tax: %.2f gold (%d item type%s)  |  Your gold: %g" % [
-		snappedf(n * 0.01, 0.01), n, "s" if n != 1 else "", PlayerData.gold
+	_gold_lbl.text = "Tax: %.2f gold (%d item type%s)  |  Your gold: %s" % [
+		snappedf(n * 0.01, 0.01), n, "s" if n != 1 else "", PlayerData.format_gold(PlayerData.gold)
 	]
 
 func _do_send() -> void:

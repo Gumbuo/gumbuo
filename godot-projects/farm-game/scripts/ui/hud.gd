@@ -253,7 +253,7 @@ func _refresh_all() -> void:
 	_on_xp_changed(PlayerData.xp, PlayerData.level)
 	_on_energy_changed(PlayerData.energy, PlayerData.max_energy)
 	silver_label.text = "Silver: %d" % PlayerData.silver
-	gold_label.text = "Gold: %g" % PlayerData.gold
+	gold_label.text = "Gold: %s" % PlayerData.format_gold(PlayerData.gold)
 
 func _on_xp_changed(xp: int, level: int) -> void:
 	level_label.text = "Lv.%d" % level
@@ -757,7 +757,7 @@ func _on_settings_btn_pressed() -> void:
 
 func update_currency() -> void:
 	silver_label.text = "Silver: %d" % PlayerData.silver
-	gold_label.text = "Gold: %g" % PlayerData.gold
+	gold_label.text = "Gold: %s" % PlayerData.format_gold(PlayerData.gold)
 
 func show_credits() -> void:
 	if _credits != null and is_instance_valid(_credits):

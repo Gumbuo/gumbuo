@@ -110,7 +110,7 @@ func _build_ui() -> void:
 	bal_row.add_child(_silver_lbl)
 
 	_gold_lbl = Label.new()
-	_gold_lbl.text = "Gold: %g" % PlayerData.gold
+	_gold_lbl.text = "Gold: %s" % PlayerData.format_gold(PlayerData.gold)
 	_gold_lbl.add_theme_font_size_override("font_size", 12)
 	_gold_lbl.modulate = Color(1.0, 0.75, 0.1)
 	bal_row.add_child(_gold_lbl)
@@ -197,7 +197,7 @@ func _make_buy_row(item_id: String, item_name: String, price_s: int, price_g: fl
 
 	var price_lbl := Label.new()
 	if use_gold:
-		price_lbl.text = "%g Gold" % price_g
+		price_lbl.text = "%s Gold" % PlayerData.format_gold(price_g)
 		price_lbl.modulate = Color(1.0, 0.75, 0.1)
 	else:
 		price_lbl.text = "%d Silver" % price_s
@@ -229,7 +229,7 @@ func _make_sell_row(item_id: String, item_name: String, price_g: float) -> HBoxC
 	row.add_child(name_lbl)
 
 	var price_lbl := Label.new()
-	price_lbl.text = "%g Gold each" % price_g
+	price_lbl.text = "%s Gold each" % PlayerData.format_gold(price_g)
 	price_lbl.modulate = Color(1.0, 0.75, 0.1)
 	price_lbl.add_theme_font_size_override("font_size", 12)
 	row.add_child(price_lbl)
@@ -262,7 +262,7 @@ func _buy(item_id: String, price_s: int, price_g: float, use_gold: bool, qty: in
 	if use_gold:
 		if not PlayerData.spend_gold(price_g):
 			return
-		_gold_lbl.text = "Gold: %g" % PlayerData.gold
+		_gold_lbl.text = "Gold: %s" % PlayerData.format_gold(PlayerData.gold)
 	else:
 		if not PlayerData.spend_silver(price_s):
 			return
@@ -274,7 +274,7 @@ func _sell(item_id: String, price_g: float, name_lbl: Label, sell_btn: Button) -
 		return
 	ResourceManager.remove_item(item_id, 1)
 	PlayerData.add_gold(price_g)
-	_gold_lbl.text = "Gold: %g" % PlayerData.gold
+	_gold_lbl.text = "Gold: %s" % PlayerData.format_gold(PlayerData.gold)
 	var held: int = ResourceManager.get_count(item_id)
 	var info: Dictionary = ResourceManager.get_item_info(item_id)
 	name_lbl.text = "%s  (x%d)" % [info.get("name", item_id), held]

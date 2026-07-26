@@ -166,6 +166,14 @@ func spend_gold(amount: float) -> bool:
 	gold = snappedf(gold - amount, 0.01)
 	return true
 
+# GDScript's String "%" operator has no %g (shortest float repr) — gold
+# values are snapped to 0.01, so mimic %g by only showing decimals when
+# the value isn't a whole number.
+func format_gold(value: float) -> String:
+	if is_equal_approx(value, roundf(value)):
+		return "%d" % int(round(value))
+	return "%.2f" % value
+
 func can_eat_food() -> bool:
 	return Time.get_unix_time_from_system() - last_food_time >= 30.0
 
