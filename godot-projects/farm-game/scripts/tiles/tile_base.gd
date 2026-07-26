@@ -69,12 +69,13 @@ const _NAV_ARROW := {
 	"NW": "◤", "NE": "◥", "W": "◄", "E": "►", "SW": "◣", "SE": "◢",
 }
 # Top-left position of each button inside the CanvasLayer (1280×720).
-# NW/NE pair together top-center, SW/SE pair together bottom-center
-# (lifted clear of the HUD's bottom bar, which spans y:664-712), and
-# W/E sit at the far sides — none overlap the tool slot columns
-# (x:150-270, x:1010-1130).
+# NW/NE pair together top-center (dropped below the HUD's TopLeft bar,
+# which spans y:4-26, so they don't cover the online-player count),
+# SW/SE pair together bottom-center (lifted clear of the HUD's bottom
+# bar, which spans y:664-712), and W/E sit at the far sides — none
+# overlap the tool slot columns (x:150-270, x:1010-1130).
 const _NAV_BTN_POS := {
-	"NW": Vector2(490,   4), "NE": Vector2(646,   4),
+	"NW": Vector2(490,  34), "NE": Vector2(646,  34),
 	"W":  Vector2(  4, 332), "E":  Vector2(1136, 332),
 	"SW": Vector2(490, 616), "SE": Vector2(646, 616),
 }
