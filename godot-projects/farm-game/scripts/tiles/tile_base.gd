@@ -4,6 +4,7 @@ const PLAYER_SCENE_PATH    := "res://scenes/player/Player.tscn"
 const HUD_SCENE_PATH       := "res://scenes/ui/HUD.tscn"
 const SLOT_GRID_SCENE_PATH := "res://scenes/tiles/SlotGrid.tscn"
 const REMOTE_PLAYER_SCRIPT := "res://scripts/player/remote_player.gd"
+const BEAVER_SCRIPT        := "res://scripts/creatures/beaver.gd"
 
 var tile_id:   String     = ""
 var tile_data: Dictionary = {}
@@ -26,6 +27,11 @@ const PRESENCE_SEND_SEC := 0.2
 var _ws: WebSocketPeer = null
 var _presence_send_accum: float = 0.0
 var _remote_players: Dictionary = {}  # wallet -> RemotePlayer node
+
+# ── PvE beaver (see scripts/creatures/beaver.gd) — farm tiles only, spawned
+# by farm_tile.gd. Lives here (not just on farm_tile.gd) so the shared
+# combat plumbing below can treat it the same as a remote player.
+var _beaver = null
 
 # ── Combat (click a live player on the same tile to challenge them) ──────
 const CHALLENGE_CLICK_RADIUS := 40.0
@@ -137,6 +143,15 @@ func _fit_background_to_viewport() -> void:
 			filler.z_index = bg.z_index
 			filler.position = bg.position + Vector2(ix * tex_size.x, iy * tex_size.y)
 			add_child(filler)
+
+func _spawn_beaver() -> void:
+	if _beaver != null and is_instance_valid(_beaver):
+		return
+	var b := Node2D.new()
+	b.set_script(load(BEAVER_SCRIPT))
+	add_child(b)
+	b.call("setup", tile_id, self)
+	_beaver = b
 
 func _spawn_player() -> void:
 	_player = (load(PLAYER_SCENE_PATH) as PackedScene).instantiate()
@@ -681,6 +696,11 @@ func _try_challenge_click(screen_pos: Vector2) -> bool:
 	if _active_combat or not is_instance_valid(_player):
 		return false
 	var world_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * screen_pos
+	if _beaver != null and is_instance_valid(_beaver) and not _beaver.get("_in_combat"):
+		if _beaver.global_position.distance_to(world_pos) <= CHALLENGE_CLICK_RADIUS:
+			get_viewport().set_input_as_handled()
+			_show_challenge_confirm(_beaver.combat_id, "Evil Beaver")
+			return true
 	for w in _remote_players.keys():
 		var node = _remote_players[w]
 		if not is_instance_valid(node):
@@ -732,7 +752,7 @@ func _show_challenge_confirm(defender_wallet: String, defender_name: String) -> 
 	panel.add_child(lbl)
 
 	var sub := Label.new()
-	sub.text = "Winner takes farming rights on this tile."
+	sub.text = "Defeat it for a reward!" if defender_wallet.begins_with("beaver_") else "Winner takes farming rights on this tile."
 	sub.position = Vector2(10, 48)
 	sub.size = Vector2(pw - 20, 20)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -760,15 +780,28 @@ func _show_challenge_confirm(defender_wallet: String, defender_name: String) -> 
 func _start_combat(defender_wallet: String) -> void:
 	var attacker_wallet: String = PlayerData.player_id
 	var ts := int(Time.get_unix_time_from_system())
-	if _ws != null and _ws.get_ready_state() == WebSocketPeer.STATE_OPEN:
+	# The beaver isn't a real registered player — no other client could ever
+	# match on its synthetic id, so there's nothing for them to react to.
+	if not defender_wallet.begins_with("beaver_") and _ws != null and _ws.get_ready_state() == WebSocketPeer.STATE_OPEN:
 		_ws.send_text(JSON.stringify({
 			"type": "challenge", "attacker": attacker_wallet, "defender": defender_wallet, "ts": ts,
 		}))
 	_run_combat(attacker_wallet, defender_wallet, ts)
 
+# Called by beaver.gd when it notices the player standing too close and
+# decides to attack first — same fight sequencer as a player-initiated
+# challenge, just with the beaver as the attacker.
+func start_beaver_combat(beaver) -> void:
+	if _active_combat or not is_instance_valid(_player) or not is_instance_valid(beaver):
+		return
+	var ts := int(Time.get_unix_time_from_system())
+	_run_combat(beaver.combat_id, PlayerData.player_id, ts)
+
 func _get_combat_actor(wallet: String):
 	if wallet == PlayerData.player_id:
 		return _player
+	if _beaver != null and is_instance_valid(_beaver) and wallet == _beaver.combat_id:
+		return _beaver
 	return _remote_players.get(wallet)
 
 func _run_combat(attacker_wallet: String, defender_wallet: String, ts: int) -> void:
@@ -778,6 +811,13 @@ func _run_combat(attacker_wallet: String, defender_wallet: String, ts: int) -> v
 	var defender_node = _get_combat_actor(defender_wallet)
 	if attacker_node == null or defender_node == null or not is_instance_valid(attacker_node) or not is_instance_valid(defender_node):
 		return
+
+	# Captured up front — a losing beaver frees itself from its own
+	# exit_combat(), so _beaver may already be invalid by the time the
+	# post-fight logic below needs to know whether it was involved.
+	var beaver_id: String = ""
+	if _beaver != null and is_instance_valid(_beaver):
+		beaver_id = _beaver.combat_id
 
 	var sim: Dictionary = CombatSim.simulate(attacker_wallet, defender_wallet, ts)
 	_active_combat = true
@@ -817,10 +857,17 @@ func _run_combat(attacker_wallet: String, defender_wallet: String, ts: int) -> v
 	_active_combat = false
 
 	var my_wallet: String = PlayerData.player_id
-	if winner == my_wallet:
+	var beaver_involved: bool = beaver_id != "" and (attacker_wallet == beaver_id or defender_wallet == beaver_id)
+	# A beaver fight is PvE, not a contest over the tile — don't let it
+	# transfer farming/combat rights the way a real PvP win does.
+	if winner == my_wallet and not beaver_involved:
 		LandManager.set_combat_rights_holder(tile_id, my_wallet)
 	if loser == my_wallet:
 		_go_home_after_loss()
+	if winner == my_wallet and beaver_involved and loser == beaver_id:
+		PlayerData.add_silver(randi_range(15, 35))
+		PlayerData.add_xp(20)
+		_beaver = null
 
 # Only meaningful on a tile you don't own: if the current combat-rights
 # holder isn't physically here (checked via live presence), the next
