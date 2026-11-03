@@ -245,6 +245,7 @@ func save_data() -> void:
 	cfg.set_value("economy", "peach_boost_until", peach_boost_until)
 	cfg.save(SAVE_PATH)
 	WebPersistence.flush()
+	ScoreReporter.report_score(int(gold), {"highestLevel": level})
 
 func set_wallet(address: String) -> void:
 	wallet_address = address.to_lower()

@@ -30,6 +30,7 @@ NPCManager="*res://scripts/autoloads/NPCManager.gd"
 MarketManager="*res://scripts/autoloads/MarketManager.gd"
 MailManager="*res://scripts/autoloads/MailManager.gd"
 MusicManager="*res://scripts/autoloads/MusicManager.gd"
+ScoreReporter="*res://scripts/autoloads/ScoreReporter.gd"
 
 [display]
 

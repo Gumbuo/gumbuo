@@ -9,31 +9,18 @@ const TREE_PATHS := [
 	"res://assets/sprites/tiles/forest_trees/forest_tree_6.png",
 ]
 
-# Fixed scatter positions (screen x, y) for decorative trees.
-# Placed along edges and gaps so they frame the farmable slots.
+# Slot grid occupies x=438-842, y=154-558.
+# At scale 2.5 (120px), each tree spans ±60px from its center.
+# All 6 positions are at y≤94 (top strip) or y≥618 (bottom strip) — completely
+# outside every slot row regardless of x position.
+# Left/right corner trees also clear the slot columns (x±60 stays outside 438-842).
 const TREE_POSITIONS := [
-	# Top row
-	Vector2(400, 118), Vector2(460, 105), Vector2(530, 118), Vector2(600, 108),
-	Vector2(670, 118), Vector2(740, 108), Vector2(810, 118), Vector2(870, 108),
-	# Left column
-	Vector2(400, 190), Vector2(400, 270), Vector2(400, 350),
-	Vector2(400, 430), Vector2(400, 510),
-	# Right column
-	Vector2(870, 190), Vector2(870, 270), Vector2(870, 350),
-	Vector2(870, 430), Vector2(870, 510),
-	# Bottom row
-	Vector2(420, 575), Vector2(490, 585), Vector2(560, 575), Vector2(630, 585),
-	Vector2(700, 575), Vector2(770, 585), Vector2(840, 575),
-]
-
-# Which tree variant each position uses (index into TREE_PATHS, cycles through all 6)
-const TREE_VARIANTS := [
-	0, 2, 4, 1, 3, 5, 0, 2,
-	1, 3, 5,
-	4, 2,
-	0, 4, 1,
-	5, 3,
-	2, 0, 4, 1, 5, 3, 2,
+	Vector2(355,  65),   # top-left  corner — tree 1
+	Vector2(640,  65),   # top-center        — tree 2
+	Vector2(925,  65),   # top-right corner  — tree 3
+	Vector2(355, 650),   # bottom-left corner — tree 4
+	Vector2(640, 650),   # bottom-center      — tree 5
+	Vector2(925, 650),   # bottom-right corner — tree 6
 ]
 
 func _ready() -> void:
@@ -42,20 +29,13 @@ func _ready() -> void:
 	_spawn_deco_trees()
 
 func _spawn_deco_trees() -> void:
-	var textures: Array = []
-	for path in TREE_PATHS:
-		if ResourceLoader.exists(path):
-			textures.append(load(path) as Texture2D)
-		else:
-			textures.append(null)
-
-	for i in TREE_POSITIONS.size():
-		var tex: Texture2D = textures[TREE_VARIANTS[i] % textures.size()]
-		if tex == null:
+	for i in TREE_PATHS.size():
+		var path: String = TREE_PATHS[i]
+		if not ResourceLoader.exists(path):
 			continue
 		var spr := Sprite2D.new()
-		spr.texture = tex
+		spr.texture = load(path) as Texture2D
 		spr.position = TREE_POSITIONS[i]
 		spr.scale = Vector2(2.5, 2.5)
-		spr.z_index = -5   # behind slot items, in front of flat background
+		spr.z_index = -5
 		add_child(spr)

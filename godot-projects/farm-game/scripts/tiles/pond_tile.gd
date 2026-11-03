@@ -561,7 +561,7 @@ func _pond_route(from: Vector2, to: Vector2) -> Array:
 # Pick between left-side (c1a→c1b) or right-side (c2a→c2b) corner pair
 # based on which has shorter total horizontal travel
 func _pick_lr(c1a: Vector2, c1b: Vector2, c2a: Vector2, c2b: Vector2,
-              from: Vector2, to: Vector2) -> Array:
+			  from: Vector2, to: Vector2) -> Array:
 	var d1 := absf(from.x - c1a.x) + absf(to.x - c1b.x)
 	var d2 := absf(from.x - c2a.x) + absf(to.x - c2b.x)
 	return [c1a, c1b] if d1 <= d2 else [c2a, c2b]
@@ -569,7 +569,7 @@ func _pick_lr(c1a: Vector2, c1b: Vector2, c2a: Vector2, c2b: Vector2,
 # Pick between top-side (c1a→c1b) or bottom-side (c2a→c2b) corner pair
 # based on which has shorter total vertical travel
 func _pick_tb(c1a: Vector2, c1b: Vector2, c2a: Vector2, c2b: Vector2,
-              from: Vector2, to: Vector2) -> Array:
+			  from: Vector2, to: Vector2) -> Array:
 	var d1 := absf(from.y - c1a.y) + absf(to.y - c1b.y)
 	var d2 := absf(from.y - c2a.y) + absf(to.y - c2b.y)
 	return [c1a, c1b] if d1 <= d2 else [c2a, c2b]

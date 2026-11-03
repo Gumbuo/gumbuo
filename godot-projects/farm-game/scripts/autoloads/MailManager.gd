@@ -4,7 +4,7 @@ signal inbox_fetched(messages: Array)
 signal mail_sent(success: bool, error: String)
 signal mail_collected(success: bool, items: Array)
 
-const API_URL := "https://gumbuo.com/api/farm-mail"
+const API_URL := "https://gamehole.games/api/foxstead/farm-mail"
 
 var inbox: Array = []
 

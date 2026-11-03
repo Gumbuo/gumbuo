@@ -5,7 +5,7 @@ signal listing_removed(listing_id: String)
 signal trade_completed(listing_id: String, buyer_id: String)
 signal listings_refreshed()
 
-const API_URL := "https://foxstead.xyz/api/market"
+const API_URL := "https://gamehole.games/api/foxstead/market"
 
 # { listing_id -> { id, seller_id, item_id, quantity, price_gold, listed_at } }
 var resource_listings: Dictionary = {}

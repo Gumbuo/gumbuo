@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const API_URL   := "https://foxstead.xyz/api/farm-xp"
+const API_URL   := "https://gamehole.games/api/foxstead/farm-xp"
 const MAX_ROWS  := 20
 
 var _req:     HTTPRequest    = null
